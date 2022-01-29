@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xs:element name="configuracion">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ip" type="xs:string"/>
+                <xs:element name="nombreBD" type="xs:string"/>
+                <xs:element name="usuario" minOccurs="1" maxOccurs="3">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="nombre" type="xs:string"/>
+                            <xs:element name="clave" type="xs:string"/>
+                            <xs:element name="rol" type="xs:string"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+        <!-- Cada rol y nombre debe ser único -->
+        <xs:unique name="rolUnico">
+            <xs:selector xpath="usuario"/>
+            <xs:field xpath="rol"/>
+        </xs:unique>
+        <xs:unique name="nombreUnico">
+            <xs:selector xpath="usuario"/>
+            <xs:field xpath="nombre"/>
+        </xs:unique>
+    </xs:element>
+</xs:schema>
