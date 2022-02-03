@@ -1,0 +1,83 @@
+#alerta {
+  width: 100%;
+  height: auto;
+  background-color: #0291A5;
+  padding: 0.5%;
+}
+
+nav {
+  width: 100%;
+  height: auto;
+  background-color: #FFB775;
+  padding: 0.5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+nav img {
+  width: 50px;
+}
+
+#localizacionPag {
+  display: inline-block;
+  margin-top: 1%;
+  margin-left: 2%;
+}
+
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
+main {
+  padding: 0% 10%;
+}
+
+#presentacion {
+  padding: 2%;
+  display: flex;
+  justify-content: space-evenly;
+}
+#presentacion div {
+  flex-grow: 2;
+}
+#presentacion h2 {
+  margin-bottom: 2%;
+}
+#presentacion img {
+  width: 200px;
+}
+
+#suscripciones {
+  padding: 1%;
+  display: flex;
+  justify-content: space-evenly;
+}
+#suscripciones .suscripciones img {
+  display: block;
+  width: 200px;
+}
+#suscripciones .suscripciones button {
+  display: block;
+  margin: 5% auto;
+}
+
+#partidas {
+  display: flex;
+}
+#partidas div:first-of-type {
+  position: relative;
+}
+#partidas button {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+#partidas img {
+  width: 300px;
+}
+#partidas div:nth-of-type(2) {
+  margin-top: 2%;
+}/*# sourceMappingURL=styles.css.map */

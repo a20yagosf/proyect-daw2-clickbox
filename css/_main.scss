@@ -1,0 +1,71 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+main {
+    padding: 0% 10%;
+}
+
+//Presentación
+#presentacion {
+    padding: 2%;
+    display: flex;
+    justify-content: space-evenly;
+
+    div {
+        flex-grow: 2;
+    }
+
+    h2 {
+        margin-bottom: 2%;
+    }
+
+    img {
+        width: $sizeLogoPresentacion;
+    }
+}
+
+//Suscripciones
+#suscripciones {
+    padding: 1%;
+    display: flex;
+    justify-content: space-evenly;
+
+    .suscripciones {
+        img {
+            display: block;
+            width: $sizeSuscriptImg;
+        }
+        button {
+            display: block;
+            margin: 5% auto;
+        }
+    }
+}
+
+//Partidas
+#partidas {
+    display: flex;
+
+    div:first-of-type  {
+        position: relative;
+    }
+
+    button {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    img {
+        width: $sizePartidaImg;
+    }
+
+    div:nth-of-type(2) {
+        margin-top: 2%;
+        flex-grow: 2;
+    }
+}

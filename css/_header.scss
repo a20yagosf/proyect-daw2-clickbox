@@ -1,0 +1,23 @@
+
+#alerta {
+    @include contenedor(100%, auto, $colorPrincipal);
+    padding: 0.5%
+}
+
+nav {
+    @include contenedor(100%, auto, $colorSecundario);
+    padding: 0.5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    img {
+        width: $sizeLogo;
+    }
+}
+
+#localizacionPag {
+    display: inline-block;
+    margin-top: 1%;
+    margin-left: 2%;
+}
