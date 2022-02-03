@@ -1,7 +1,13 @@
+header {
+    font-family: "PoetsenOne";
+    font-size: 1.3em
+}
+
 
 #alerta {
     @include contenedor(100%, auto, $colorPrincipal);
-    padding: 0.5%
+    padding: 0.5%;
+    text-align: center
 }
 
 nav {
@@ -10,6 +16,10 @@ nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    a {
+        color: $colorLetra;
+    }
 
     img {
         width: $sizeLogo;
@@ -20,4 +30,6 @@ nav {
     display: inline-block;
     margin-top: 1%;
     margin-left: 2%;
+    font-size: 0.8em;
+    font-family: "Resolve";
 }

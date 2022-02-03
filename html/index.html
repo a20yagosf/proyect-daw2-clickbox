@@ -5,7 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
     <link rel="stylesheet" href="../css/styles.css">
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
 </head>
 <body>
     <header>
@@ -43,7 +45,7 @@
         </div>
         <div id="partidas">
             <div>
-                <img src="../img/Recuadro.png" alt="Imagen svg"/>
+                <img src="../img/LogoPartida.svg" alt="Imagen svg"/>
                 <button>Buscar partidas</button>
             </div>
             <div>
@@ -55,18 +57,47 @@
             <div class="elementoTienda">
                 <div class="id">ID</div>
                 <img src="../img/Recuadro.png" alt="Imagen del artículo"/>
+                <div class="descripcionCorta">
+                    <p>Descripción corta</p>
+                </div>
+                <button>Comprar</button>
+            </div>
+            <div class="elementoTienda">
+                <div class="id">ID</div>
+                <img src="../img/Recuadro.png" alt="Imagen del artículo"/>
+                <div class="descripcionCorta">
+                    <p>Descripción corta</p>
+                </div>
+                <button>Comprar</button>
+            </div>
+            <div class="elementoTienda">
+                <div class="id">ID</div>
+                <img src="../img/Recuadro.png" alt="Imagen del artículo"/>
+                <div class="descripcionCorta">
+                    <p>Descripción corta</p>
+                </div>
                 <button>Comprar</button>
             </div>
         </div>
         <svg>
-
+            <path d="M-100, 550 a250, -250 0 0, 1, 700, 0 z" />
+            <path class="restar" d="M-70, 580 a180, -180 0 0, 1, 650, 0 l-50, 0 a100, 100 0 0, 0, -550, -0 z"/>
+            <circle cx="0" cy="270" r="60"/>
+            <circle cx="480" cy="200" r="30"/>
+            <circle cx="1250" cy="180" r="25"/>
+            <circle cx="1350" cy="280" r="80"/>
+            <path d="M350, 600 a150, -125 0 0, 1, 1100, 0 z" />
+            <path class="restar" d="M400, 600 a300, -250 0 0, 1, 1000, 0 l-80, 0 a300, 250 0 0, 0  -850, 0 z"/>
+            <path d="M1200, 550 a350, -250 0 0, 1, 1000, 0 z" />
+            <path class="restar" d="M1250, 580 a280, -220 0 0, 1, 900, 0 l-50, 0 a220, 170 0 0, 0, -780, -0 z"/>
+            <rect x="0" y="22%" width="100%" height="300"/>
         </svg>
     </main>
     <footer>
-        <div id="infoPag">
-            <a href="">Nombre página</a>
-            <a href="">Sobre nosotros</a>
-        </div>
+        <ul id="infoPag">
+            <li><a href="">Nombre página</a></li>
+            <li><a href="">Sobre nosotros</a></li>
+        </ul>
         <div id="redes">
             <img src="../img/Recuadro.png" alt="Logo instagram"/>
             <img src="../img/Recuadro.png" alt="Logo twitter"/>
@@ -74,7 +105,7 @@
         </div>
         <div id="localizacion">
             <a href="">Localización</a>
-            <p>Localización</p>
+            <div id="map"></div>
             <!-- API -->
         </div>
     </footer>

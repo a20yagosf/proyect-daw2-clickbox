@@ -1,0 +1,37 @@
+footer {
+    @include contenedor(100%, auto, $colorPrincipal);
+    padding: 1%;
+    display: flex;
+    justify-content: space-evenly;
+    font-family: "PoetsenOne";
+
+    li:first-of-type a {
+        font-size: 1.3em;
+    }
+
+    li:first-of-type {
+        margin-bottom: 5%;
+    }
+
+    a {
+        color: $colorLetra;
+        font-size: 1.1em;
+    }
+}
+
+#redes {
+
+    img {
+        width: $sizeRedes;
+    }
+}
+
+#infoPag {
+    li {
+        list-style: none;
+    }
+}
+
+#map {
+    width: $sizeMap;
+}

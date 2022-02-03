@@ -4,12 +4,22 @@
     box-sizing: border-box;
 }
 
+a {
+    text-decoration: none;
+}
+
 main {
     padding: 0% 10%;
+    padding-bottom: 10%;
+    font-family: "Resolve";
+    position: relative;
 }
 
 //Presentación
 #presentacion {
+    @include contenedor(80%, auto, transparent);
+    margin: auto;
+    margin-bottom: 5%;
     padding: 2%;
     display: flex;
     justify-content: space-evenly;
@@ -29,9 +39,11 @@ main {
 
 //Suscripciones
 #suscripciones {
+    visibility: hidden;
     padding: 1%;
     display: flex;
     justify-content: space-evenly;
+    margin-bottom: 5%;
 
     .suscripciones {
         img {
@@ -41,16 +53,34 @@ main {
         button {
             display: block;
             margin: 5% auto;
+            @include boton(50%, $colorPrincipal, 1.1em);
         }
     }
 }
 
 //Partidas
 #partidas {
+    width: 80%;
     display: flex;
+    margin: auto;
+    column-gap: 5%;
+    margin-bottom: 5%;
 
     div:first-of-type  {
         position: relative;
+
+        &::after {
+            content: "";
+            display: inline-block;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 70%;
+            height: 20%;
+            border-radius: 10px;
+            background-color: $colorPrincipalOscuro;
+        }
     }
 
     button {
@@ -58,6 +88,8 @@ main {
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
+        z-index: 3;
+        @include boton (50%, $colorDestacado, 1em);
     }
 
     img {
@@ -67,5 +99,98 @@ main {
     div:nth-of-type(2) {
         margin-top: 2%;
         flex-grow: 2;
+        text-align: center;
+
+        h2 {
+            margin-bottom: 3%;
+        }
+    }
+}
+
+//Tienda
+#tienda {
+    @include contenedor(80%, auto, transparent);
+    margin: auto;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.elementoTienda {
+    @include contenedor($sizeTienda, $sizeTienda, $colorLetra);
+    position: relative;
+    border-radius: 10px;
+
+    .id {
+        @include contenedor (15%, 20%, $colorPrincipal);
+        text-align: center;
+        padding-top: 6%;
+        font-size: 1.3em;
+        font-weight: 600;
+        color: $colorLetra;
+        position: absolute;
+        top: 0px;
+        left: 10%;
+        display: inline-block;
+        z-index: 4;
+    }
+
+    .id::after {
+        content: "";
+        display: inline-block;
+        width: 0;
+        height: 0;
+        position: relative;
+        top: 45%;
+        //Creo Un cubo que sólo tiene 1 borde visible y el resto transparente
+        border-top: 1.11em solid $colorPrincipal;
+        border-right: 1.11em solid transparent;
+        border-bottom: 1.11em solid transparent;
+        border-left: 1.11em solid transparent;
+    }
+
+    img {
+        width: 85%;
+        height: 85%;
+        transform: translate(8%, 8%);
+        border-radius: 10px;
+    }
+
+    button {
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translate(-50%, 50%);
+        @include boton (50%, $colorPrincipal, 1em);
+    }
+
+    .descripcionCorta {
+        @include contenedor(85%, $altDescriptCorta, $colorPrincipal);
+        position: relative;
+        border-radius: 5px;
+        transform: translate(8%, -70%);
+        padding: 2%;
+
+        p {
+            color: $colorLetra;
+
+        }
+    }
+}
+
+//Diseño svg
+svg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    z-index: -1;
+
+    * {
+        fill: $colorSecundario;
+   }
+
+    .restar {
+        fill: white;
     }
 }

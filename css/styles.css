@@ -1,8 +1,22 @@
+@font-face {
+  font-family: "PoetsenOne";
+  src: url("../font/PoetsenOne-Regular.ttf");
+}
+@font-face {
+  font-family: "Resolve";
+  src: url("../font/Resolve-Light.otf");
+}
+header {
+  font-family: "PoetsenOne";
+  font-size: 1.3em;
+}
+
 #alerta {
   width: 100%;
   height: auto;
   background-color: #0291A5;
   padding: 0.5%;
+  text-align: center;
 }
 
 nav {
@@ -14,6 +28,9 @@ nav {
   justify-content: space-between;
   align-items: center;
 }
+nav a {
+  color: #F3F3F3;
+}
 nav img {
   width: 50px;
 }
@@ -22,6 +39,8 @@ nav img {
   display: inline-block;
   margin-top: 1%;
   margin-left: 2%;
+  font-size: 0.8em;
+  font-family: "Resolve";
 }
 
 * {
@@ -30,11 +49,23 @@ nav img {
   box-sizing: border-box;
 }
 
+a {
+  text-decoration: none;
+}
+
 main {
   padding: 0% 10%;
+  padding-bottom: 10%;
+  font-family: "Resolve";
+  position: relative;
 }
 
 #presentacion {
+  width: 80%;
+  height: auto;
+  background-color: transparent;
+  margin: auto;
+  margin-bottom: 5%;
   padding: 2%;
   display: flex;
   justify-content: space-evenly;
@@ -50,9 +81,11 @@ main {
 }
 
 #suscripciones {
+  visibility: hidden;
   padding: 1%;
   display: flex;
   justify-content: space-evenly;
+  margin-bottom: 5%;
 }
 #suscripciones .suscripciones img {
   display: block;
@@ -61,23 +94,182 @@ main {
 #suscripciones .suscripciones button {
   display: block;
   margin: 5% auto;
+  padding: 3% 4%;
+  width: 50%;
+  background-color: #0291A5;
+  border: 0px;
+  font-size: 1.1em;
+  border-radius: 10px;
+  color: white;
 }
 
 #partidas {
+  width: 80%;
   display: flex;
+  margin: auto;
+  -moz-column-gap: 5%;
+       column-gap: 5%;
+  margin-bottom: 5%;
 }
 #partidas div:first-of-type {
   position: relative;
+}
+#partidas div:first-of-type::after {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 20%;
+  border-radius: 10px;
+  background-color: #026a79;
 }
 #partidas button {
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  z-index: 3;
+  padding: 3% 4%;
+  width: 50%;
+  background-color: #FF5600;
+  border: 0px;
+  font-size: 1em;
+  border-radius: 10px;
+  color: white;
 }
 #partidas img {
   width: 300px;
 }
 #partidas div:nth-of-type(2) {
   margin-top: 2%;
+  flex-grow: 2;
+  text-align: center;
+}
+#partidas div:nth-of-type(2) h2 {
+  margin-bottom: 3%;
+}
+
+#tienda {
+  width: 80%;
+  height: auto;
+  background-color: transparent;
+  margin: auto;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.elementoTienda {
+  width: 300px;
+  height: 300px;
+  background-color: #F3F3F3;
+  position: relative;
+  border-radius: 10px;
+}
+.elementoTienda .id {
+  width: 15%;
+  height: 20%;
+  background-color: #0291A5;
+  text-align: center;
+  padding-top: 6%;
+  font-size: 1.3em;
+  font-weight: 600;
+  color: #F3F3F3;
+  position: absolute;
+  top: 0px;
+  left: 10%;
+  display: inline-block;
+  z-index: 4;
+}
+.elementoTienda .id::after {
+  content: "";
+  display: inline-block;
+  width: 0;
+  height: 0;
+  position: relative;
+  top: 45%;
+  border-top: 1.11em solid #0291A5;
+  border-right: 1.11em solid transparent;
+  border-bottom: 1.11em solid transparent;
+  border-left: 1.11em solid transparent;
+}
+.elementoTienda img {
+  width: 85%;
+  height: 85%;
+  transform: translate(8%, 8%);
+  border-radius: 10px;
+}
+.elementoTienda button {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  padding: 3% 4%;
+  width: 50%;
+  background-color: #0291A5;
+  border: 0px;
+  font-size: 1em;
+  border-radius: 10px;
+  color: white;
+}
+.elementoTienda .descripcionCorta {
+  width: 85%;
+  height: 60px;
+  background-color: #0291A5;
+  position: relative;
+  border-radius: 5px;
+  transform: translate(8%, -70%);
+  padding: 2%;
+}
+.elementoTienda .descripcionCorta p {
+  color: #F3F3F3;
+}
+
+svg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  z-index: -1;
+}
+svg * {
+  fill: #FFB775;
+}
+svg .restar {
+  fill: white;
+}
+
+footer {
+  width: 100%;
+  height: auto;
+  background-color: #0291A5;
+  padding: 1%;
+  display: flex;
+  justify-content: space-evenly;
+  font-family: "PoetsenOne";
+}
+footer li:first-of-type a {
+  font-size: 1.3em;
+}
+footer li:first-of-type {
+  margin-bottom: 5%;
+}
+footer a {
+  color: #F3F3F3;
+  font-size: 1.1em;
+}
+
+#redes img {
+  width: 50px;
+}
+
+#infoPag li {
+  list-style: none;
+}
+
+#map {
+  width: 180px;
 }/*# sourceMappingURL=styles.css.map */

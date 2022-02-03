@@ -4,3 +4,24 @@
     height: $alto;
     background-color: $color;
 }
+
+@mixin boton ($width, $color, $fontSize) {
+    padding: 3% 4%;
+    width: $width;
+    background-color: $color;
+    border: 0px;
+    font-size: $fontSize;
+    border-radius: 10px;
+    color: white;
+}
+
+
+@font-face {
+    font-family: "PoetsenOne";
+    src: url("../font/PoetsenOne-Regular.ttf");
+}
+
+@font-face {
+    font-family: "Resolve";
+    src: url("../font/Resolve-Light.otf");
+}
