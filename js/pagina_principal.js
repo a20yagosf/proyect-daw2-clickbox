@@ -15,14 +15,19 @@ function crearDetallesSvg() {
     //Calculo su Y mediante la altura del heigh del recuadro de suscr
     let ySusc = (recuadroSusc.y - (recuadroSusc.height / 2) + 1);
     let xFinSusc = (recuadroSusc.width / 0.8) / 3;
+    curvatura = xFinSusc;
+    let lineaPath = `M${xSusc}, ${ySusc} a${curvatura}, ${curvatura} 0 0, 1 ${xFinSusc}, 0 Z`;
+    svg.append(crearPath(lineaPath));
+    //Diferencia que le quitaremos para hacer el recuadro que restaremos más pequeño
     //A la vez que creamos los rectámngulos creamos también los que los "restarán" con la clase restar
     for(let i = 0; i < 3; i++){
         let curvatura = i % 2 != 0 ? xFinSusc - 200 : xFinSusc;
         let lineaPath = `M${xSusc}, ${ySusc} a${curvatura}, ${curvatura} 0 0, 1 ${xFinSusc}, 0 Z`;
         svg.append(crearPath(lineaPath));
         //Diferencia que le quitaremos para hacer el recuadro que restaremos más pequeño
-        let restaCurvatura = 130;
-        let curvaturaResta = `M${xSusc + restaCurvatura}, ${ySusc} a${curvatura - restaCurvatura}, ${curvatura - restaCurvatura} 0 0, 1 ${xFinSusc - restaCurvatura * 2}, 0 Z l50, 0 a${(xFinSusc - restaCurvatura / 2 + 250)}, ${(xFinSusc + restaCurvatura / 2 - 50)} 0 0, 0, -${xFinSusc + restaCurvatura}, -0 z`;
+        let restaCurvatura = 80;
+        let desplazamiento = 80;
+        let curvaturaResta = `M${xSusc + restaCurvatura}, ${ySusc} a${curvatura}, ${curvatura} 0 0, 1 ${xFinSusc - restaCurvatura * 2}, 0 l-${desplazamiento}, 0 a${curvatura}, ${curvatura} 0 0, 0, -${(xFinSusc - desplazamiento)/2}, -0 z`;
         svg.append(crearPath(curvaturaResta, "restar"));
         xSusc += xFinSusc;
     }
@@ -64,8 +69,6 @@ function crearPath(valorD, clase = null) {
     recorrido.setAttribute("d", valorD);
     if(clase != null ) {
         recorrido.setAttribute("class", clase);
-        recorrido.setAttribute("stroke", "red");
-        recorrido.setAttribute("stroke-width", "3");
     }
     
     return recorrido;
