@@ -1,6 +1,6 @@
 header {
-    font-family: "PoetsenOne";
-    font-size: 1.3em
+    font-size: 1.3em;
+    font-weight: 900;
 }
 
 
@@ -12,9 +12,9 @@ header {
 
 nav {
     @include contenedor(100%, auto, $colorSecundario);
-    padding: 0.5%;
+    padding: 0.5% 2%;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
 
     a {
@@ -31,5 +31,4 @@ nav {
     margin-top: 1%;
     margin-left: 2%;
     font-size: 0.8em;
-    font-family: "Resolve";
 }

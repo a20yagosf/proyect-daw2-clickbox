@@ -3,7 +3,6 @@ footer {
     padding: 1%;
     display: flex;
     justify-content: space-evenly;
-    font-family: "PoetsenOne";
 
     li:first-of-type a {
         font-size: 1.3em;
@@ -16,6 +15,7 @@ footer {
     a {
         color: $colorLetra;
         font-size: 1.1em;
+        font-weight: 900;
     }
 }
 
