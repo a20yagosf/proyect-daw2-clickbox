@@ -17,6 +17,7 @@ header {
   background-color: #0291A5;
   padding: 0.5%;
   text-align: center;
+  color: #F3F3F3;
 }
 
 nav {
@@ -157,7 +158,7 @@ main {
 }
 
 #tienda {
-  width: 80%;
+  width: 100%;
   height: auto;
   background-color: transparent;
   margin: auto;
@@ -262,6 +263,7 @@ footer {
   padding: 1%;
   display: flex;
   justify-content: space-evenly;
+  align-items: center;
 }
 footer li:first-of-type a {
   font-size: 1.3em;
@@ -283,6 +285,15 @@ footer a {
   list-style: none;
 }
 
+#localizacion a {
+  text-align: center;
+  width: 100%;
+  display: inline-block;
+  margin-bottom: 2%;
+}
+
 #map {
-  width: 180px;
+  width: 400px;
+  height: 150px;
+  background: url("../img/mapa.jpg");
 }/*# sourceMappingURL=styles.css.map */

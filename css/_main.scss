@@ -121,7 +121,7 @@ main {
 
 //Tienda
 #tienda {
-    @include contenedor(80%, auto, transparent);
+    @include contenedor(100%, auto, transparent);
     margin: auto;
     display: flex;
     justify-content: space-evenly;

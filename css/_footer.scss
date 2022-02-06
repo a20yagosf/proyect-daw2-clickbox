@@ -3,6 +3,7 @@ footer {
     padding: 1%;
     display: flex;
     justify-content: space-evenly;
+    align-items: center;
 
     li:first-of-type a {
         font-size: 1.3em;
@@ -32,6 +33,17 @@ footer {
     }
 }
 
+#localizacion {
+    a {
+        text-align: center;
+        width: 100%;
+        display: inline-block;
+        margin-bottom: 2%;
+    }
+}
+
 #map {
-    width: $sizeMap;
+    width: 400px;
+    height: 150px;
+    background: url("../img/mapa.jpg");
 }
