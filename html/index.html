@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
-    <link rel="stylesheet" href="../css/styles.css">
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+    <link rel="stylesheet" href="../css/styles.css">
     <script src="../js/pagina_principal.js"></script>
 </head>
 <body>
@@ -21,7 +21,12 @@
             <a href="#">Tienda</a>
             <a href="#">Registrarse/Loguearse</a>
         </nav>
-        <span id="localizacionPag"><a href="#">Página principal</a> < <a>partidas nº 255</a></span>
+        <div id="localizacionPag">
+            <ul>
+                <li><a href="#">Página principal</a> <</li>
+                <li><a href="#">Partida nº 255</a></li>
+            </ul>
+        </div>
     </header>
     <main>
         <div id="presentacion">
@@ -98,8 +103,9 @@
     </main>
     <footer>
         <ul id="infoPag">
-            <li><a href="">Nombre página</a></li>
+            <li><h4><a href="">Nombre página</a></h4></li>
             <li><a href="">Sobre nosotros</a></li>
+            <li><a href="">Suscripciones</a></li>
         </ul>
         <div id="redes">
             <img src="../img/Recuadro.png" alt="Logo instagram"/>
@@ -107,7 +113,8 @@
             <img src="../img/Recuadro.png" alt="Logo facebook"/>
         </div>
         <div id="localizacion">
-            <a href="">Localización</a>
+            <h4>Localización</h4>
+            <p>Paseo Cronista Xosé M. Álvarez Blázquez, 26, 36203 Vigo, Pontevedra</p>
             <div id="map"></div>
             <!-- API -->
         </div>

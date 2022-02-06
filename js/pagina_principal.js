@@ -112,5 +112,33 @@ function crearRect(valorProp, height) {
     return rectangulo;
 }
 
+/**
+ * Crea el mapa a partir de la API de Lefletjs
+ *
+ */
+function crearMapa() {
+    //Creamos el mapa, asignandole unas coordenadas [] y un zoom
+    let mapa = L.map("map").setView([42.23089017869441, -8.728312405255604], 16);
+    //Creamos lo que es la vista del mapa
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    //Máximo Zoom que permitimos, este es el máximo zoom que permite lefletjs
+    maxZoom: 18,
+    //Id del stilo
+    id: 'mapbox/streets-v11',
+    //Tamaño que tendrán cada una de las celdas, por defecto Mapbox devuelve celdas de 512x512 por eso le damos zoomOffeset -1 (las convierte en 256x256)
+    tileSize: 512,
+    zoomOffset: -1,
+    //Token que creamos en la cuenta de mapbox
+    accessToken: 'pk.eyJ1IjoiaXJlYSIsImEiOiJja3pidXhhMHkxdGp5MnJuOWd0OHJ2dGIwIn0.tbQ-y0uTguMhMomhbFL8lA'
+}).addTo(mapa);
+    //Creamos un marcador para el mapa
+    let marcador = L.marker([42.23089017869441, -8.728312405255604]).addTo(mapa);
+    //Creamos un pop up en el marcador para marcar que ese es nuestor local
+    marcador.bindPopup("Aquí estamos!").openPopup();
+}
 
-window.onload = crearDetallesSvg;
+
+window.onload = function () {
+    crearDetallesSvg();
+    crearMapa();
+};

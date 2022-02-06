@@ -1,10 +1,16 @@
-
+/// Resume las características de ancho, alto y color de un contenedor
+/// @param {float} $ancho Ancho del contenedor
+/// @param {float} $alto Alto del contenedor
+/// @param {string} $color Color del contenedor (Si no se quiere color poner transparent)
 @mixin contenedor ($ancho, $alto, $color) {
     width: $ancho;
     height: $alto;
     background-color: $color;
 }
-
+/// Características resumidas para los botones pudiendo variar ancho, color, tamaño de letra y padding
+/// @param {float} $width Ancho del boton
+/// @param {srting} $color Color del botón
+/// @param {float} $fontSize Tamaño de la letra
 @mixin boton ($width, $color, $fontSize) {
     padding: 3% 4%;
     width: $width;

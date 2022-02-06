@@ -32,4 +32,25 @@ nav {
     margin-top: 1%;
     margin-left: 2%;
     font-size: 0.8em;
+    //Ponemos 98% ya que tiene un 2% de margin-left
+    width: 98%;
+
+    ul {
+        width: 100%;
+    }
+    
+    li {
+        display: inline;
+        padding: 0 0.5%;
+    }
+    
+    a {
+        color: $colorPrincipal;
+        padding-right: 1%;
+        text-decoration: underline;
+    }
+
+    a:visited {
+        color: $colorPrincipalOscuro;
+    }
 }
