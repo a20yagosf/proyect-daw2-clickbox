@@ -134,7 +134,7 @@ function crearMapa() {
     //Creamos un marcador para el mapa
     let marcador = L.marker([42.23089017869441, -8.728312405255604]).addTo(mapa);
     //Creamos un pop up en el marcador para marcar que ese es nuestor local
-    marcador.bindPopup("Aquí estamos!").openPopup();
+    marcador.bindPopup("Aquí estamos!").openPopup(); 
 }
 
 
