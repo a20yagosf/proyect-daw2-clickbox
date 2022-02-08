@@ -1,0 +1,5 @@
+<?xml-model href="xmlCorreo.xsd" type="application/xml" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<configuracion>
+    <correo>clickboxVigo@gmail.com</correo>
+    <clave>cl1ck3db0x!</clave>
+</configuracion>
