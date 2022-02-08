@@ -19,6 +19,13 @@
     font-size: $fontSize;
     border-radius: 10px;
     color: white;
+
+    &:hover {
+
+    }
+}
+
+@function aclararColor($color) {
 }
 
 

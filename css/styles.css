@@ -24,10 +24,24 @@ nav {
   width: 100%;
   height: auto;
   background-color: #FFB775;
-  padding: 0.5% 2%;
+  padding: 0% 2%;
+}
+nav ul {
   display: flex;
   justify-content: space-around;
   align-items: center;
+}
+nav li {
+  padding: 0.5% 0%;
+  text-align: center;
+  list-style: none;
+  width: 100%;
+}
+nav li:hover {
+  background-color: #FF5600;
+}
+nav li:not(li:first-child) {
+  border-left: 2px solid #F3F3F3;
 }
 nav a {
   color: #F3F3F3;

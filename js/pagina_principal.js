@@ -78,22 +78,22 @@ function crearDetallesSvg() {
  */
 function crearDisenhoSuscripciones() {
     //Buscamo el recuadro de suscripciones y le cogemos los puntos de referencia
-    let recuadroSus = document.getElementById("suscripciones").getBoundingClientRect();
+    let recuadroSusc = document.getElementById("suscripciones").getBoundingClientRect();
     //Creamos los circulos
-    crearCirculo([10, recuadroSus.y - recuadroSus.height/1.5, 60]);
-    crearCirculo([recuadroSus.width/2.2, recuadroSus.y - recuadroSus.height/1.2, 30]);
-    crearCirculo([recuadroSus.width/1.13, recuadroSus.y - recuadroSus.height/1.2, 70]);
-    crearCirculo([recuadroSus.width/1.25, recuadroSus.y/4, 15]);
+    crearCirculo([10, recuadroSusc.y - recuadroSusc.height/1.5, 60]);
+    crearCirculo([recuadroSusc.width/2.2, recuadroSusc.y - recuadroSusc.height/1.2, 30]);
+    crearCirculo([recuadroSusc.width/1.13, recuadroSusc.y - recuadroSusc.height/1.2, 70]);
+    crearCirculo([recuadroSusc.width/1.25, recuadroSusc.y/4, 15]);
     //Creamos su diseño
-    crearDisenhoPath(recuadroSus.width/2, 0, recuadroSus.y - recuadroSus.height/3, 60, 30, 0.4, true);
-    crearDisenhoPath(recuadroSus.width/2.2, recuadroSus.width/2.3, recuadroSus.y - recuadroSus.height/2, 75, 75, 0.5, true);
-    crearDisenhoPath(recuadroSus.width/2, recuadroSus.width/1.2, recuadroSus.y, 50, 25, 1, true);
+    crearDisenhoPath(recuadroSusc.width/2, 0, recuadroSusc.y - recuadroSusc.height/3, 60, 30, 0.4, true);
+    crearDisenhoPath(recuadroSusc.width/2.2, recuadroSusc.width/2.3, recuadroSusc.y - recuadroSusc.height/2, 75, 75, 0.5, true);
+    crearDisenhoPath(recuadroSusc.width/2, recuadroSusc.width/1.2, recuadroSusc.y, 50, 25, 1, true);
     //Creamos la parte inferior
-    crearDisenhoPath(recuadroSus.width/2, -recuadroSus.width/5, recuadroSus.y + recuadroSus.height - 1, 120, 50, 0.8, false);
-    crearDisenhoPath(recuadroSus.width/2.3, recuadroSus.width/2.3 - recuadroSus.width/5, recuadroSus.y + recuadroSus.height/2 - 1, 75, 50, 0.7, false);
-    crearDisenhoPath(recuadroSus.width/2.7, recuadroSus.width/2.3 - recuadroSus.width/5 + recuadroSus.width/2.3, recuadroSus.y/2 + recuadroSus.height - 1, 90, 90, 0.5, false);
+    crearDisenhoPath(recuadroSusc.width/2, -recuadroSusc.width/5, recuadroSusc.y + recuadroSusc.height - 1, 120, 50, 0.8, false);
+    crearDisenhoPath(recuadroSusc.width/2.3, recuadroSusc.width/2.3 - recuadroSusc.width/5, recuadroSusc.y + recuadroSusc.height/2 - 1, 75, 50, 0.7, false);
+    crearDisenhoPath(recuadroSusc.width/2.7, recuadroSusc.width/2.3 - recuadroSusc.width/5 + recuadroSusc.width/2.3, recuadroSusc.y/2 + recuadroSusc.height - 1, 90, 90, 0.5, false);
     //Creamos el rectángulo
-    crearRect([0, recuadroSus.y/1.8], recuadroSus.height * 1.2, recuadroSus.width * 1.5);
+    crearRect([0, recuadroSusc.y/1.8], recuadroSusc.height);
     //Creamos los circulos
     /*crearCirculo([recuadroSus.width/2.35 - recuadroSus.width/5, recuadroSus.y + recuadroSus.height - 1, 80]);
     crearCirculo([recuadroSus.width/2.3 - recuadroSus.width/5 + recuadroSus.width/2.25, recuadroSus.y + recuadroSus.height/1.3, 80]);
@@ -185,7 +185,7 @@ function crearPath(atributos) {
  *
  * @return  {NodeElement}              Devuelve el nodo del DOM creado con el rectángulo
  */
- function crearRect(valorProp, height, width) {
+ function crearRect(valorProp, height) {
     //Busco el svg
    let svg = document.querySelector("svg");
    //Creo el elemento con NS ya que tengo que pasarle el namespace para que no entre en conflicto
@@ -199,8 +199,7 @@ function crearPath(atributos) {
        rectangulo.setAttribute(elemento, valorProp[propRect.indexOf(elemento)]);
    });
    //Le asigno el valor del height tanto como alto es el div suscripciones
-   rectangulo.style.height = height;
-   rectangulo.style.width = width;
+   rectangulo.style.height = height + "px";
    svg.append(rectangulo);
 }
 
