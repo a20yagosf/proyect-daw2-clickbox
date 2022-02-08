@@ -17,8 +17,6 @@ h1, h2, h3, h4, h5, h6 {
 
 //Main
 main {
-    padding: 0% 10%;
-    padding-bottom: 10%;
     font-family: "Resolve";
     position: relative;
 }
@@ -48,11 +46,12 @@ main {
 //Suscripciones
 #suscripciones {
     //visibility: hidden;
-    padding: 1%;
-    padding-top: 2.5%;
+    @include contenedor(100%, auto, $colorSecundario);
+    padding: 3% 2%;
     display: flex;
     justify-content: space-evenly;
     margin-bottom: 5%;
+    position: relative;
 
     //Cada uno de los div que contiene las suscripciones
     .suscripciones {
@@ -67,6 +66,15 @@ main {
             margin: 5% auto;
             @include boton(50%, $colorPrincipal, 1.1em);
         }
+    }
+
+    //Imagen que se muestra justo antes de suscripciones
+    &:before {
+        @include imagenPattern(url("../img/SuscDesignTop.svg"), -100%, 28%);
+    }
+
+    &:after {
+        @include imagenPattern(url("../img/SuscDesignBottom.svg"),100%, 0%);
     }
 }
 
@@ -121,11 +129,17 @@ main {
 
 //Tienda
 #tienda {
-    @include contenedor(100%, auto, transparent);
+    position: relative;
+    @include contenedor(100%, auto, $colorSecundario);
     margin: auto;
+    padding-bottom: 10%;
     display: flex;
     justify-content: space-evenly;
     flex-wrap: wrap;
+
+    &:before {
+        @include imagenPattern(url("../img/SuscDesignTop.svg"), -100%, 52%);
+    }
 
     h2 {
         flex-basis: 100%;

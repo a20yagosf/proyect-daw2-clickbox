@@ -228,8 +228,94 @@ function crearMapa() {
     marcador.bindPopup("Aquí estamos!").openPopup(); 
 }
 
+/**
+ * Crea la cabecera de la página mediante el DOM
+ *
+ */
+function crearCabecera() {
+    //Creamos el header
+    let cabecera = document.createElement("header");
+    //Creamos el div para la alert
+    let alerta = document.createElement("div");
+    //Creamos su id y texto
+    alerta.setAttribute("id", "alerta");
+    alerta.textContent = "Último artículo añadido a la BD";
+    let logo = crearImg({"src": "../img/Recuadro.png", "alt": "Logo de clickBox"});
+    //Creamos el nav
+    let navegador = crearNav(["index.html", "#", "#", "#", "login.html"],[logo, "Suscripciones", "Partidas", "Tienda", "Registrarse/Loguearse"]);
+    //Añadimos la alerta y el nav a la cabecera
+    cabecera.append(alerta, navegador);
+    //Añadimos la cabecera al inicio del body
+    let cuerpo = document.querySelector("body");
+    cuerpo.insertBefore(cabecera, cuerpo.firstChild);
+}
+
+function crearNav(redireccion, elementosNav) {
+    console.log(elementosNav);
+    //Creamos el nav
+    let navegador = document.createElement("nav");
+    //Creamos el ul
+    let lista = document.createElement("ul");
+    //Convertimos el objeto a un array de arrays con clave y valor, para cada uno de los elementos del Nav creamos un enlace y un li
+    elementosNav.forEach(elemento => {
+        //Creamos el li
+        let elementoLista = document.createElement("li");
+        //Creamos el enlace
+        let enlace = document.createElement("a");
+        //Añadimos el elemento al enlace
+        enlace.append(elemento);
+        //Le añadimos el href
+        enlace.setAttribute("href", redireccion[elementosNav.indexOf(elemento)]);
+        //Añadimos el a al elemento listo y este a la lista
+        elementoLista.append(enlace);
+        lista.append(elementoLista);
+    });
+    //Añadimos la lista al navegador
+    navegador.append(lista);
+    return navegador;
+}
+
+/**
+ * Crea un elemento imagen de tipo DOM con los atributos que se le pasan por cabecera
+ *
+ * @param   {Object}  atributos  Object con clave valor con el nombre del atributo: valor del atributo
+ *
+ * @return  {NodeElement}            Elemento img del DOM
+ */
+function crearImg(atributos){
+    //Creamos la imagen del logo
+    let imagen = document.createElement("img");
+    //Le añadimos sus atributos a la imagen
+    Object.entries(atributos).forEach(atributo => {
+        imagen.setAttribute(atributo[0], atributo[1]);
+    });
+    return imagen;
+}
+
+/**
+ * <header>
+        <div id="alerta">Último artículo añadido a la BD</div>
+        <nav>
+            <ul>
+                <li><a href="#"><img src="../img/Recuadro.png" alt="Logo página"></a></li>
+                <li><a href="#">Suscripciones</a></li>
+                <li><a href="#">Partidas</a></li>
+                <li><a href="#">Tienda</a></li>
+                <li><a href="#">Registrarse/Loguearse</a></li>
+            </ul>
+        </nav>
+        <!-- <div id="localizacionPag">
+            <ul>
+                <li><a href="#">Página principal</a> <</li>
+                <li><a href="#">Partida nº 255</a></li>
+            </ul>
+        </div>-->
+    </header>
+ */
+
 
 window.onload = function () {
-    crearDetallesSvg();
+    //crearDetallesSvg();
+    crearCabecera();
     crearMapa();
 };

@@ -27,27 +27,32 @@ nav {
   padding: 0% 2%;
 }
 nav ul {
+  list-style: none;
   display: flex;
   justify-content: space-around;
-  align-items: center;
+  align-items: stretch;
 }
 nav li {
-  padding: 0.5% 0%;
+  position: relative;
   text-align: center;
-  list-style: none;
   width: 100%;
 }
 nav li:hover {
-  background-color: #FF5600;
+  background-color: #ff7833;
 }
 nav li:not(li:first-child) {
   border-left: 2px solid #F3F3F3;
 }
 nav a {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-block;
   color: #F3F3F3;
 }
 nav img {
   width: 50px;
+  margin: auto;
 }
 
 #localizacionPag {
@@ -89,8 +94,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 main {
-  padding: 0% 10%;
-  padding-bottom: 10%;
   font-family: "Resolve";
   position: relative;
 }
@@ -116,11 +119,14 @@ main {
 }
 
 #suscripciones {
-  padding: 1%;
-  padding-top: 2.5%;
+  width: 100%;
+  height: auto;
+  background-color: #FFB775;
+  padding: 3% 2%;
   display: flex;
   justify-content: space-evenly;
   margin-bottom: 5%;
+  position: relative;
 }
 #suscripciones .suscripciones img {
   display: block;
@@ -136,6 +142,35 @@ main {
   font-size: 1.1em;
   border-radius: 10px;
   color: white;
+}
+#suscripciones .suscripciones button:hover {
+  background-color: #03bdd7;
+}
+#suscripciones:before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  background-image: url("../img/SuscDesignTop.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: -100%;
+  transform: translateY(28%);
+  z-index: -1;
+}
+#suscripciones:after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  background-image: url("../img/SuscDesignBottom.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 100%;
+  transform: translateY(0%);
+  z-index: -1;
 }
 
 #partidas {
@@ -175,6 +210,9 @@ main {
   border-radius: 10px;
   color: white;
 }
+#partidas button:hover {
+  background-color: #ff7833;
+}
 #partidas img {
   width: 300px;
 }
@@ -188,13 +226,28 @@ main {
 }
 
 #tienda {
+  position: relative;
   width: 100%;
   height: auto;
-  background-color: transparent;
+  background-color: #FFB775;
   margin: auto;
+  padding-bottom: 10%;
   display: flex;
   justify-content: space-evenly;
   flex-wrap: wrap;
+}
+#tienda:before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  background-image: url("../img/SuscDesignTop.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: -100%;
+  transform: translateY(52%);
+  z-index: -1;
 }
 #tienda h2 {
   flex-basis: 100%;
@@ -254,6 +307,9 @@ main {
   font-size: 1em;
   border-radius: 10px;
   color: white;
+}
+.elementoTienda button:hover {
+  background-color: #03bdd7;
 }
 .elementoTienda .descripcionCorta {
   width: 85%;

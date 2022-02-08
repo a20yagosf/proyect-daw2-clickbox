@@ -1,46 +1,60 @@
+//Header, le damos un tamaño de letra general y un peso
 header {
     font-size: 1.3em;
     font-weight: 900;
 }
 
-
+//Div que se mostrará encima mostrando la última novedad
 #alerta {
+    //Incluimos el mixed contenedor para darle un ancho, alto y color
     @include contenedor(100%, auto, $colorPrincipal);
     padding: 0.5%;
     text-align: center;
     color: $colorLetra
 }
 
+//Nav donde se encuentran los botones para movernos por las páginas
 nav {
+    //Incluimos el mixed contenedor para darle ancho, alto y color
     @include contenedor(100%, auto, $colorSecundario);
     padding: 0% 2%;
+
+    //Ul que contiene cada uno de los elementos del nav
     ul {
+        list-style: none;
         display: flex;
         justify-content: space-around;
-        align-items: center;
+        align-items: stretch;
     }
 
+    //Li de cada uno de los elementos
     li {
-        padding: 0.5% 0%;
+        position: relative;
         text-align: center;
-        list-style: none;
         width: 100%;
 
         &:hover {
-            background-color: $colorDestacado;
+            background-color: aclararColor($colorDestacado);
+        }
+
+        //Todos menos el primer li
+        &:not(li:first-child){
+            border-left: $borderHeader solid $colorLetra;
         }
     }
 
-    li:not(li:first-child){
-        border-left: $borderHeader solid $colorLetra;
-    }
-
     a {
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+        display: inline-block;
         color: $colorLetra;
     }
 
+    //Imagen del logo
     img {
         width: $sizeLogo;
+        margin: auto;
     }
 }
 
