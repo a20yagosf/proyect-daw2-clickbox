@@ -10,6 +10,9 @@ header {
   font-size: 1.3em;
   font-weight: 900;
 }
+header nav {
+  cursor: pointer;
+}
 
 #alerta {
   width: 100%;
@@ -82,6 +85,7 @@ nav img {
   margin: 0px;
   padding: 0px;
   box-sizing: border-box;
+  font-family: "Resolve";
 }
 
 a {
@@ -130,7 +134,7 @@ main {
 }
 #suscripciones .suscripciones img {
   display: block;
-  width: 200px;
+  width: 300px;
 }
 #suscripciones .suscripciones button {
   display: block;
@@ -156,7 +160,7 @@ main {
   background-repeat: no-repeat;
   position: absolute;
   top: -100%;
-  transform: translateY(28%);
+  transform: translateY(50%);
   z-index: -1;
 }
 #suscripciones:after {
@@ -179,7 +183,8 @@ main {
   margin: auto;
   -moz-column-gap: 5%;
        column-gap: 5%;
-  margin-bottom: 5%;
+  margin-bottom: 15%;
+  margin-top: 15%;
 }
 #partidas div:first-of-type {
   position: relative;
@@ -392,7 +397,10 @@ footer a {
   display: inline-block;
   margin-bottom: 2%;
 }
-#localizacion p {
+#localizacion a {
+  width: 100%;
+  text-align: center;
+  display: inline-block;
   margin-bottom: 2%;
 }
 

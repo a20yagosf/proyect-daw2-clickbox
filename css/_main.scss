@@ -3,6 +3,7 @@
     margin: 0px;
     padding: 0px;
     box-sizing: border-box;
+    font-family: "Resolve";
 }
 
 a {
@@ -70,7 +71,7 @@ main {
 
     //Imagen que se muestra justo antes de suscripciones
     &:before {
-        @include imagenPattern(url("../img/SuscDesignTop.svg"), -100%, 28%);
+        @include imagenPattern(url("../img/SuscDesignTop.svg"), -100%, 50%);
     }
 
     &:after {
@@ -84,7 +85,8 @@ main {
     display: flex;
     margin: auto;
     column-gap: 5%;
-    margin-bottom: 5%;
+    margin-bottom: 15%;
+    margin-top: 15%;
 
     div:first-of-type  {
         position: relative;
