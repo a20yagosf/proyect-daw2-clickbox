@@ -136,8 +136,7 @@ main {
 }
 #presentacion img {
   margin-left: 5%;
-  width: 25%;
-  flex-grow: 1;
+  width: 45%;
 }
 @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
   #presentacion {
@@ -149,6 +148,7 @@ main {
     order: 2;
   }
   #presentacion img {
+    width: 50%;
     margin-bottom: 5%;
   }
   #presentacion h2 {
@@ -160,6 +160,9 @@ main {
   #presentacion {
     margin-top: 3%;
     margin-bottom: 10%;
+  }
+  #presentacion img {
+    width: 200px;
   }
 }
 
