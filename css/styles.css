@@ -10,6 +10,12 @@ header {
   font-size: 1.3em;
   font-weight: 900;
 }
+@media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667) {
+  header {
+    font-size: 0.9em;
+    word-break: break-all;
+  }
+}
 header nav {
   cursor: pointer;
 }
@@ -40,7 +46,7 @@ nav li {
   text-align: center;
   width: 100%;
 }
-nav li:hover {
+nav li:not(li:first-of-type):hover {
   background-color: #ff7833;
 }
 nav li:not(li:first-child) {
@@ -92,6 +98,12 @@ a {
   text-decoration: none;
 }
 
+p {
+  font-size: 1.1em;
+  line-height: 1.3em;
+  word-spacing: 0.5em;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: "PoetsenOne";
   font-weight: 100;
@@ -111,15 +123,44 @@ main {
   padding: 2%;
   display: flex;
   justify-content: space-evenly;
+  align-items: center;
 }
 #presentacion div {
-  flex-grow: 2;
+  flex-grow: 1;
 }
 #presentacion h2 {
   margin-bottom: 2%;
 }
+#presentacion p {
+  text-align: justify;
+}
 #presentacion img {
-  width: 200px;
+  margin-left: 5%;
+  width: 25%;
+  flex-grow: 1;
+}
+@media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+  #presentacion {
+    flex-wrap: wrap;
+    width: 90%;
+    padding-bottom: 10%;
+  }
+  #presentacion div {
+    order: 2;
+  }
+  #presentacion img {
+    margin-bottom: 5%;
+  }
+  #presentacion h2 {
+    text-align: center;
+    padding-bottom: 3%;
+  }
+}
+@media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px) {
+  #presentacion {
+    margin-top: 3%;
+    margin-bottom: 10%;
+  }
 }
 
 #suscripciones {
@@ -132,9 +173,16 @@ main {
   margin-bottom: 5%;
   position: relative;
 }
+@media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+  #suscripciones {
+    flex-wrap: wrap;
+    padding: 8% 1%;
+  }
+}
 #suscripciones .suscripciones img {
   display: block;
-  width: 300px;
+  margin: auto;
+  width: 60%;
 }
 #suscripciones .suscripciones button {
   display: block;
@@ -146,6 +194,7 @@ main {
   font-size: 1.1em;
   border-radius: 10px;
   color: white;
+  cursor: pointer;
 }
 #suscripciones .suscripciones button:hover {
   background-color: #03bdd7;
@@ -157,10 +206,11 @@ main {
   display: inline-block;
   background-image: url("../img/SuscDesignTop.svg");
   background-size: contain;
+  background-position-y: bottom;
   background-repeat: no-repeat;
   position: absolute;
-  top: -100%;
-  transform: translateY(50%);
+  top: -99%;
+  transform: translateY(0%);
   z-index: -1;
 }
 #suscripciones:after {
@@ -170,9 +220,10 @@ main {
   display: inline-block;
   background-image: url("../img/SuscDesignBottom.svg");
   background-size: contain;
+  background-position-y: top;
   background-repeat: no-repeat;
   position: absolute;
-  top: 100%;
+  top: 99%;
   transform: translateY(0%);
   z-index: -1;
 }
@@ -185,8 +236,10 @@ main {
        column-gap: 5%;
   margin-bottom: 15%;
   margin-top: 15%;
+  align-items: center;
 }
 #partidas div:first-of-type {
+  flex-basis: 30%;
   position: relative;
 }
 #partidas div:first-of-type::after {
@@ -214,20 +267,49 @@ main {
   font-size: 1em;
   border-radius: 10px;
   color: white;
+  cursor: pointer;
 }
 #partidas button:hover {
   background-color: #ff7833;
 }
 #partidas img {
-  width: 300px;
+  width: 100%;
 }
 #partidas div:nth-of-type(2) {
+  flex-basis: 60%;
   margin-top: 2%;
   flex-grow: 2;
   text-align: center;
+  background-color: rgba(255, 255, 255, 0.356);
+  border-radius: 10px;
 }
 #partidas div:nth-of-type(2) h2 {
   margin-bottom: 3%;
+}
+@media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+  #partidas {
+    flex-wrap: wrap;
+    padding-bottom: 10%;
+  }
+  #partidas div:first-of-type {
+    flex-basis: 100%;
+  }
+  #partidas div:nth-of-type(2) {
+    padding-top: 5%;
+  }
+  #partidas h2 {
+    padding-bottom: 5%;
+  }
+}
+@media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px) {
+  #partidas div:first-of-type {
+    flex-basis: 70%;
+  }
+}
+@media screen and (max-width: 300px) {
+  #partidas button {
+    width: 60%;
+  }
 }
 
 #tienda {
@@ -246,12 +328,13 @@ main {
   width: 100%;
   height: 100%;
   display: inline-block;
-  background-image: url("../img/SuscDesignTop.svg");
+  background-image: url("../img/tiendaDesignTop.svg");
   background-size: contain;
+  background-position-y: bottom;
   background-repeat: no-repeat;
   position: absolute;
-  top: -100%;
-  transform: translateY(52%);
+  top: -99.5%;
+  transform: translateY(0%);
   z-index: -1;
 }
 #tienda h2 {
@@ -259,16 +342,53 @@ main {
   text-align: center;
   margin-bottom: 3%;
 }
+@media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+  #tienda .elementoTienda {
+    width: 70%;
+    padding: 2%;
+    margin-bottom: 20%;
+    margin-top: 5%;
+  }
+  #tienda .elementoTienda .id {
+    left: 12%;
+  }
+  #tienda .elementoTienda .id::after {
+    top: 45%;
+    border-top: 1.1em solid #0291A5;
+    border-right: 1.1em solid transparent;
+    border-bottom: 1.1em solid transparent;
+    border-left: 1.1em solid transparent;
+  }
+}
+@media screen and (max-width: 300px) {
+  #tienda .elementoTienda {
+    width: 100%;
+  }
+}
+@media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px) {
+  #tienda .elementoTienda {
+    width: 40%;
+    margin: 2%;
+    margin-top: 7%;
+  }
+  #tienda .elementoTienda .id::after {
+    top: 52%;
+    border-top: 1.35em solid #0291A5;
+    border-right: 1.35em solid transparent;
+    border-bottom: 1.35em solid transparent;
+    border-left: 1.35em solid transparent;
+  }
+}
 
 .elementoTienda {
-  width: 300px;
-  height: 300px;
+  width: 20%;
+  height: 20%;
   background-color: #F3F3F3;
   position: relative;
   border-radius: 10px;
 }
 .elementoTienda .id {
-  width: 15%;
+  width: 17%;
   height: 20%;
   background-color: #0291A5;
   text-align: center;
@@ -288,11 +408,11 @@ main {
   width: 0;
   height: 0;
   position: relative;
-  top: 45%;
-  border-top: 1.11em solid #0291A5;
-  border-right: 1.11em solid transparent;
-  border-bottom: 1.11em solid transparent;
-  border-left: 1.11em solid transparent;
+  top: 58%;
+  border-top: 1.5em solid #0291A5;
+  border-right: 1.5em solid transparent;
+  border-bottom: 1.5em solid transparent;
+  border-left: 1.5em solid transparent;
 }
 .elementoTienda img {
   width: 85%;
@@ -312,6 +432,7 @@ main {
   font-size: 1em;
   border-radius: 10px;
   color: white;
+  cursor: pointer;
 }
 .elementoTienda button:hover {
   background-color: #03bdd7;
@@ -322,7 +443,7 @@ main {
   background-color: #0291A5;
   position: relative;
   border-radius: 5px;
-  transform: translate(8%, -70%);
+  transform: translate(8%, -60%);
   padding: 2%;
 }
 .elementoTienda .descripcionCorta p {
@@ -347,11 +468,172 @@ svg .restar {
   fill: white;
 }
 
+#suscribirse {
+  width: 100%;
+  height: auto;
+  background-color: transparent;
+  padding: 2%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+@media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+  #suscribirse {
+    flex-wrap: wrap;
+  }
+  #suscribirse #tiposSusc {
+    flex-basis: 100%;
+  }
+  #suscribirse #tiposSusc .susc {
+    width: 95%;
+  }
+  #suscribirse #recibo {
+    flex-basis: 100%;
+    padding-bottom: 15%;
+    margin-top: 5%;
+  }
+  #suscribirse #recibo button {
+    width: 50%;
+  }
+}
+@media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px) {
+  #suscribirse {
+    flex-wrap: wrap;
+  }
+  #suscribirse #tiposSusc {
+    flex-basis: 100%;
+  }
+  #suscribirse #tiposSusc .susc {
+    width: 95%;
+  }
+  #suscribirse #recibo {
+    flex-basis: 100%;
+    padding-bottom: 15%;
+    margin-top: 5%;
+  }
+  #suscribirse #recibo button {
+    width: 50%;
+  }
+}
+
+#tiposSusc {
+  flex-basis: 40%;
+}
+#tiposSusc .susc {
+  width: 80%;
+  height: auto;
+  background-color: #0291A5;
+  text-align: center;
+  padding: 5% 2%;
+  margin: 20% 0%;
+  font-size: 2em;
+  position: relative;
+  border-radius: 10px;
+  color: whitesmoke;
+  cursor: pointer;
+}
+#tiposSusc .susc:hover {
+  background-color: #FFB775;
+  border-color: #FFB775;
+}
+#tiposSusc .susc span {
+  margin: 0% 2%;
+  position: relative;
+  top: 35%;
+}
+#tiposSusc .susc:before {
+  content: "";
+  content: "";
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  background-image: url("../img/TipoSuscDesignTop.svg");
+  background-size: contain;
+  background-position-y: bottom;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: -98%;
+  transform: translateY(0%);
+  z-index: -1;
+  left: 0%;
+}
+#tiposSusc .susc:after {
+  content: "";
+  content: "";
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  background-image: url("../img/TipoSuscDesignBottom.svg");
+  background-size: contain;
+  background-position-y: top;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 100%;
+  transform: translateY(0%);
+  z-index: -1;
+  left: 0%;
+}
+
+#recibo {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  padding: 2%;
+  flex-basis: 60%;
+  border: 0.2em solid #0291A5;
+  border-radius: 10px;
+  position: relative;
+  padding-bottom: 5%;
+}
+#recibo h2 {
+  flex-basis: 100%;
+  background-color: #FFB775;
+  text-align: center;
+  padding: 5%;
+  font-size: 5em;
+  border-radius: 10px;
+  margin-bottom: 3%;
+  color: #0291A5;
+  word-spacing: 0.5em;
+  text-transform: uppercase;
+}
+#recibo p {
+  position: relative;
+  font-size: 1.5em;
+  margin: 3%;
+}
+#recibo p:last-of-type {
+  padding-top: 2%;
+  border-top: 0.2em dashed #0291A5;
+}
+#recibo span {
+  position: absolute;
+  right: 0%;
+}
+#recibo button {
+  padding: 3% 4%;
+  width: 20%;
+  background-color: #0291A5;
+  border: 0px;
+  font-size: 1.5em;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  padding: 2%;
+  margin: auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+#recibo button:hover {
+  background-color: #03bdd7;
+}
+
 footer {
   width: 100%;
   height: auto;
   background-color: #0291A5;
-  padding: 1%;
+  padding: 1% 5%;
   display: flex;
   justify-content: center;
   -moz-column-gap: 2%;
@@ -367,6 +649,46 @@ footer li:first-of-type {
 footer a {
   color: #F3F3F3;
   font-size: 1.1em;
+}
+@media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+  footer {
+    flex-wrap: wrap;
+  }
+  footer #infoPag {
+    padding: 2%;
+    margin: 3% 0%;
+    flex-basis: 100%;
+    text-align: center;
+  }
+  footer #redes {
+    flex-basis: 100%;
+    margin-top: 3%;
+    margin-bottom: 6%;
+  }
+  footer #localizacion {
+    margin: 3% 0%;
+  }
+  footer #localizacion h4, footer #localizacion a {
+    margin-bottom: 3%;
+  }
+}
+@media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px) {
+  footer {
+    flex-wrap: wrap;
+    align-items: center;
+    padding-top: 3%;
+  }
+  footer #infoPag {
+    flex-basis: 50%;
+    order: 2;
+  }
+  footer #redes {
+    order: 2;
+  }
+  footer #localizacion {
+    flex-basis: 100%;
+    margin: 4% 0%;
+  }
 }
 
 #redes {
@@ -384,8 +706,12 @@ footer a {
 #infoPag {
   flex-basis: 30%;
 }
+#infoPag li:first-of-type {
+  margin-bottom: 3%;
+}
 #infoPag li {
   list-style: none;
+  margin: 2%;
 }
 
 #localizacion {

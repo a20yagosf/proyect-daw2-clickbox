@@ -10,6 +10,13 @@ a {
     text-decoration: none;
 }
 
+//Hacemos los textos un poco más grandes y con algo más de espacio entre lineas y palabras para facilitar la lecturas
+p {
+    font-size: 1.1em;
+    line-height: 1.3em;
+    word-spacing: 0.5em;
+}
+
 h1, h2, h3, h4, h5, h6 {
     //Esta fuente debe estar con font-weigth 100 para permitir una buena lectura
     font-family: "PoetsenOne";
@@ -30,17 +37,62 @@ main {
     padding: 2%;
     display: flex;
     justify-content: space-evenly;
+    align-items: center;
 
+    //Contenedor con el texto
     div {
-        flex-grow: 2;
+        flex-grow: 1;
     }
 
     h2 {
         margin-bottom: 2%;
     }
 
+    p {
+        text-align: justify;
+    }
+
+    //Logo
     img {
+        margin-left: 5%;
         width: $sizeLogoPresentacion;
+        flex-grow: 1;
+    }
+
+    //Adaptación para móviles mediante aspect ratio
+    @media screen and (max-aspect-ratio:  195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+        //Div contenedor #presentacion
+        & {
+            flex-wrap: wrap;
+            width: 90%;
+            padding-bottom: 10%;
+        }
+
+        //Div con el texto, le ponemos mayor orden para que vaya después de la imagen
+        div {
+            order: 2;
+        }
+
+        //Imagen del texoto
+        img {
+            margin-bottom: 5%;
+        }
+
+        //Titulo
+        h2 {
+            text-align: center;
+            padding-bottom: 3%;
+        }
+
+    }
+
+    //Adaptación para tablets mediante aspect ratio
+    @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px) {
+        //Contenedor #presentacion
+        & {
+            margin-top: 3%;
+            margin-bottom: 10%;
+        }
     }
 }
 
@@ -54,10 +106,20 @@ main {
     margin-bottom: 5%;
     position: relative;
 
+    //Adaptación a movil
+    @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+        //Contenedor #suscripciones
+        & {
+            flex-wrap: wrap;
+            padding: 8% 1%;
+        }
+    }
+
     //Cada uno de los div que contiene las suscripciones
     .suscripciones {
         img {
             display: block;
+            margin: auto;
             width: $sizeSuscriptImg;
         }
 
@@ -71,11 +133,11 @@ main {
 
     //Imagen que se muestra justo antes de suscripciones
     &:before {
-        @include imagenPattern(url("../img/SuscDesignTop.svg"), -100%, 50%);
+        @include imagenPattern(url("../img/SuscDesignTop.svg"), -99%, 0%, bottom);
     }
 
     &:after {
-        @include imagenPattern(url("../img/SuscDesignBottom.svg"),100%, 0%);
+        @include imagenPattern(url("../img/SuscDesignBottom.svg"),99%, 0%, top);
     }
 }
 
@@ -87,10 +149,14 @@ main {
     column-gap: 5%;
     margin-bottom: 15%;
     margin-top: 15%;
+    align-items: center;
 
+    //Div con el icono de las partidas
     div:first-of-type  {
+        flex-basis: 30%;
         position: relative;
 
+        //Posicionamiento de un fondo para que vaya el botón encima
         &::after {
             content: "";
             display: inline-block;
@@ -118,13 +184,53 @@ main {
         width: $sizePartidaImg;
     }
 
+    //Div con el texto explicativo
     div:nth-of-type(2) {
+        flex-basis: 60%;
         margin-top: 2%;
         flex-grow: 2;
         text-align: center;
+        background-color: rgba(255, 255, 255, 0.356);
+        border-radius: 10px;
 
         h2 {
             margin-bottom: 3%;
+        }
+    }
+
+    //Adaptación a movil
+    @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+        //Contenedor #partidas
+        & {
+            flex-wrap: wrap;
+            padding-bottom: 10%;
+        }
+
+        div:first-of-type {
+            flex-basis: 100%;
+        }
+
+        div:nth-of-type(2){
+            padding-top: 5%;
+        }
+
+        h2 {
+            padding-bottom: 5%;
+        }
+    }
+
+    //Adaptación para tablets mediante aspect ratio
+    @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px)  {
+        //Contenedor logo partidas
+        div:first-of-type {
+            flex-basis: 70%;;
+        }
+    }
+
+    //Adaptación para móvil plegable
+    @media screen and (max-width: 300px) {
+        button {
+            width: 60%;
         }
     }
 }
@@ -140,13 +246,63 @@ main {
     flex-wrap: wrap;
 
     &:before {
-        @include imagenPattern(url("../img/SuscDesignTop.svg"), -100%, 52%);
+        @include imagenPattern(url("../img/tiendaDesignTop.svg"), -99.5%, 0%, bottom);
     }
 
     h2 {
         flex-basis: 100%;
         text-align: center;
         margin-bottom: 3%;
+    }
+
+    //Adaptación a movil
+    @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+        //Contenedor tienda
+        .elementoTienda {
+            width: 70%;
+            padding: 2%;
+            margin-bottom: 20%;
+            margin-top: 5%;
+
+            .id {
+                left: 12%;
+
+                &::after {
+                    top: 45%;
+                    //Le cambiamos el tamaño del borde para reducirlo
+                    border-top: 1.1em solid $colorPrincipal;
+                    border-right: 1.1em solid transparent;
+                    border-bottom: 1.1em solid transparent;
+                    border-left: 1.1em solid transparent;
+                }
+            }
+
+        }
+    }
+
+    //Adaptación para móvil plegable
+    @media screen and (max-width: 300px) {
+        .elementoTienda {
+            width: 100%;
+        }
+    }
+
+    //Adaptación para tablets mediante aspect ratio
+    @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px) {
+        //Contenedor tienda
+        .elementoTienda {
+            width: 40%;
+            margin: 2%;
+            margin-top: 7%;
+
+            .id::after {
+                top: 52%;
+                border-top: 1.35em solid #0291A5;
+                border-right: 1.35em solid transparent;
+                border-bottom: 1.35em solid transparent;
+                border-left: 1.35em solid transparent;
+            }
+        }
     }
 }
 
@@ -158,7 +314,7 @@ main {
 
     //Div que muestra la pequeña banderita con el ID
     .id {
-        @include contenedor (15%, 20%, $colorPrincipal);
+        @include contenedor (17%, 20%, $colorPrincipal);
         text-align: center;
         padding-top: 6%;
         font-size: 1.3em;
@@ -179,12 +335,12 @@ main {
         width: 0;
         height: 0;
         position: relative;
-        top: 45%;
+        top: 58%;
         //Creo Un cubo que sólo tiene 1 borde visible y el resto transparente
-        border-top: 1.11em solid $colorPrincipal;
-        border-right: 1.11em solid transparent;
-        border-bottom: 1.11em solid transparent;
-        border-left: 1.11em solid transparent;
+        border-top: 1.5em solid $colorPrincipal;
+        border-right: 1.5em solid transparent;
+        border-bottom: 1.5em solid transparent;
+        border-left: 1.5em solid transparent;
     }
 
     img {
@@ -206,7 +362,7 @@ main {
         @include contenedor(85%, $altDescriptCorta, $colorPrincipal);
         position: relative;
         border-radius: 5px;
-        transform: translate(8%, -70%);
+        transform: translate(8%, -60%);
         padding: 2%;
 
         p {
@@ -235,5 +391,156 @@ svg {
 
     .restar {
         fill: white;
+    }
+}
+
+//Página suscripciones
+#suscribirse {
+    @include contenedor(100%, auto, transparent);
+    padding: 2%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    //Adaptación para móviles mediante aspect ratio
+    @media screen and (max-aspect-ratio:  195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+        //Div contenedor #suscribirse
+        & {
+            flex-wrap: wrap;
+        }
+
+        #tiposSusc {
+            flex-basis: 100%;
+
+            .susc {
+                width: 95%;
+            }
+        }
+
+        #recibo {
+            flex-basis: 100%;
+            padding-bottom: 15%;
+            margin-top: 5%;
+
+            button {
+                width: 50%;
+            }
+        }
+        
+    }
+    //Adaptación para tablets mediante aspect ratio
+    @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px) {
+        //Div contenedor #suscribirse
+        & {
+            flex-wrap: wrap;
+        }
+
+        #tiposSusc {
+            flex-basis: 100%;
+
+            .susc {
+                width: 95%;
+            }
+        }
+
+        #recibo {
+            flex-basis: 100%;
+            padding-bottom: 15%;
+            margin-top: 5%;
+
+            button {
+                width: 50%;
+            }
+        }
+    }
+}
+
+//Tipo de suscripciones
+#tiposSusc {
+    flex-basis: 40%;
+
+    .susc {
+        @include contenedor($sizeTipoSusc, auto, $colorPrincipal);
+        text-align: center;
+        padding: 5% 2%;
+        margin: 20% 0%;
+        font-size: 2em;
+        position: relative;
+        border-radius: 10px;
+        color: whitesmoke;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $colorSecundario;
+            border-color: $colorSecundario;
+        }
+
+        span {
+            margin: 0% 2%;
+            position: relative;
+            top: 35%;
+        }
+
+        &:before {
+            content: "";
+            @include imagenPattern(url("../img/TipoSuscDesignTop.svg"), -98%, 0%, bottom);
+            left: 0%;
+        }
+
+        &:after {
+            content: "";
+            @include imagenPattern(url("../img/TipoSuscDesignBottom.svg"), 100%, 0%, top);
+            left: 0%;
+        }
+    }
+}
+
+//Recibo con todos los datos
+#recibo {
+    @include contenedor(100%, 100%, transparent);
+    padding: 2%;
+    flex-basis: 60%;
+    border: 0.2em solid $colorPrincipal;
+    border-radius: 10px;
+    position: relative;
+    padding-bottom: 5%;
+
+    h2 {
+        flex-basis: 100%;
+        background-color: $colorSecundario;
+        text-align: center;
+        padding: 5%;
+        font-size: 5em;
+        border-radius: 10px;
+        margin-bottom: 3%;
+        color: $colorPrincipal;
+        //Separamos un poco las letras
+        word-spacing: 0.5em;
+        text-transform: uppercase;
+    }
+
+    p {
+        position: relative;
+        font-size: 1.5em;
+        margin: 3%;
+    }
+
+    p:last-of-type {
+        padding-top: 2%;
+        border-top: 0.2em dashed $colorPrincipal;
+    }
+
+    span {
+        position: absolute;
+        right: 0%;
+    }
+
+    button {
+        @include boton(20%, $colorPrincipal, 1.5em);
+        padding: 2%;
+        margin: auto;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
     }
 }

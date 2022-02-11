@@ -242,7 +242,7 @@ function crearCabecera() {
     alerta.textContent = "Último artículo añadido a la BD";
     let logo = crearImg({"src": "../img/Recuadro.png", "alt": "Logo de clickBox"});
     //Creamos el nav
-    let navegador = crearNav(["index.html", "#", "#", "#", "login.html"],[logo, "Suscripciones", "Partidas", "Tienda", "Registrarse/Loguearse"]);
+    let navegador = crearNav(["index.html", "suscripciones.html", "#", "#", "login.html"],[logo, "Suscripciones", "Partidas", "Tienda", "Registrarse/Loguearse"]);
     //Añadimos la alerta y el nav a la cabecera
     cabecera.append(alerta, navegador);
     //Añadimos la cabecera al inicio del body
@@ -250,6 +250,14 @@ function crearCabecera() {
     cuerpo.insertBefore(cabecera, cuerpo.firstChild);
 }
 
+/**
+ * Crea el navegador con javascript
+ *
+ * @param   {array}  redireccion   A donde llevarán los enlaces
+ * @param   {array}  elementosNav  Cada uno de los nombres de los enlaces que pondremos
+ *
+ * @return  {DOMElement}                Navegador hecho con javascript
+ */
 function crearNav(redireccion, elementosNav) {
     console.log(elementosNav);
     //Creamos el nav

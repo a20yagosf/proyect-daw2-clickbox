@@ -3,6 +3,13 @@ header {
     font-size: 1.3em;
     font-weight: 900;
 
+    @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667) {
+        & {
+            font-size: 0.9em;
+            word-break: break-all;
+        }
+    }
+
     nav {
         cursor: pointer;
     }
@@ -37,7 +44,7 @@ nav {
         text-align: center;
         width: 100%;
 
-        &:hover {
+        &:not(li:first-of-type):hover {
             background-color: aclararColor($colorDestacado);
         }
 
