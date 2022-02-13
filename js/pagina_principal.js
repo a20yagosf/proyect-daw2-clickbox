@@ -300,30 +300,9 @@ function crearImg(atributos){
     return imagen;
 }
 
-/**
- * <header>
-        <div id="alerta">Último artículo añadido a la BD</div>
-        <nav>
-            <ul>
-                <li><a href="#"><img src="../img/Recuadro.png" alt="Logo página"></a></li>
-                <li><a href="#">Suscripciones</a></li>
-                <li><a href="#">Partidas</a></li>
-                <li><a href="#">Tienda</a></li>
-                <li><a href="#">Registrarse/Loguearse</a></li>
-            </ul>
-        </nav>
-        <!-- <div id="localizacionPag">
-            <ul>
-                <li><a href="#">Página principal</a> <</li>
-                <li><a href="#">Partida nº 255</a></li>
-            </ul>
-        </div>-->
-    </header>
- */
-
 
 window.onload = function () {
     //crearDetallesSvg();
-    crearCabecera();
+    //crearCabecera();
     crearMapa();
 };

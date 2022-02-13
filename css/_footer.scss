@@ -5,6 +5,8 @@ footer {
     justify-content: center;
     column-gap: 2%;
     align-items: center;
+    font-variant: small-caps;
+    text-transform: lowercase;
 
     li:first-of-type a {
         font-size: 1.3em;
@@ -17,6 +19,11 @@ footer {
     a {
         color: $colorLetra;
         font-size: 1.1em;
+        text-decoration: none;
+
+        &:hover {
+            color: $colorSecundario;
+        }
     }
 
     //Adaptación a movil

@@ -6,18 +6,51 @@
   font-family: "Resolve";
   src: url("../font/Resolve-Light.otf");
 }
-header {
-  font-size: 1.3em;
-  font-weight: 900;
-}
-@media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667) {
-  header {
-    font-size: 0.9em;
-    word-break: break-all;
+@-webkit-keyframes esconderNav {
+  0% {
+    height: 100%;
+  }
+  100% {
+    height: 0%;
   }
 }
-header nav {
-  cursor: pointer;
+@keyframes esconderNav {
+  0% {
+    height: 100%;
+  }
+  100% {
+    height: 0%;
+  }
+}
+@-webkit-keyframes mostrarNav {
+  0% {
+    height: 0%;
+  }
+  100% {
+    height: 100%;
+  }
+}
+@keyframes mostrarNav {
+  0% {
+    height: 0%;
+  }
+  100% {
+    height: 100%;
+  }
+}
+header {
+  display: inline-block;
+  width: 100%;
+  font-size: 1.1em;
+}
+header > nav {
+  -webkit-padding-before: 0% !important;
+          padding-block-start: 0% !important;
+  -webkit-padding-after: 0% !important;
+          padding-block-end: 0% !important;
+  position: fixed !important;
+  inset-block-start: 0%;
+  z-index: 5;
 }
 
 #alerta {
@@ -33,41 +66,128 @@ nav {
   width: 100%;
   height: auto;
   background-color: #FFB775;
-  padding: 0% 2%;
+  cursor: pointer;
+  text-transform: uppercase;
+  -webkit-border-after: 2px solid white;
+          border-block-end: 2px solid white;
+}
+nav button {
+  -webkit-margin-end: 2%;
+          margin-inline-end: 2%;
+  -webkit-margin-start: 2%;
+          margin-inline-start: 2%;
+  text-transform: uppercase;
+}
+nav .container-fluid {
+  background-color: #FFB775;
+  padding: 0%;
+}
+@media screen and (max-width: 500px) {
+  nav .container-fluid > a {
+    order: 1;
+  }
+  nav .container-fluid button:first-of-type {
+    display: block;
+    font-size: 0.9rem;
+  }
+  nav .container-fluid button:last-of-type {
+    order: 1;
+    font-size: 0.9rem;
+  }
+  nav .container-fluid ul {
+    flex-basis: 100%;
+    flex-direction: column;
+    order: 2;
+    padding: 0%;
+    -webkit-border-before: 0.1em solid #ff820f;
+            border-block-start: 0.1em solid #ff820f;
+  }
+  nav .container-fluid li:not(li:first-of-type) {
+    -webkit-border-start: none;
+            border-inline-start: none;
+    -webkit-border-start: 0.1em solid #ff820f;
+            border-inline-start: 0.1em solid #ff820f;
+  }
+  nav .container-fluid button:last-of-type {
+    padding: 1% 2%;
+  }
+}
+nav button:first-of-type {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1em;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+}
+nav button:first-of-type:hover {
+  background-color: #03bdd7;
 }
 nav ul {
+  height: 100%;
+  flex-grow: 2;
   list-style: none;
   display: flex;
-  justify-content: space-around;
-  align-items: stretch;
+  -webkit-margin-after: 0%;
+          margin-block-end: 0%;
+  overflow: hidden;
+  transition: inherit;
 }
 nav li {
   position: relative;
   text-align: center;
   width: 100%;
 }
-nav li:not(li:first-of-type):hover {
+nav li:hover {
   background-color: #ff7833;
 }
 nav li:not(li:first-child) {
-  border-left: 2px solid #F3F3F3;
+  -webkit-border-start: 2px solid #F3F3F3;
+          border-inline-start: 2px solid #F3F3F3;
 }
-nav a {
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
-  display: inline-block;
+nav li a {
   color: #F3F3F3;
+  text-decoration: none;
+  line-height: 50px;
+  display: inline-block;
+  height: 100%;
+  width: 100%;
+}
+nav li a:hover {
+  color: #026a79;
 }
 nav img {
   width: 50px;
   margin: auto;
+  padding: 5%;
+}
+nav button:last-of-type {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1em;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  padding: 0.3% 1%;
+}
+nav button:last-of-type:hover {
+  background-color: #03bdd7;
+}
+
+.hideNav {
+  height: 0%;
 }
 
 #localizacionPag {
   display: inline-block;
-  margin-top: 1%;
-  margin-left: 2%;
+  -webkit-margin-before: 1%;
+          margin-block-start: 1%;
+  -webkit-margin-start: 2%;
+          margin-inline-start: 2%;
   font-size: 0.8em;
   width: 98%;
 }
@@ -80,7 +200,8 @@ nav img {
 }
 #localizacionPag a {
   color: #0291A5;
-  padding-right: 1%;
+  -webkit-padding-end: 1%;
+          padding-inline-end: 1%;
   text-decoration: underline;
 }
 #localizacionPag a:visited {
@@ -119,7 +240,8 @@ main {
   height: auto;
   background-color: transparent;
   margin: auto;
-  margin-bottom: 5%;
+  -webkit-margin-after: 5%;
+          margin-block-end: 5%;
   padding: 2%;
   display: flex;
   justify-content: space-evenly;
@@ -129,37 +251,44 @@ main {
   flex-grow: 1;
 }
 #presentacion h2 {
-  margin-bottom: 2%;
+  -webkit-margin-after: 2%;
+          margin-block-end: 2%;
 }
 #presentacion p {
   text-align: justify;
 }
 #presentacion img {
-  margin-left: 5%;
-  width: 45%;
+  -webkit-margin-start: 5%;
+          margin-inline-start: 5%;
+  width: 200px;
 }
 @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
   #presentacion {
     flex-wrap: wrap;
     width: 90%;
-    padding-bottom: 10%;
+    -webkit-padding-after: 10%;
+            padding-block-end: 10%;
   }
   #presentacion div {
     order: 2;
   }
   #presentacion img {
     width: 50%;
-    margin-bottom: 5%;
+    -webkit-margin-after: 5%;
+            margin-block-end: 5%;
   }
   #presentacion h2 {
     text-align: center;
-    padding-bottom: 3%;
+    -webkit-padding-after: 3%;
+            padding-block-end: 3%;
   }
 }
 @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px) {
   #presentacion {
-    margin-top: 3%;
-    margin-bottom: 10%;
+    -webkit-margin-before: 3%;
+            margin-block-start: 3%;
+    -webkit-margin-after: 10%;
+            margin-block-end: 10%;
   }
   #presentacion img {
     width: 200px;
@@ -171,36 +300,93 @@ main {
   height: auto;
   background-color: #FFB775;
   padding: 3% 2%;
-  display: flex;
-  justify-content: space-evenly;
-  margin-bottom: 5%;
+  -webkit-padding-before: 0%;
+          padding-block-start: 0%;
+  -webkit-margin-after: 5%;
+          margin-block-end: 5%;
+  -webkit-margin-before: 13%;
+          margin-block-start: 13%;
   position: relative;
 }
-@media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
-  #suscripciones {
-    flex-wrap: wrap;
-    padding: 8% 1%;
-  }
+#suscripciones h2 {
+  display: inline-block;
+  width: 100%;
+  padding: 1%;
+  text-align: center;
+  font-size: 2.5rem;
 }
-#suscripciones .suscripciones img {
-  display: block;
+#suscripciones .carousel-indicators button {
+  width: 15px;
+  height: 15px;
+  background-clip: unset;
+  border-radius: 100%;
+  border: 3px solid #F3F3F3;
+  background-color: transparent;
+}
+#suscripciones .carousel-control-prev-icon, #suscripciones .carousel-control-next-icon {
+  width: 4rem;
+  height: 4rem;
+  background-size: 70%;
+  background-position: 35%;
+  border: 5px solid #F3F3F3;
+  border-radius: 100%;
+}
+#suscripciones .carousel-control-next-icon {
+  background-position: 60%;
+}
+#suscripciones .tarjeta {
+  width: 80%;
+  height: 100%;
+  background-color: #F3F3F3;
   margin: auto;
-  width: 60%;
-}
-#suscripciones .suscripciones button {
-  display: block;
-  margin: 5% auto;
-  padding: 3% 4%;
-  width: 50%;
-  background-color: #0291A5;
-  border: 0px;
-  font-size: 1.1em;
   border-radius: 10px;
-  color: white;
-  cursor: pointer;
+  display: flex;
 }
-#suscripciones .suscripciones button:hover {
-  background-color: #03bdd7;
+#suscripciones .tarjeta > img {
+  border-radius: 10px 0px 0px 10px;
+}
+#suscripciones .contenidoTarjeta {
+  width: 100%;
+}
+#suscripciones .contenidoTarjeta h2 {
+  display: inline-block;
+  width: 100%;
+  padding: 1%;
+  -webkit-margin-after: 2%;
+          margin-block-end: 2%;
+  text-align: center;
+  color: #F3F3F3;
+  background-color: #0291A5;
+  border-radius: 0px 10px 0px 0px;
+}
+#suscripciones .contenidoTarjeta ul {
+  width: 100%;
+  height: 80%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+#suscripciones .contenidoTarjeta li {
+  padding-left: 5%;
+  position: relative;
+  flex-basis: 50%;
+  list-style: none;
+}
+#suscripciones .contenidoTarjeta img {
+  width: 40%;
+  position: absolute;
+  inset-inline-end: 15%;
+  inset-block-start: 50%;
+  transform: translateY(-50%);
+  border-radius: 10px;
+}
+#suscripciones .contenidoTarjeta span {
+  display: inline-block;
+  position: relative;
+  inset-block-start: 50%;
+  transform: translateY(-50%);
+  font-size: 1.1em;
+  color: #0291A5;
 }
 #suscripciones:before {
   content: "";
@@ -212,7 +398,8 @@ main {
   background-position-y: bottom;
   background-repeat: no-repeat;
   position: absolute;
-  top: -99%;
+  inset-block-start: -99%;
+  inset-inline-start: 0%;
   transform: translateY(0%);
   z-index: -1;
 }
@@ -226,20 +413,103 @@ main {
   background-position-y: top;
   background-repeat: no-repeat;
   position: absolute;
-  top: 99%;
+  inset-block-start: 99%;
+  inset-inline-start: 0%;
   transform: translateY(0%);
   z-index: -1;
+}
+#suscripciones > button:last-of-type {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.5rem;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  margin: 1% auto;
+  -webkit-margin-after: 0%;
+          margin-block-end: 0%;
+  padding: 0.5% 1%;
+}
+#suscripciones > button:last-of-type:hover {
+  background-color: #03bdd7;
+}
+@media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+  #suscripciones {
+    -webkit-padding-after: 15%;
+            padding-block-end: 15%;
+    -webkit-margin-before: 28%;
+            margin-block-start: 28%;
+  }
+  #suscripciones:before, #suscripciones:after {
+    width: 98%;
+  }
+  #suscripciones .tarjeta {
+    flex-direction: column;
+    width: 70%;
+  }
+  #suscripciones .tarjeta > img {
+    order: 2;
+    border-radius: 0px 0px 10px 10px;
+    width: 100%;
+  }
+  #suscripciones .contenidoTarjeta h2 {
+    -webkit-margin-before: 0%;
+            margin-block-start: 0%;
+    border-radius: 10px 10px 0px 0px;
+  }
+  #suscripciones .contenidoTarjeta ul {
+    display: none;
+  }
+}
+@media screen and (max-width: 300px) {
+  #suscripciones {
+    -webkit-margin-before: 35%;
+            margin-block-start: 35%;
+  }
+  #suscripciones h2 {
+    font-size: 1.5em;
+  }
+  #suscripciones .carousel-control-prev-icon, #suscripciones .carousel-control-next-icon {
+    height: 3rem;
+  }
+}
+@media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px) {
+  #suscripciones {
+    -webkit-padding-after: 7%;
+            padding-block-end: 7%;
+    -webkit-margin-before: 20%;
+            margin-block-start: 20%;
+  }
+  #suscripciones:before, #suscripciones:after {
+    width: 98%;
+  }
+  #suscripciones .tarjeta {
+    width: 70%;
+    flex-direction: column;
+  }
+  #suscripciones .tarjeta > img {
+    order: 2;
+    border-radius: 0px 0px 10px 10px;
+  }
+  #suscripciones .contenidoTarjeta h2 {
+    -webkit-margin-after: 0%;
+            margin-block-end: 0%;
+    border-radius: 10px 10px 0px 0px;
+  }
+  #suscripciones .contenidoTarjeta ul {
+    display: none;
+  }
 }
 
 #partidas {
   width: 80%;
+  align-items: center;
   display: flex;
-  margin: auto;
   -moz-column-gap: 5%;
        column-gap: 5%;
-  margin-bottom: 15%;
-  margin-top: 15%;
-  align-items: center;
+  margin: 15% auto;
 }
 #partidas div:first-of-type {
   flex-basis: 30%;
@@ -248,29 +518,29 @@ main {
 #partidas div:first-of-type::after {
   content: "";
   display: inline-block;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
   width: 70%;
   height: 20%;
+  position: absolute;
+  inset-inline-start: 50%;
+  inset-block-start: 50%;
+  transform: translate(-50%, -50%);
   border-radius: 10px;
   background-color: #026a79;
 }
 #partidas button {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 3;
-  padding: 3% 4%;
-  width: 50%;
+  display: block;
   background-color: #FF5600;
-  border: 0px;
-  font-size: 1em;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.5rem;
   border-radius: 10px;
   color: white;
   cursor: pointer;
+  position: absolute;
+  inset-inline-start: 50%;
+  inset-block-start: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
 }
 #partidas button:hover {
   background-color: #ff7833;
@@ -279,49 +549,61 @@ main {
   width: 100%;
 }
 #partidas div:nth-of-type(2) {
-  flex-basis: 60%;
   margin-top: 2%;
-  flex-grow: 2;
   text-align: center;
   background-color: rgba(255, 255, 255, 0.356);
   border-radius: 10px;
+  flex-basis: 60%;
+  flex-grow: 2;
 }
 #partidas div:nth-of-type(2) h2 {
   margin-bottom: 3%;
+  font-size: 2.5rem;
 }
 @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
   #partidas {
     flex-wrap: wrap;
-    padding-bottom: 10%;
+    -webkit-padding-after: 10%;
+            padding-block-end: 10%;
   }
   #partidas div:first-of-type {
     flex-basis: 100%;
   }
   #partidas div:nth-of-type(2) {
-    padding-top: 5%;
+    -webkit-padding-before: 5%;
+            padding-block-start: 5%;
   }
   #partidas h2 {
-    padding-bottom: 5%;
+    -webkit-padding-after: 5%;
+            padding-block-end: 5%;
+  }
+  #partidas button {
+    font-size: 1.2rem;
   }
 }
 @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px) {
   #partidas div:first-of-type {
     flex-basis: 70%;
   }
+  #partidas button {
+    font-size: 1.3rem;
+  }
 }
 @media screen and (max-width: 300px) {
   #partidas button {
     width: 60%;
+    font-size: 1rem;
   }
 }
 
 #tienda {
-  position: relative;
   width: 100%;
   height: auto;
   background-color: #FFB775;
   margin: auto;
-  padding-bottom: 10%;
+  -webkit-padding-after: 10%;
+          padding-block-end: 10%;
+  position: relative;
   display: flex;
   justify-content: space-evenly;
   flex-wrap: wrap;
@@ -336,31 +618,40 @@ main {
   background-position-y: bottom;
   background-repeat: no-repeat;
   position: absolute;
-  top: -99.5%;
+  inset-block-start: -99.5%;
+  inset-inline-start: 0%;
   transform: translateY(0%);
   z-index: -1;
 }
 #tienda h2 {
-  flex-basis: 100%;
   text-align: center;
-  margin-bottom: 3%;
+  margin: 3% 0%;
+  flex-basis: 100%;
+  font-size: 2.5rem;
 }
 @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+  #tienda:before {
+    width: 98%;
+  }
   #tienda .elementoTienda {
     width: 70%;
-    padding: 2%;
-    margin-bottom: 20%;
-    margin-top: 5%;
+    padding: 4%;
+    -webkit-margin-before: 5%;
+            margin-block-start: 5%;
   }
   #tienda .elementoTienda .id {
     left: 12%;
   }
   #tienda .elementoTienda .id::after {
     top: 45%;
-    border-top: 1.1em solid #0291A5;
-    border-right: 1.1em solid transparent;
-    border-bottom: 1.1em solid transparent;
-    border-left: 1.1em solid transparent;
+    -webkit-border-before: 1.1em solid #0291A5;
+            border-block-start: 1.1em solid #0291A5;
+    -webkit-border-end: 1.1em solid transparent;
+            border-inline-end: 1.1em solid transparent;
+    -webkit-border-after: 1.1em solid transparent;
+            border-block-end: 1.1em solid transparent;
+    -webkit-border-start: 1.1em solid transparent;
+            border-inline-start: 1.1em solid transparent;
   }
 }
 @media screen and (max-width: 300px) {
@@ -371,104 +662,98 @@ main {
 @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px) {
   #tienda .elementoTienda {
     width: 40%;
+    padding: 2.5%;
     margin: 2%;
-    margin-top: 7%;
+    -webkit-margin-before: 5%;
+            margin-block-start: 5%;
   }
   #tienda .elementoTienda .id::after {
-    top: 52%;
-    border-top: 1.35em solid #0291A5;
-    border-right: 1.35em solid transparent;
-    border-bottom: 1.35em solid transparent;
-    border-left: 1.35em solid transparent;
+    inset-block-start: 52%;
+    -webkit-border-before: 1.35em solid #0291A5;
+            border-block-start: 1.35em solid #0291A5;
+    -webkit-border-end: 1.35em solid transparent;
+            border-inline-end: 1.35em solid transparent;
+    -webkit-border-after: 1.35em solid transparent;
+            border-block-end: 1.35em solid transparent;
+    -webkit-border-start: 1.35em solid transparent;
+            border-inline-start: 1.35em solid transparent;
+  }
+  #tienda .elementoTienda button {
+    font-size: 2rem;
   }
 }
 
 .elementoTienda {
   width: 20%;
-  height: 20%;
+}
+.elementoTienda > div {
+  width: 100%;
+  height: auto;
   background-color: #F3F3F3;
   position: relative;
   border-radius: 10px;
+  padding: 4%;
 }
 .elementoTienda .id {
-  width: 17%;
-  height: 20%;
-  background-color: #0291A5;
-  text-align: center;
-  padding-top: 6%;
-  font-size: 1.3em;
-  font-weight: 600;
-  color: #F3F3F3;
   position: absolute;
-  top: 0px;
-  left: 10%;
+  inset-block-start: 0px;
+  inset-inline-start: 10%;
   display: inline-block;
   z-index: 4;
 }
-.elementoTienda .id::after {
-  content: "";
+.elementoTienda .id div {
+  width: 50px;
+  height: 50px;
+  background-color: #0291A5;
+  -webkit-padding-before: 25%;
+          padding-block-start: 25%;
+  text-align: center;
+  font-size: 1.3em;
+  font-weight: 600;
+  color: #F3F3F3;
+}
+.elementoTienda .id span {
   display: inline-block;
   width: 0;
   height: 0;
-  position: relative;
-  top: 58%;
-  border-top: 1.5em solid #0291A5;
-  border-right: 1.5em solid transparent;
-  border-bottom: 1.5em solid transparent;
-  border-left: 1.5em solid transparent;
+  -webkit-border-before: 25px solid #0291A5;
+          border-block-start: 25px solid #0291A5;
+  -webkit-border-end: 25px solid transparent;
+          border-inline-end: 25px solid transparent;
+  -webkit-border-after: 25px solid transparent;
+          border-block-end: 25px solid transparent;
+  -webkit-border-start: 25px solid transparent;
+          border-inline-start: 25px solid transparent;
 }
 .elementoTienda img {
-  width: 85%;
-  height: 85%;
-  transform: translate(8%, 8%);
+  width: 100%;
   border-radius: 10px;
 }
 .elementoTienda button {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translate(-50%, 50%);
-  padding: 3% 4%;
-  width: 50%;
+  display: block;
   background-color: #0291A5;
-  border: 0px;
-  font-size: 1em;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.5em;
   border-radius: 10px;
   color: white;
   cursor: pointer;
+  margin: 2% auto;
 }
 .elementoTienda button:hover {
   background-color: #03bdd7;
 }
 .elementoTienda .descripcionCorta {
-  width: 85%;
-  height: 60px;
+  width: 92%;
+  height: 80px;
   background-color: #0291A5;
-  position: relative;
-  border-radius: 5px;
-  transform: translate(8%, -60%);
+  position: absolute;
+  inset-block-end: 3.5%;
+  border-radius: 0px 0px 10px 10px;
   padding: 2%;
 }
 .elementoTienda .descripcionCorta p {
   color: #F3F3F3;
-}
-
-svg {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0%;
-  left: 0%;
-  z-index: -1;
-}
-svg * {
-  fill: #FFB775;
-}
-svg rect {
-  width: 100%;
-}
-svg .restar {
-  fill: white;
 }
 
 #suscribirse {
@@ -492,8 +777,10 @@ svg .restar {
   }
   #suscribirse #recibo {
     flex-basis: 100%;
-    padding-bottom: 15%;
-    margin-top: 5%;
+    -webkit-padding-after: 15%;
+            padding-block-end: 15%;
+    -webkit-margin-before: 5%;
+            margin-block-start: 5%;
   }
   #suscribirse #recibo button {
     width: 50%;
@@ -511,8 +798,10 @@ svg .restar {
   }
   #suscribirse #recibo {
     flex-basis: 100%;
-    padding-bottom: 15%;
-    margin-top: 5%;
+    -webkit-padding-after: 15%;
+            padding-block-end: 15%;
+    -webkit-margin-before: 5%;
+            margin-block-start: 5%;
   }
   #suscribirse #recibo button {
     width: 50%;
@@ -542,7 +831,7 @@ svg .restar {
 #tiposSusc .susc span {
   margin: 0% 2%;
   position: relative;
-  top: 35%;
+  inset-block-start: 35%;
 }
 #tiposSusc .susc:before {
   content: "";
@@ -555,10 +844,11 @@ svg .restar {
   background-position-y: bottom;
   background-repeat: no-repeat;
   position: absolute;
-  top: -98%;
+  inset-block-start: -98%;
+  inset-inline-start: 0%;
   transform: translateY(0%);
   z-index: -1;
-  left: 0%;
+  inset-inline-start: 0%;
 }
 #tiposSusc .susc:after {
   content: "";
@@ -571,10 +861,11 @@ svg .restar {
   background-position-y: top;
   background-repeat: no-repeat;
   position: absolute;
-  top: 100%;
+  inset-block-start: 100%;
+  inset-inline-start: 0%;
   transform: translateY(0%);
   z-index: -1;
-  left: 0%;
+  inset-inline-start: 0%;
 }
 
 #recibo {
@@ -586,7 +877,8 @@ svg .restar {
   border: 0.2em solid #0291A5;
   border-radius: 10px;
   position: relative;
-  padding-bottom: 5%;
+  -webkit-padding-after: 5%;
+          padding-block-end: 5%;
 }
 #recibo h2 {
   flex-basis: 100%;
@@ -595,7 +887,8 @@ svg .restar {
   padding: 5%;
   font-size: 5em;
   border-radius: 10px;
-  margin-bottom: 3%;
+  -webkit-margin-after: 3%;
+          margin-block-end: 3%;
   color: #0291A5;
   word-spacing: 0.5em;
   text-transform: uppercase;
@@ -606,18 +899,20 @@ svg .restar {
   margin: 3%;
 }
 #recibo p:last-of-type {
-  padding-top: 2%;
-  border-top: 0.2em dashed #0291A5;
+  -webkit-padding-before: 2%;
+          padding-block-start: 2%;
+  -webkit-border-before: 0.2em dashed #0291A5;
+          border-block-start: 0.2em dashed #0291A5;
 }
 #recibo span {
   position: absolute;
-  right: 0%;
+  inset-inline-end: 0%;
 }
 #recibo button {
-  padding: 3% 4%;
-  width: 20%;
+  display: block;
   background-color: #0291A5;
-  border: 0px;
+  border: none;
+  padding: 2% 3%;
   font-size: 1.5em;
   border-radius: 10px;
   color: white;
@@ -625,7 +920,7 @@ svg .restar {
   padding: 2%;
   margin: auto;
   position: absolute;
-  left: 50%;
+  inset-inline-start: 50%;
   transform: translateX(-50%);
 }
 #recibo button:hover {
@@ -642,6 +937,8 @@ footer {
   -moz-column-gap: 2%;
        column-gap: 2%;
   align-items: center;
+  font-variant: small-caps;
+  text-transform: lowercase;
 }
 footer li:first-of-type a {
   font-size: 1.3em;
@@ -652,6 +949,10 @@ footer li:first-of-type {
 footer a {
   color: #F3F3F3;
   font-size: 1.1em;
+  text-decoration: none;
+}
+footer a:hover {
+  color: #FFB775;
 }
 @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
   footer {
