@@ -1,3 +1,4 @@
+
 //Carga los script
 cargarScripts();
 
@@ -8,6 +9,10 @@ window.onload = function () {
     crearHeader();
     //Añadimos el escuchador al botón del header
     document.getElementById("inicioSesion").addEventListener("click", aparecerLogin);
+    //Añadimos los escuchadores a los botones del tipoSusc
+    let botones = Array.from(document.getElementById("tiposSusc").children);
+    botones.forEach(boton => boton.addEventListener("click", seleccionarSusc));
     //Creamos el mapa
     crearMapa();
+
 };

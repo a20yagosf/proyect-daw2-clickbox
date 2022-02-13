@@ -5,35 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ClickBox</title>
-    <!-- CSS Leflet.js -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
-    <!-- JS Leflet.js -->
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
-    <link rel="stylesheet" href="../css/styles.css">
-    <!-- CSS bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <!-- Script con todas las funciones -->
+    <script src="../js/funcionesGenerales.js"></script>
+    <!-- Que se ejecutará en esta página -->
     <script src="../js/pagina_principal.js"></script>
 </head>
 <body>
-    <div id="alerta"><a href="#">Ultimas novedades de la BD</a></div>
-    <!-- Cabecera que incluye la alerta con las novedades, el nav con los diferentes apartados de la página y un span que muestra la ubicación actual (Si estamos en páginas de primer nivel (Partida, tienda, página principal) no es necesario ya que se marca en el nav) -->
-    <header>
-        <nav class="navbar navbar-expand-md">
-            <div class="container-fluid">
-                <!-- Logo -->
-                <a href="index.html"><img src="../img/Recuadro.png" alt="Logo ClickBox"></a>
-                <!-- Botón que aparecerá para el menú hamburguesa -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#listaNav" aria-controls="listaNav" aria-expanded="false" aria-label="Toggle navigation">Esconder</button>
-                <!-- Div que contendrá el resto de elementos -->
-                <ul id="listaNav" class="collapse navbar-collapse">
-                    <li><a href="#">Suscripciones</a></li>
-                    <li><a href="#">Partidas</a></li>
-                    <li><a href="#">Tienda</a></li>
-                </ul>
-                <button>Iniciar sesión</button>
-            </div>
-        </nav>
-    </header>
     <main>
         <!--
         <div id="presentacion">
@@ -170,8 +147,6 @@
             <div id="map"></div>
             <!-- API -->
         </div>
-        <!-- JS Bootstrap -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     </footer>
 </body>
 </html>

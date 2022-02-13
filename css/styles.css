@@ -784,10 +784,12 @@ main {
   width: 100%;
   height: auto;
   background-color: transparent;
-  padding: 2%;
+  padding: 5%;
   display: flex;
   justify-content: center;
   align-items: center;
+  -moz-column-gap: 5%;
+       column-gap: 5%;
 }
 @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
   #suscribirse {
@@ -833,63 +835,42 @@ main {
 }
 
 #tiposSusc {
-  flex-basis: 40%;
+  flex-basis: 30%;
 }
 #tiposSusc .susc {
-  width: 80%;
-  height: auto;
+  display: block;
   background-color: #0291A5;
-  text-align: center;
-  padding: 5% 2%;
-  margin: 20% 0%;
+  border: none;
+  padding: 2% 3%;
   font-size: 2em;
-  position: relative;
   border-radius: 10px;
-  color: whitesmoke;
+  color: white;
   cursor: pointer;
+  transition: all 0.5s linear;
+  width: 100%;
+  margin: 5% 0%;
+  padding: 0%;
+  position: relative;
 }
 #tiposSusc .susc:hover {
-  background-color: #FFB775;
-  border-color: #FFB775;
+  background-color: #03bdd7;
 }
-#tiposSusc .susc span {
+#tiposSusc .susc p {
+  width: 100%;
   margin: 0% 2%;
+  padding: 2% 0%;
   position: relative;
   inset-block-start: 35%;
+  font-size: 2rem;
+  text-transform: uppercase;
 }
-#tiposSusc .susc:before {
-  content: "";
-  content: "";
-  width: 100%;
-  height: 100%;
-  display: inline-block;
-  background-image: url("../img/TipoSuscDesignTop.svg");
-  background-size: contain;
-  background-position-y: bottom;
-  background-repeat: no-repeat;
-  position: absolute;
-  inset-block-start: -98%;
-  inset-inline-start: 0%;
-  transform: translateY(0%);
-  z-index: -1;
-  inset-inline-start: 0%;
+#tiposSusc .suscActiva {
+  background-color: #FFB775;
+  color: #0291A5;
+  font-weight: 900;
 }
-#tiposSusc .susc:after {
-  content: "";
-  content: "";
-  width: 100%;
-  height: 100%;
-  display: inline-block;
-  background-image: url("../img/TipoSuscDesignBottom.svg");
-  background-size: contain;
-  background-position-y: top;
-  background-repeat: no-repeat;
-  position: absolute;
-  inset-block-start: 100%;
-  inset-inline-start: 0%;
-  transform: translateY(0%);
-  z-index: -1;
-  inset-inline-start: 0%;
+#tiposSusc .suscActiva:hover {
+  background-color: #ffd2a8;
 }
 
 #recibo {
@@ -916,6 +897,7 @@ main {
   color: #0291A5;
   word-spacing: 0.5em;
   text-transform: uppercase;
+  transition: all 2s ease-in-out;
 }
 #recibo p {
   position: relative;
@@ -949,6 +931,143 @@ main {
   transform: translateX(-50%);
 }
 #recibo button:hover {
+  background-color: #03bdd7;
+}
+
+#login {
+  width: 80%;
+  height: 90%;
+  background-color: #f3f3f3dc;
+  padding: 1%;
+  border-radius: 10px;
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+#login button {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.2rem;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  padding: 1%;
+}
+#login button:hover {
+  background-color: #03bdd7;
+}
+#login h2 {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  margin: 1%;
+  -webkit-margin-after: 2%;
+          margin-block-end: 2%;
+}
+#login p {
+  width: 100%;
+  text-align: justify;
+  -moz-text-align-last: center;
+       text-align-last: center;
+}
+#login > div {
+  -webkit-margin-before: 2%;
+          margin-block-start: 2%;
+  display: flex;
+  justify-content: center;
+}
+#login > div button:first-of-type {
+  border-radius: 10px 0px 0px 10px;
+}
+#login > div button:nth-of-type(2) {
+  border-radius: 0px 10px 10px 0px;
+}
+#login > div .noActivo {
+  background-color: #bfbfbf;
+  box-shadow: inset 0px 0px 10px 0px rgba(0, 0, 0, 0.438);
+  transition: all 0.5s ease-in-out;
+}
+#login > div .noActivo:hover {
+  background-color: #8c8c8c;
+}
+#login form {
+  width: 70%;
+  height: auto;
+  background-color: transparent;
+  margin: auto;
+  -webkit-margin-before: 2%;
+          margin-block-start: 2%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+#login form input {
+  margin: 2% 0%;
+  padding: 1%;
+  font-family: "Resolve";
+  transition: all 1s ease-in-out;
+}
+#login form input:not(input[type=submit]) {
+  border-radius: 5px;
+  border: 1px solid #0291A5;
+  outline-color: #FFB775;
+}
+#login form div {
+  background-color: #d9d9d9;
+}
+#login form div div {
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 10px;
+}
+#login form div div input, #login form div div label {
+  margin: 2% auto;
+  font-size: 1.1rem;
+}
+#login form div:first-of-type input {
+  flex-basis: 80%;
+}
+#login form div:nth-of-type(2) input, #login form div:nth-of-type(2) label {
+  flex-basis: 40%;
+  align-items: center;
+}
+#login form div:nth-of-type(2) label {
+  transform: translateY(25%);
+}
+#login .acordeon {
+  border-radius: 10px;
+  transition: all 2s ease-in-out;
+}
+#login .acordeon button {
+  width: 100%;
+  border-radius: 10px 10px 0px 0px;
+}
+#login .acordeon:nth-of-type(2) button {
+  border-radius: 0px;
+}
+#login .acordeon:first-of-type {
+  border-radius: 10px 10px 0px 0px;
+}
+#login input[type=submit] {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.1rem;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  padding: 1%;
+}
+#login input[type=submit]:hover {
   background-color: #03bdd7;
 }
 

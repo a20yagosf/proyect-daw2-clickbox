@@ -1,0 +1,166 @@
+
+#login {
+    //Tamaño y posición
+    @include contenedor($widthLogin, $heighLogin, $fondoLogin);
+    padding: 1%;
+    border-radius: $borderRadius;
+    position: absolute;
+    //Top
+    inset-block-start: 50%;
+    //Left
+    inset-inline-start: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    //Botones
+    button {
+        @include boton($colorPrincipal, 1.2rem);
+        padding: 1%;
+    }
+
+    //Cabecera
+    h2 {
+        //Tamaños y posición
+        display: inline-block;
+        width: 100%;
+        text-align: center;
+        margin: 1%;
+        //Margin bottom
+        margin-block-end: 2%;
+    }
+
+    p {
+        width: 100%;
+        //Ponemos en justificado y a la última línea en centrado para dar la imrpesión de justificado y centrado
+        text-align: justify;
+        text-align-last: center;
+    }
+
+    //Div de los botones
+    & > div {
+        //Margin top
+        margin-block-start: 2%;
+        //Flex como padre
+        display: flex;
+        justify-content: center;
+
+        //Le ponemos a los botones el radio para que parezcan uno sólo
+        button:first-of-type {
+            border-radius: $borderRadius 0px 0px $borderRadius;
+        }
+
+        button:nth-of-type(2){
+            border-radius: 0px $borderRadius $borderRadius 0px;
+        }
+
+        //Clase para poner un fondo gris al elemento y un poco de sombra para que se diferencia bin
+        .noActivo {
+            background-color: $botonNoActivo;
+            box-shadow: inset 0px 0px 10px 0px rgba(0, 0, 0, 0.438);
+            transition: all 0.5s ease-in-out;
+
+            &:hover {
+                background-color: oscurecerColor($botonNoActivo)
+            }
+        }
+    }
+
+    //Formulario
+    form {
+        //Tamaño y posicion
+        @include contenedor(70%, auto, transparent);
+        margin: auto;
+        //Margin top
+        margin-block-start: 2%;
+        //Flex como padre
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        input {
+            //Posición
+            margin: 2% 0%;
+            padding: 1%;
+            //Estilo
+            font-family: "Resolve";
+            transition: all 1s ease-in-out;
+        }
+
+        //Todos menos el input de sumit
+        input:not(input[type="submit"]){
+            border-radius: 5px;
+            border: 1px solid $colorPrincipal;
+            outline-color: $colorSecundario;
+        }
+
+
+        //Contenedor que tanto el botón como las seccion
+        div {
+            background-color: aclararColor($botonNoActivo);
+
+            //Contenedores con el datos
+            div {
+                //Flex como padre
+                display: flex;
+                flex-wrap: wrap;
+                //Estilo
+                border-radius: $borderRadius;
+
+                //Todos los elementos input y label del div
+                input, label {
+                    margin: 2% auto;
+                    font-size: 1.1rem;
+                }
+            }
+
+            //Input de Datos cuenta
+            &:first-of-type input{
+                flex-basis: 80%;
+                
+            }
+
+            //Input y label de Datos perosnales
+            &:nth-of-type(2) input, &:nth-of-type(2) label {
+                flex-basis: 40%;
+                align-items: center;
+            }
+
+            //Label de Datos personales
+            &:nth-of-type(2) label {
+                //Centramos el texto de los label
+                transform: translateY(25%);
+            }
+
+        }
+    }
+
+    .acordeon {
+        //Estilo
+        border-radius: $borderRadius;
+        transition: all 2s ease-in-out;
+        
+        //Botones
+        button {
+            width: 100%;
+            border-radius: $borderRadius $borderRadius 0px 0px;
+        }
+
+        //Boton de Datos personales
+        &:nth-of-type(2) button {
+            border-radius: 0px;
+        }
+    }
+
+    //Primer acordeon
+    .acordeon:first-of-type {
+        border-radius: $borderRadius $borderRadius 0px 0px;
+    }
+
+    //Boton de registrarme
+    input[type="submit"] {
+        @include boton($colorPrincipal, 1.1rem);
+        padding: 1%;
+    }
+}
