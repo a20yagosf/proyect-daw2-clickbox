@@ -30,6 +30,9 @@
   }
 }
 
+/// Mixin para los enlaces donde le quita el underline, le pone un color y un color cuando esta encima y tiene una transicón
+/// @param {string} $color Color que tendrá el texto
+/// @param {string} $colorHover Color del texto cuando tenemos el ratón por encima
 @mixin enlace($color, $colorHover) {
   color: $color;
   text-decoration: none;
