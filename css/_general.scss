@@ -19,12 +19,24 @@
   border: none;
   padding: 2% 3%;
   font-size: $fontSize;
-  border-radius: 10px;
+  border-radius:  $borderRadius;
   color: white;
   cursor: pointer;
+  //Para las transiciones
+  transition: all 0.5s linear;
 
   &:hover {
     background-color: aclararColor($color);
+  }
+}
+
+@mixin enlace($color, $colorHover) {
+  color: $color;
+  text-decoration: none;
+  transition: all 0.5s ease-in-out;
+
+  &:hover {
+    color: $colorHover;
   }
 }
 
@@ -80,23 +92,15 @@
 
 
 //Animaciones
-//Animación para esconder y mostrar el nav
-@keyframes esconderNav {
+//Animación para mover el texto de la alerta todo el rato
+@keyframes movimientoAlerta {
   0% {
-    height: 100%;
+    //Left
+    inset-inline-start: -44.5%;
   }
 
   100% {
-    height: 0%;
-  }
-}
-
-@keyframes mostrarNav {
-  0% {
-    height: 0%;
-  }
-
-  100% {
-    height: 100%;
+    //right
+    inset-inline-start: 57%;
   }
 }

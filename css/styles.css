@@ -6,51 +6,36 @@
   font-family: "Resolve";
   src: url("../font/Resolve-Light.otf");
 }
-@-webkit-keyframes esconderNav {
+@-webkit-keyframes movimientoAlerta {
   0% {
-    height: 100%;
+    inset-inline-start: -44.5%;
   }
   100% {
-    height: 0%;
+    inset-inline-start: 57%;
   }
 }
-@keyframes esconderNav {
+@keyframes movimientoAlerta {
   0% {
-    height: 100%;
+    inset-inline-start: -44.5%;
   }
   100% {
-    height: 0%;
-  }
-}
-@-webkit-keyframes mostrarNav {
-  0% {
-    height: 0%;
-  }
-  100% {
-    height: 100%;
-  }
-}
-@keyframes mostrarNav {
-  0% {
-    height: 0%;
-  }
-  100% {
-    height: 100%;
+    inset-inline-start: 57%;
   }
 }
 header {
   display: inline-block;
   width: 100%;
   font-size: 1.1em;
+  position: -webkit-sticky;
+  position: sticky;
+  inset-block-start: 0%;
+  z-index: 5;
 }
 header > nav {
   -webkit-padding-before: 0% !important;
           padding-block-start: 0% !important;
   -webkit-padding-after: 0% !important;
           padding-block-end: 0% !important;
-  position: fixed !important;
-  inset-block-start: 0%;
-  z-index: 5;
 }
 
 #alerta {
@@ -60,6 +45,21 @@ header > nav {
   padding: 0.5%;
   text-align: center;
   color: #F3F3F3;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+}
+#alerta a {
+  color: #F3F3F3;
+  text-decoration: none;
+  transition: all 0.5s ease-in-out;
+  margin: 0% 1%;
+  position: relative;
+  -webkit-animation: movimientoAlerta 40s linear 0s forwards infinite;
+          animation: movimientoAlerta 40s linear 0s forwards infinite;
+}
+#alerta a:hover {
+  color: #FFB775;
 }
 
 nav {
@@ -105,11 +105,16 @@ nav .container-fluid {
   nav .container-fluid li:not(li:first-of-type) {
     -webkit-border-start: none;
             border-inline-start: none;
-    -webkit-border-start: 0.1em solid #ff820f;
-            border-inline-start: 0.1em solid #ff820f;
+    -webkit-border-before: 0.1em solid #ff820f;
+            border-block-start: 0.1em solid #ff820f;
   }
   nav .container-fluid button:last-of-type {
     padding: 1% 2%;
+  }
+}
+@media screen and (max-width: 300px) {
+  nav .container-fluid button:first-of-type, nav .container-fluid button:last-of-type {
+    font-size: 0.8rem;
   }
 }
 nav button:first-of-type {
@@ -121,6 +126,7 @@ nav button:first-of-type {
   border-radius: 10px;
   color: white;
   cursor: pointer;
+  transition: all 0.5s linear;
 }
 nav button:first-of-type:hover {
   background-color: #03bdd7;
@@ -139,6 +145,7 @@ nav li {
   position: relative;
   text-align: center;
   width: 100%;
+  transition: all 0.5s ease-in-out;
 }
 nav li:hover {
   background-color: #ff7833;
@@ -148,12 +155,13 @@ nav li:not(li:first-child) {
           border-inline-start: 2px solid #F3F3F3;
 }
 nav li a {
-  color: #F3F3F3;
-  text-decoration: none;
   line-height: 50px;
   display: inline-block;
   height: 100%;
   width: 100%;
+  color: #F3F3F3;
+  text-decoration: none;
+  transition: all 0.5s ease-in-out;
 }
 nav li a:hover {
   color: #026a79;
@@ -172,6 +180,7 @@ nav button:last-of-type {
   border-radius: 10px;
   color: white;
   cursor: pointer;
+  transition: all 0.5s linear;
   padding: 0.3% 1%;
 }
 nav button:last-of-type:hover {
@@ -200,9 +209,13 @@ nav button:last-of-type:hover {
 }
 #localizacionPag a {
   color: #0291A5;
+  text-decoration: none;
+  transition: all 0.5s ease-in-out;
   -webkit-padding-end: 1%;
           padding-inline-end: 1%;
-  text-decoration: underline;
+}
+#localizacionPag a:hover {
+  color: #FFB775;
 }
 #localizacionPag a:visited {
   color: #026a79;
@@ -427,6 +440,7 @@ main {
   border-radius: 10px;
   color: white;
   cursor: pointer;
+  transition: all 0.5s linear;
   margin: 1% auto;
   -webkit-margin-after: 0%;
           margin-block-end: 0%;
@@ -439,8 +453,8 @@ main {
   #suscripciones {
     -webkit-padding-after: 15%;
             padding-block-end: 15%;
-    -webkit-margin-before: 28%;
-            margin-block-start: 28%;
+    -webkit-margin-before: 15%;
+            margin-block-start: 15%;
   }
   #suscripciones:before, #suscripciones:after {
     width: 98%;
@@ -465,8 +479,8 @@ main {
 }
 @media screen and (max-width: 300px) {
   #suscripciones {
-    -webkit-margin-before: 35%;
-            margin-block-start: 35%;
+    -webkit-margin-before: 15%;
+            margin-block-start: 15%;
   }
   #suscripciones h2 {
     font-size: 1.5em;
@@ -479,8 +493,8 @@ main {
   #suscripciones {
     -webkit-padding-after: 7%;
             padding-block-end: 7%;
-    -webkit-margin-before: 20%;
-            margin-block-start: 20%;
+    -webkit-margin-before: 15%;
+            margin-block-start: 15%;
   }
   #suscripciones:before, #suscripciones:after {
     width: 98%;
@@ -527,6 +541,13 @@ main {
   border-radius: 10px;
   background-color: #026a79;
 }
+#partidas div:first-of-type button {
+  position: absolute;
+  inset-inline-start: 50%;
+  inset-block-start: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
 #partidas button {
   display: block;
   background-color: #FF5600;
@@ -536,11 +557,7 @@ main {
   border-radius: 10px;
   color: white;
   cursor: pointer;
-  position: absolute;
-  inset-inline-start: 50%;
-  inset-block-start: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 3;
+  transition: all 0.5s linear;
 }
 #partidas button:hover {
   background-color: #ff7833;
@@ -559,6 +576,12 @@ main {
 #partidas div:nth-of-type(2) h2 {
   margin-bottom: 3%;
   font-size: 2.5rem;
+}
+#partidas div:nth-of-type(2) button {
+  margin: auto;
+  -webkit-margin-after: 1%;
+          margin-block-end: 1%;
+  background-color: #0291A5;
 }
 @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
   #partidas {
@@ -738,6 +761,7 @@ main {
   border-radius: 10px;
   color: white;
   cursor: pointer;
+  transition: all 0.5s linear;
   margin: 2% auto;
 }
 .elementoTienda button:hover {
@@ -917,6 +941,7 @@ main {
   border-radius: 10px;
   color: white;
   cursor: pointer;
+  transition: all 0.5s linear;
   padding: 2%;
   margin: auto;
   position: absolute;
@@ -948,8 +973,9 @@ footer li:first-of-type {
 }
 footer a {
   color: #F3F3F3;
-  font-size: 1.1em;
   text-decoration: none;
+  transition: all 0.5s ease-in-out;
+  font-size: 1.1em;
 }
 footer a:hover {
   color: #FFB775;
@@ -1037,4 +1063,5 @@ footer a:hover {
 #map {
   width: 100%;
   height: 150px;
+  border-radius: 10px;
 }/*# sourceMappingURL=styles.css.map */

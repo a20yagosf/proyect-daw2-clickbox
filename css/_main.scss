@@ -168,11 +168,11 @@ main {
         //Posicionamiento y tamaño
         @include contenedor(80%, 100%, $colorLetra);
         margin: auto;
-        border-radius: 10px;
+        border-radius: $borderRadius;
         display: flex;
 
         & > img {
-            border-radius: 10px 0px 0px 10px;
+            border-radius: $borderRadius 0px 0px $borderRadius;
         }
     }
 
@@ -192,7 +192,7 @@ main {
                 //Aspecto visual
                 color: $colorLetra;
                 background-color: $colorPrincipal;
-                border-radius: 0px 10px 0px 0px;
+                border-radius: 0px $borderRadius 0px 0px;
             }
 
             ul {
@@ -224,7 +224,7 @@ main {
                 inset-block-start: 50%;
                 //Centrado en el medio en Y
                 transform: translateY(-50%);
-                border-radius: 10px;
+                border-radius: $borderRadius;
             }
 
             //Texto de cada uno de los accesorios
@@ -265,7 +265,7 @@ main {
             //paddin botom
             padding-block-end: 15%;
             //margin bottom
-            margin-block-start: 28%;
+            margin-block-start: 15%;
         }
 
         //Imagenes superior e inferior
@@ -279,7 +279,7 @@ main {
 
             & > img {
                 order: 2;
-                border-radius: 0px 0px 10px 10px;
+                border-radius: 0px 0px $borderRadius $borderRadius;
                 width: 100%;
             }
         }
@@ -288,7 +288,7 @@ main {
             h2 {
                 //Margin bottom
                 margin-block-start: 0%;
-                border-radius: 10px 10px 0px 0px;
+                border-radius: $borderRadius $borderRadius 0px 0px;
             }
 
             ul {
@@ -301,7 +301,7 @@ main {
     @media screen and (max-width: 300px) {
         & {
             //Margin top
-            margin-block-start: 35%;
+            margin-block-start: 15%;
         }
 
         h2 {
@@ -320,7 +320,7 @@ main {
             //Padding bottom
             padding-block-end: 7%;
             //Margin top
-            margin-block-start: 20%;
+            margin-block-start: 15%;
         }
 
         //Imagenes superior e inferior
@@ -334,7 +334,7 @@ main {
 
             & > img {
                 order: 2;
-                border-radius: 0px 0px 10px 10px;
+                border-radius: 0px 0px $borderRadius $borderRadius;
             }
         }
 
@@ -342,7 +342,7 @@ main {
             h2 {
                 //Margin bottom
                 margin-block-end: 0%;
-                border-radius: 10px 10px 0px 0px;
+                border-radius: $borderRadius $borderRadius 0px 0px;
             }
 
             ul {
@@ -383,22 +383,26 @@ main {
             //Ponerlo perfectamente en el centro
             transform: translate(-50%, -50%);
             //Estilos
-            border-radius: 10px;
+            border-radius: $borderRadius;
             background-color: $colorPrincipalOscuro;
+        }
+
+        //Botón de la partida
+        button {
+            //Posicionamiento en el centro
+            position: absolute;
+            //Left
+            inset-inline-start: 50%;
+            //Top
+            inset-block-start: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
         }
     }
 
     button {
         //Estilos del botón
         @include boton ($colorDestacado, 1.5rem);
-        //Posicionamiento en el centro
-        position: absolute;
-        //Left
-        inset-inline-start: 50%;
-        //Top
-        inset-block-start: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 3;
     }
 
     //Imagen de las partidas (El triangulo)
@@ -413,7 +417,7 @@ main {
         text-align: center;
         //Estilos
         background-color: rgba(255, 255, 255, 0.356);
-        border-radius: 10px;
+        border-radius: $borderRadius;
         //Flex como hijo
         flex-basis: 60%;
         flex-grow: 2;
@@ -422,6 +426,14 @@ main {
             margin-bottom: 3%;
             font-size: 2.5rem;
         }
+
+        button {
+            margin: auto;
+            //Margin bottom
+            margin-block-end: 1%;
+            background-color: $colorPrincipal;
+        }
+
     }
 
     //Adaptación a movil
@@ -582,7 +594,7 @@ main {
         //Tamaños y posicionamienot
         @include contenedor(100%, auto, $colorLetra);
         position: relative;
-        border-radius: 10px;
+        border-radius: $borderRadius;
         padding: 4%;
     }
 
@@ -630,7 +642,7 @@ main {
     //Imagen artículos
     img {
         width: 100%;
-        border-radius: 10px;
+        border-radius: $borderRadius;
     }
 
     //Botón comprar
@@ -645,7 +657,7 @@ main {
         position: absolute;
         //Bottom
         inset-block-end: 3.5%;
-        border-radius: 0px 0px 10px 10px;
+        border-radius: 0px 0px $borderRadius $borderRadius;
         padding: 2%;
 
         p {
@@ -731,7 +743,7 @@ main {
         margin: 20% 0%;
         font-size: 2em;
         position: relative;
-        border-radius: 10px;
+        border-radius: $borderRadius;
         color: whitesmoke;
         cursor: pointer;
 
@@ -769,7 +781,7 @@ main {
     padding: 2%;
     flex-basis: 60%;
     border: 0.2em solid $colorPrincipal;
-    border-radius: 10px;
+    border-radius: $borderRadius;
     position: relative;
     //padding bottom
     padding-block-end: 5%;
@@ -780,7 +792,7 @@ main {
         text-align: center;
         padding: 5%;
         font-size: 5em;
-        border-radius: 10px;
+        border-radius: $borderRadius;
         //Margin bottom
         margin-block-end: 3%;
         color: $colorPrincipal;
