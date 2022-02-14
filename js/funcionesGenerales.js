@@ -300,7 +300,7 @@ function aparecerLogin(){
     let contenedorLogin = document.getElementById("login");
     //Compruebamos si el login ya existe
     if(contenedorLogin) {
-        //Ocultamos o elemento e o eleminamos
+        //Ocultamos o elemento
         $(contenedorLogin).toggle(1000);
     }
     //Si no existe creamos el elemento
@@ -321,10 +321,13 @@ function aparecerLogin(){
         //Creamos el formulario (Por defecto se activa con el login)
         let formulario = document.createElement("form");
         crearLogin(formulario);
+        //Creo el botón de cierre
+        let botonCierre = crearBoton("X");
         //Lo añado todo al contenedor login
-        contenedorLogin.append(encabezado, paragrafo, contenedorBotones, formulario);
+        contenedorLogin.append(encabezado, paragrafo, contenedorBotones, formulario, botonCierre);
         //Le añado los escuchadores a los botones
         botones.forEach(boton => boton.addEventListener("click", cambiarForm));
+        botonCierre.addEventListener("click", aparecerLogin);
         //Pomos o elemento como display none para mostralo cunha animación
         contenedorLogin.style.display = "none";
         //Añado el contenedor al body
@@ -384,8 +387,13 @@ function crearElemForm(tipoElemento, atributos, texto = "") {
 function crearLogin(formulario) {
     //Creamos los input y los añadimos al formulario
     formulario.append(...crearArrayElem("crearElemForm", 2, [["input", "input"],[{"type": "email", "name": "email", "placeholder": "Correo electrónico", "id": "email"}, {"type": "password", "name": "pwd", "placeholder": "Contraseña", "id": "pwd"}]]));
+    //Botón para móvil para poder salir
+    let botonCancelar = crearBoton("Cancelar", {"type": "button"});
+    botonCancelar.setAttribute("class", "movil");
+    //Añadimos el escuchador al botón
+    botonCancelar.addEventListener("click", aparecerLogin);
     //Creo el botón de iniciar sesión
-    formulario.append(crearBoton("Iniciar sesión", {"type": "submit"}));
+    formulario.append(crearBoton("Iniciar sesión", {"type": "submit"}), botonCancelar);
 }
 
 /**
@@ -395,6 +403,7 @@ function crearLogin(formulario) {
  *
  */
 function crearRegistro(formulario) {
+    //Acordeon 1
     //Creamos el acordeon
     let acordeon1 = document.createElement("div");
     //Le asignamos la clase
@@ -409,6 +418,8 @@ function crearRegistro(formulario) {
     divAcordeon1.append(...inputAcordeon1);
     //Añadimos el boton y el div al acordeon
     acordeon1.append(botonAcordeon1, divAcordeon1);
+
+    //Acordeon2
     //Creamos el segundo acordeon
     let acordeon2 = document.createElement("div");
     acordeon2.setAttribute("class", "acordeon");
@@ -424,13 +435,21 @@ function crearRegistro(formulario) {
     divAcordeon2.style.display = "none";
     //Añadimos el boton y el div al acordeon
     acordeon2.append(botonAcordeon2, divAcordeon2);
-    //Botón de registro //<input type="submit" value="Registrarme"/>
+
+    //Botón de registro
     let botonRegistro = crearElemForm("input", {"type": "submit", "value": "Registrarme"});
     //Le añadimos los listener a los botones del acordeon
     botonAcordeon1.addEventListener("click", manipularAcordeon);
     botonAcordeon2.addEventListener("click", manipularAcordeon);
+    
+     //Botón para móvil para poder salir
+     let botonCancelar = crearBoton("Cancelar", {"type": "button"});
+     botonCancelar.setAttribute("class", "movil");
+     //Añadimos el escuchador al botón
+    botonCancelar.addEventListener("click", aparecerLogin);
+
     //Añadimos todo al formulario
-    formulario.append(acordeon1, acordeon2, botonRegistro);
+    formulario.append(acordeon1, acordeon2, botonRegistro, botonCancelar);
 }
 
 function manipularAcordeon(e) {

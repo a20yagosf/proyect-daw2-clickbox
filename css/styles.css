@@ -936,14 +936,14 @@ main {
 
 #login {
   width: 80%;
-  height: 90%;
+  height: 70%;
   background-color: #f3f3f3dc;
   padding: 1%;
   border-radius: 10px;
-  position: absolute;
-  inset-block-start: 50%;
+  position: fixed;
+  inset-block-start: 10%;
   inset-inline-start: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, 0%);
   z-index: 5;
   overflow-y: auto;
   overflow-x: hidden;
@@ -1054,6 +1054,8 @@ main {
 }
 #login .acordeon:first-of-type {
   border-radius: 10px 10px 0px 0px;
+  -webkit-border-after: 1px solid #F3F3F3;
+          border-block-end: 1px solid #F3F3F3;
 }
 #login input[type=submit] {
   display: block;
@@ -1070,10 +1072,48 @@ main {
 #login input[type=submit]:hover {
   background-color: #03bdd7;
 }
+#login > button {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 2rem;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  position: absolute;
+  inset-block-start: 2%;
+  inset-inline-end: 2%;
+  border-radius: 100%;
+  padding: 0.3% 1.2%;
+}
+#login > button:hover {
+  background-color: #03bdd7;
+}
+#login .movil {
+  display: none;
+  -webkit-margin-before: 2%;
+          margin-block-start: 2%;
+}
 @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
   #login {
     width: 100%;
     padding: 5%;
+    font-size: 1.3em;
+  }
+  #login h2 {
+    text-align: left;
+    font-size: 2.2rem;
+  }
+  #login > button {
+    padding: 0.5% 3%;
+    font-size: 1.5rem;
+    inset-block-start: 3%;
+    inset-inline-end: 4%;
+  }
+  #login div button {
+    font-size: 1.5rem;
   }
   #login form {
     width: 100%;
@@ -1085,6 +1125,54 @@ main {
   #login form div input {
     -webkit-margin-end: 2%;
             margin-inline-end: 2%;
+  }
+  #login form div input, #login form div label {
+    font-size: 1.5em;
+  }
+  #login form div div input, #login form div div label {
+    font-size: 1.3em;
+    flex-basis: 100%;
+  }
+  #login form input[type=submit] {
+    font-size: 1.5rem;
+  }
+  #login form button {
+    font-size: 1.5rem;
+  }
+  #login .movil {
+    display: block;
+  }
+}
+@media screen and (max-width: 300px) {
+  #login form div:nth-of-type(2) input, #login form div:nth-of-type(2) label {
+    flex-basis: 90%;
+  }
+}
+@media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px) {
+  #login {
+    font-size: 1.5em;
+    padding: 4%;
+  }
+  #login h2 {
+    font-size: 2.2rem;
+  }
+  #login div button {
+    font-size: 1.6rem;
+  }
+  #login button:last-of-type {
+    padding: 0.3% 1.8%;
+  }
+  #login form {
+    width: 90%;
+  }
+  #login form div div input, #login form input, #login form div div label {
+    font-size: 1.6rem;
+  }
+  #login form div:nth-of-type(2) input[type=date] {
+    flex-basis: 53%;
+  }
+  #login form input[type=submit] {
+    font-size: 1.6rem;
   }
 }
 
