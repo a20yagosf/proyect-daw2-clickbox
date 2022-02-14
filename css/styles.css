@@ -1070,6 +1070,23 @@ main {
 #login input[type=submit]:hover {
   background-color: #03bdd7;
 }
+@media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+  #login {
+    width: 100%;
+    padding: 5%;
+  }
+  #login form {
+    width: 100%;
+  }
+  #login form .acordeon:nth-of-type(2) label {
+    text-align: center;
+    transform: translateY(10%);
+  }
+  #login form div input {
+    -webkit-margin-end: 2%;
+            margin-inline-end: 2%;
+  }
+}
 
 footer {
   width: 100%;

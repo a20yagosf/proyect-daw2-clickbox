@@ -163,4 +163,26 @@
         @include boton($colorPrincipal, 1.1rem);
         padding: 1%;
     }
+
+    //Adaptación para móviles mediante aspect ratio
+    @media screen and (max-aspect-ratio:  195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+        & {
+            width: 100%;
+            padding: 5%;
+        }
+
+        form {
+            width: 100%;
+
+            .acordeon:nth-of-type(2) label {
+                text-align: center;
+                transform: translateY(10%);
+            }
+
+            div input {
+                //Margin right
+                margin-inline-end: 2%;
+            }
+        }
+    }
 }
