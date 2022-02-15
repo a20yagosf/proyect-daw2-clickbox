@@ -106,37 +106,47 @@
 
 //Recibo con todos los datos
 #recibo {
-    @include contenedor(100%, 100%, transparent);
+    //Tamaños y posición
+    @include contenedor(100%, 100%, white);
     padding: 2%;
-    flex-basis: 60%;
-    border: 0.2em solid $colorPrincipal;
-    border-radius: $borderRadius;
-    position: relative;
     //padding bottom
     padding-block-end: 5%;
+    //Permite poner a los hijos como absolutos para colocarlos
+    position: relative;
+   //Estilo
+    border: 0.2em solid $colorPrincipal;
+    border-radius: $borderRadius;
+     //Flex como hijo
+     flex-basis: 60%;
 
+     //Cabecera donde pone (1 MES, 6 MESES, etcc)
     h2 {
-        flex-basis: 100%;
-        background-color: $colorSecundario;
-        text-align: center;
-        padding: 5%;
-        font-size: 5em;
-        border-radius: $borderRadius;
+        //Tamaño y posición
         //Margin bottom
         margin-block-end: 3%;
+        padding: 5%;
+        text-align: center;
+        font-size: 5em;
+        //Estilo
+        background-color: $colorSecundario;
         color: $colorPrincipal;
+        border-radius: $borderRadius;
         //Separamos un poco las letras
         word-spacing: 0.5em;
         text-transform: uppercase;
         transition: all 2s ease-in-out;
+        //Flex como hijo
+        flex-basis: 100%;
     }
 
+    //Cada uno de los costes
     p {
         position: relative;
         font-size: 1.5em;
         margin: 3%;
     }
 
+    //Última linea donde va el total
     p:last-of-type {
         //Padding top
         padding-block-start: 2%;
@@ -144,12 +154,14 @@
         border-block-start: 0.2em dashed $colorPrincipal;
     }
 
+    //Cada uno de los precios
     span {
         position: absolute;
         //Right
         inset-inline-end: 0%;
     }
 
+    //Botón para suscribirse
     button {
         @include boton($colorPrincipal, 1.5em);
         padding: 2%;
@@ -159,4 +171,11 @@
         inset-inline-start: 50%;
         transform: translateX(-50%);
     }
+}
+
+//Main donde irá el mosaico a repetir, hacemos que cubra todo en X y se repita en Y
+.cuerpoMosaico {
+    background-image: url("../img/mosaico2.svg");
+    background-size: cover;
+    background-repeat: repeat-y;
 }
