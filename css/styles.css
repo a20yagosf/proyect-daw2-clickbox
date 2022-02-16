@@ -541,7 +541,7 @@ main {
     display: none;
   }
 }
-@media screen and (aspect-ratio: 4/3) {
+@media screen and (aspect-ratio: 4/3), (aspect-ratio: 1/1) {
   #suscripciones {
     padding: 4% auto;
   }
@@ -956,9 +956,9 @@ main {
 }
 #recibo table {
   width: 90%;
-  height: 90%;
+  height: 100%;
   font-size: 1.5em;
-  margin: 5%;
+  margin: 5% auto;
   grid-area: cuerpo;
 }
 #recibo table thead {

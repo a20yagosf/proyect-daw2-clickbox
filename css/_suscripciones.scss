@@ -147,9 +147,9 @@
     table {
         //Ponemos tamaño al 90% por los márgenes que tiene
         width: 90%;
-        height: 90%;
+        height: 100%;
         font-size: 1.5em;
-        margin: 5%;
+        margin: 5% auto;
         //Grid como hijo
         grid-area: cuerpo;
 
