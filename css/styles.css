@@ -249,25 +249,6 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 100;
 }
 
-body {
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden;
-  height: 100vh;
-}
-body * {
-  flex-grow: 0;
-}
-body main {
-  flex-grow: 2;
-}
-
-.desplazarseTodo {
-  height: -webkit-max-content;
-  height: -moz-max-content;
-  height: max-content;
-}
-
 main {
   font-family: "Resolve";
   position: relative;
@@ -833,6 +814,12 @@ main {
   color: #F3F3F3;
 }
 
+.cuerpoMosaico {
+  background-image: url("../img/mosaico2.svg");
+  background-size: cover;
+  background-repeat: repeat-y;
+}
+
 #suscribirse {
   width: 100%;
   height: 100%;
@@ -1002,12 +989,6 @@ main {
   background-color: #03bdd7;
 }
 
-.cuerpoMosaico {
-  background-image: url("../img/mosaico2.svg");
-  background-size: cover;
-  background-repeat: repeat-y;
-}
-
 #login {
   width: 80%;
   height: 70%;
@@ -1082,16 +1063,14 @@ main {
   flex-direction: column;
   justify-content: center;
 }
-#login form input {
+#login form input:not(input[type=submit]) {
   margin: 2% 0%;
   padding: 1%;
   font-family: "Resolve";
-  transition: all 1s ease-in-out;
-}
-#login form input:not(input[type=submit]) {
   border-radius: 5px;
   border: 1px solid #0291A5;
   outline-color: #FFB775;
+  transition: all 1s ease-in-out;
 }
 #login form div {
   background-color: #d9d9d9;
@@ -1251,6 +1230,311 @@ main {
   }
 }
 
+main {
+  padding: 2%;
+}
+
+h2, h3 {
+  color: #026a79;
+}
+
+form {
+  width: 90%;
+  height: auto;
+  background-color: #F3F3F3;
+  margin: auto;
+  padding: 0% 2%;
+  border-radius: 10px;
+  font-size: 1.2em;
+  display: flex;
+  flex-wrap: wrap;
+}
+form > div {
+  padding: 1% 0%;
+  position: relative;
+  -webkit-border-after: 1px solid #0291A5;
+          border-block-end: 1px solid #0291A5;
+  flex-basis: 100%;
+}
+form h2 {
+  text-align: center;
+}
+form button {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.4rem;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  padding: 0.5% 1%;
+}
+form button:hover {
+  background-color: #03bdd7;
+}
+form #editarCuenta {
+  position: absolute;
+  inset-inline-end: 2%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+form #editarCuenta {
+  flex-basis: 20%;
+}
+form h3 {
+  width: 100%;
+  text-align: center;
+}
+form fieldset {
+  padding: 2%;
+  margin: 2%;
+}
+form fieldset div {
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 2%;
+  margin: 2%;
+}
+form fieldset div label, form fieldset div input, form fieldset div select {
+  flex-basis: 48%;
+  padding: 2%;
+  margin: 1%;
+  transition: all 1s ease-in-out;
+}
+form fieldset div input[readonly], form fieldset div select[disabled] {
+  border: none;
+  outline: none;
+  background-color: transparent;
+  text-align: center;
+}
+form fieldset div input, form fieldset div select {
+  margin: 2% 0%;
+  padding: 1%;
+  font-family: "Resolve";
+  border-radius: 5px;
+  border: 1px solid #0291A5;
+  outline-color: #FFB775;
+  transition: all 1s ease-in-out;
+}
+form fieldset div span {
+  padding: 2%;
+  margin: 1%;
+  flex-basis: calc(100%/3);
+  flex-grow: 2;
+}
+form fieldset div button {
+  flex-grow: 0;
+}
+form fieldset div:last-of-type {
+  -webkit-margin-after: 0%;
+          margin-block-end: 0%;
+}
+form fieldset:first-of-type {
+  -webkit-border-end: 1px solid #0291A5;
+          border-inline-end: 1px solid #0291A5;
+  flex-basis: 46%;
+}
+form fieldset:nth-of-type(2) {
+  flex-basis: 46%;
+}
+form fieldset:last-of-type {
+  margin: auto;
+  -webkit-border-before: 1px solid #0291A5;
+          border-block-start: 1px solid #0291A5;
+  flex-basis: 100%;
+  justify-content: space-around;
+}
+form fieldset:last-of-type h3 {
+  -webkit-margin-before: 2%;
+          margin-block-start: 2%;
+}
+form input[type=submit] {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.5rem;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  padding: 1% 2%;
+  margin: auto;
+  -webkit-margin-after: 5%;
+          margin-block-end: 5%;
+}
+form input[type=submit]:hover {
+  background-color: #03bdd7;
+}
+
+#perfilUsuario input[type=submit] {
+  display: none;
+}
+
+@media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+  main {
+    padding: 2% 0%;
+  }
+
+  form {
+    width: 100%;
+  }
+  form fieldset:first-of-type, form fieldset:nth-of-type(2) {
+    flex-basis: 100%;
+  }
+  form fieldset:first-of-type {
+    -webkit-border-end: none;
+            border-inline-end: none;
+    -webkit-border-after: 1px solid #0291A5;
+            border-block-end: 1px solid #0291A5;
+  }
+  form fieldset div input[readonly], form fieldset div select[disabled] {
+    text-align: start;
+    flex-basis: 100%;
+    padding: 2%;
+    margin: 1%;
+  }
+  form fieldset div label {
+    flex-basis: 100%;
+  }
+  form input[type=submit] {
+    -webkit-margin-before: 5%;
+            margin-block-start: 5%;
+  }
+}
+@media screen and (max-width: 300px) {
+  form > div {
+    padding: 2% 1%;
+  }
+  form h2 {
+    text-align: start;
+    -webkit-margin-after: 0%;
+            margin-block-end: 0%;
+  }
+}
+@media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px), (aspect-ratio: 1/1) {
+  form {
+    font-size: 1.3rem;
+  }
+  form fieldset div {
+    height: 93%;
+    margin: 0%;
+    padding: 0%;
+  }
+  form fieldset div label, form fieldset div input, form fieldset div select {
+    flex-basis: 100%;
+    padding: 2%;
+    margin: 1%;
+  }
+  form fieldset div input[readonly], form fieldset div select[disabled] {
+    text-align: start;
+  }
+  form fieldset div span {
+    flex-basis: calc(100%/3);
+  }
+}
+main div div {
+  width: 90%;
+  margin: auto;
+  background-color: #F3F3F3;
+  border-radius: 10px 10px 0px 0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+main div div ul {
+  padding: 0% 1%;
+  -webkit-margin-after: 0%;
+          margin-block-end: 0%;
+  -webkit-border-after: 1px solid #0291A5;
+          border-block-end: 1px solid #0291A5;
+  display: flex;
+  justify-content: space-around;
+  flex-basis: 70%;
+  flex-grow: 2;
+}
+main div div ul li {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  list-style: none;
+  -webkit-padding-before: 1%;
+          padding-block-start: 1%;
+}
+main div div ul li a {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  padding: 4%;
+  text-align: center;
+  color: #0291A5;
+}
+main div div ul li a:hover {
+  border: 1px solid #0291A5;
+  -webkit-border-after: 0px;
+          border-block-end: 0px;
+  border-radius: 10px 10px 0px 0px;
+}
+main div div ul li .listaActivo {
+  background-color: #0291A5;
+  color: #F3F3F3;
+  border: 1px solid transparent;
+  border-color: #0291A5 #0291A5 transparent;
+  border-radius: 10px 10px 0px 0px;
+  z-index: 2;
+}
+main div div button {
+  flex-basis: 10%;
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.5rem;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+}
+main div div button:hover {
+  background-color: #03bdd7;
+}
+main #panelAdmin {
+  -webkit-padding-after: 2%;
+          padding-block-end: 2%;
+  border-radius: 0px 0px 10px 10px;
+  align-items: center;
+  justify-content: center;
+}
+main #panelAdmin h2 {
+  padding: 1% 0%;
+  flex-basis: 100%;
+}
+main #panelAdmin input, main #panelAdmin label, main #panelAdmin select {
+  flex-basis: calc(100%/2);
+}
+main #panelAdmin input, main #panelAdmin select {
+  margin: 2% 0%;
+  padding: 1%;
+  font-family: "Resolve";
+  border-radius: 5px;
+  border: 1px solid #0291A5;
+  outline-color: #FFB775;
+  transition: all 1s ease-in-out;
+}
+main #panelAdmin input[type=submit], main #panelAdmin button {
+  -webkit-margin-after: 0%;
+          margin-block-end: 0%;
+  margin: 0% 2%;
+  padding: 0.5%;
+  font-size: 1.5rem;
+  flex-basis: 20%;
+}
+
 footer {
   width: 100%;
   height: auto;
@@ -1332,7 +1616,7 @@ footer a:hover {
   margin-right: 5%;
 }
 #redes img {
-  width: 50px;
+  width: 60px;
 }
 
 #infoPag {

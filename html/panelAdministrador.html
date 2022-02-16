@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClickBox</title>
+    <!-- Script con todas las funciones -->
+    <script src="../js/funcionesGenerales.js"></script>
+    <!-- Que se ejecutará en esta página -->
+    <script src="../js/panelAdministrador.js"></script>
+</head>
+<body>
+    <main class="cuerpoMosaico">
+        <div>
+            <div>
+                <ul id="opcionesPanelAdmin">
+                    <li><a href="#" class="listaActivo">Cajas sorpresa</a></li>
+                    <li><a href="#">Partidas</a></li>
+                    <li><a href="#">Productos</a></li>
+                    <li><a href="#">Usuarios</a></li>
+                </ul>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="opcionesPanelAdmin" aria-controls="opcionesPanelAdmin" aria-expanded="false" aria-label="Menú hamburguesa panel de control">Prueba</button>
+            </div>
+            <form id="panelAdmin">
+                <h2>Cajas sorpresa</h2>
+                <label for="fecha">Fecha lanzamiento:</label>
+                <input type="date" name="fecha" id="fecha"/>
+                <label for="num_jug">Número de jugadores:</label>
+                <input type="number" name="num_jug" id="num_jug" max="10" min="3"/>
+                <label for="genero">Género</label>
+                <select name="genero" id="genero">
+                    <option value="aventuras">Aventuras</option>
+                    <option value="thriller">Thriller</option>
+                </select>
+                <label for="tematica">Temática</label>
+                <select name="tematica" id="tematica">
+                    <option value="navidad">Navidad</option>
+                    <option value="sanValentin">San valentín</option>
+                </select>
+                <input type="submit" value="Crear caja"/>
+                <button type="button">Cancelar</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

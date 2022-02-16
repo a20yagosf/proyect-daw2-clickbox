@@ -79,20 +79,9 @@
         flex-direction: column;
         justify-content: center;
 
-        input {
-            //Posición
-            margin: 2% 0%;
-            padding: 1%;
-            //Estilo
-            font-family: "Resolve";
-            transition: all 1s ease-in-out;
-        }
-
         //Todos menos el input de sumit
         input:not(input[type="submit"]){
-            border-radius: 5px;
-            border: 1px solid $colorPrincipal;
-            outline-color: $colorSecundario;
+            @include inputFormulario();
         }
 
 

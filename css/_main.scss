@@ -24,27 +24,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
-body {
-    //Flex como padre
-    display: flex;
-    flex-direction: column;
-    overflow-x: hidden;
-    height: 100vh;
-
-    * {
-        flex-grow: 0;
-    }
-
-    main {
-        flex-grow: 2;
-    }
-}
-
-//Clase para body para cuando la página ocupa más del viewport, para que el menú fixed pueda desplazarse toda la trayectoria necesita tener la altura en max-content
-.desplazarseTodo {
-    height: max-content;
-}
-
 //Main
 main {
     font-family: "Resolve";
@@ -721,4 +700,12 @@ main {
 
         }
     }
+}
+
+//Main donde irá el mosaico a repetir, hacemos que cubra todo en X y se repita en Y
+.cuerpoMosaico {
+    background-image: url("../img/mosaico2.svg");
+    background-size: cover;
+    background-repeat: repeat-y;
+
 }

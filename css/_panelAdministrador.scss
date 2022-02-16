@@ -1,0 +1,102 @@
+
+main {
+    div div {
+        width: 90%;
+        margin: auto;
+        background-color: $colorLetra;
+        border-radius: $borderRadius $borderRadius 0px 0px;
+        //Flex como padre
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        ul {
+            padding: 0% 1%;
+            //Margin bottom
+            margin-block-end: 0%;
+            //Estilo
+            //Border bottom
+            border-block-end: 1px solid $colorPrincipal;
+            //Flex como padre
+            display: flex;
+            justify-content: space-around;
+            //Flex como hijo
+            flex-basis: 70%;
+            flex-grow: 2;
+    
+            li {
+                @include contenedor(100%, 100%, transparent);
+                list-style: none;
+                //Padding-top
+                padding-block-start: 1%;
+
+                a {
+                    display: inline-block;
+                    @include contenedor(100%, 100%, transparent);
+                    padding: 4%;
+                    text-align: center;
+                    color: $colorPrincipal;
+
+                    &:hover {
+                        border: 1px solid $colorPrincipal;
+                        //Border bottom
+                        border-block-end: 0px;
+                        border-radius: $borderRadius $borderRadius 0px 0px;
+                    }
+                }
+
+                .listaActivo {
+                    background-color: $colorPrincipal;
+                    color: $colorLetra;
+                    border: 1px solid transparent;
+                    border-color: $colorPrincipal $colorPrincipal transparent;
+                    border-radius: $borderRadius $borderRadius 0px 0px;
+                    z-index: 2;
+                }
+            }
+        }
+
+        button {
+            //Flex como hijo
+            flex-basis: 10%;
+            @include boton($colorPrincipal, 1.5rem);
+        }
+    }
+
+    //Formulario con el panel a administrar
+    #panelAdmin {
+        //Padding bottom
+        padding-block-end: 2%;
+        //Estilo
+        border-radius: 0px 0px $borderRadius $borderRadius;
+        //Flex como padre
+        align-items: center;
+        justify-content: center;
+
+        //Titulo sección
+        h2 {
+            padding: 1% 0%;
+            flex-basis: 100%;
+        }
+
+
+        input, label, select {
+            flex-basis: calc(100%/2);
+        }
+
+        input, select {
+            @include inputFormulario();
+        }
+
+        input[type="submit"], button {
+             //Margin bottom
+            margin-block-end: 0%;
+            margin: 0% 2%;
+            padding: 0.5%;
+            //Estilo
+            font-size: 1.5rem;
+            //Flex como hijo
+            flex-basis: 20%;
+        }
+    }
+}
