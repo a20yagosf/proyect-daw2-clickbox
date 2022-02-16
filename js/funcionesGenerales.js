@@ -99,10 +99,55 @@ function crearAlert(enlaces, textos) {
 }
 
 /**
+ * Crea el footer de manera procedural
+ *
+ */
+function crearFooter() {
+    //Creamos el footer
+    let footer = document.createElement("footer");
+
+    //Lista enlaces página
+    //Creamos la lista que contendrá las diferentes páginas recomendadas
+    let imagenLogo = crearImg({"src": "../img/logoClickBoxV2Footer.svg", "alt": "Logo ClickBox"});
+    //Enlaces de la lista
+    let enlacesLista =  crearArrayElem("crearEnlace", 5, [["#", "#", "#", "#", "#"], [imagenLogo, "Sobre nosotros", "Suscripciones", "Partidas", "Tienda"]]);
+    let lista = crearLista("ul", enlacesLista);
+    lista.setAttribute("id", "infoPag");
+
+    //Conenedor de redes
+    let contenedorRedes = document.createElement("div");
+    contenedorRedes.setAttribute("id", "redes");
+    //Imagenes de las redes que creamos mediante js
+    let imagenesRedes = crearArrayElem("crearImg", 3, [{"src": "../img/Recuadro.png", "alt": "Logo de Instagram"}, {"src": "../img/Recuadro.png", "alt": "Logo de Instagram"}, {"src": "../img/Recuadro.png", "alt": "Logo de Instagram"}]);
+    //Enlaces de las redes
+    let enlacesRedes = crearArrayElem("crearEnlace", 3, [["#", "#", "#"], imagenesRedes]);
+    contenedorRedes.append(...enlacesRedes);
+
+    //Contenedor de localización
+    let contenedorLocalizacion = document.createElement("div");
+    contenedorLocalizacion.setAttribute("id", "localizacion");
+    //Creamos el h4
+    let cabeceraLocalizacion = document.createElement("h4");
+    cabeceraLocalizacion.textContent = "Localización";
+    //Enlace de la localización del local
+    let enlaceLocalizacion = crearEnlace({"href": "https://www.google.com/maps/place/Paseo+Cronista+Xos%C3%A9+M.+%C3%81lvarez+Bl%C3%A1zquez,+26,+36203+Vigo,+Pontevedra/@42.230894,-8.7304107,17z/data=!3m1!4b1!4m5!3m4!1s0xd2f6212e2ab8fbf:0x3a36a0a129ebbdd9!8m2!3d42.23089!4d-8.728222"}, "Paseo Cronista Xosé M. Álvarez Blázquez, 26, 36203 Vigo, Pontevedra");
+    //Contenedor del mapa
+    let contenedorMapa = document.createElement("div");
+    contenedorMapa.setAttribute("id", "map");
+    //Añadimos todo a localización 
+    contenedorLocalizacion.append(cabeceraLocalizacion, enlaceLocalizacion, contenedorMapa);
+
+    //Añadimos todo al footer
+    footer.append(lista, contenedorRedes, contenedorLocalizacion);
+    //Añadimo al cuerpo el footer
+    document.querySelector("body").append(footer);
+}
+
+/**
  * Crea un enlace quer edirige al enlace que le pasara y con el texto que se le pasa
  *
  * @param   {string}  enlace  Enlace al que redirige
- * @param   {mxied}  elemento   Texto o elemento a añadir
+ * @param   {mixed}  elemento   Texto o elemento a añadir
  *
  * @return  {DOMElement}          Enlace
  */
@@ -456,6 +501,6 @@ function manipularAcordeon(e) {
     //Contenedor de los elementos del formulario de ese boton
     let contenedor = e.target.nextSibling;
     //Miramos si es visible o no y le aplicamos el efecto
-    contenedor.style.display == "none" ? $(contenedor).slideDown(1000) : $(contenedor).slideUp(1000);
+    contenedor.style.display == "none" ? $(contenedor).slideDown(500) : $(contenedor).slideUp(500);
    
 }

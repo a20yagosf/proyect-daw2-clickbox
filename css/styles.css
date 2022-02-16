@@ -1270,6 +1270,9 @@ footer li:first-of-type a {
 footer li:first-of-type {
   margin-bottom: 5%;
 }
+footer img {
+  width: 180px;
+}
 footer a {
   color: #F3F3F3;
   text-decoration: none;
