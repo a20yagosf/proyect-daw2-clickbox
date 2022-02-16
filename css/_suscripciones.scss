@@ -198,11 +198,3 @@
         grid-area: boton;
     }
 }
-
-//Main donde irá el mosaico a repetir, hacemos que cubra todo en X y se repita en Y
-.cuerpoMosaico {
-    background-image: url("../img/mosaico2.svg");
-    background-size: cover;
-    background-repeat: repeat-y;
-
-}

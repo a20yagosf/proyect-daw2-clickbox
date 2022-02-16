@@ -108,7 +108,7 @@ function crearFooter() {
 
     //Lista enlaces página
     //Creamos la lista que contendrá las diferentes páginas recomendadas
-    let imagenLogo = crearImg({"src": "../img/logoClickBoxV2Footer.svg", "alt": "Logo ClickBox"});
+    let imagenLogo = crearImg({"src": "../img/logoClickBoxFooter.svg", "alt": "Logo ClickBox"});
     //Enlaces de la lista
     let enlacesLista =  crearArrayElem("crearEnlace", 5, [["#", "#", "#", "#", "#"], [imagenLogo, "Sobre nosotros", "Suscripciones", "Partidas", "Tienda"]]);
     let lista = crearLista("ul", enlacesLista);
@@ -118,7 +118,7 @@ function crearFooter() {
     let contenedorRedes = document.createElement("div");
     contenedorRedes.setAttribute("id", "redes");
     //Imagenes de las redes que creamos mediante js
-    let imagenesRedes = crearArrayElem("crearImg", 3, [{"src": "../img/Recuadro.png", "alt": "Logo de Instagram"}, {"src": "../img/Recuadro.png", "alt": "Logo de Instagram"}, {"src": "../img/Recuadro.png", "alt": "Logo de Instagram"}]);
+    let imagenesRedes = crearArrayElem("crearImg", 3, [{"src": "../img/logoTwitter.svg", "alt": "Logo de Twitter"}, {"src": "../img/logoInstagram.svg", "alt": "Logo de Instagram"}, {"src": "../img/logoTickTock.svg", "alt": "Logo de Tick Tock"}]);
     //Enlaces de las redes
     let enlacesRedes = crearArrayElem("crearEnlace", 3, [["#", "#", "#"], imagenesRedes]);
     contenedorRedes.append(...enlacesRedes);
@@ -130,7 +130,7 @@ function crearFooter() {
     let cabeceraLocalizacion = document.createElement("h4");
     cabeceraLocalizacion.textContent = "Localización";
     //Enlace de la localización del local
-    let enlaceLocalizacion = crearEnlace({"href": "https://www.google.com/maps/place/Paseo+Cronista+Xos%C3%A9+M.+%C3%81lvarez+Bl%C3%A1zquez,+26,+36203+Vigo,+Pontevedra/@42.230894,-8.7304107,17z/data=!3m1!4b1!4m5!3m4!1s0xd2f6212e2ab8fbf:0x3a36a0a129ebbdd9!8m2!3d42.23089!4d-8.728222"}, "Paseo Cronista Xosé M. Álvarez Blázquez, 26, 36203 Vigo, Pontevedra");
+    let enlaceLocalizacion = crearEnlace("https://www.google.com/maps/place/Paseo+Cronista+Xos%C3%A9+M.+%C3%81lvarez+Bl%C3%A1zquez,+26,+36203+Vigo,+Pontevedra/@42.230894,-8.7304107,17z/data=!3m1!4b1!4m5!3m4!1s0xd2f6212e2ab8fbf:0x3a36a0a129ebbdd9!8m2!3d42.23089!4d-8.728222", "Paseo Cronista Xosé M. Álvarez Blázquez, 26, 36203 Vigo, Pontevedra");
     //Contenedor del mapa
     let contenedorMapa = document.createElement("div");
     contenedorMapa.setAttribute("id", "map");
@@ -497,10 +497,48 @@ function crearRegistro(formulario) {
     formulario.append(acordeon1, acordeon2, botonRegistro, botonCancelar);
 }
 
+/**
+ * Encoje o muestra el arcodeon con un animación de jquery
+ *
+ * @param   {EventListener}  e  evento que lo desencadena
+ *
+ */
 function manipularAcordeon(e) {
     //Contenedor de los elementos del formulario de ese boton
     let contenedor = e.target.nextSibling;
     //Miramos si es visible o no y le aplicamos el efecto
     contenedor.style.display == "none" ? $(contenedor).slideDown(500) : $(contenedor).slideUp(500);
    
+}
+
+/**
+ * Pone como editable o lo quita de editable el formulario del perfil de ususario
+ *
+ */
+function editarPerfil() {
+    //Botón editar perfil
+    let botonEditar = document.getElementById("editarCuenta");
+    //Compruebo si está ya editando o no
+    if(botonEditar.textContent == "Editar perfil") {
+        //Buscamos todos los input con readonly y le quito este atributo
+        let inputsFormulario = document.querySelectorAll("input[readonly]");
+        inputsFormulario.forEach(input => input.removeAttribute("readonly"));
+        //Le quitamos también el disabled al select
+        document.querySelector("select[disabled]").removeAttribute("disabled");
+        //Pone como visible el input para guardar los cambios
+        document.querySelector("input[type='submit']").style.display = "block";
+        //Cambiamos el texto de Editar perfil a cancelar
+        botonEditar.textContent = "Cancelar";
+    }
+    else {
+        //Ponemos todos los input con la propiedad readonly
+        let inputs = document.querySelectorAll("input");
+        inputs.forEach(input => input.setAttribute("readonly", "readonly"));
+        //Ponemos el disabled al select
+        document.querySelector("select").setAttribute("disabled", "disabled");
+        //Ocultamos el botón de guardar cambios
+        document.querySelector("input[type='submit']").style.display = "none";
+        //Cambiamos el texto de cancelar a Editar perfil
+        botonEditar.textContent = "Editar perfil";
+    }
 }
