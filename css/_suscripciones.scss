@@ -1,7 +1,7 @@
 
 //Página suscripciones
 #suscribirse {
-    @include contenedor(100%, auto, transparent);
+    @include contenedor(100%, 100%, transparent);
     padding: 5%;
     display: flex;
     justify-content: center;
@@ -12,6 +12,7 @@
     @media screen and (max-aspect-ratio:  195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
         //Div contenedor #suscribirse
         & {
+            padding: 0%;
             flex-wrap: wrap;
         }
 
@@ -19,16 +20,26 @@
             flex-basis: 100%;
 
             .susc {
-                width: 95%;
+                display: inline-block;
+                width: calc(97%/3);
+
+                p {
+                    font-size: 1.5rem;
+                }
             }
         }
 
         #recibo {
             flex-basis: 100%;
             //padding bottom
-            padding-block-end: 15%;
-            //Margin top
-            margin-block-start: 5%;
+            padding-block-end: 5%;
+            margin: 5% 0%;
+
+            table {
+                thead th {
+                    font-size: 2.5em;
+                }
+            }
 
             button {
                 width: 50%;
@@ -47,19 +58,30 @@
             flex-basis: 100%;
 
             .susc {
-                width: 95%;
+                display: inline-block;
+                width: calc(95%/3);
             }
         }
 
         #recibo {
             flex-basis: 100%;
-            //padding bottom
-            padding-block-end: 15%;
             //Margin top
             margin-block-start: 5%;
+            font-size: 1.3rem;
 
             button {
                 width: 50%;
+            }
+        }
+    }
+
+    //Adaptación para pantalla cuadrada
+    @media screen and (aspect-ratio: 1/1){
+        #recibo {
+            font-size: 1.3rem;
+
+            table thead th {
+                font-size: 4em;
             }
         }
     }
@@ -83,6 +105,7 @@
             width: 100%;
             margin: 0% 2%;
             padding: 2% 0%;
+            text-align: center;
             position: relative;
             //Top
             inset-block-start: 35%;
@@ -108,57 +131,62 @@
 #recibo {
     //Tamaños y posición
     @include contenedor(100%, 100%, white);
-    padding: 2%;
-    //padding bottom
-    padding-block-end: 5%;
-    //Permite poner a los hijos como absolutos para colocarlos
-    position: relative;
-   //Estilo
+    //Estilo
     border: 0.2em solid $colorPrincipal;
     border-radius: $borderRadius;
-     //Flex como hijo
-     flex-basis: 60%;
-
-     //Cabecera donde pone (1 MES, 6 MESES, etcc)
-    h2 {
-        //Tamaño y posición
-        //Margin bottom
-        margin-block-end: 3%;
-        padding: 5%;
-        text-align: center;
-        font-size: 5em;
-        //Estilo
-        background-color: $colorSecundario;
-        color: $colorPrincipal;
-        border-radius: $borderRadius;
-        //Separamos un poco las letras
-        word-spacing: 0.5em;
-        text-transform: uppercase;
-        transition: all 2s ease-in-out;
-        //Flex como hijo
-        flex-basis: 100%;
-    }
+    //Flex como hijo
+    flex-basis: 60%;
+    //Grid como padre
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 85% 15%;
+    grid-template-areas: "cuerpo"
+                                      "boton";
 
     //Cada uno de los costes
-    p {
-        position: relative;
+    table {
+        //Ponemos tamaño al 90% por los márgenes que tiene
+        width: 90%;
+        height: 90%;
         font-size: 1.5em;
-        margin: 3%;
-    }
+        margin: 5%;
+        //Grid como hijo
+        grid-area: cuerpo;
 
-    //Última linea donde va el total
-    p:last-of-type {
-        //Padding top
-        padding-block-start: 2%;
-        //Border top
-        border-block-start: 0.2em dashed $colorPrincipal;
-    }
+        thead {
+            //Estilo
+            background-color: $colorSecundario;
+            border-radius: $borderRadius;
+        }
 
-    //Cada uno de los precios
-    span {
-        position: absolute;
-        //Right
-        inset-inline-end: 0%;
+        //Cabecera donde pone (1 MES, 6 MESES, etcc)
+        th {
+            //Tamaño y posición
+            //Margin bottom
+            text-align: center;
+            margin: 0px;
+            font-size: 5em;
+            //Estilo
+            color: $colorPrincipal;
+            border-radius: $borderRadius;
+            //Esta fuente debe estar con font-weigth 100 para permitir una buena lectura
+            font-family: "PoetsenOne";
+            font-weight: 100;
+            //Separamos un poco las letras
+            word-spacing: 0.5em;
+            text-transform: uppercase;
+            transition: all 2s ease-in-out;
+            //Grid como hijo
+            grid-area: titulo;
+        }
+
+        //Última linea donde va el total
+        tbody tr:last-of-type {
+             //Padding top
+            padding-block-start: 2%;
+            //Border top
+            border-block-start: 0.2em dashed $colorPrincipal;
+        }
     }
 
     //Botón para suscribirse
@@ -166,10 +194,8 @@
         @include boton($colorPrincipal, 1.5em);
         padding: 2%;
         margin: auto;
-        position: absolute;
-        //Left
-        inset-inline-start: 50%;
-        transform: translateX(-50%);
+        //Grid como hijo
+        grid-area: boton;
     }
 }
 
@@ -178,4 +204,5 @@
     background-image: url("../img/mosaico2.svg");
     background-size: cover;
     background-repeat: repeat-y;
+
 }

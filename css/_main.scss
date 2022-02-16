@@ -28,8 +28,8 @@ body {
     //Flex como padre
     display: flex;
     flex-direction: column;
-    height: 100vh;
     overflow-x: hidden;
+    height: 100vh;
 
     * {
         flex-grow: 0;
@@ -38,6 +38,11 @@ body {
     main {
         flex-grow: 2;
     }
+}
+
+//Clase para body para cuando la página ocupa más del viewport, para que el menú fixed pueda desplazarse toda la trayectoria necesita tener la altura en max-content
+.desplazarseTodo {
+    height: max-content;
 }
 
 //Main
@@ -302,8 +307,7 @@ main {
 
         .contenidoTarjeta {         
             h2 {
-                //Margin bottom
-                margin-block-start: 0%;
+                margin: 0% auto;
                 border-radius: $borderRadius $borderRadius 0px 0px;
             }
 
@@ -320,8 +324,9 @@ main {
             margin-block-start: 15%;
         }
 
-        h2 {
+        .contenidoTarjeta h2 {
             font-size: 1.5em;
+            margin-block-end: 0%;
         }
 
         //Botones de antes y despues del carousel
@@ -356,13 +361,48 @@ main {
 
         .contenidoTarjeta {         
             h2 {
-                //Margin bottom
-                margin-block-end: 0%;
+                margin: 0% auto;
                 border-radius: $borderRadius $borderRadius 0px 0px;
             }
 
             ul {
                 display: none;
+            }
+        }
+    }
+
+    //Adaptación proyecto
+    @media screen and (aspect-ratio: 4/3) {
+        & {
+            padding: 4% auto;
+        }
+
+        &> button:last-of-type {
+            margin: 2% auto;
+        }
+
+        .contenidoTarjeta {
+            ul {
+                padding-inline-start: 0px;
+            }
+
+            li {
+                padding: 0%;
+
+                span {
+                    width: 100%;
+                    position: static;
+                    transform: none;
+                    text-align: center;
+                }
+
+                img {
+                    display: block;
+                    width: 70%;
+                    position: static;
+                    transform: none;
+                    margin: 4% auto;
+                }
             }
         }
     }

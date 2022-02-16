@@ -62,9 +62,9 @@ function crearNav(redireccion, elementosNav) {
    //LE añadimos la clase
    contenedorNav.setAttribute("class", "container-fluid");
    //Enlace del logo
-   let logo = crearEnlace("index.html", crearImg({"src": "../img/Recuadro.png", "alt": "Logo ClickBox"}));
+   let logo = crearEnlace("index.html", crearImg({"src": "../img/logoClickBox.svg", "alt": "Logo ClickBox"}));
    //Creamos el botón hamburguesa
-   let botonHamburguesa = crearBoton("Esconder", {"class" : "navbar-toggler", "type": "button", "data-bs-toggle": "collapse", "data-bs-target": "#listaNav", "aria-controls": "listaNav", "aria-expanded": "false", "aria-label": "Menú hamburguesa"});
+   let botonHamburguesa = crearBoton("", {"class" : "navbar-toggler", "type": "button", "data-bs-toggle": "collapse", "data-bs-target": "#listaNav", "aria-controls": "listaNav", "aria-expanded": "false", "aria-label": "Menú hamburguesa"});
    //Creamos la lista
    let lista = crearLista("ul", crearArrayElem("crearEnlace", 3, [redireccion, elementosNav]), {"id": "listaNav", "class": "collapse navbar-collapse"});
    //Botón para iniciar sesión
@@ -238,7 +238,7 @@ function seleccionarSusc(e) {
     let botonActivo = boton.parentElement.getElementsByClassName("suscActiva")[0];
     botonActivo.classList.remove("suscActiva");
     //Le cambiamos el textCont al mes
-    document.getElementById("recibo").firstElementChild.textContent = boton.children[0].textContent + " " + boton.children[1].textContent;
+    document.querySelector("th").textContent = boton.children[0].textContent + " " + boton.children[1].textContent;
     //Le añado la clase al boton
     boton.classList.add("suscActiva");
 }

@@ -47,6 +47,7 @@ header > nav {
   color: #F3F3F3;
   text-transform: uppercase;
   position: relative;
+  overflow: hidden;
 }
 #alerta a {
   color: #F3F3F3;
@@ -79,7 +80,7 @@ nav button {
 }
 nav .container-fluid {
   background-color: #FFB775;
-  padding: 0%;
+  padding: 0% 1%;
 }
 @media screen and (max-width: 500px) {
   nav .container-fluid > a {
@@ -117,6 +118,8 @@ nav .container-fluid {
   }
 }
 nav button:first-of-type {
+  background-image: url("../img/menuHamburguesa.svg");
+  background-size: contain;
   display: block;
   background-color: #0291A5;
   border: none;
@@ -126,9 +129,13 @@ nav button:first-of-type {
   color: white;
   cursor: pointer;
   transition: all 0.5s linear;
+  padding: 5% 5%;
 }
 nav button:first-of-type:hover {
   background-color: #03bdd7;
+}
+nav button:first-of-type:hover {
+  background-image: url("../img/menuHamburguesaHover.svg");
 }
 nav ul {
   height: 100%;
@@ -166,9 +173,13 @@ nav li a:hover {
   color: #026a79;
 }
 nav img {
-  width: 50px;
+  width: 100px;
   margin: auto;
   padding: 5%;
+  transition: all 0.5s ease-in-out;
+}
+nav img:hover {
+  content: url("../img/logoClickBoxHover.svg");
 }
 nav button:last-of-type {
   display: block;
@@ -184,10 +195,6 @@ nav button:last-of-type {
 }
 nav button:last-of-type:hover {
   background-color: #03bdd7;
-}
-
-.hideNav {
-  height: 0%;
 }
 
 #localizacionPag {
@@ -245,14 +252,20 @@ h1, h2, h3, h4, h5, h6 {
 body {
   display: flex;
   flex-direction: column;
-  height: 100vh;
   overflow-x: hidden;
+  height: 100vh;
 }
 body * {
   flex-grow: 0;
 }
 body main {
   flex-grow: 2;
+}
+
+.desplazarseTodo {
+  height: -webkit-max-content;
+  height: -moz-max-content;
+  height: max-content;
 }
 
 main {
@@ -481,8 +494,7 @@ main {
     width: 100%;
   }
   #suscripciones .contenidoTarjeta h2 {
-    -webkit-margin-before: 0%;
-            margin-block-start: 0%;
+    margin: 0% auto;
     border-radius: 10px 10px 0px 0px;
   }
   #suscripciones .contenidoTarjeta ul {
@@ -494,8 +506,10 @@ main {
     -webkit-margin-before: 15%;
             margin-block-start: 15%;
   }
-  #suscripciones h2 {
+  #suscripciones .contenidoTarjeta h2 {
     font-size: 1.5em;
+    -webkit-margin-after: 0%;
+            margin-block-end: 0%;
   }
   #suscripciones .carousel-control-prev-icon, #suscripciones .carousel-control-next-icon {
     height: 3rem;
@@ -520,12 +534,39 @@ main {
     border-radius: 0px 0px 10px 10px;
   }
   #suscripciones .contenidoTarjeta h2 {
-    -webkit-margin-after: 0%;
-            margin-block-end: 0%;
+    margin: 0% auto;
     border-radius: 10px 10px 0px 0px;
   }
   #suscripciones .contenidoTarjeta ul {
     display: none;
+  }
+}
+@media screen and (aspect-ratio: 4/3) {
+  #suscripciones {
+    padding: 4% auto;
+  }
+  #suscripciones > button:last-of-type {
+    margin: 2% auto;
+  }
+  #suscripciones .contenidoTarjeta ul {
+    -webkit-padding-start: 0px;
+            padding-inline-start: 0px;
+  }
+  #suscripciones .contenidoTarjeta li {
+    padding: 0%;
+  }
+  #suscripciones .contenidoTarjeta li span {
+    width: 100%;
+    position: static;
+    transform: none;
+    text-align: center;
+  }
+  #suscripciones .contenidoTarjeta li img {
+    display: block;
+    width: 70%;
+    position: static;
+    transform: none;
+    margin: 4% auto;
   }
 }
 
@@ -794,7 +835,7 @@ main {
 
 #suscribirse {
   width: 100%;
-  height: auto;
+  height: 100%;
   background-color: transparent;
   padding: 5%;
   display: flex;
@@ -805,20 +846,27 @@ main {
 }
 @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
   #suscribirse {
+    padding: 0%;
     flex-wrap: wrap;
   }
   #suscribirse #tiposSusc {
     flex-basis: 100%;
   }
   #suscribirse #tiposSusc .susc {
-    width: 95%;
+    display: inline-block;
+    width: calc(97%/3);
+  }
+  #suscribirse #tiposSusc .susc p {
+    font-size: 1.5rem;
   }
   #suscribirse #recibo {
     flex-basis: 100%;
-    -webkit-padding-after: 15%;
-            padding-block-end: 15%;
-    -webkit-margin-before: 5%;
-            margin-block-start: 5%;
+    -webkit-padding-after: 5%;
+            padding-block-end: 5%;
+    margin: 5% 0%;
+  }
+  #suscribirse #recibo table thead th {
+    font-size: 2.5em;
   }
   #suscribirse #recibo button {
     width: 50%;
@@ -832,17 +880,25 @@ main {
     flex-basis: 100%;
   }
   #suscribirse #tiposSusc .susc {
-    width: 95%;
+    display: inline-block;
+    width: calc(95%/3);
   }
   #suscribirse #recibo {
     flex-basis: 100%;
-    -webkit-padding-after: 15%;
-            padding-block-end: 15%;
     -webkit-margin-before: 5%;
             margin-block-start: 5%;
+    font-size: 1.3rem;
   }
   #suscribirse #recibo button {
     width: 50%;
+  }
+}
+@media screen and (aspect-ratio: 1/1) {
+  #suscribirse #recibo {
+    font-size: 1.3rem;
+  }
+  #suscribirse #recibo table thead th {
+    font-size: 4em;
   }
 }
 
@@ -871,6 +927,7 @@ main {
   width: 100%;
   margin: 0% 2%;
   padding: 2% 0%;
+  text-align: center;
   position: relative;
   inset-block-start: 35%;
   font-size: 2rem;
@@ -889,42 +946,43 @@ main {
   width: 100%;
   height: 100%;
   background-color: white;
-  padding: 2%;
-  -webkit-padding-after: 5%;
-          padding-block-end: 5%;
-  position: relative;
   border: 0.2em solid #0291A5;
   border-radius: 10px;
   flex-basis: 60%;
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: 85% 15%;
+  grid-template-areas: "cuerpo" "boton";
 }
-#recibo h2 {
-  -webkit-margin-after: 3%;
-          margin-block-end: 3%;
-  padding: 5%;
-  text-align: center;
-  font-size: 5em;
+#recibo table {
+  width: 90%;
+  height: 90%;
+  font-size: 1.5em;
+  margin: 5%;
+  grid-area: cuerpo;
+}
+#recibo table thead {
   background-color: #FFB775;
+  border-radius: 10px;
+}
+#recibo table th {
+  text-align: center;
+  margin: 0px;
+  font-size: 5em;
   color: #0291A5;
   border-radius: 10px;
+  font-family: "PoetsenOne";
+  font-weight: 100;
   word-spacing: 0.5em;
   text-transform: uppercase;
   transition: all 2s ease-in-out;
-  flex-basis: 100%;
+  grid-area: titulo;
 }
-#recibo p {
-  position: relative;
-  font-size: 1.5em;
-  margin: 3%;
-}
-#recibo p:last-of-type {
+#recibo table tbody tr:last-of-type {
   -webkit-padding-before: 2%;
           padding-block-start: 2%;
   -webkit-border-before: 0.2em dashed #0291A5;
           border-block-start: 0.2em dashed #0291A5;
-}
-#recibo span {
-  position: absolute;
-  inset-inline-end: 0%;
 }
 #recibo button {
   display: block;
@@ -938,9 +996,7 @@ main {
   transition: all 0.5s linear;
   padding: 2%;
   margin: auto;
-  position: absolute;
-  inset-inline-start: 50%;
-  transform: translateX(-50%);
+  grid-area: boton;
 }
 #recibo button:hover {
   background-color: #03bdd7;
@@ -1136,9 +1192,10 @@ main {
   #login form {
     width: 100%;
   }
-  #login form .acordeon:nth-of-type(2) label {
+  #login form .acordeon:nth-of-type(2) label, #login form .acordeon:nth-of-type(2) input[type=date] {
     text-align: center;
     transform: translateY(10%);
+    flex-basis: 90%;
   }
   #login form div input {
     -webkit-margin-end: 2%;
