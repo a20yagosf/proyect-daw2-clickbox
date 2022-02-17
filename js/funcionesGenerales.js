@@ -34,7 +34,7 @@ function crearHeader() {
     //Creamos el elemento header
     let cabecera = document.createElement("header");
     //Creamos el nav
-    let navegador = crearNav(["suscripciones.html", "#", "#"], ["Suscripciones", "Partidas", "Tienda"]);
+    let navegador = crearNav(["./suscripciones.html", "./partidas.html", "#"], ["Suscripciones", "Partidas", "Tienda"]);
     //Añadimos al header
     cabecera.append(navegador);
     //Añadimos al body al inicio de todo
@@ -365,6 +365,10 @@ function aparecerLogin(){
         contenedorBotones.append(...botones);
         //Creamos el formulario (Por defecto se activa con el login)
         let formulario = document.createElement("form");
+        //Atributos del formulario
+        let atributosForm = {"action": "", "method": "POST", "enctype": "multipart/form-data"};
+        //Le asignamos los atributos al formulario
+        Object.entries(atributosForm).forEach(atributo => formulario.setAttribute(atributo[0], atributo[1]));
         crearLogin(formulario);
         //Creo el botón de cierre
         let botonCierre = crearBoton("X");
@@ -457,8 +461,8 @@ function crearRegistro(formulario) {
     let botonAcordeon1 = crearBoton("Datos cuenta", {"type": "button"});
     //Div que contendrá los input
     let divAcordeon1 = document.createElement("div");
-    //Todos los input que contendrá
-    let inputAcordeon1 = crearArrayElem("crearElemForm", 3, [["input", "input", "input"],[{"type": "text", "name": "email", "id": "email", "placeholder": "Correo electrónico"}, {"type": "password", "name": "pwd", "id": "pwd", "placeholder": "Contraseña"}, {"type": "password", "name": "pwd2", "id": "pwd2", "placeholder": "Repetir contraseña"}]]);
+    //Todos los elementos que contendrá el acordeon1
+    let inputAcordeon1 = crearArrayElem("crearElemForm", 8, [["label", "input", "label", "input", "label", "input", "label", "input"],[{"for": "email"}, {"type": "text", "name": "email", "id": "email"}, {"for": "pwd"}, {"type": "password", "name": "pwd", "id": "pwd"}, {"for": "pwd2"}, {"type": "password", "name": "pwd2", "id": "pwd2"}, {"for": "imagenPerfil"}, {"type": "file", "name": "imagenPerfil", "id": "imagenPerfil"}], ["Email", "", "Contraseña", "", "Repetir contraseña", "", "Imagen perfil"]]);
     //Añadimos todo al divAcordeon
     divAcordeon1.append(...inputAcordeon1);
     //Añadimos el boton y el div al acordeon

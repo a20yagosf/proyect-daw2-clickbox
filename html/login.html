@@ -13,16 +13,21 @@
         <h2>Registrate o inicia sesión</h2>
         <p>Por favor crea una cuenta para poder acceder a más funcionalidades de la web como suscribirte, reservar partidas y mucho más</p>
         <div><button class="noActivo">Registrarse</button><button>Loguearse</button></div>
-        <form action="">
+        <form action="" method="POST"  enctype="multipart/form-data">
             <!-- Login <input type="email" name="email" placeholder="Correo electrónico" id="email"/>
             <input type="password" name="pwd" placeholder="Contraseña" id="pwd"/>
             <button type="submit">Iniciar sesión</button> -->
             <div class="acordeon">
                 <button>Datos cuenta</button>
                 <div>
-                    <input type="text" name="email" id="email" placeholder="Correo electrónico"/>
-                    <input type="password" name="pwd" id="pwd" placeholder="Contraseña"/>
-                    <input type="password" name="pwd2" id="pwd2" placeholder="Repetir contraseña"/>
+                    <label for="email">E-mail</label>
+                    <input type="text" name="email" id="email"/>
+                    <label for="pwd">Contraseña</label>
+                    <input type="password" name="pwd" id="pwd"/>
+                    <label for="pwd2">Contraseña</label>
+                    <input type="password" name="pwd2" id="pwd2"/>
+                    <label for="imagenPerfil">Imagen de perfil</label>
+                    <input type="file" name="imagenPerfil" id="imagenPerfil"/>
                 </div>
             </div>
             <div class="acordeon">
