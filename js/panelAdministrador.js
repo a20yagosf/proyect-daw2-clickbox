@@ -10,4 +10,6 @@ window.onload = function () {
     document.getElementById("inicioSesion").addEventListener("click", aparecerLogin);
     //Añadimos el escuchador al botón del header
     document.getElementById("inicioSesion").addEventListener("click", aparecerLogin);
-}
+    //Creamos el mapa
+    crearMapa();
+};

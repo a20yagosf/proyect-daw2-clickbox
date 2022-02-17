@@ -25,7 +25,6 @@ header {
     color: $colorLetra;
     text-transform: uppercase;
     position: relative;
-    //Para que no se muestre la barra lateral con la animación de las letras
     overflow: hidden;
 
     //Contiene los iconos y el texto
@@ -56,7 +55,7 @@ nav {
 
     .container-fluid {
         background-color: $colorSecundario;
-        padding: 0%;
+        padding: 0% 1%;
 
          //Adapción a móvil
         @media screen and (max-width: 500px) {
@@ -107,7 +106,14 @@ nav {
 
     //Botón Hamburguesa
     button:first-of-type {
+        background-image: url("../img/menuHamburguesa.svg");
+        background-size: contain;
         @include boton($colorPrincipal, 1em);
+        padding: 5% 5%;
+
+        &:hover {
+            background-image: url("../img/menuHamburguesaHover.svg");
+        }
     }
 
     //Ul que contiene cada uno de los elementos del nav
@@ -156,6 +162,11 @@ nav {
         width: $sizeLogo;
         margin: auto;
         padding: 5%;
+        transition: all 0.5s ease-in-out;
+
+        &:hover {
+            content: url("../img/logoClickBoxHover.svg");
+        }
     }
 
     button:last-of-type {
@@ -164,11 +175,8 @@ nav {
     }
 
 }
-//Clase para esconder el nav
-.hideNav {
-    height: 0%;
-}
 
+//Página para saber donde te encuentras
 #localizacionPag {
     display: inline-block;
     //Margin top

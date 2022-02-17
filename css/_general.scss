@@ -65,6 +65,18 @@
   z-index: -1;
 }
 
+@mixin inputFormulario(){
+  //Posición
+  margin: 2% 0%;
+  padding: 1%;
+  //Estilo
+  font-family: "Resolve";
+  border-radius: 5px;
+  border: 1px solid $colorPrincipal;
+  outline-color: $colorSecundario;
+  transition: all 1s ease-in-out;
+}
+
 //Functiones
 /// Función para aclarar el color
 /// @param {string} $color Color a aclarar
