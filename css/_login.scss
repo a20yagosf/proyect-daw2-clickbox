@@ -4,12 +4,12 @@
     @include contenedor($widthLogin, $heighLogin, $fondoLogin);
     padding: 1%;
     border-radius: $borderRadius;
-    position: absolute;
+    position: fixed;
     //Top
-    inset-block-start: 50%;
+    inset-block-start: 10%;
     //Left
     inset-inline-start: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, 0%);
     z-index: 5;
     overflow-y: auto;
     overflow-x: hidden;
@@ -79,20 +79,9 @@
         flex-direction: column;
         justify-content: center;
 
-        input {
-            //Posición
-            margin: 2% 0%;
-            padding: 1%;
-            //Estilo
-            font-family: "Resolve";
-            transition: all 1s ease-in-out;
-        }
-
         //Todos menos el input de sumit
         input:not(input[type="submit"]){
-            border-radius: 5px;
-            border: 1px solid $colorPrincipal;
-            outline-color: $colorSecundario;
+            @include inputFormulario();
         }
 
 
@@ -156,6 +145,7 @@
     //Primer acordeon
     .acordeon:first-of-type {
         border-radius: $borderRadius $borderRadius 0px 0px;
+        border-block-end: 1px solid $colorLetra;
     }
 
     //Boton de registrarme
@@ -163,4 +153,136 @@
         @include boton($colorPrincipal, 1.1rem);
         padding: 1%;
     }
+
+    //Botón para cerrar inicio sesión
+    & >  button {
+        @include boton($colorPrincipal, 2rem);
+        position: absolute;
+        //Top
+        inset-block-start: 2%;
+        //Right
+        inset-inline-end: 2%;
+        border-radius: 100%;
+        padding: 0.3% 1.2%;
+    }
+
+    .movil {
+        display: none;
+        //Margin top
+        margin-block-start: 2%;
+    }
+
+    //Adaptación para móviles mediante aspect ratio
+    @media screen and (max-aspect-ratio:  195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+        & {
+            width: 100%;
+            padding: 5%;
+            font-size: 1.3em;
+        }
+
+        //Encabezado
+        h2 {
+            text-align: left;
+            font-size: 2.2rem;
+        }
+
+        //Botón cierre
+        & > button {
+            padding: 0.5% 3%;
+            font-size: 1.5rem;
+            //Top
+            inset-block-start: 3%;
+            //Right
+            inset-inline-end: 4%;
+        }
+
+        //Botones cambio Registro/login
+        div button {
+            font-size: 1.5rem;
+        }
+
+        form {
+            width: 100%;
+
+            .acordeon:nth-of-type(2) label, .acordeon:nth-of-type(2) input[type="date"] {
+                text-align: center;
+                transform: translateY(10%);
+                flex-basis: 90%;
+            }
+
+            div input {
+                //Margin right
+                margin-inline-end: 2%;
+            }
+
+            div input, div label {
+                font-size: 1.5em;
+            }
+
+            //Elementos acordeon
+            div div input, div div label {
+                font-size: 1.3em;
+                flex-basis: 100%;
+            }
+
+            //Botón registro
+            input[type="submit"] {
+                font-size: 1.5rem;
+            }
+
+            button {
+                font-size: 1.5rem;
+            }
+        }
+
+        .movil {
+            display: block;
+        }
+    }
+
+    //Adaptación para móvil plegable
+    @media screen and (max-width: 300px) {
+        form div:nth-of-type(2) input, form div:nth-of-type(2) label {
+            flex-basis: 90%;
+        }
+    }
+
+    //Adaptación para tablets mediante aspect ratio
+    @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px)  {
+        & {
+            font-size: 1.5em;
+            padding: 4%;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+        }
+
+        div button {
+            font-size: 1.6rem;
+        }
+
+        button:last-of-type {
+            padding: 0.3% 1.8%;
+        }
+
+        form {
+            width: 90%;
+
+            div div input, input, div div label {
+                font-size: 1.6rem;
+            }
+
+            //Elemento date del formulario
+            div:nth-of-type(2) input[type="date"]{
+                flex-basis: 53%;
+            }
+
+            input[type="submit"] {
+                font-size: 1.6rem;
+            }
+        }
+    }
 }
+
+

@@ -286,8 +286,7 @@ main {
 
         .contenidoTarjeta {         
             h2 {
-                //Margin bottom
-                margin-block-start: 0%;
+                margin: 0% auto;
                 border-radius: $borderRadius $borderRadius 0px 0px;
             }
 
@@ -304,8 +303,9 @@ main {
             margin-block-start: 15%;
         }
 
-        h2 {
+        .contenidoTarjeta h2 {
             font-size: 1.5em;
+            margin-block-end: 0%;
         }
 
         //Botones de antes y despues del carousel
@@ -340,13 +340,48 @@ main {
 
         .contenidoTarjeta {         
             h2 {
-                //Margin bottom
-                margin-block-end: 0%;
+                margin: 0% auto;
                 border-radius: $borderRadius $borderRadius 0px 0px;
             }
 
             ul {
                 display: none;
+            }
+        }
+    }
+
+    //Adaptación proyecto
+    @media screen and (aspect-ratio: 4/3), (aspect-ratio: 1/1) {
+        & {
+            padding: 4% auto;
+        }
+
+        &> button:last-of-type {
+            margin: 2% auto;
+        }
+
+        .contenidoTarjeta {
+            ul {
+                padding-inline-start: 0px;
+            }
+
+            li {
+                padding: 0%;
+
+                span {
+                    width: 100%;
+                    position: static;
+                    transform: none;
+                    text-align: center;
+                }
+
+                img {
+                    display: block;
+                    width: 70%;
+                    position: static;
+                    transform: none;
+                    margin: 4% auto;
+                }
             }
         }
     }
@@ -665,4 +700,12 @@ main {
 
         }
     }
+}
+
+//Main donde irá el mosaico a repetir, hacemos que cubra todo en X y se repita en Y
+.cuerpoMosaico {
+    background-image: url("../img/mosaico2.svg");
+    background-size: cover;
+    background-repeat: repeat-y;
+
 }

@@ -62,9 +62,9 @@ function crearNav(redireccion, elementosNav) {
    //LE añadimos la clase
    contenedorNav.setAttribute("class", "container-fluid");
    //Enlace del logo
-   let logo = crearEnlace("index.html", crearImg({"src": "../img/Recuadro.png", "alt": "Logo ClickBox"}));
+   let logo = crearEnlace("index.html", crearImg({"src": "../img/logoClickBox.svg", "alt": "Logo ClickBox"}));
    //Creamos el botón hamburguesa
-   let botonHamburguesa = crearBoton("Esconder", {"class" : "navbar-toggler", "type": "button", "data-bs-toggle": "collapse", "data-bs-target": "#listaNav", "aria-controls": "listaNav", "aria-expanded": "false", "aria-label": "Menú hamburguesa"});
+   let botonHamburguesa = crearBoton("", {"class" : "navbar-toggler", "type": "button", "data-bs-toggle": "collapse", "data-bs-target": "#listaNav", "aria-controls": "listaNav", "aria-expanded": "false", "aria-label": "Menú hamburguesa"});
    //Creamos la lista
    let lista = crearLista("ul", crearArrayElem("crearEnlace", 3, [redireccion, elementosNav]), {"id": "listaNav", "class": "collapse navbar-collapse"});
    //Botón para iniciar sesión
@@ -99,10 +99,55 @@ function crearAlert(enlaces, textos) {
 }
 
 /**
+ * Crea el footer de manera procedural
+ *
+ */
+function crearFooter() {
+    //Creamos el footer
+    let footer = document.createElement("footer");
+
+    //Lista enlaces página
+    //Creamos la lista que contendrá las diferentes páginas recomendadas
+    let imagenLogo = crearImg({"src": "../img/logoClickBoxFooter.svg", "alt": "Logo ClickBox"});
+    //Enlaces de la lista
+    let enlacesLista =  crearArrayElem("crearEnlace", 5, [["#", "#", "#", "#", "#"], [imagenLogo, "Sobre nosotros", "Suscripciones", "Partidas", "Tienda"]]);
+    let lista = crearLista("ul", enlacesLista);
+    lista.setAttribute("id", "infoPag");
+
+    //Conenedor de redes
+    let contenedorRedes = document.createElement("div");
+    contenedorRedes.setAttribute("id", "redes");
+    //Imagenes de las redes que creamos mediante js
+    let imagenesRedes = crearArrayElem("crearImg", 3, [{"src": "../img/logoTwitter.svg", "alt": "Logo de Twitter"}, {"src": "../img/logoInstagram.svg", "alt": "Logo de Instagram"}, {"src": "../img/logoTickTock.svg", "alt": "Logo de Tick Tock"}]);
+    //Enlaces de las redes
+    let enlacesRedes = crearArrayElem("crearEnlace", 3, [["#", "#", "#"], imagenesRedes]);
+    contenedorRedes.append(...enlacesRedes);
+
+    //Contenedor de localización
+    let contenedorLocalizacion = document.createElement("div");
+    contenedorLocalizacion.setAttribute("id", "localizacion");
+    //Creamos el h4
+    let cabeceraLocalizacion = document.createElement("h4");
+    cabeceraLocalizacion.textContent = "Localización";
+    //Enlace de la localización del local
+    let enlaceLocalizacion = crearEnlace("https://www.google.com/maps/place/Paseo+Cronista+Xos%C3%A9+M.+%C3%81lvarez+Bl%C3%A1zquez,+26,+36203+Vigo,+Pontevedra/@42.230894,-8.7304107,17z/data=!3m1!4b1!4m5!3m4!1s0xd2f6212e2ab8fbf:0x3a36a0a129ebbdd9!8m2!3d42.23089!4d-8.728222", "Paseo Cronista Xosé M. Álvarez Blázquez, 26, 36203 Vigo, Pontevedra");
+    //Contenedor del mapa
+    let contenedorMapa = document.createElement("div");
+    contenedorMapa.setAttribute("id", "map");
+    //Añadimos todo a localización 
+    contenedorLocalizacion.append(cabeceraLocalizacion, enlaceLocalizacion, contenedorMapa);
+
+    //Añadimos todo al footer
+    footer.append(lista, contenedorRedes, contenedorLocalizacion);
+    //Añadimo al cuerpo el footer
+    document.querySelector("body").append(footer);
+}
+
+/**
  * Crea un enlace quer edirige al enlace que le pasara y con el texto que se le pasa
  *
  * @param   {string}  enlace  Enlace al que redirige
- * @param   {mxied}  elemento   Texto o elemento a añadir
+ * @param   {mixed}  elemento   Texto o elemento a añadir
  *
  * @return  {DOMElement}          Enlace
  */
@@ -238,7 +283,7 @@ function seleccionarSusc(e) {
     let botonActivo = boton.parentElement.getElementsByClassName("suscActiva")[0];
     botonActivo.classList.remove("suscActiva");
     //Le cambiamos el textCont al mes
-    document.getElementById("recibo").firstElementChild.textContent = boton.children[0].textContent + " " + boton.children[1].textContent;
+    document.querySelector("th").textContent = boton.children[0].textContent + " " + boton.children[1].textContent;
     //Le añado la clase al boton
     boton.classList.add("suscActiva");
 }
@@ -300,7 +345,7 @@ function aparecerLogin(){
     let contenedorLogin = document.getElementById("login");
     //Compruebamos si el login ya existe
     if(contenedorLogin) {
-        //Ocultamos o elemento e o eleminamos
+        //Ocultamos o elemento
         $(contenedorLogin).toggle(1000);
     }
     //Si no existe creamos el elemento
@@ -321,10 +366,13 @@ function aparecerLogin(){
         //Creamos el formulario (Por defecto se activa con el login)
         let formulario = document.createElement("form");
         crearLogin(formulario);
+        //Creo el botón de cierre
+        let botonCierre = crearBoton("X");
         //Lo añado todo al contenedor login
-        contenedorLogin.append(encabezado, paragrafo, contenedorBotones, formulario);
+        contenedorLogin.append(encabezado, paragrafo, contenedorBotones, formulario, botonCierre);
         //Le añado los escuchadores a los botones
         botones.forEach(boton => boton.addEventListener("click", cambiarForm));
+        botonCierre.addEventListener("click", aparecerLogin);
         //Pomos o elemento como display none para mostralo cunha animación
         contenedorLogin.style.display = "none";
         //Añado el contenedor al body
@@ -384,8 +432,13 @@ function crearElemForm(tipoElemento, atributos, texto = "") {
 function crearLogin(formulario) {
     //Creamos los input y los añadimos al formulario
     formulario.append(...crearArrayElem("crearElemForm", 2, [["input", "input"],[{"type": "email", "name": "email", "placeholder": "Correo electrónico", "id": "email"}, {"type": "password", "name": "pwd", "placeholder": "Contraseña", "id": "pwd"}]]));
+    //Botón para móvil para poder salir
+    let botonCancelar = crearBoton("Cancelar", {"type": "button"});
+    botonCancelar.setAttribute("class", "movil");
+    //Añadimos el escuchador al botón
+    botonCancelar.addEventListener("click", aparecerLogin);
     //Creo el botón de iniciar sesión
-    formulario.append(crearBoton("Iniciar sesión", {"type": "submit"}));
+    formulario.append(crearBoton("Iniciar sesión", {"type": "submit"}), botonCancelar);
 }
 
 /**
@@ -395,6 +448,7 @@ function crearLogin(formulario) {
  *
  */
 function crearRegistro(formulario) {
+    //Acordeon 1
     //Creamos el acordeon
     let acordeon1 = document.createElement("div");
     //Le asignamos la clase
@@ -409,6 +463,8 @@ function crearRegistro(formulario) {
     divAcordeon1.append(...inputAcordeon1);
     //Añadimos el boton y el div al acordeon
     acordeon1.append(botonAcordeon1, divAcordeon1);
+
+    //Acordeon2
     //Creamos el segundo acordeon
     let acordeon2 = document.createElement("div");
     acordeon2.setAttribute("class", "acordeon");
@@ -424,19 +480,65 @@ function crearRegistro(formulario) {
     divAcordeon2.style.display = "none";
     //Añadimos el boton y el div al acordeon
     acordeon2.append(botonAcordeon2, divAcordeon2);
-    //Botón de registro //<input type="submit" value="Registrarme"/>
+
+    //Botón de registro
     let botonRegistro = crearElemForm("input", {"type": "submit", "value": "Registrarme"});
     //Le añadimos los listener a los botones del acordeon
     botonAcordeon1.addEventListener("click", manipularAcordeon);
     botonAcordeon2.addEventListener("click", manipularAcordeon);
+    
+     //Botón para móvil para poder salir
+     let botonCancelar = crearBoton("Cancelar", {"type": "button"});
+     botonCancelar.setAttribute("class", "movil");
+     //Añadimos el escuchador al botón
+    botonCancelar.addEventListener("click", aparecerLogin);
+
     //Añadimos todo al formulario
-    formulario.append(acordeon1, acordeon2, botonRegistro);
+    formulario.append(acordeon1, acordeon2, botonRegistro, botonCancelar);
 }
 
+/**
+ * Encoje o muestra el arcodeon con un animación de jquery
+ *
+ * @param   {EventListener}  e  evento que lo desencadena
+ *
+ */
 function manipularAcordeon(e) {
     //Contenedor de los elementos del formulario de ese boton
     let contenedor = e.target.nextSibling;
     //Miramos si es visible o no y le aplicamos el efecto
-    contenedor.style.display == "none" ? $(contenedor).slideDown(1000) : $(contenedor).slideUp(1000);
+    contenedor.style.display == "none" ? $(contenedor).slideDown(500) : $(contenedor).slideUp(500);
    
+}
+
+/**
+ * Pone como editable o lo quita de editable el formulario del perfil de ususario
+ *
+ */
+function editarPerfil() {
+    //Botón editar perfil
+    let botonEditar = document.getElementById("editarCuenta");
+    //Compruebo si está ya editando o no
+    if(botonEditar.textContent == "Editar perfil") {
+        //Buscamos todos los input con readonly y le quito este atributo
+        let inputsFormulario = document.querySelectorAll("input[readonly]");
+        inputsFormulario.forEach(input => input.removeAttribute("readonly"));
+        //Le quitamos también el disabled al select
+        document.querySelector("select[disabled]").removeAttribute("disabled");
+        //Pone como visible el input para guardar los cambios
+        document.querySelector("input[type='submit']").style.display = "block";
+        //Cambiamos el texto de Editar perfil a cancelar
+        botonEditar.textContent = "Cancelar";
+    }
+    else {
+        //Ponemos todos los input con la propiedad readonly
+        let inputs = document.querySelectorAll("input");
+        inputs.forEach(input => input.setAttribute("readonly", "readonly"));
+        //Ponemos el disabled al select
+        document.querySelector("select").setAttribute("disabled", "disabled");
+        //Ocultamos el botón de guardar cambios
+        document.querySelector("input[type='submit']").style.display = "none";
+        //Cambiamos el texto de cancelar a Editar perfil
+        botonEditar.textContent = "Editar perfil";
+    }
 }

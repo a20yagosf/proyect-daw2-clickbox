@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClickBox</title>
+    <!-- Script con todas las funciones -->
+    <script src="../js/funcionesGenerales.js"></script>
+    <!-- Que se ejecutará en esta página -->
+    <script src="../js/perfilUsuario.js"></script>
+</head>
+<body>
+    <main id="perfilUsuario" class="cuerpoMosaico">
+        <form>
+            <div>
+                <h2>Cuenta</h2>
+                <button type="button" id="editarCuenta">Editar perfil</button>
+                <p>Última modificación: <span id="ultModif">Hoy 09:38</span></p>
+            </div>
+            <fieldset>
+                <h3>Datos cuenta</h3>
+                <div>
+                    <label for="email">Correo:</label>
+                    <input readonly="readonly" type="email" name="email" id="email"/>
+                    <label for="rol">Rol:</label>
+                    <input readonly="readonly" type="text" name="rol" id="rol"/>
+                    <label for="genero_favorito">Género favorito:</label>
+                    <select disabled="disabled" name="genero_favorito" id="genero_favorito">
+                        <option value="estrategia">Estrategia:</option>
+                        <option value="thriller">Thriller:</option>
+                    </select>
+                </div>
+            </fieldset>
+            <fieldset>
+                <h3>Datos personales</h3>
+                <div>
+                    <label for="nombre">Nombre:</label>
+                    <input readonly="readonly" type="text" name="nombre" id="nombre" value="Irea Vila"/>
+                    <label for="apellidos">Apellidos:</label>
+                    <input readonly="readonly" type="text" name="apellidos" id="apellidos"/>
+                    <label for="telefono">Teléfono:</label>
+                    <input readonly="readonly" type="tel" name="telefono" id="telefono"/>
+                    <label for="direccion">Dirección:</label>
+                    <input readonly="readonly" type="text" name="direccion" id="direccion"/>
+                </div>
+            </fieldset>
+            <fieldset>
+                <h3>Suscripción</h3>
+                <div>
+                    <label for="suscripcion">Tipo suscripción:</label>
+                    <input readonly="readonly" type="text" name="suscripcion" id="suscripcion"/>
+                    <span id="renovacion">Renovación:</span>
+                    <span>Fecha renovación</span>
+                    <button type="button" id="cancelarRenovacion">Cancelar renovación</button>
+                </div>
+            </fieldset>
+            <input readonly="readonly" type="submit" value="Guardar cambios"/>
+        </form>
+    </main>
+</body>
+</html>

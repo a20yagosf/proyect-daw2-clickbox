@@ -80,7 +80,7 @@ nav button {
 }
 nav .container-fluid {
   background-color: #FFB775;
-  padding: 0%;
+  padding: 0% 1%;
 }
 @media screen and (max-width: 500px) {
   nav .container-fluid > a {
@@ -118,6 +118,8 @@ nav .container-fluid {
   }
 }
 nav button:first-of-type {
+  background-image: url("../img/menuHamburguesa.svg");
+  background-size: contain;
   display: block;
   background-color: #0291A5;
   border: none;
@@ -127,9 +129,13 @@ nav button:first-of-type {
   color: white;
   cursor: pointer;
   transition: all 0.5s linear;
+  padding: 5% 5%;
 }
 nav button:first-of-type:hover {
   background-color: #03bdd7;
+}
+nav button:first-of-type:hover {
+  background-image: url("../img/menuHamburguesaHover.svg");
 }
 nav ul {
   height: 100%;
@@ -167,9 +173,13 @@ nav li a:hover {
   color: #026a79;
 }
 nav img {
-  width: 50px;
+  width: 100px;
   margin: auto;
   padding: 5%;
+  transition: all 0.5s ease-in-out;
+}
+nav img:hover {
+  content: url("../img/logoClickBoxHover.svg");
 }
 nav button:last-of-type {
   display: block;
@@ -185,10 +195,6 @@ nav button:last-of-type {
 }
 nav button:last-of-type:hover {
   background-color: #03bdd7;
-}
-
-.hideNav {
-  height: 0%;
 }
 
 #localizacionPag {
@@ -469,8 +475,7 @@ main {
     width: 100%;
   }
   #suscripciones .contenidoTarjeta h2 {
-    -webkit-margin-before: 0%;
-            margin-block-start: 0%;
+    margin: 0% auto;
     border-radius: 10px 10px 0px 0px;
   }
   #suscripciones .contenidoTarjeta ul {
@@ -482,8 +487,10 @@ main {
     -webkit-margin-before: 15%;
             margin-block-start: 15%;
   }
-  #suscripciones h2 {
+  #suscripciones .contenidoTarjeta h2 {
     font-size: 1.5em;
+    -webkit-margin-after: 0%;
+            margin-block-end: 0%;
   }
   #suscripciones .carousel-control-prev-icon, #suscripciones .carousel-control-next-icon {
     height: 3rem;
@@ -508,12 +515,39 @@ main {
     border-radius: 0px 0px 10px 10px;
   }
   #suscripciones .contenidoTarjeta h2 {
-    -webkit-margin-after: 0%;
-            margin-block-end: 0%;
+    margin: 0% auto;
     border-radius: 10px 10px 0px 0px;
   }
   #suscripciones .contenidoTarjeta ul {
     display: none;
+  }
+}
+@media screen and (aspect-ratio: 4/3), (aspect-ratio: 1/1) {
+  #suscripciones {
+    padding: 4% auto;
+  }
+  #suscripciones > button:last-of-type {
+    margin: 2% auto;
+  }
+  #suscripciones .contenidoTarjeta ul {
+    -webkit-padding-start: 0px;
+            padding-inline-start: 0px;
+  }
+  #suscripciones .contenidoTarjeta li {
+    padding: 0%;
+  }
+  #suscripciones .contenidoTarjeta li span {
+    width: 100%;
+    position: static;
+    transform: none;
+    text-align: center;
+  }
+  #suscripciones .contenidoTarjeta li img {
+    display: block;
+    width: 70%;
+    position: static;
+    transform: none;
+    margin: 4% auto;
   }
 }
 
@@ -780,6 +814,12 @@ main {
   color: #F3F3F3;
 }
 
+.cuerpoMosaico {
+  background-image: url("../img/mosaico2.svg");
+  background-size: cover;
+  background-repeat: repeat-y;
+}
+
 .list-group {
   max-height: 300px;
   margin-bottom: 10px;
@@ -874,7 +914,7 @@ ul li.list-group-item div.info {
 
 #suscribirse {
   width: 100%;
-  height: auto;
+  height: 100%;
   background-color: transparent;
   padding: 5%;
   display: flex;
@@ -885,20 +925,27 @@ ul li.list-group-item div.info {
 }
 @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
   #suscribirse {
+    padding: 0%;
     flex-wrap: wrap;
   }
   #suscribirse #tiposSusc {
     flex-basis: 100%;
   }
   #suscribirse #tiposSusc .susc {
-    width: 95%;
+    display: inline-block;
+    width: calc(97%/3);
+  }
+  #suscribirse #tiposSusc .susc p {
+    font-size: 1.5rem;
   }
   #suscribirse #recibo {
     flex-basis: 100%;
-    -webkit-padding-after: 15%;
-            padding-block-end: 15%;
-    -webkit-margin-before: 5%;
-            margin-block-start: 5%;
+    -webkit-padding-after: 5%;
+            padding-block-end: 5%;
+    margin: 5% 0%;
+  }
+  #suscribirse #recibo table thead th {
+    font-size: 2.5em;
   }
   #suscribirse #recibo button {
     width: 50%;
@@ -912,17 +959,25 @@ ul li.list-group-item div.info {
     flex-basis: 100%;
   }
   #suscribirse #tiposSusc .susc {
-    width: 95%;
+    display: inline-block;
+    width: calc(95%/3);
   }
   #suscribirse #recibo {
     flex-basis: 100%;
-    -webkit-padding-after: 15%;
-            padding-block-end: 15%;
     -webkit-margin-before: 5%;
             margin-block-start: 5%;
+    font-size: 1.3rem;
   }
   #suscribirse #recibo button {
     width: 50%;
+  }
+}
+@media screen and (aspect-ratio: 1/1) {
+  #suscribirse #recibo {
+    font-size: 1.3rem;
+  }
+  #suscribirse #recibo table thead th {
+    font-size: 4em;
   }
 }
 
@@ -951,6 +1006,7 @@ ul li.list-group-item div.info {
   width: 100%;
   margin: 0% 2%;
   padding: 2% 0%;
+  text-align: center;
   position: relative;
   inset-block-start: 35%;
   font-size: 2rem;
@@ -968,43 +1024,44 @@ ul li.list-group-item div.info {
 #recibo {
   width: 100%;
   height: 100%;
-  background-color: transparent;
-  padding: 2%;
-  flex-basis: 60%;
+  background-color: white;
   border: 0.2em solid #0291A5;
   border-radius: 10px;
-  position: relative;
-  -webkit-padding-after: 5%;
-          padding-block-end: 5%;
+  flex-basis: 60%;
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: 85% 15%;
+  grid-template-areas: "cuerpo" "boton";
 }
-#recibo h2 {
-  flex-basis: 100%;
+#recibo table {
+  width: 90%;
+  height: 100%;
+  font-size: 1.5em;
+  margin: 5% auto;
+  grid-area: cuerpo;
+}
+#recibo table thead {
   background-color: #FFB775;
-  text-align: center;
-  padding: 5%;
-  font-size: 5em;
   border-radius: 10px;
-  -webkit-margin-after: 3%;
-          margin-block-end: 3%;
+}
+#recibo table th {
+  text-align: center;
+  margin: 0px;
+  font-size: 5em;
   color: #0291A5;
+  border-radius: 10px;
+  font-family: "PoetsenOne";
+  font-weight: 100;
   word-spacing: 0.5em;
   text-transform: uppercase;
   transition: all 2s ease-in-out;
+  grid-area: titulo;
 }
-#recibo p {
-  position: relative;
-  font-size: 1.5em;
-  margin: 3%;
-}
-#recibo p:last-of-type {
+#recibo table tbody tr:last-of-type {
   -webkit-padding-before: 2%;
           padding-block-start: 2%;
   -webkit-border-before: 0.2em dashed #0291A5;
           border-block-start: 0.2em dashed #0291A5;
-}
-#recibo span {
-  position: absolute;
-  inset-inline-end: 0%;
 }
 #recibo button {
   display: block;
@@ -1018,9 +1075,7 @@ ul li.list-group-item div.info {
   transition: all 0.5s linear;
   padding: 2%;
   margin: auto;
-  position: absolute;
-  inset-inline-start: 50%;
-  transform: translateX(-50%);
+  grid-area: boton;
 }
 #recibo button:hover {
   background-color: #03bdd7;
@@ -1028,14 +1083,14 @@ ul li.list-group-item div.info {
 
 #login {
   width: 80%;
-  height: 90%;
+  height: 70%;
   background-color: #f3f3f3dc;
   padding: 1%;
   border-radius: 10px;
-  position: absolute;
-  inset-block-start: 50%;
+  position: fixed;
+  inset-block-start: 10%;
   inset-inline-start: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, 0%);
   z-index: 5;
   overflow-y: auto;
   overflow-x: hidden;
@@ -1100,16 +1155,14 @@ ul li.list-group-item div.info {
   flex-direction: column;
   justify-content: center;
 }
-#login form input {
+#login form input:not(input[type=submit]) {
   margin: 2% 0%;
   padding: 1%;
   font-family: "Resolve";
-  transition: all 1s ease-in-out;
-}
-#login form input:not(input[type=submit]) {
   border-radius: 5px;
   border: 1px solid #0291A5;
   outline-color: #FFB775;
+  transition: all 1s ease-in-out;
 }
 #login form div {
   background-color: #d9d9d9;
@@ -1146,6 +1199,8 @@ ul li.list-group-item div.info {
 }
 #login .acordeon:first-of-type {
   border-radius: 10px 10px 0px 0px;
+  -webkit-border-after: 1px solid #F3F3F3;
+          border-block-end: 1px solid #F3F3F3;
 }
 #login input[type=submit] {
   display: block;
@@ -1161,6 +1216,444 @@ ul li.list-group-item div.info {
 }
 #login input[type=submit]:hover {
   background-color: #03bdd7;
+}
+#login > button {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 2rem;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  position: absolute;
+  inset-block-start: 2%;
+  inset-inline-end: 2%;
+  border-radius: 100%;
+  padding: 0.3% 1.2%;
+}
+#login > button:hover {
+  background-color: #03bdd7;
+}
+#login .movil {
+  display: none;
+  -webkit-margin-before: 2%;
+          margin-block-start: 2%;
+}
+@media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+  #login {
+    width: 100%;
+    padding: 5%;
+    font-size: 1.3em;
+  }
+  #login h2 {
+    text-align: left;
+    font-size: 2.2rem;
+  }
+  #login > button {
+    padding: 0.5% 3%;
+    font-size: 1.5rem;
+    inset-block-start: 3%;
+    inset-inline-end: 4%;
+  }
+  #login div button {
+    font-size: 1.5rem;
+  }
+  #login form {
+    width: 100%;
+  }
+  #login form .acordeon:nth-of-type(2) label, #login form .acordeon:nth-of-type(2) input[type=date] {
+    text-align: center;
+    transform: translateY(10%);
+    flex-basis: 90%;
+  }
+  #login form div input {
+    -webkit-margin-end: 2%;
+            margin-inline-end: 2%;
+  }
+  #login form div input, #login form div label {
+    font-size: 1.5em;
+  }
+  #login form div div input, #login form div div label {
+    font-size: 1.3em;
+    flex-basis: 100%;
+  }
+  #login form input[type=submit] {
+    font-size: 1.5rem;
+  }
+  #login form button {
+    font-size: 1.5rem;
+  }
+  #login .movil {
+    display: block;
+  }
+}
+@media screen and (max-width: 300px) {
+  #login form div:nth-of-type(2) input, #login form div:nth-of-type(2) label {
+    flex-basis: 90%;
+  }
+}
+@media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px) {
+  #login {
+    font-size: 1.5em;
+    padding: 4%;
+  }
+  #login h2 {
+    font-size: 2.2rem;
+  }
+  #login div button {
+    font-size: 1.6rem;
+  }
+  #login button:last-of-type {
+    padding: 0.3% 1.8%;
+  }
+  #login form {
+    width: 90%;
+  }
+  #login form div div input, #login form input, #login form div div label {
+    font-size: 1.6rem;
+  }
+  #login form div:nth-of-type(2) input[type=date] {
+    flex-basis: 53%;
+  }
+  #login form input[type=submit] {
+    font-size: 1.6rem;
+  }
+}
+
+#perfilUsuario {
+  padding: 2%;
+}
+#perfilUsuario form {
+  width: 90%;
+  height: auto;
+  background-color: #F3F3F3;
+  margin: auto;
+  padding: 0% 2%;
+  border-radius: 10px;
+  font-size: 1.2em;
+  display: flex;
+  flex-wrap: wrap;
+}
+#perfilUsuario form > div {
+  padding: 1% 0%;
+  position: relative;
+  -webkit-border-after: 1px solid #0291A5;
+          border-block-end: 1px solid #0291A5;
+  flex-basis: 100%;
+}
+#perfilUsuario form h2 {
+  text-align: center;
+}
+#perfilUsuario form p {
+  position: absolute;
+  inset-inline-start: 2%;
+  inset-block-start: 50%;
+  transform: translateY(-50%);
+  color: #0291A5;
+}
+#perfilUsuario form button {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.4rem;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  padding: 0.5% 1%;
+}
+#perfilUsuario form button:hover {
+  background-color: #03bdd7;
+}
+#perfilUsuario form #editarCuenta {
+  position: absolute;
+  inset-inline-end: 2%;
+  inset-block-start: 50%;
+  transform: translateY(-50%);
+}
+#perfilUsuario form #editarCuenta {
+  flex-basis: 20%;
+}
+#perfilUsuario form h3 {
+  width: 100%;
+  text-align: center;
+}
+#perfilUsuario form fieldset {
+  height: 100%;
+  padding: 2%;
+  margin: 2%;
+}
+#perfilUsuario form fieldset div {
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 2%;
+  margin: 2%;
+}
+#perfilUsuario form fieldset div label, #perfilUsuario form fieldset div input, #perfilUsuario form fieldset div select {
+  flex-basis: 48%;
+  padding: 2%;
+  margin: 1%;
+  transition: all 1s ease-in-out;
+}
+#perfilUsuario form fieldset div input[readonly], #perfilUsuario form fieldset div select[disabled] {
+  border: none;
+  outline: none;
+  background-color: transparent;
+  text-align: center;
+}
+#perfilUsuario form fieldset div input, #perfilUsuario form fieldset div select {
+  margin: 2% 0%;
+  padding: 1%;
+  font-family: "Resolve";
+  border-radius: 5px;
+  border: 1px solid #0291A5;
+  outline-color: #FFB775;
+  transition: all 1s ease-in-out;
+}
+#perfilUsuario form fieldset div span {
+  padding: 2%;
+  margin: 1%;
+  flex-basis: calc(100%/3);
+  flex-grow: 2;
+}
+#perfilUsuario form fieldset div button {
+  flex-grow: 0;
+}
+#perfilUsuario form fieldset div:last-of-type {
+  -webkit-margin-after: 0%;
+          margin-block-end: 0%;
+}
+#perfilUsuario form fieldset:first-of-type {
+  -webkit-border-end: 1px solid #0291A5;
+          border-inline-end: 1px solid #0291A5;
+  flex-basis: 46%;
+}
+#perfilUsuario form fieldset:nth-of-type(2) {
+  flex-basis: 46%;
+}
+#perfilUsuario form fieldset:last-of-type {
+  margin: auto;
+  -webkit-border-before: 1px solid #0291A5;
+          border-block-start: 1px solid #0291A5;
+  flex-basis: 100%;
+  justify-content: space-around;
+}
+#perfilUsuario form fieldset:last-of-type h3 {
+  -webkit-margin-before: 2%;
+          margin-block-start: 2%;
+}
+#perfilUsuario form input[type=submit] {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.5rem;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  padding: 1% 2%;
+  margin: auto;
+  -webkit-margin-after: 5%;
+          margin-block-end: 5%;
+}
+#perfilUsuario form input[type=submit]:hover {
+  background-color: #03bdd7;
+}
+#perfilUsuario input[type=submit] {
+  display: none;
+}
+
+h2, h3 {
+  color: #026a79;
+}
+
+@media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+  #perfilUsuario {
+    padding: 2% 0%;
+  }
+  #perfilUsuario form {
+    width: 100%;
+  }
+  #perfilUsuario form h2 {
+    -webkit-padding-after: 15%;
+            padding-block-end: 15%;
+    -webkit-padding-before: 5%;
+            padding-block-start: 5%;
+  }
+  #perfilUsuario form p {
+    inset-block-start: 70%;
+  }
+  #perfilUsuario form #editarCuenta {
+    inset-block-start: 30%;
+  }
+  #perfilUsuario form fieldset:first-of-type, #perfilUsuario form fieldset:nth-of-type(2) {
+    flex-basis: 100%;
+  }
+  #perfilUsuario form fieldset:first-of-type {
+    -webkit-border-end: none;
+            border-inline-end: none;
+    -webkit-border-after: 1px solid #0291A5;
+            border-block-end: 1px solid #0291A5;
+  }
+  #perfilUsuario form fieldset div input[readonly], #perfilUsuario form fieldset div select[disabled] {
+    text-align: start;
+    flex-basis: 100%;
+    padding: 2%;
+    margin: 1%;
+  }
+  #perfilUsuario form fieldset div label {
+    flex-basis: 100%;
+  }
+  #perfilUsuario form input[type=submit] {
+    -webkit-margin-before: 5%;
+            margin-block-start: 5%;
+  }
+  #perfilUsuario form button {
+    margin: auto;
+  }
+}
+@media screen and (max-width: 300px) {
+  #perfilUsuario form > div {
+    padding: 2% 1%;
+  }
+  #perfilUsuario form h2 {
+    text-align: start;
+    -webkit-margin-after: 0%;
+            margin-block-end: 0%;
+  }
+}
+@media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px), (aspect-ratio: 1/1) {
+  #perfilUsuario form {
+    font-size: 1.3rem;
+  }
+  #perfilUsuario form h2 {
+    -webkit-padding-after: 5%;
+            padding-block-end: 5%;
+    -webkit-padding-before: 1%;
+            padding-block-start: 1%;
+  }
+  #perfilUsuario form p {
+    inset-block-start: 70%;
+  }
+  #perfilUsuario form fieldset div {
+    height: 93%;
+    margin: 0%;
+    padding: 0%;
+  }
+  #perfilUsuario form fieldset div label, #perfilUsuario form fieldset div input, #perfilUsuario form fieldset div select {
+    flex-basis: 100%;
+    padding: 2%;
+    margin: 1%;
+  }
+  #perfilUsuario form fieldset div input[readonly], #perfilUsuario form fieldset div select[disabled] {
+    text-align: start;
+  }
+  #perfilUsuario form fieldset div span {
+    flex-basis: calc(100%/3);
+  }
+}
+#panelAdmin div {
+  width: 90%;
+  margin: auto;
+  background-color: #F3F3F3;
+  border-radius: 10px 10px 0px 0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#panelAdmin div ul {
+  padding: 0% 1%;
+  -webkit-margin-after: 0%;
+          margin-block-end: 0%;
+  -webkit-border-after: 1px solid #0291A5;
+          border-block-end: 1px solid #0291A5;
+  display: flex;
+  justify-content: space-around;
+  flex-basis: 70%;
+  flex-grow: 2;
+}
+#panelAdmin div ul li {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  list-style: none;
+  -webkit-padding-before: 1%;
+          padding-block-start: 1%;
+}
+#panelAdmin div ul li a {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  padding: 4%;
+  text-align: center;
+  color: #0291A5;
+}
+#panelAdmin div ul li a:hover {
+  border: 1px solid #0291A5;
+  -webkit-border-after: 0px;
+          border-block-end: 0px;
+  border-radius: 10px 10px 0px 0px;
+}
+#panelAdmin div ul li .listaActivo {
+  background-color: #0291A5;
+  color: #F3F3F3;
+  border: 1px solid transparent;
+  border-color: #0291A5 #0291A5 transparent;
+  border-radius: 10px 10px 0px 0px;
+  z-index: 2;
+}
+#panelAdmin div button {
+  flex-basis: 10%;
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.5rem;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+}
+#panelAdmin div button:hover {
+  background-color: #03bdd7;
+}
+#panelAdmin #panelAdmin {
+  -webkit-padding-after: 2%;
+          padding-block-end: 2%;
+  border-radius: 0px 0px 10px 10px;
+  align-items: center;
+  justify-content: center;
+}
+#panelAdmin #panelAdmin h2 {
+  padding: 1% 0%;
+  flex-basis: 100%;
+}
+#panelAdmin #panelAdmin input, #panelAdmin #panelAdmin label, #panelAdmin #panelAdmin select {
+  flex-basis: calc(100%/2);
+}
+#panelAdmin #panelAdmin input, #panelAdmin #panelAdmin select {
+  margin: 2% 0%;
+  padding: 1%;
+  font-family: "Resolve";
+  border-radius: 5px;
+  border: 1px solid #0291A5;
+  outline-color: #FFB775;
+  transition: all 1s ease-in-out;
+}
+#panelAdmin #panelAdmin input[type=submit], #panelAdmin #panelAdmin button {
+  -webkit-margin-after: 0%;
+          margin-block-end: 0%;
+  margin: 0% 2%;
+  padding: 0.5%;
+  font-size: 1.5rem;
+  flex-basis: 20%;
 }
 
 footer {
@@ -1181,6 +1674,9 @@ footer li:first-of-type a {
 }
 footer li:first-of-type {
   margin-bottom: 5%;
+}
+footer img {
+  width: 180px;
 }
 footer a {
   color: #F3F3F3;
@@ -1241,7 +1737,7 @@ footer a:hover {
   margin-right: 5%;
 }
 #redes img {
-  width: 50px;
+  width: 60px;
 }
 
 #infoPag {
