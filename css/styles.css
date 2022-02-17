@@ -845,20 +845,20 @@ ul.list-group {
   font-size: 2.25rem;
 }
 
-form {
+#partidas {
   margin: 5%;
   font-size: 2.25rem;
 }
-form select {
+#partidas select {
   font-size: 2.25rem !important;
 }
-form button {
+#partidas button {
   width: 20% !important;
   margin: 1vw;
   margin-top: 0 !important;
   background-color: #0291A5 !important;
 }
-form .form-control {
+#partidas .form-control {
   font-size: 2.25rem;
 }
 
