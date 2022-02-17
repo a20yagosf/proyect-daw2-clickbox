@@ -137,7 +137,6 @@ main {
   border-radius: 10px;
   color: white;
 }
-
 #partidas {
   width: 80%;
   display: flex;
@@ -343,4 +342,96 @@ footer a {
 #map {
   width: 100%;
   height: 150px;
+}
+
+.list-group {
+  max-height: 300px;
+  margin-bottom: 10px;
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch;
+}
+
+.panel-primary > .panel-heading {
+  background-color: #0291A5 !important;
+  border-color: #0291A5 !important;
+}
+
+ul.list-group {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+#info_partidas h2 {
+  text-align: center;
+  margin: 5%;
+}
+#info_partidas p {
+  font-size: 2.25rem;
+}
+
+form {
+  margin: 5%;
+  font-size: 2.25rem;
+}
+form select {
+  font-size: 2.25rem !important;
+}
+form button {
+  width: 20% !important;
+  margin: 1vw;
+  margin-top: 0 !important;
+  background-color: #0291A5 !important;
+}
+form .form-control {
+  font-size: 2.25rem;
+}
+
+ul li.list-group-item {
+  display: flex;
+  padding: 5%;
+}
+ul li.list-group-item div.image img {
+  width: 70%;
+}
+ul li.list-group-item div.info {
+  width: 30%;
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between !important;
+  margin: 0;
+  padding: 0;
+  font-size: 1.2rem;
+}
+
+.panel-primary {
+  max-height: 1000px !important;
+}
+
+.list-group {
+  max-height: 800px !important;
+}
+
+.pagination li {
+  list-style: none;
+  display: inline-block;
+}
+.pagination li a {
+  font-size: 1.25rem;
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color 0.3s;
+  border: 1px solid #ddd;
+  margin: 0 4px;
+}
+.pagination li a.active {
+  background-color: #0291A5;
+  color: white;
+  border: 1px solid #026a79;
+}
+
+.pagination a:hover:not(.active) {
+  background-color: #ddd;
 }/*# sourceMappingURL=styles.css.map */
