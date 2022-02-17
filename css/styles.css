@@ -780,6 +780,10 @@ main {
   color: #F3F3F3;
 }
 
+main {
+  padding: 3%;
+}
+
 .list-group {
   max-height: 300px;
   margin-bottom: 10px;
@@ -792,9 +796,21 @@ main {
   border-color: #0291A5 !important;
 }
 
+#result_panel {
+  border-radius: 10px 10px 0px 0px;
+}
+#result_panel .panel-heading {
+  border-radius: inherit;
+}
+#result_panel .panel-heading .panel-title {
+  color: white;
+  padding: 1%;
+}
+
 ul.list-group {
   overflow-x: hidden;
   overflow-y: auto;
+  font-size: 1.75rem !important;
 }
 
 #info_partidas h2 {
@@ -802,24 +818,25 @@ ul.list-group {
   margin: 5%;
 }
 #info_partidas p {
-  font-size: 2.25rem;
+  font-size: 1.75rem;
 }
 
 form {
   margin: 5%;
-  font-size: 2.25rem;
+  font-size: 1.75rem;
 }
 form select {
-  font-size: 2.25rem !important;
+  font-size: 1.75rem !important;
 }
 form button {
   width: 20% !important;
   margin: 1vw;
   margin-top: 0 !important;
   background-color: #0291A5 !important;
+  font-size: 1.75rem !important;
 }
 form .form-control {
-  font-size: 2.25rem;
+  font-size: 2rem;
 }
 
 ul li.list-group-item {
@@ -838,6 +855,9 @@ ul li.list-group-item div.info {
   margin: 0;
   padding: 0;
   font-size: 1.2rem;
+}
+ul li.list-group-item .btn-info {
+  color: white;
 }
 
 .panel-primary {
