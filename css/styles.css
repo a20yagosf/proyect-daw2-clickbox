@@ -1230,15 +1230,10 @@ main {
   }
 }
 
-main {
+#perfilUsuario {
   padding: 2%;
 }
-
-h2, h3 {
-  color: #026a79;
-}
-
-form {
+#perfilUsuario form {
   width: 90%;
   height: auto;
   background-color: #F3F3F3;
@@ -1249,17 +1244,24 @@ form {
   display: flex;
   flex-wrap: wrap;
 }
-form > div {
+#perfilUsuario form > div {
   padding: 1% 0%;
   position: relative;
   -webkit-border-after: 1px solid #0291A5;
           border-block-end: 1px solid #0291A5;
   flex-basis: 100%;
 }
-form h2 {
+#perfilUsuario form h2 {
   text-align: center;
 }
-form button {
+#perfilUsuario form p {
+  position: absolute;
+  inset-inline-start: 2%;
+  inset-block-start: 50%;
+  transform: translateY(-50%);
+  color: #0291A5;
+}
+#perfilUsuario form button {
   display: block;
   background-color: #0291A5;
   border: none;
@@ -1271,27 +1273,28 @@ form button {
   transition: all 0.5s linear;
   padding: 0.5% 1%;
 }
-form button:hover {
+#perfilUsuario form button:hover {
   background-color: #03bdd7;
 }
-form #editarCuenta {
+#perfilUsuario form #editarCuenta {
   position: absolute;
   inset-inline-end: 2%;
-  top: 50%;
+  inset-block-start: 50%;
   transform: translateY(-50%);
 }
-form #editarCuenta {
+#perfilUsuario form #editarCuenta {
   flex-basis: 20%;
 }
-form h3 {
+#perfilUsuario form h3 {
   width: 100%;
   text-align: center;
 }
-form fieldset {
+#perfilUsuario form fieldset {
+  height: 100%;
   padding: 2%;
   margin: 2%;
 }
-form fieldset div {
+#perfilUsuario form fieldset div {
   height: 100%;
   display: flex;
   flex-wrap: wrap;
@@ -1299,19 +1302,19 @@ form fieldset div {
   padding: 2%;
   margin: 2%;
 }
-form fieldset div label, form fieldset div input, form fieldset div select {
+#perfilUsuario form fieldset div label, #perfilUsuario form fieldset div input, #perfilUsuario form fieldset div select {
   flex-basis: 48%;
   padding: 2%;
   margin: 1%;
   transition: all 1s ease-in-out;
 }
-form fieldset div input[readonly], form fieldset div select[disabled] {
+#perfilUsuario form fieldset div input[readonly], #perfilUsuario form fieldset div select[disabled] {
   border: none;
   outline: none;
   background-color: transparent;
   text-align: center;
 }
-form fieldset div input, form fieldset div select {
+#perfilUsuario form fieldset div input, #perfilUsuario form fieldset div select {
   margin: 2% 0%;
   padding: 1%;
   font-family: "Resolve";
@@ -1320,39 +1323,39 @@ form fieldset div input, form fieldset div select {
   outline-color: #FFB775;
   transition: all 1s ease-in-out;
 }
-form fieldset div span {
+#perfilUsuario form fieldset div span {
   padding: 2%;
   margin: 1%;
   flex-basis: calc(100%/3);
   flex-grow: 2;
 }
-form fieldset div button {
+#perfilUsuario form fieldset div button {
   flex-grow: 0;
 }
-form fieldset div:last-of-type {
+#perfilUsuario form fieldset div:last-of-type {
   -webkit-margin-after: 0%;
           margin-block-end: 0%;
 }
-form fieldset:first-of-type {
+#perfilUsuario form fieldset:first-of-type {
   -webkit-border-end: 1px solid #0291A5;
           border-inline-end: 1px solid #0291A5;
   flex-basis: 46%;
 }
-form fieldset:nth-of-type(2) {
+#perfilUsuario form fieldset:nth-of-type(2) {
   flex-basis: 46%;
 }
-form fieldset:last-of-type {
+#perfilUsuario form fieldset:last-of-type {
   margin: auto;
   -webkit-border-before: 1px solid #0291A5;
           border-block-start: 1px solid #0291A5;
   flex-basis: 100%;
   justify-content: space-around;
 }
-form fieldset:last-of-type h3 {
+#perfilUsuario form fieldset:last-of-type h3 {
   -webkit-margin-before: 2%;
           margin-block-start: 2%;
 }
-form input[type=submit] {
+#perfilUsuario form input[type=submit] {
   display: block;
   background-color: #0291A5;
   border: none;
@@ -1367,73 +1370,99 @@ form input[type=submit] {
   -webkit-margin-after: 5%;
           margin-block-end: 5%;
 }
-form input[type=submit]:hover {
+#perfilUsuario form input[type=submit]:hover {
   background-color: #03bdd7;
 }
-
 #perfilUsuario input[type=submit] {
   display: none;
 }
 
+h2, h3 {
+  color: #026a79;
+}
+
 @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
-  main {
+  #perfilUsuario {
     padding: 2% 0%;
   }
-
-  form {
+  #perfilUsuario form {
     width: 100%;
   }
-  form fieldset:first-of-type, form fieldset:nth-of-type(2) {
+  #perfilUsuario form h2 {
+    -webkit-padding-after: 15%;
+            padding-block-end: 15%;
+    -webkit-padding-before: 5%;
+            padding-block-start: 5%;
+  }
+  #perfilUsuario form p {
+    inset-block-start: 70%;
+  }
+  #perfilUsuario form #editarCuenta {
+    inset-block-start: 30%;
+  }
+  #perfilUsuario form fieldset:first-of-type, #perfilUsuario form fieldset:nth-of-type(2) {
     flex-basis: 100%;
   }
-  form fieldset:first-of-type {
+  #perfilUsuario form fieldset:first-of-type {
     -webkit-border-end: none;
             border-inline-end: none;
     -webkit-border-after: 1px solid #0291A5;
             border-block-end: 1px solid #0291A5;
   }
-  form fieldset div input[readonly], form fieldset div select[disabled] {
+  #perfilUsuario form fieldset div input[readonly], #perfilUsuario form fieldset div select[disabled] {
     text-align: start;
     flex-basis: 100%;
     padding: 2%;
     margin: 1%;
   }
-  form fieldset div label {
+  #perfilUsuario form fieldset div label {
     flex-basis: 100%;
   }
-  form input[type=submit] {
+  #perfilUsuario form input[type=submit] {
     -webkit-margin-before: 5%;
             margin-block-start: 5%;
   }
+  #perfilUsuario form button {
+    margin: auto;
+  }
 }
 @media screen and (max-width: 300px) {
-  form > div {
+  #perfilUsuario form > div {
     padding: 2% 1%;
   }
-  form h2 {
+  #perfilUsuario form h2 {
     text-align: start;
     -webkit-margin-after: 0%;
             margin-block-end: 0%;
   }
 }
 @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px), (aspect-ratio: 1/1) {
-  form {
+  #perfilUsuario form {
     font-size: 1.3rem;
   }
-  form fieldset div {
+  #perfilUsuario form h2 {
+    -webkit-padding-after: 5%;
+            padding-block-end: 5%;
+    -webkit-padding-before: 1%;
+            padding-block-start: 1%;
+  }
+  #perfilUsuario form p {
+    inset-block-start: 70%;
+  }
+  #perfilUsuario form fieldset div {
     height: 93%;
     margin: 0%;
     padding: 0%;
   }
-  form fieldset div label, form fieldset div input, form fieldset div select {
+  #perfilUsuario form fieldset div label, #perfilUsuario form fieldset div input, #perfilUsuario form fieldset div select {
     flex-basis: 100%;
     padding: 2%;
     margin: 1%;
   }
-  form fieldset div input[readonly], form fieldset div select[disabled] {
+  #perfilUsuario form fieldset div input[readonly], #perfilUsuario form fieldset div select[disabled] {
     text-align: start;
   }
-  form fieldset div span {
+  #perfilUsuario form fieldset div span {
     flex-basis: calc(100%/3);
   }
 }

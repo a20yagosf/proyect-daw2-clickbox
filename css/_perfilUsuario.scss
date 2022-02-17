@@ -1,243 +1,303 @@
 
-main {
+#perfilUsuario {
     padding: 2%;
+
+    //Formulario
+    form {
+        @include contenedor(90%, auto, $colorLetra);
+        margin: auto;
+        padding: 0% 2%;
+        border-radius: $borderRadius;
+        font-size: 1.2em;
+        //Flex como padre
+        display: flex;
+        flex-wrap: wrap;
+
+        //Div con titulo y botón editar perfil
+        & > div {
+            padding: 1% 0%;
+            position: relative;
+            border-block-end: 1px solid $colorPrincipal;
+            //Flex como hijo
+            flex-basis: 100%;
+        }
+
+        //Titulo Cuenta
+        h2 {
+            text-align: center;
+        }
+
+        //Párrafo última modificación
+        p {
+            //Posicionamiento
+            position: absolute;
+            //Left
+            inset-inline-start: 2%;
+            //Top
+            inset-block-start: 50%;
+            transform: translateY(-50%);
+            //Estilo
+            color: $colorPrincipal;
+        }
+
+        //Todos lo botones
+        button {
+            @include boton($colorPrincipal, 1.4rem);
+            padding: 0.5% 1%;
+        }
+
+        //Botón para editar el perfil
+        #editarCuenta {
+            position: absolute;
+            //Right
+            inset-inline-end: 2%;
+            //Top
+            inset-block-start: 50%;
+            transform: translateY(-50%);
+        }
+
+        //Botón editar
+        #editarCuenta {
+            //Flex como hijo
+            flex-basis: 20%;
+        }
+
+        //Titulo de cada div
+        h3 {
+            width: 100%;
+            text-align: center;
+        }
+
+
+        //Todos los div para el acordeon
+        fieldset {
+            height: 100%;
+            padding: 2%;
+            margin: 2%;
+
+            //Contenedor de cada una de las secciones (Sin incluir el título, sólo los input, label y select)
+            div {
+                height: 100%;
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                padding: 2%;
+                margin: 2%;
+        
+                label, input, select {
+                    flex-basis: 48%;
+                    padding: 2%;
+                    margin: 1%;
+                    transition: all 1s ease-in-out;
+                }
+
+                //Inputs cuandoe stán en no editables
+                input[readonly], select[disabled] {
+                    border: none;
+                    outline: none;
+                    background-color: transparent;
+                    text-align: center;
+                }
+        
+                input, select {
+                    @include inputFormulario();
+                }
+        
+                span {
+                    padding: 2%;
+                    margin: 1%;
+                    //Flex como hijo
+                    flex-basis: calc(100%/3);
+                    flex-grow: 2;
+                }
+
+                button {
+                    //Flex como hijo
+                    flex-grow: 0;
+                }
+            }
+
+            div:last-of-type {
+                //Margin bottom
+                margin-block-end: 0%;
+            }
+        }
+
+        //Datos cuenta
+        fieldset:first-of-type {
+            //Border right
+            border-inline-end: 1px solid $colorPrincipal;
+            //Flex como hijo
+            flex-basis: 46%;
+        }
+
+        //Datos personales
+        fieldset:nth-of-type(2){
+            //Flex como hijo
+            flex-basis: 46%;
+        }
+
+        //Suscripcion
+        fieldset:last-of-type {
+            margin: auto;
+            //Border top
+            border-block-start: 1px solid $colorPrincipal;
+            //Flex como hijo
+            flex-basis: 100%;
+            //Flex como padre
+            justify-content: space-around;
+
+            h3 {
+                //Margin top
+                margin-block-start: 2%;
+            }
+        }
+
+        //Botón formulario para guardar los cambios
+        input[type="submit"]{
+            @include boton($colorPrincipal, 1.5rem);
+            padding: 1% 2%;
+            margin: auto;
+            //Margin bottom
+            margin-block-end: 5%;
+        }
+    }
+
+    //Tipo submit
+    input[type="submit"] {
+        display: none;
+    }
 }
 
 h2,h3 {
     color: $colorPrincipalOscuro;
 }
 
-//Formulario
-form {
-    @include contenedor(90%, auto, $colorLetra);
-    margin: auto;
-    padding: 0% 2%;
-    border-radius: $borderRadius;
-    font-size: 1.2em;
-    //Flex como padre
-    display: flex;
-    flex-wrap: wrap;
-
-    //Div con titulo y botón editar perfil
-    & > div {
-        padding: 1% 0%;
-        position: relative;
-        border-block-end: 1px solid $colorPrincipal;
-        //Flex como hijo
-        flex-basis: 100%;
-    }
-
-    //Titulo Cuenta
-    h2 {
-        text-align: center;
-    }
-
-    //Todos lo botones
-    button {
-        @include boton($colorPrincipal, 1.4rem);
-        padding: 0.5% 1%;
-    }
-
-    //Botón para editar el perfil
-    #editarCuenta {
-        position: absolute;
-        //Right
-        inset-inline-end: 2%;
-        top: 50%;
-        transform: translateY(-50%);
-    }
-
-    //Botón editar
-    #editarCuenta {
-        //Flex como hijo
-        flex-basis: 20%;
-    }
-
-    //Titulo de cada div
-    h3 {
-        width: 100%;
-        text-align: center;
-    }
-
-
-    //Todos los div para el acordeon
-    fieldset {
-        padding: 2%;
-        margin: 2%;
-
-        div {
-            height: 100%;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            padding: 2%;
-            margin: 2%;
-    
-            label, input, select {
-                flex-basis: 48%;
-                padding: 2%;
-                margin: 1%;
-                transition: all 1s ease-in-out;
-            }
-
-            //Inputs cuandoe stán en no editables
-            input[readonly], select[disabled] {
-                border: none;
-                outline: none;
-                background-color: transparent;
-                text-align: center;
-            }
-    
-            input, select {
-                @include inputFormulario();
-            }
-    
-            span {
-                padding: 2%;
-                margin: 1%;
-                //Flex como hijo
-                flex-basis: calc(100%/3);
-                flex-grow: 2;
-            }
-
-            button {
-                //Flex como hijo
-                flex-grow: 0;
-            }
-        }
-
-        div:last-of-type {
-            //Margin bottom
-            margin-block-end: 0%;
-        }
-    }
-
-    //Datos cuenta
-    fieldset:first-of-type {
-        //Border right
-        border-inline-end: 1px solid $colorPrincipal;
-        //Flex como hijo
-        flex-basis: 46%;
-    }
-
-    //Datos personales
-    fieldset:nth-of-type(2){
-        //Flex como hijo
-        flex-basis: 46%;
-    }
-
-    //Suscripcion
-    fieldset:last-of-type {
-        margin: auto;
-        //Border top
-        border-block-start: 1px solid $colorPrincipal;
-        //Flex como hijo
-        flex-basis: 100%;
-        //Flex como padre
-        justify-content: space-around;
-
-        h3 {
-            //Margin top
-            margin-block-start: 2%;
-        }
-    }
-
-    //Botón formulario para guardar los cambios
-    input[type="submit"]{
-        @include boton($colorPrincipal, 1.5rem);
-        padding: 1% 2%;
-        margin: auto;
-        //Margin bottom
-        margin-block-end: 5%;
-    }
-}
-
-#perfilUsuario input[type="submit"] {
-    display: none;
-}
-
 //Adaptación para móviles mediante aspect ratio
 @media screen and (max-aspect-ratio:  195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
-    main {
+    #perfilUsuario {
         padding: 2% 0%;
-    }
 
-    //Formulario
-    form {
-        width: 100%;
+        //Formulario
+        form {
+            width: 100%;
 
-        fieldset:first-of-type, fieldset:nth-of-type(2) {
-            flex-basis: 100%;
-        }
+            //Cabecera Cuenta
+            h2 {
+                //Padding bottom
+                padding-block-end: 15%;
+                //Padding top
+                padding-block-start: 5%;
+            }
 
-        fieldset:first-of-type {
-            border-inline-end: none;
-            border-block-end: 1px solid $colorPrincipal;
-        }
+            //Última modificación
+            p {
+                //Top
+                inset-block-start: 70%;
+            }
 
-        fieldset {
+            //Botón editar cuenta
+            #editarCuenta {
+                //Top
+                inset-block-start: 30%;
+            }
 
-            div {
-                //Inputs cuando esstán en no editables
-                input[readonly], select[disabled] {
-                    text-align: start;
-                    flex-basis: 100%;
-                    padding: 2%;
-                    margin: 1%;
-                }
+            fieldset:first-of-type, fieldset:nth-of-type(2) {
+                flex-basis: 100%;
+            }
 
-                label {
-                    flex-basis: 100%;
+            fieldset:first-of-type {
+                border-inline-end: none;
+                border-block-end: 1px solid $colorPrincipal;
+            }
+
+            fieldset {
+
+                div {
+                    //Inputs cuando esstán en no editables
+                    input[readonly], select[disabled] {
+                        text-align: start;
+                        flex-basis: 100%;
+                        padding: 2%;
+                        margin: 1%;
+                    }
+
+                    label {
+                        flex-basis: 100%;
+                    }
                 }
             }
-        }
 
-        //Botón guardar cambio
-        input[type=submit] {
-            //Margin top
-            margin-block-start: 5%;
+            //Botón guardar cambio
+            input[type=submit] {
+                //Margin top
+                margin-block-start: 5%;
+            }
+
+            //Botón cancelar suscripción
+            button {
+                margin: auto;
+            }
         }
     }
 }
 
 //Adaptación para móvil plegable
 @media screen and (max-width: 300px) {
-    form {
-        &> div {
-            padding: 2% 1%;
-        }
-
-        h2 {
-            text-align: start;
-            //Margin bottom
-            margin-block-end: 0%;
+        #perfilUsuario {
+            form {
+                &> div {
+                    padding: 2% 1%;
+                }
+        
+                h2 {
+                    text-align: start;
+                    //Margin bottom
+                    margin-block-end: 0%;
+                }
+            }
         }
     }
-}
 
 //Adaptación para tablets mediante aspect ratio
 @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px), (aspect-ratio: 1/1)  {
-    form {
-        font-size: 1.3rem;
+    #perfilUsuario {
+        form {
+            font-size: 1.3rem;
+    
+            //Cabecera Cuenta
+            h2 {
+                //Padding bottom
+                padding-block-end: 5%;
+                //Padding top
+                padding-block-start: 1%;
+            }
 
-        fieldset {
-            div {
-                height: 93%;
-                margin: 0%;
-                padding: 0%;
-
-                label, input, select {
-                    flex-basis: 100%;
-                    padding: 2%;
-                    margin: 1%;
-                }
-
-                input[readonly], select[disabled] {
-                    text-align: start;
-                }
-
-                span {
-                    flex-basis: calc(100%/3);
+            //Última modificación
+            p {
+                //Top
+                inset-block-start: 70%;
+            }
+    
+            fieldset {
+                div {
+                    height: 93%;
+                    margin: 0%;
+                    padding: 0%;
+    
+                    label, input, select {
+                        flex-basis: 100%;
+                        padding: 2%;
+                        margin: 1%;
+                    }
+    
+                    input[readonly], select[disabled] {
+                        text-align: start;
+                    }
+    
+                    span {
+                        flex-basis: calc(100%/3);
+                    }
                 }
             }
         }
