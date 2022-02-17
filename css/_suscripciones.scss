@@ -1,0 +1,162 @@
+
+//Página suscripciones
+#suscribirse {
+    @include contenedor(100%, auto, transparent);
+    padding: 5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 5%;
+
+    //Adaptación para móviles mediante aspect ratio
+    @media screen and (max-aspect-ratio:  195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+        //Div contenedor #suscribirse
+        & {
+            flex-wrap: wrap;
+        }
+
+        #tiposSusc {
+            flex-basis: 100%;
+
+            .susc {
+                width: 95%;
+            }
+        }
+
+        #recibo {
+            flex-basis: 100%;
+            //padding bottom
+            padding-block-end: 15%;
+            //Margin top
+            margin-block-start: 5%;
+
+            button {
+                width: 50%;
+            }
+        }
+        
+    }
+    //Adaptación para tablets mediante aspect ratio
+    @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px) {
+        //Div contenedor #suscribirse
+        & {
+            flex-wrap: wrap;
+        }
+
+        #tiposSusc {
+            flex-basis: 100%;
+
+            .susc {
+                width: 95%;
+            }
+        }
+
+        #recibo {
+            flex-basis: 100%;
+            //padding bottom
+            padding-block-end: 15%;
+            //Margin top
+            margin-block-start: 5%;
+
+            button {
+                width: 50%;
+            }
+        }
+    }
+}
+
+//Tipo de suscripciones
+#tiposSusc {
+    flex-basis: 30%;
+
+    .susc {
+        //Tamaño y posiconamiento
+        @include boton($colorPrincipal, 2em);
+        width: $sizeTipoSusc;
+        margin: 5% 0%;
+        padding: 0%;
+        position: relative;
+
+        //Texto que tiene dentro
+        p {
+            //Tamaño y posiconamiento
+            width: 100%;
+            margin: 0% 2%;
+            padding: 2% 0%;
+            position: relative;
+            //Top
+            inset-block-start: 35%;
+            font-size: 2rem;
+            //Estilo
+            text-transform: uppercase;
+        }
+    }
+
+    //Suscripción que está seleccionada en este momento 
+    .suscActiva {
+        background-color: $colorSecundario;
+        color: $colorPrincipal;
+        font-weight: 900;
+
+        &:hover {
+            background-color: aclararColor($colorSecundario);
+        }
+    }
+}
+
+//Recibo con todos los datos
+#recibo {
+    @include contenedor(100%, 100%, transparent);
+    padding: 2%;
+    flex-basis: 60%;
+    border: 0.2em solid $colorPrincipal;
+    border-radius: $borderRadius;
+    position: relative;
+    //padding bottom
+    padding-block-end: 5%;
+
+    h2 {
+        flex-basis: 100%;
+        background-color: $colorSecundario;
+        text-align: center;
+        padding: 5%;
+        font-size: 5em;
+        border-radius: $borderRadius;
+        //Margin bottom
+        margin-block-end: 3%;
+        color: $colorPrincipal;
+        //Separamos un poco las letras
+        word-spacing: 0.5em;
+        text-transform: uppercase;
+        transition: all 2s ease-in-out;
+    }
+
+    p {
+        position: relative;
+        font-size: 1.5em;
+        margin: 3%;
+    }
+
+    p:last-of-type {
+        //Padding top
+        padding-block-start: 2%;
+        //Border top
+        border-block-start: 0.2em dashed $colorPrincipal;
+    }
+
+    span {
+        position: absolute;
+        //Right
+        inset-inline-end: 0%;
+    }
+
+    button {
+        @include boton($colorPrincipal, 1.5em);
+        padding: 2%;
+        margin: auto;
+        position: absolute;
+        //Left
+        inset-inline-start: 50%;
+        transform: translateX(-50%);
+    }
+}

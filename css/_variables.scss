@@ -1,18 +1,40 @@
+//Colores generales
 $colorPrincipal: #0291A5;
 $colorSecundario: #FFB775;
 $colorDestacado: #FF5600;
 $colorPrincipalOscuro: #026a79;
 $colorLetra: #F3F3F3;
 
-$borderHeader: 2px;
+//Variables generales
+$borderRadius: 10px;
 
+//Variables header
+$borderHeader: 2px;
+$navHeight: 50px;
+
+//Variables Main
+//Variables Presentación
 $sizeLogo: 50px;
 $sizeLogoPresentacion: 200px;
-$sizeSuscriptImg: 200px;
-$sizePartidaImg: 300px;
+//Variables suscripciones
+$sizeSuscriptImg: 60%;
+$sizeImgTarjeta: 40%;
+//Variables partidas
+$sizePartidaImg: 100%;
+//Variables tienda
+$sizeTienda: 20%;
+$sizeID: 50px;
+$altDescCorta: 80px;
 
-$sizeTienda: 300px;
-$altDescriptCorta: 60px;
-
+//Variables footer
 $sizeRedes: 50px;
 $sizeMap: 180px;
+
+//Variables suscripciones
+$sizeTipoSusc: 100%;
+
+//Variable login
+$botonNoActivo: #bfbfbf;
+$widthLogin: 80%;
+$heighLogin: 90%;
+$fondoLogin: #f3f3f3dc;

@@ -5,55 +5,86 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <!-- CSS Leflet.js -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
-    <!-- JS Leflet.js -->
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
-    <link rel="stylesheet" href="../css/styles.css">
+    <title>ClickBox</title>
+    <!-- Script con todas las funciones -->
+    <script src="../js/funcionesGenerales.js"></script>
+    <!-- Que se ejecutará en esta página -->
     <script src="../js/pagina_principal.js"></script>
 </head>
 <body>
-    <!-- Cabecera que incluye la alerta con las novedades, el nav con los diferentes apartados de la página y un span que muestra la ubicación actual (Si estamos en páginas de primer nivel (Partida, tienda, página principal) no es necesario ya que se marca en el nav) -->
-    <header>
-        <div id="alerta">Último artículo añadido a la BD</div>
-        <nav>
-            <ul>
-                <li><a href="#"><img src="../img/Recuadro.png" alt="Logo página"></a></li>
-                <li><a href="#">Suscripciones</a></li>
-                <li><a href="#">Partidas</a></li>
-                <li><a href="#">Tienda</a></li>
-                <li><a href="#">Registrarse/Loguearse</a></li>
-            </ul>
-        </nav>
-        <div id="localizacionPag">
-            <ul>
-                <li><a href="#">Página principal</a> <</li>
-                <li><a href="#">Partida nº 255</a></li>
-            </ul>
-        </div>
-    </header>
     <main>
+        <!--
         <div id="presentacion">
             <div>
-                <h2>Frase impactante!</h2>
-                <p>Presentación de la página</p>
+                <h2>Cajas anteriores</h2>
+                <p>Presentación de la página, Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia officia, nesciunt voluptas quod inventore modi maiores blanditiis asperiores dolorum impedit incidunt delectus, odio ab deleniti consequatur nemo quisquam dignissimos, laboriosam quia accusamus possimus at neque! Eligendi eos, laudantium quas commodi delectus minima impedit incidunt temporibus obcaecati iusto vel suscipit voluptatem.</p>
             </div>
             <img src="../img/Recuadro.png" alt="Logo página">
-        </div>
-        <div id="suscripciones">
-            <div class="suscripciones">
-                <img src="../img/Recuadro.png" alt="Suscripcion"/>
-                <button>Suscribirse</button>
+        </div>-->
+       <div id="suscripciones" class="carousel slide" data-bs-ride="carousel">
+            <h2>Cajas anteriores</h2>
+            <!-- Indicadores de abajo -->
+            <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#suscripciones" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Caja 1"></button>
+                    <button type="button" data-bs-target="#suscripciones" data-bs-slide-to="1" aria-label="Caja 2"></button>
+                    <button type="button" data-bs-target="#suscripciones" data-bs-slide-to="2" aria-label="Caja 3"></button>
             </div>
-            <div class="suscripciones">
-                <img src="../img/Recuadro.png" alt="Suscripcion"/>
-                <button>Suscribirse</button>
+            <!-- Interior carousel -->
+            <div class="carousel-inner">
+                    <!-- Tarjetas -->
+                    <div class="carousel-item active">
+                        <div class="tarjeta">
+                            <img src="../img/Recuadro.png" alt=""/>
+                            <div class="contenidoTarjeta">
+                                <h2>Enero 2022</h2>
+                                <ul>
+                                    <li><span>Juego de mesa</span><img src="../img/Recuadro.png" alt=""/></li>
+                                    <li><span>Accesorio 1</span><img src="../img/Recuadro.png" alt=""/></li>
+                                    <li><span>Accesorio 2</span><img src="../img/Recuadro.png" alt=""/></li>
+                                    <li><span>Accesorio 3</span><img src="../img/Recuadro.png" alt=""/></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="tarjeta">
+                            <img src="../img/Recuadro.png" alt=""/>
+                            <div class="contenidoTarjeta">
+                                <h2>Enero 2022</h2>
+                                <ul>
+                                    <li><span>Juego de mesa</span><img src="../img/Recuadro.png" alt=""/></li>
+                                    <li><span>Accesorio 1</span><img src="../img/Recuadro.png" alt=""/></li>
+                                    <li><span>Accesorio 2</span><img src="../img/Recuadro.png" alt=""/></li>
+                                    <li><span>Accesorio 3</span><img src="../img/Recuadro.png" alt=""/></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="tarjeta">
+                            <img src="../img/Recuadro.png" alt=""/>
+                            <div class="contenidoTarjeta">
+                                <h2>Enero 2022</h2>
+                                <ul>
+                                    <li><span>Juego de mesa</span><img src="../img/Recuadro.png" alt=""/></li>
+                                    <li><span>Accesorio 1</span><img src="../img/Recuadro.png" alt=""/></li>
+                                    <li><span>Accesorio 2</span><img src="../img/Recuadro.png" alt=""/></li>
+                                    <li><span>Accesorio 3</span><img src="../img/Recuadro.png" alt=""/></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
             </div>
-            <div class="suscripciones">
-                <img src="../img/Recuadro.png" alt="Suscripcion"/>
-                <button>Suscribirse</button>
-            </div>
+            <!-- Botones -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#suscripciones" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#suscripciones" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
+            <button>Suscribirse</button>
         </div>
         <div id="partidas">
             <div>
@@ -62,49 +93,43 @@
             </div>
             <div>
                 <h2>Juega con nosotros!</h2>
-                <p>No sabes si te gustará el juego, prueba con nosotros antes de comprarlo</p>
+                <p>No sabes si te gustará el juego, prueba con nosotros antes de comprarlo! Lorem ipsum dolor sit amet consectetur adipisicing elit. Est dicta odio soluta quidem nobis perferendis, saepe distinctio animi facilis maxime. Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores, dignissimos? Aliquam, odio voluptas! Totam ducimus a nisi enim temporibus vitae perferendis iste quo repellendus error esse cum, repudiandae eius at.</p>
+                <button>Buscar partidas</button>
             </div>
         </div>
         <div id="tienda">
-            <h2></h2>
+            <h2>Productos destacados</h2>
             <div class="elementoTienda">
-                <div class="id">ID</div>
-                <img src="../img/Recuadro.png" alt="Imagen del artículo"/>
-                <div class="descripcionCorta">
-                    <p>Descripción corta</p>
+                <div>
+                    <div class="id"><div>ID</div><span></span></div>
+                    <img src="../img/Recuadro.png" alt="Imagen del artículo"/>
+                    <div class="descripcionCorta">
+                        <p>Descripción corta</p>
+                    </div>
                 </div>
                 <button>Comprar</button>
             </div>
             <div class="elementoTienda">
-                <div class="id">ID</div>
-                <img src="../img/Recuadro.png" alt="Imagen del artículo"/>
-                <div class="descripcionCorta">
-                    <p>Descripción corta</p>
+                <div>
+                    <div class="id"><div>ID</div><span></span></div>
+                    <img src="../img/Recuadro.png" alt="Imagen del artículo"/>
+                    <div class="descripcionCorta">
+                        <p>Descripción corta</p>
+                    </div>
                 </div>
                 <button>Comprar</button>
             </div>
             <div class="elementoTienda">
-                <div class="id">ID</div>
-                <img src="../img/Recuadro.png" alt="Imagen del artículo"/>
-                <div class="descripcionCorta">
-                    <p>Descripción corta</p>
+                <div>
+                    <div class="id"><div>ID</div><span></span></div>
+                    <img src="../img/Recuadro.png" alt="Imagen del artículo"/>
+                    <div class="descripcionCorta">
+                        <p>Descripción corta</p>
+                    </div>
                 </div>
                 <button>Comprar</button>
             </div>
         </div>
-        <svg id="designPantalla">
-           <!-- <path d="M-100, 550 a250, -250 0 0, 1, 700, 0 z" />
-            <path class="restar" d="M-70, 580 a180, -180 0 0, 1, 650, 0 l-50, 0 a100, 100 0 0, 0, -550, -0 z"/>
-            <circle cx="0" cy="270" r="60"/>
-            <circle cx="480" cy="200" r="30"/>
-            <circle cx="1250" cy="180" r="25"/>
-            <circle cx="1350" cy="280" r="80"/>
-            <path d="M350, 600 a150, -125 0 0, 1, 1100, 0 z" />
-            <path class="restar" d="M400, 600 a300, -250 0 0, 1, 1000, 0 l-80, 0 a300, 250 0 0, 0  -850, 0 z"/>
-            <path d="M1200, 550 a350, -250 0 0, 1, 1000, 0 z" />
-            <path class="restar" d="M1250, 580 a280, -220 0 0, 1, 900, 0 l-50, 0 a220, 170 0 0, 0, -780, -0 z"/>
-            <rect x="0" y="22%" width="100%" height="300"/> -->
-        </svg>
     </main>
     <footer>
         <ul id="infoPag">
@@ -119,7 +144,7 @@
         </div>
         <div id="localizacion">
             <h4>Localización</h4>
-            <p>Paseo Cronista Xosé M. Álvarez Blázquez, 26, 36203 Vigo, Pontevedra</p>
+            <a href="https://www.google.com/maps/place/Paseo+Cronista+Xos%C3%A9+M.+%C3%81lvarez+Bl%C3%A1zquez,+26,+36203+Vigo,+Pontevedra/@42.230894,-8.7304107,17z/data=!3m1!4b1!4m5!3m4!1s0xd2f6212e2ab8fbf:0x3a36a0a129ebbdd9!8m2!3d42.23089!4d-8.728222">Paseo Cronista Xosé M. Álvarez Blázquez, 26, 36203 Vigo, Pontevedra</a>
             <div id="map"></div>
             <!-- API -->
         </div>

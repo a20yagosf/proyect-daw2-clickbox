@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClickBox</title>
+    <script src="../js/funcionesGenerales.js"></script>
+    <script src="../js/login.js"></script>
+</head>
+<body>
+    <div id="login">
+        <h2>Registrate o inicia sesión</h2>
+        <p>Por favor crea una cuenta para poder acceder a más funcionalidades de la web como suscribirte, reservar partidas y mucho más</p>
+        <div><button class="noActivo">Registrarse</button><button>Loguearse</button></div>
+        <form action="">
+            <!-- Login <input type="email" name="email" placeholder="Correo electrónico" id="email"/>
+            <input type="password" name="pwd" placeholder="Contraseña" id="pwd"/>
+            <button type="submit">Iniciar sesión</button> -->
+            <div class="acordeon">
+                <button>Datos cuenta</button>
+                <div>
+                    <input type="text" name="email" id="email" placeholder="Correo electrónico"/>
+                    <input type="password" name="pwd" id="pwd" placeholder="Contraseña"/>
+                    <input type="password" name="pwd2" id="pwd2" placeholder="Repetir contraseña"/>
+                </div>
+            </div>
+            <div class="acordeon">
+                <button>Datos personales</button>
+                <div>
+                    <label for="nombre">Nombre</label>
+                    <input type="text" name="nombre" id="nombre"/>
+                    <label for="apellidos">Apellidos</label>
+                    <input type="text" name="apellidos" id="apellidos"/>
+                    <label for="telf">Teléfono</label>
+                    <input type="tel" name="telf" id="telf"/>
+                    <label for="fecha_nac">Fecha de nacimiento</label>
+                    <input type="date" name="fecha_nac" id="fecha_nac"/>
+                    <label for="direccion">Dirección</label>
+                    <input type="text" name="direccion" id="direccion"/>
+                </div>
+            </div>
+            <input type="submit" value="Registrarme"/>
+        </form>
+    </div>
+</body>
+</html>
