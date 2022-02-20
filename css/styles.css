@@ -412,7 +412,7 @@ main {
   width: 100%;
   height: 100%;
   display: inline-block;
-  background-image: url("../img/SuscDesignTop.svg");
+  background-image: url("../img/mosaicoDisenho/SuscDesignTop.svg");
   background-size: contain;
   background-position-y: bottom;
   background-repeat: no-repeat;
@@ -427,7 +427,7 @@ main {
   width: 100%;
   height: 100%;
   display: inline-block;
-  background-image: url("../img/SuscDesignBottom.svg");
+  background-image: url("../img/mosaicoDisenho/SuscDesignBottom.svg");
   background-size: contain;
   background-position-y: top;
   background-repeat: no-repeat;
@@ -670,7 +670,7 @@ main {
   width: 100%;
   height: 100%;
   display: inline-block;
-  background-image: url("../img/tiendaDesignTop.svg");
+  background-image: url("../img/mosaicoDisenho/tiendaDesignTop.svg");
   background-size: contain;
   background-position-y: bottom;
   background-repeat: no-repeat;
@@ -815,7 +815,7 @@ main {
 }
 
 .cuerpoMosaico {
-  background-image: url("../img/mosaico2.svg");
+  background-image: url("../img/mosaicoDisenho/mosaico.svg");
   background-size: cover;
   background-repeat: repeat-y;
 }
@@ -1084,7 +1084,7 @@ ul li.list-group-item div.info {
 #login {
   width: 80%;
   height: 70%;
-  background-color: #f3f3f3dc;
+  background-color: #f3f3f3;
   padding: 1%;
   border-radius: 10px;
   position: fixed;
@@ -1173,19 +1173,48 @@ ul li.list-group-item div.info {
   flex-wrap: wrap;
   border-radius: 10px;
 }
-#login form div div input, #login form div div label {
-  margin: 2% auto;
-  font-size: 1.1rem;
-}
 #login form div div #imagenPerfil {
   border: 0px;
 }
-#login form div input, #login form div label {
+#login form div div input, #login form div div label, #login form div div select {
+  margin: 2% auto;
   flex-basis: 40%;
   align-items: center;
 }
 #login form div label {
   transform: translateY(25%);
+}
+#login form input, #login form label {
+  font-size: 1.1rem;
+  flex-basis: 100%;
+}
+#login form p {
+  display: none;
+  -webkit-margin-after: 2%;
+          margin-block-end: 2%;
+  position: relative;
+}
+#login form .error, #login form .exito {
+  display: block;
+  color: #ff8e75;
+}
+#login form .error::before, #login form .exito::before {
+  content: "";
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  position: relative;
+  inset-inline-start: -12.5px;
+  inset-block-start: 50%;
+  background-image: url("../img/iconos/iconoError.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+#login form .exito {
+  color: #51a347;
+}
+#login form .exito::before {
+  background-image: url("../img/iconos/iconoExito.svg");
 }
 #login .acordeon {
   border-radius: 10px;
@@ -1205,6 +1234,10 @@ ul li.list-group-item div.info {
   border-radius: 10px 10px 0px 0px;
   -webkit-border-after: 1px solid #F3F3F3;
           border-block-end: 1px solid #F3F3F3;
+}
+#login .acordeon:last-of-type {
+  -webkit-margin-after: 2%;
+          margin-block-end: 2%;
 }
 #login input[type=submit] {
   display: block;
@@ -1327,6 +1360,17 @@ ul li.list-group-item div.info {
   #login form input[type=submit] {
     font-size: 1.6rem;
   }
+}
+
+.campoOblig::after {
+  content: "*";
+  color: #ff8e75;
+  display: inline-block;
+  font-size: 1.5em;
+  position: relative;
+  -webkit-margin-start: 1%;
+          margin-inline-start: 1%;
+  transform: translate(0%, 15%);
 }
 
 #perfilUsuario {

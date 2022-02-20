@@ -1,5 +1,7 @@
 <?php
-include("bd.php"); // En un futuro se reemplazará con autocarga
+namespace Usuarios;
+
+use \Infraestructuras\Bd as bd;
 class Usuario
 {
     protected $id_usuario;
@@ -16,12 +18,49 @@ class Usuario
     protected $suscripcion;
     protected $renovar;
     protected $fecha_ini_suscripcion;
+
+    public function __construct($email) {
+        $this->email = $email;
+    }
+
+    //Sets y gets
+    /**
+     * Devuelve el valor del email
+     *
+     * @return  string  Email del usuario
+     */
+    public function getEmail() {
+        return $this->email;
+    }
+
+    public function getRol() {
+        //Comprobamos si lo tiene asignado
+        if(!isset($this->rol)){
+            try {
+                //Si no está asignado lo recuperamos de la base de datos y se lo asignamos
+                $bd = new bd();
+                $sentencia = "SELECT R.id_rol as rol FROM usuarios as U INNER JOIN roles as R ON U.rol = R.id_rol WHERE email = ?";
+                $resultadoRol = $bd->recuperDatosBD($sentencia, [$this->email]);
+                if($resultadoRol != false){
+                    $rol = $resultadoRol->fetch(\PDO::FETCH_ASSOC)["rol"];
+                    $this->rol = $rol != false ? $rol : null;
+                }
+            }
+            catch(\PDOException $pdoError) {
+                $error = "Error " . $pdoError->getMessage();
+            }
+            catch(\Exception $error) {
+                $error = "Error " . $error->getMessage();
+            }
+        }
+        return $this->rol;
+    }
+
     /**
      * Método que recupera los datos del usuario que tiene la sesión iniciada
      *
      * @return  array Devuelve un array con los datos de dicho usuario
      */
-
     public function cargarDatos()
     {
         // Declaro la sentencia sql para recuperar los datos del usuario
@@ -42,7 +81,7 @@ class Usuario
                         where email = ?";
         $email = $_SESSION['email'];
         //
-        $conBd = new Bd();
+        $conBd = new bd();
         $arrayDatos = $conBd->recuperDatosBD($sql1, $email); // "email" es el dato identificador
         return $arrayDatos;
     }

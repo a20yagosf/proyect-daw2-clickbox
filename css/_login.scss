@@ -98,21 +98,16 @@
                 //Estilo
                 border-radius: $borderRadius;
 
-                //Todos los elementos input y label del div
-                input, label {
-                    margin: 2% auto;
-                    font-size: 1.1rem;
-                }
-
                 #imagenPerfil {
                     border: 0px;
                 }
-            }
 
-            //Input y label de Datos perosnales
-            input, label {
-                flex-basis: 40%;
-                align-items: center;
+                //Input y label de Datos perosnales
+                input, label, select {
+                    margin: 2% auto;
+                    flex-basis: 40%;
+                    align-items: center;
+                }
             }
 
             //Label de Datos personales
@@ -121,6 +116,50 @@
                 transform: translateY(25%);
             }
 
+        }
+
+         //Todos los elementos input y label
+         input, label {
+            font-size: 1.1rem;
+            flex-basis: 100%;
+        }
+
+         //Párrafo donde se muestra si se creó con éxito o se produjo algún error al registrarnos
+        p {
+            display: none;
+            margin-block-end: 2%;
+            position: relative;
+        }
+
+        //Clase para poner un icono antes del párrafo para mostrar que hubo un error
+        .error {
+            display: block;
+            color: $colorError;
+
+            &::before {
+                content: "";
+                display: inline-block;
+                width: $sizeIconoInfo;
+                height: $sizeIconoInfo;
+                //Posicionamiento
+                position: relative;
+                inset-inline-start: -$sizeIconoInfo/2;
+                inset-block-start: 50%;
+                //Icono de alerta
+                background-image: url("../img/iconos/iconoError.svg");
+                background-repeat: no-repeat;
+                background-size: contain;
+            }
+        }
+
+        //Clase para poner un icono antes del párrafo para mostrar que fue un éxito
+        .exito {
+            @extend .error;
+            color: $colorExito;
+
+            &::before {
+                background-image: url("../img/iconos/iconoExito.svg");
+            }
         }
     }
 
@@ -149,6 +188,11 @@
     .acordeon:first-of-type {
         border-radius: $borderRadius $borderRadius 0px 0px;
         border-block-end: 1px solid $colorLetra;
+    }
+
+    .acordeon:last-of-type {
+        //Margin bottom
+        margin-block-end: 2%;
     }
 
     //Boton de registrarme
@@ -290,4 +334,16 @@
     }
 }
 
+.campoOblig {
+    &::after{
+        content: "*";
+        color: $colorError;
+        display: inline-block;
+        font-size: 1.5em;
+        //Posicionamiento
+        position: relative;
+        margin-inline-start: 1%;
+        transform: translate(0%, 15%);
+    }
+}
 

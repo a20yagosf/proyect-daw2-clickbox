@@ -118,7 +118,7 @@ function crearFooter() {
     let contenedorRedes = document.createElement("div");
     contenedorRedes.setAttribute("id", "redes");
     //Imagenes de las redes que creamos mediante js
-    let imagenesRedes = crearArrayElem("crearImg", 3, [{"src": "../img/logoTwitter.svg", "alt": "Logo de Twitter"}, {"src": "../img/logoInstagram.svg", "alt": "Logo de Instagram"}, {"src": "../img/logoTickTock.svg", "alt": "Logo de Tick Tock"}]);
+    let imagenesRedes = crearArrayElem("crearImg", 3, [{"src": "../img/iconos/logoTwitter.svg", "alt": "Logo de Twitter"}, {"src": "../img/iconos/logoInstagram.svg", "alt": "Logo de Instagram"}, {"src": "../img/iconos/logoTickTock.svg", "alt": "Logo de Tick Tock"}]);
     //Enlaces de las redes
     let enlacesRedes = crearArrayElem("crearEnlace", 3, [["#", "#", "#"], imagenesRedes]);
     contenedorRedes.append(...enlacesRedes);
@@ -351,36 +351,45 @@ function aparecerLogin(){
     //Si no existe creamos el elemento
     else {
         contenedorLogin = document.createElement("div");
-        //Le asigno el id
+        //Le asignamos el id
         contenedorLogin.setAttribute("id", "login");
-        //Creo los componentes del interior
+        //Creamos los componentes del interior
         let encabezado = document.createElement("h2");
         encabezado.textContent = "Registrate o inicia sesión";
         let paragrafo = document.createElement("p");
         paragrafo.textContent = "Por favor crea una cuenta para poder acceder a más funcionalidades de la web como suscribirte, reservar partidas y mucho más";
+        //Parrafo que explica que * son los campos obligatorios
+        let parrafoOblig = document.createElement("p");
+        parrafoOblig.textContent = "Los campos obligatorios están marcados con :";
+        parrafoOblig.setAttribute("class", "campoOblig");
         //Contenedor de los botones
         let contenedorBotones = document.createElement("div");
         //Botones
-        let botones = crearArrayElem("crearBoton", 2, [["Registrarse", "Iniciar sesión"], [{"class": "noActivo", "data-nombre": "registro"}, {"data-nombre": "login"}]]);
+        let registro = crearBoton("Registrarse", {"class": "noActivo", "data-nombre": "registro"});
+        let login = crearBoton("Iniciar sesión", {"data-nombre": "login"});
+        let botones = [registro, login]
         contenedorBotones.append(...botones);
         //Creamos el formulario (Por defecto se activa con el login)
         let formulario = document.createElement("form");
         //Atributos del formulario
-        let atributosForm = {"action": "", "method": "POST", "enctype": "multipart/form-data"};
+        let atributosForm = {"action": "../php/registro.php", "method": "POST", "enctype": "multipart/form-data"};
         //Le asignamos los atributos al formulario
         Object.entries(atributosForm).forEach(atributo => formulario.setAttribute(atributo[0], atributo[1]));
-        crearLogin(formulario);
-        //Creo el botón de cierre
+        //Creamos el botón de cierre
         let botonCierre = crearBoton("X");
-        //Lo añado todo al contenedor login
-        contenedorLogin.append(encabezado, paragrafo, contenedorBotones, formulario, botonCierre);
-        //Le añado los escuchadores a los botones
+        //Lo añadimos todo al contenedor login
+        contenedorLogin.append(encabezado, paragrafo, parrafoOblig, contenedorBotones, formulario, botonCierre);
+        //Le añadimos los escuchadores a los botones
         botones.forEach(boton => boton.addEventListener("click", cambiarForm));
         botonCierre.addEventListener("click", aparecerLogin);
         //Pomos o elemento como display none para mostralo cunha animación
         contenedorLogin.style.display = "none";
-        //Añado el contenedor al body
+        //Añadimos el contenedor al body
         document.querySelector("body").append(contenedorLogin);
+        //Creamos el interior del formulario
+        crearLogin(formulario);
+        //Marcamos los campos Obligatorios
+        marcarCamposOblig(["email", "pwd"]);
         $(contenedorLogin).show(1000);
     }
 }
@@ -434,15 +443,30 @@ function crearElemForm(tipoElemento, atributos, texto = "") {
  *
  */
 function crearLogin(formulario) {
+    //Le quitamos el escucharo del registro (si lo tiene) y le añadimos al formulario el botón para escuchar el evento
+    formulario.removeEventListener("submit", procesarFormularioRegistro);
+    formulario.addEventListener("submit", procesarFormularioLogin);
+    //Label del login
+    let labelEmail = crearElemForm("label", {"for": "email"}, "Email");
+    let labelClave = crearElemForm("label", {"for": "pwd"}, "Contraseña");
+    //Input login
+    let inputEmail = crearElemForm("input",{"type": "email", "name": "email", "placeholder": "Correo electrónico", "id": "email"});
+    let inputClave = crearElemForm("input",{"type": "password", "name": "pwd", "placeholder": "Contraseña", "id": "pwd"});
     //Creamos los input y los añadimos al formulario
-    formulario.append(...crearArrayElem("crearElemForm", 2, [["input", "input"],[{"type": "email", "name": "email", "placeholder": "Correo electrónico", "id": "email"}, {"type": "password", "name": "pwd", "placeholder": "Contraseña", "id": "pwd"}]]));
+    formulario.append(labelEmail, inputEmail, labelClave, inputClave);
+    //Marcamos los campos Obligatorios
+    marcarCamposOblig(["email", "pwd"]);
+    //Párrafo para mostrar el mensaje de éxito o error
+    let parrafoResult = document.createElement("p");
+    parrafoResult.setAttribute("id", "resultadoForm");
     //Botón para móvil para poder salir
     let botonCancelar = crearBoton("Cancelar", {"type": "button"});
     botonCancelar.setAttribute("class", "movil");
     //Añadimos el escuchador al botón
     botonCancelar.addEventListener("click", aparecerLogin);
+    let botonLogin = crearBoton("Iniciar sesión", {"type": "submit"});
     //Creo el botón de iniciar sesión
-    formulario.append(crearBoton("Iniciar sesión", {"type": "submit"}), botonCancelar);
+    formulario.append(parrafoResult, botonLogin, botonCancelar);
 }
 
 /**
@@ -452,53 +476,131 @@ function crearLogin(formulario) {
  *
  */
 function crearRegistro(formulario) {
+    //Le quitamos el escucharo del registro (si lo tiene) y le añadimos al formulario el botón para escuchar el evento
+    formulario.removeEventListener("submit", procesarFormularioLogin);
+    formulario.addEventListener("submit", procesarFormularioRegistro);
     //Acordeon 1
+    formulario.append(crearAcordeonDatosCuenta());
+
+    //Acordeon2
+    formulario.append(crearAcordeonDatosPersonales());
+
+    //Marcamos los campos Obligatorios
+    marcarCamposOblig(["email", "pwd", "pwd2", "imagenPerfil", "nombre", "apellidos", "fecha_nac"]);
+    //Párrafo para mostrar el mensaje de éxito o error
+    let parrafoResult = document.createElement("p");
+    parrafoResult.setAttribute("id", "resultadoForm");
+    //Botón de registro
+    let botonRegistro = crearElemForm("input", {"type": "submit", "value": "Registrarme"});
+    //Botón para móvil para poder salir
+    let botonCancelar = crearBoton("Cancelar", {"type": "button"});
+    botonCancelar.setAttribute("class", "movil");
+     //Añadimos el escuchador al botón
+    botonCancelar.addEventListener("click", aparecerLogin);
+
+    //Añadimos todo al formulario
+    formulario.append(parrafoResult, botonRegistro, botonCancelar);
+}
+
+/**
+ * Acordeon con los label e input de la seccion datos cuenta
+ *
+ * @return  {DOMElement}  Acordeon con todos sus elementos creados
+ */
+function crearAcordeonDatosCuenta() {
     //Creamos el acordeon
     let acordeon1 = document.createElement("div");
     //Le asignamos la clase
     acordeon1.setAttribute("class", "acordeon");
     //Creamos el botón
     let botonAcordeon1 = crearBoton("Datos cuenta", {"type": "button"});
+    //Le añadimos los listener a los botones del acordeon
+    botonAcordeon1.addEventListener("click", manipularAcordeon);
     //Div que contendrá los input
     let divAcordeon1 = document.createElement("div");
-    //Todos los elementos que contendrá el acordeon1
-    let inputAcordeon1 = crearArrayElem("crearElemForm", 8, [["label", "input", "label", "input", "label", "input", "label", "input"],[{"for": "email"}, {"type": "text", "name": "email", "id": "email"}, {"for": "pwd"}, {"type": "password", "name": "pwd", "id": "pwd"}, {"for": "pwd2"}, {"type": "password", "name": "pwd2", "id": "pwd2"}, {"for": "imagenPerfil"}, {"type": "file", "name": "imagenPerfil", "id": "imagenPerfil"}], ["Email", "", "Contraseña", "", "Repetir contraseña", "", "Imagen perfil"]]);
-    //Añadimos todo al divAcordeon
-    divAcordeon1.append(...inputAcordeon1);
+
+    //Creamos todos los label
+    let labelEmail = crearElemForm("label", {"for": "email"}, "Email");
+    let labelClave = crearElemForm("label", {"for": "pwd"}, "Contraseña");
+    let labelClaveRep = crearElemForm("label", {"for": "pwd2"}, "Repetir contraseña");
+    let labelImagen = crearElemForm("label", {"for": "imagenPerfil"}, "Imagen de perfil");
+    let labelFavGen = crearElemForm("label", {"for": "genero_favorito"}, "Género favorito");
+    //Array con todos los label
+    let labels =[labelEmail, labelClave, labelClaveRep, labelImagen, labelFavGen];
+
+    //Creamos todos los inputs
+    let inputEmail = crearElemForm("input", {"type": "text", "name": "email", "id": "email"});
+    let inputClave = crearElemForm("input", {"type": "password", "name": "pwd", "id": "pwd"});
+    let inputClaveRep = crearElemForm("input", {"type": "password", "name": "pwd2", "id": "pwd2"});
+    let inputImagen = crearElemForm("input", {"type": "file", "name": "imagenPerfil", "id": "imagenPerfil"});
+    let selectFavGen = crearElemForm("select", {"name": "genero_favorito", "id": "genero_favorito"});
+    
+    //Option por defecto
+    let opcionDefault = document.createElement("option");
+    opcionDefault.setAttribute("value", "");
+    opcionDefault.setAttribute("selected", "selected");
+    opcionDefault.textContent = "No especificado";
+    selectFavGen.append(opcionDefault);
+
+    //Creamos todos los option del select
+    crearOptionGenerosFav(selectFavGen);
+
+    //Array con todos los inputs
+    let inputs = [inputEmail, inputClave, inputClaveRep, inputImagen, selectFavGen];
+
+    //Añadimos todo al divAcordeon alternando entre label e input (Como ambos tienen la misma longitud usamos la longitud de los label como referencia)
+    for(let i = 0; i < labels.length; i++){
+        divAcordeon1.append(labels[i], inputs[i]);
+    }
     //Añadimos el boton y el div al acordeon
     acordeon1.append(botonAcordeon1, divAcordeon1);
+    return acordeon1;
+}
 
-    //Acordeon2
+/**
+ * Crea el arcordeon con los label e input de datos personales
+ *
+ * @return  {DOMElement}  Acordeon con los elementos creados
+ */
+function crearAcordeonDatosPersonales() {
     //Creamos el segundo acordeon
     let acordeon2 = document.createElement("div");
     acordeon2.setAttribute("class", "acordeon");
     //Creamos el botón
     let botonAcordeon2 = crearBoton("Datos personales", {"type": "button"});
+    //Le añadimos los listener a los botones del acordeon
+    botonAcordeon2.addEventListener("click", manipularAcordeon);
     //Div que contendrá los input
     let divAcordeon2 = document.createElement("div");
-    //Todos los elementos del formulario que contendrá
-    let elemFormAcordeon2 = crearArrayElem("crearElemForm", 10, [["label", "input", "label", "input", "label", "input", "label", "input", "label", "input"], [{"for": "nombre"}, {"type": "text", "name": "nombre", "id": "nombre"}, {"for": "apellidos"}, {"type": "text", "name": "apellidos", "id": "apellidos"}, {"for": "telf"}, {"type": "telf", "name": "telf", "id": "telf"}, {"for": "fecha_nac"}, {"type": "date", "name": "fecha_nac", "id": "fecha_nac"}, {"for": "direccion"}, {"type": "text", "name": "direccion", "id": "direccion"}], ["Nombre", "", "Apellidos", "", "Teléfono", "", "Fecha de nacimiento", "", "Dirección"]]);
-    //Añadimos los elementos al acordeon
-    divAcordeon2.append(...elemFormAcordeon2);
+
+    //Todos los labl del acordeon
+    let labelNombre = crearElemForm("label", {"for": "nombre"}, "Nombre");
+    let labelApellidos= crearElemForm("label", {"for": "apellidos"}, "Apellidos");
+    let labelTelf = crearElemForm("label", {"for": "telf"}, "Teléfono");
+    let labelFechaNac = crearElemForm("label", {"for": "fecha_nac"}, "Fecha de nacimiento");
+    let labelDirc= crearElemForm("label", {"for": "direccion"}, "Dirección");
+    //Array con los label
+    let labelPersonales = [labelNombre, labelApellidos, labelTelf, labelFechaNac, labelDirc];
+
+    //Todos los input
+    let inputNombre = crearElemForm("input",  {"type": "text", "name": "nombre", "id": "nombre"});
+    let inputApellidos= crearElemForm("input", {"type": "text", "name": "apellidos", "id": "apellidos"});
+    let inputTelf = crearElemForm("input", {"type": "telf", "name": "telf", "id": "telf"});
+    let inputFechaNac = crearElemForm("input", {"type": "date", "name": "fecha_nac", "id": "fecha_nac"});
+    let inputDirc= crearElemForm("input", {"type": "text", "name": "direccion", "id": "direccion"});
+    //Array con todos los input
+    let inputPersonales = [inputNombre, inputApellidos, inputTelf, inputFechaNac, inputDirc];
+
+    //Añadimos todo al divAcordeon alternando entre label e input (Como ambos tienen la misma longitud usamos la longitud de los label como referencia)
+    for(let i = 0; i < labelPersonales.length; i++){
+        divAcordeon2.append(labelPersonales[i], inputPersonales[i]);
+    }
+
     //Ocultamos el divAcordeon2
     divAcordeon2.style.display = "none";
     //Añadimos el boton y el div al acordeon
     acordeon2.append(botonAcordeon2, divAcordeon2);
-
-    //Botón de registro
-    let botonRegistro = crearElemForm("input", {"type": "submit", "value": "Registrarme"});
-    //Le añadimos los listener a los botones del acordeon
-    botonAcordeon1.addEventListener("click", manipularAcordeon);
-    botonAcordeon2.addEventListener("click", manipularAcordeon);
-    
-     //Botón para móvil para poder salir
-     let botonCancelar = crearBoton("Cancelar", {"type": "button"});
-     botonCancelar.setAttribute("class", "movil");
-     //Añadimos el escuchador al botón
-    botonCancelar.addEventListener("click", aparecerLogin);
-
-    //Añadimos todo al formulario
-    formulario.append(acordeon1, acordeon2, botonRegistro, botonCancelar);
+    return acordeon2;
 }
 
 /**
@@ -544,5 +646,240 @@ function editarPerfil() {
         document.querySelector("input[type='submit']").style.display = "none";
         //Cambiamos el texto de cancelar a Editar perfil
         botonEditar.textContent = "Editar perfil";
+    }
+}
+
+/**
+ * Procesa el formulario de login, comprobando los campos y si son correctos enviándoselos al servidor y procesando su respuesta
+ *
+ */
+async function procesarFormularioLogin(evento) {
+    //Prevenimos al botón de realizar su tarea normalmente (Enviar la petición al servidor)
+    evento.preventDefault();
+    //Párrafo donde mostraremos el mensaje
+    let resultado = document.getElementById("resultadoForm");
+    try {
+        //Comprobamos que todos los campos obligatorios estean cubiertos
+        let camposOblig = ["email", "pwd"];
+        if(!comprobarCamposOblig(camposOblig)){
+            throw "Debe rellenar todos los campos obligatorios";
+        }
+        //Elementos
+        let email = document.getElementById("email").value;
+        let pwd = document.getElementById("pwd").value;
+        //Comprobamos que el email sea válido
+        if(!validarEmail(email)){  
+            throw "El email no es válido";
+        }
+        //Enviamos la petición al servidor
+        const respuestaJSON = await fetch("../php/login.php", {
+            method: "POST",
+            headers: {"Content-type": "application/json; charset=utf-8"},
+            body: JSON.stringify({"email": email, "pwd": pwd})
+        });
+        //Cogemos el mensaje y esperamos a que este listo
+        const resultadoPeticion = await respuestaJSON.json();
+        //Comprobamos que no saltara un error
+        if(Object.hasOwn(resultadoPeticion, "error")){
+            throw new respuestaJSON["error"];
+        }
+        //Cerramos el login y cargamos la página mostrando la cabecera de usuario
+        aparecerLogin();
+        //Guardamos en sesión el usuario y su rol
+        sessionStorage.setItem("email", email);
+        sessionStorage.setItem("rol", resultadoPeticion["exito"]);
+    }
+    catch($error){
+        //Asignamos al p el mensaje
+        resultado.textContent = "Error: " + $error;
+        resultado.classList = "error";
+    }
+}
+
+/**
+ * Procesa el formulario de registro
+ *
+ * @param   {Event}  evento  Evento que dispara esta función
+ *
+ */
+async function procesarFormularioRegistro(evento){
+    //Prevenimos al botón de realizar su tarea normalmente (Enviar la petición al servidor)
+    evento.preventDefault();
+    //Párrafo donde mostraremos el mensaje
+    let resultado = document.getElementById("resultadoForm");
+    try {
+        //Comprobamos que todos los campos obligatorios estean cubiertos
+        let camposOblig = ["email", "pwd", "pwd2", "imagenPerfil", "nombre", "apellidos", "fecha_nac"];
+        if(!comprobarCamposOblig(camposOblig)){
+            throw "Debe rellenar todos los campos obligatorios";
+        }
+        //Elementos que enviaremos a php
+        let email = document.getElementById("email").value;
+        let clave = document.getElementById("pwd").value;
+        let clave2 = document.getElementById("pwd2").value;
+        let imagenPerfil = document.getElementById("imagenPerfil").files[0];
+        let nombre = document.getElementById("nombre").value;
+        let apellidos = document.getElementById("apellidos").value;
+        let telefono = document.getElementById("telf").value;
+        let fecha_nac = document.getElementById("fecha_nac").value;
+        let direccion = document.getElementById("direccion").value;
+        let genero_favorito = document.getElementById("genero_favorito").value;
+        //Comprobamos que el email sea válido
+        if(!validarEmail(email)){  
+            throw "El email no es válido";
+        }
+        //Comprobamos que las contraseñas coincidan
+        if(!validarClaves(clave, clave2)){
+            throw "Las contraseñas no coinciden";
+        }
+        //Comprobamos que la fecha de nacimiento sea válida
+        if(!validarFecha(fecha_nac)){
+            throw "La fecha de nacimiento no es válida";
+        }
+        //Creamos el objeto con los datos
+        let datosUsuario = {"email": email, "pwd": clave, "pwd2": clave2, "nombre": nombre, "apellidos": apellidos, "telefono": telefono, "fecha_nac": fecha_nac, "direccion": direccion, "genero_favorito": genero_favorito};
+        const mensajeJSON = new FormData();
+        mensajeJSON.append("imagenPerfil", imagenPerfil);
+        mensajeJSON.append("datosUsuario", JSON.stringify(datosUsuario));
+        //Enviamos los datos a php
+        const resultadoJSON = await fetch("../php/registro.php", {
+            method: "POST",
+            body: mensajeJSON
+        });
+        const mensaje = await resultadoJSON.json();
+        //Cambiamos el mensaje y le añadimos la claseque trae de respuesta del php (Si dio un error el atributo será error y el mensaje de error sino éxito y su mensaje)
+        let propiedadObjeto = Object.hasOwn(mensaje, "exito") ? "exito" : "error" ;
+        resultado.textContent = mensaje[propiedadObjeto];
+        resultado.classList = propiedadObjeto;
+        //Si es éxito borramos los input del formulario
+        if(propiedadObjeto == "exito") {
+            await limpiarTodosCamposForm(true);
+        }
+    }
+    catch($error){
+        //Asignamos al p el mensaje
+        resultado.textContent = "Error: " + $error;
+        resultado.classList = "error";
+    }
+}
+
+/**
+ * Marca los campos que le pasamos en el array como obligatorios
+ *
+ * @param   {array}  camposOblig  Array con los id de los input obligatorios
+ *
+ */
+function marcarCamposOblig(camposOblig){
+    //Pone antes de cada campo un * para marcar que es un campo Obligatorio
+    //Recorremos cada uno de los id de los input
+    camposOblig.forEach(campo => {
+        //Cogemos el label que tiene el for para ese id y le añadimos la clase campoOblig
+        document.querySelector(`label[for='${campo}']`).setAttribute("class", "campoOblig");
+    });
+}
+
+/**
+ * Comprueba que todos los campos obligatorios tengan valor
+ *
+ * @param   {array}  camposOblig  Todos los ide de los campos obligatorios
+ *
+ * @return  {boolean}               True si todos los campos están cubiertos, False si no
+ */
+function comprobarCamposOblig(camposOblig){
+    return camposOblig.find(campo => document.getElementById(campo).value == "") == undefined;
+}
+
+/**
+ * Valida el email contra una expresión regular
+ *
+ * @param   {string}  email  Email del usuario
+ *
+ * @return  {boolean}         Si el email es válido o no
+ */
+function validarEmail(email) {
+    /* Expresión regular que comprueba: que tenga Cualquier caracter de letra o número un . o - + cualquier letra o número @ letra o número acompañado o no
+     * 1.- Que empiece por cualquier caracter alfanumérico (^\w)
+     * 2.- Que tengo (o no) un punto o guión (o no) y seguido de algún caracter alfanumérico (([\.-]?\w+)*)
+     * 3.- Que vaya seguido de un @ seguido de algún caracter alfanumérico (@\w+)
+     * 4.- Que pueda ir acompañado de un punto o guion y algún caracter alfanumérico (([\.-]?\w+)*)
+     * 5.- Que termine en punto y de 2 a 3 caracteres alfanuméricos (\.\w{2,3})$
+    */
+   let regEmail = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})$/);
+   //Comprobamos si encuentra esa expresión si la encuentra devolvemos true sino false (Ponemos esto porque sino devuelve la expresión o un array vacio)
+   return email.match(regEmail) ? true : false;
+}
+
+/**
+ * Comprueba que las contraseñas coincidan
+ *
+ * @param   {string}  clave1  Clave
+ * @param   {string}  clave2  Clave repetida
+ *
+ * @return  {boolean}          Devuelve si ambas claves son la misma
+ */
+function validarClaves(clave1, clave2){
+    return clave1 === clave2;
+}
+
+/**
+ * Comprueba que una fecha sea válida
+ *
+ * @param   {string}  fecha  Fecha
+ *
+ * @return  {boolean}         True si es valida, False si no
+ */
+function validarFecha(fecha){
+    //Convertimos la fecha con Date.parse, si da Nan es que no es válida, sino es válida
+    return !isNaN(Date.parse(fecha));
+}
+
+/**
+ * Limpia todos los campos de los formularios despues de 2s
+ *
+ * @param   {boolean}  archivo  Si hay algún input de tipo file
+ *
+ */
+async function limpiarTodosCamposForm(archivo) {
+    setTimeout(archivo => {
+        //Comprobamos si hay algún input de tipo archivo
+        if(archivo){
+            //Todos os input menos el de archivo y el de submit
+            let inputsFormulario = document.querySelectorAll("input:not(input[type='file'], input[type='submit'])");
+            inputsFormulario.forEach(campo => campo.value = "");
+            //Limpiamos el select también, ponemos el value "" como seleccionado
+            document.querySelector("option[selected]").removeAttribute("selected");
+            //Limpiamos el archivo
+            document.querySelector("input[type='file']").files = null;
+        }
+        else {
+            //Todos os input menos el de submit
+            let inputsFormulario = document.querySelectorAll("input:not(input[type='submit'])");
+            inputsFormulario.forEach(campo => campo.value = "");
+        }
+    }, 2000);
+}
+
+/**
+ * Crea cada una de las opciones de los géneros
+ *
+ * @param   {DOMElement}  selectAnhadir  Select donde irán las opciones
+ *
+ */
+async function crearOptionGenerosFav(selectAnhadir){
+    //Nos conectamos con el servidor para pedirle los géneros, como no envíamos datos y no devuelve datos comprometidos sólo especificamos el método
+    const respuestaJSON = await fetch("../php/registro.php", {
+        method: "GET",
+        headers: {"Content-type": "application/json; charset=utf-8"}
+    });
+    //Es importante poner la espera en la respuesta porque sino lo lee como undefined
+    let generos = await respuestaJSON.json();
+    if(Object.hasOwn(generos, "generos")){
+        //Formamos un option con cada género
+        generos["generos"].forEach(genero => {
+            let opcion = document.createElement("option");
+            opcion.setAttribute("value", genero);
+            opcion.textContent = genero;
+            selectAnhadir.append(opcion);
+        });
     }
 }

@@ -12,7 +12,7 @@ trait Formulario {
      *
      * @return  boolean               Resultado de ver si todos los datos son válidos o no
      */
-    private static function comprobarCamposOblig($datos, $datosOblig) {
+    private function comprobarCamposOblig($datos, $datosOblig) {
         $datosValidos = true;
         //Recorremos los datos Obligatorio y vemos que esos datos tengan valor
         for($i = 0; $i < count($datosOblig) && $datosValidos; $i++){
@@ -29,10 +29,10 @@ trait Formulario {
      * @param   array    $datos  Array con los datos a validar 
      *
      */
-    private static function validarCamposForm(&$datos) {
+    private function validarCamposForm(&$datos, $index = 0) {
         //Comprueba si es un array
         if(is_array($datos)){
-            array_walk($datos, "validarCamposForm");
+            array_walk($datos, [$this, "validarCamposForm"]);
         }
         else {
             //Le quitamos los espacios antes y despues
@@ -41,6 +41,17 @@ trait Formulario {
             $datos = stripslashes($datos);
             //Convertimos los caracterres en carácteres especiales html
             $datos = htmlspecialchars($datos);
+        }
+    }
+
+    private function comprobarCamposNoOblig(&$campos, $camposOblig) {
+        //Conseguimos sólo los campos no obligatorios
+        $camposNoOblig = array_diff($campos, $camposOblig);
+        //Recorremos los campos no obligatorios y comprobamos si no se ha introducido nada, si es el caso, introducimos null
+        foreach($camposNoOblig as $indice =>$campo) {
+            if($campo == "") {
+                $campos[$indice] = null;
+            }
         }
     }
 }
