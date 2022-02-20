@@ -942,6 +942,125 @@ ul li.list-group-item .btn-info {
     flex-direction: column;
   }
 }
+main div.title {
+  text-align: center;
+  font-size: 2rem;
+  margin: 2%;
+}
+
+form#formulario_tienda {
+  width: 100%;
+}
+form#formulario_tienda .filtros_busqueda {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+form#formulario_tienda .filtros_busqueda .filtro_traits {
+  grid-row: 1;
+  grid-column: 1;
+  border-radius: 25px;
+  border: 2px solid #FFB775;
+  padding: 2%;
+  margin: 1%;
+}
+form#formulario_tienda .filtros_busqueda .filtro_traits p {
+  font-size: 1.5rem;
+}
+form#formulario_tienda .filtros_busqueda .filtro_traits div#lista_traits {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+form#formulario_tienda .filtros_busqueda .filtro_traits div#lista_traits #form_generos {
+  grid-row: 1;
+  grid-column: 1;
+}
+form#formulario_tienda .filtros_busqueda .filtro_traits div#lista_traits #generos {
+  grid-row: 2;
+  grid-column: 1;
+}
+form#formulario_tienda .filtros_busqueda .filtro_traits div#lista_traits #form_jugadores {
+  grid-row: 1;
+  grid-column: 2;
+}
+form#formulario_tienda .filtros_busqueda .filtro_traits div#lista_traits #jugadores {
+  grid-row: 2;
+  grid-column: 2;
+}
+form#formulario_tienda .filtros_busqueda .filtro_traits div#lista_traits .multiselect-dropdown {
+  width: 80% !important;
+  font-size: small;
+}
+form#formulario_tienda .filtros_busqueda .filtro_nombre {
+  grid-row: 1;
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  font-size: 1.5rem;
+  border-radius: 25px;
+  border: 2px solid #FFB775;
+  padding: 2%;
+  margin: 1%;
+}
+form#formulario_tienda .filtros_busqueda .filtro_nombre input {
+  margin-left: 20%;
+  margin-right: 20%;
+  font-size: 1.25rem;
+}
+form#formulario_tienda .filtros_busqueda .filtro_tipo {
+  grid-row: 2;
+  grid-column: 1;
+  display: flex;
+  flex-direction: column;
+  font-size: 1.5rem;
+  border-radius: 25px;
+  border: 2px solid #FFB775;
+  padding: 2%;
+  margin: 1%;
+}
+form#formulario_tienda .filtros_busqueda .filtro_tipo fieldset {
+  font-size: 1.25rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+form#formulario_tienda .filtros_busqueda .filtro_precio {
+  grid-row: 2;
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  font-size: 1.5rem;
+  border-radius: 25px;
+  border: 2px solid #FFB775;
+  padding: 2%;
+  margin: 1%;
+}
+form#formulario_tienda .filtros_busqueda .filtro_precio fieldset {
+  font-size: 1.25rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+form#formulario_tienda div.center_submit {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2%;
+}
+form#formulario_tienda div.center_submit button {
+  background-color: #0291A5;
+  border: none;
+  border-radius: 25px;
+  color: white;
+  padding: 2% 4%;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
 #suscribirse {
   width: 100%;
   height: 100%;

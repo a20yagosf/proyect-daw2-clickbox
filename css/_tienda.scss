@@ -1,0 +1,141 @@
+main div.title{
+    text-align: center;
+    font-size: 2rem;
+    margin: 2%;
+}
+// La estructura de tienda se divide en dos partes, el formulario y el contenido con los items de la bd
+
+form#formulario_tienda {
+  width: 100%;
+  // Configuramos el div de filtración para que sea una grid
+  .filtros_busqueda {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    // Listamos los diferentes apartados del grid
+    .filtro_traits {
+      grid-row: 1;
+      grid-column: 1;
+      p{
+          font-size: 1.5rem;
+      }
+      // Ahora crearemos una segunda grid para terminar de perfilar
+      // la colocación de algunos selectores
+      div#lista_traits{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        #form_generos {
+          grid-row: 1;
+          grid-column: 1;
+        }
+        #generos {
+          grid-row: 2;
+          grid-column: 1;
+        }
+        #form_jugadores {
+          grid-row: 1;
+          grid-column: 2;
+        }
+        #jugadores {
+          grid-row: 2;
+          grid-column: 2;
+        }
+        // Dado que los dropdowns vienen de un script externo modificaremos
+        // su tamaño sobreescribiendo el valor
+        .multiselect-dropdown {
+            width: 80% !important;
+            font-size: small;
+        }
+      }
+      // Para darle un borde y algo de padding
+      border-radius: 25px;
+      border: 2px solid $colorSecundario;
+      padding: 2%;
+      margin: 1%;
+    }
+    .filtro_nombre {
+      grid-row: 1;
+      grid-column: 2;
+      display: flex;
+      flex-direction: column;
+
+      font-size: 1.5rem;
+      input{
+          margin-left: 20%;
+          margin-right: 20%;
+          font-size: 1.25rem;
+      }
+
+      // Para darle un borde y algo de padding
+      border-radius: 25px;
+      border: 2px solid $colorSecundario;
+      padding: 2%;
+      margin: 1%;
+    }
+    .filtro_tipo {
+      grid-row: 2;
+      grid-column: 1;
+      display: flex;
+      flex-direction: column;
+
+      font-size: 1.5rem;
+      fieldset{
+          font-size: 1.25rem;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-around;
+      }
+
+      // Para darle un borde y algo de padding
+      border-radius: 25px;
+      border: 2px solid $colorSecundario;
+      padding: 2%;
+      margin: 1%;
+    }
+    .filtro_precio {
+      grid-row: 2;
+      grid-column: 2;
+
+      display: flex;
+      flex-direction: column;
+
+      font-size: 1.5rem;
+
+      fieldset{
+        font-size: 1.25rem;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+      // Para darle un borde y algo de padding
+      border-radius: 25px;
+      border: 2px solid $colorSecundario;
+      padding: 2%;
+      margin: 1%;
+    }
+  }
+  // El estilo del botón de filtrado
+  div.center_submit{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2%;
+    button {
+        background-color: $colorPrincipal;
+        border: none;
+        border-radius: 25px;
+        color: white;
+        padding: 2% 4%;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        
+      }
+  }
+}
+
+content#contenido_tienda {
+}
