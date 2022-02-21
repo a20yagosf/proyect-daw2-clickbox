@@ -13,22 +13,27 @@
         <h2>Registrate o inicia sesión</h2>
         <p>Por favor crea una cuenta para poder acceder a más funcionalidades de la web como suscribirte, reservar partidas y mucho más</p>
         <div><button class="noActivo">Registrarse</button><button>Loguearse</button></div>
-        <form action="">
+        <form enctype="multipart/form-data">
             <!-- Login <input type="email" name="email" placeholder="Correo electrónico" id="email"/>
             <input type="password" name="pwd" placeholder="Contraseña" id="pwd"/>
             <button type="submit">Iniciar sesión</button> -->
             <div class="acordeon">
                 <button>Datos cuenta</button>
                 <div>
-                    <input type="text" name="email" id="email" placeholder="Correo electrónico"/>
-                    <input type="password" name="pwd" id="pwd" placeholder="Contraseña"/>
-                    <input type="password" name="pwd2" id="pwd2" placeholder="Repetir contraseña"/>
+                    <label for="email">E-mail</label>
+                    <input type="text" name="email" id="email"/>
+                    <label for="pwd">Contraseña</label>
+                    <input type="password" name="pwd" id="pwd"/>
+                    <label for="pwd2">Contraseña</label>
+                    <input type="password" name="pwd2" id="pwd2"/>
+                    <label for="imagenPerfil">Imagen de perfil</label>
+                    <input type="file" name="imagenPerfil" id="imagenPerfil"/>
                 </div>
             </div>
             <div class="acordeon">
                 <button>Datos personales</button>
                 <div>
-                    <label for="nombre">Nombre</label>
+                    <label for="nombre" class="campoOblig">Nombre</label>
                     <input type="text" name="nombre" id="nombre"/>
                     <label for="apellidos">Apellidos</label>
                     <input type="text" name="apellidos" id="apellidos"/>
@@ -40,6 +45,7 @@
                     <input type="text" name="direccion" id="direccion"/>
                 </div>
             </div>
+            <p id="resultadoForm">Error X</p>
             <input type="submit" value="Registrarme"/>
             <button class="movil">Cancelar</button>
         </form>
