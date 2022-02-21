@@ -1,4 +1,3 @@
-
 /**
  * Crea el mapa a partir de la API de Lefletjs
  *
@@ -37,11 +36,93 @@ function crearHeader() {
     let navegador = crearNav(["./suscripciones.html", "./partidas.html", "#"], ["Suscripciones", "Partidas", "Tienda"]);
     //Añadimos al header
     cabecera.append(navegador);
-    //Añadimos al body al inicio de todo
-    let cuerpo = document.querySelector("body");
-    //Los añadimos el que queremos de último primero para que se coloquen en el orden correcto ya que los ponemos de primer hijo
-    cuerpo.insertBefore(cabecera, cuerpo.firstChild);
-    cuerpo.insertBefore(alerta, cuerpo.firstChild);
+    //Comprobamos si existe el rol //Rol 1: Admin 2: Estandar 3: Anónimo
+    if(sessionStorage.getItem("rol") !== null) {
+        let contenedorPerfil;
+        let enlacePerfil;
+        let salirPerfil;
+        //Creamos el botón del usuario
+        switch(sessionStorage.getItem("rol")) {
+            //Admin
+            case 1:
+                //Creamos el botón del usuario
+                //Botón para iniciar sesión
+                let botonPanelControl = crearBoton(sessionStorage["email"], {"id": "botonPerfilUsuario"});
+                //Creamos el div  con el cotenido
+                contenedorPerfil = document.createElement("div");
+                contenedorPerfil.setAttribute("id", "menuPerfilUser");
+
+                //Creamos los enlaces
+                enlacePerfil = crearEnlace( "../html/perfilUsuario.html", "Perfil de usuario");
+                enlacePanelControl = crearEnlace( "../html/panelAdministrador.html", "Panel de Control");
+                salirPerfil = crearEnlace("#", "Desconectarme");
+                //Añadimos el escuchador para desconectarnos
+                salirPerfil.addEventListener("click", desconectarPerfil);
+
+                //Lo añadimos al contenedor del perfil
+                contenedorPerfil.append(enlacePerfil, enlacePanelControl, salirPerfil);
+                //Ocultamos el contenedor del perfil
+                $(contenedorPerfil).slideUp(500);
+                //Añadimos el escuchador al botón del header
+                botonPanelControl.addEventListener("click", desplegarMenuPerfil);
+                //Añadimos el botón al contenedor fluid el botón de Inicio de sesión
+                navegador.firstChild.append(botonPanelControl, contenedorPerfil);
+                //Añadimos al header
+                cabecera.append(navegador);
+                //Añadimos al body al inicio de todo
+               cuerpo = document.querySelector("body");
+                //Los añadimos el que queremos de último primero para que se coloquen en el orden correcto ya que los ponemos de primer hijo
+                cuerpo.insertBefore(cabecera, cuerpo.firstChild);
+                cuerpo.insertBefore(alerta, cuerpo.firstChild);
+                break;
+
+            //Estandar
+            default:
+                //Creamos el botón del usuario
+                //Botón para iniciar sesión
+                let botonPerfil = crearBoton(sessionStorage["email"], {"id": "botonPerfilUsuario"});
+                //Creamos el div  con el cotenido
+                contenedorPerfil = document.createElement("div");
+                contenedorPerfil.setAttribute("id", "menuPerfilUser");
+                //Creamos los enlaces
+                enlacePerfil = crearEnlace( "../html/perfilUsuario.html", "Perfil de usuario");
+                salirPerfil = crearEnlace("#", "Desconectarme");
+                //Añadimos el escuchador para desconectarnos
+                salirPerfil.addEventListener("click", desconectarPerfil);
+                //Lo añadimos al contenedor del perfil
+                contenedorPerfil.append(enlacePerfil, salirPerfil);
+                
+                //Ocultamos el contenedor del perfil
+                $(contenedorPerfil).slideUp(500);
+                //Añadimos el escuchador al botón del header
+                botonPerfil.addEventListener("click", desplegarMenuPerfil);
+                //Añadimos el botón al contenedor fluid el botón de Inicio de sesión
+                navegador.firstChild.append(botonPerfil, contenedorPerfil);
+                //Añadimos al header
+                cabecera.append(navegador);
+                //Añadimos al body al inicio de todo
+               cuerpo = document.querySelector("body");
+                //Los añadimos el que queremos de último primero para que se coloquen en el orden correcto ya que los ponemos de primer hijo
+                cuerpo.insertBefore(cabecera, cuerpo.firstChild);
+                cuerpo.insertBefore(alerta, cuerpo.firstChild);
+                break;
+        }
+    }
+    //Usuario anónimo
+    else {
+        //Botón para iniciar sesión
+        botonInicioSesion = crearBoton("Iniciar sesión");
+        botonInicioSesion.setAttribute("id", "inicioSesion");
+        //Añadimos el escuchador al botón del header
+        botonInicioSesion.addEventListener("click", aparecerLogin);
+        //Añadimos el botón al contenedor fluid el botón de Inicio de sesión
+        navegador.firstChild.append(botonInicioSesion);
+        //Añadimos al body al inicio de todo
+        cuerpo = document.querySelector("body");
+        //Los añadimos el que queremos de último primero para que se coloquen en el orden correcto ya que los ponemos de primer hijo
+        cuerpo.insertBefore(cabecera, cuerpo.firstChild);
+        cuerpo.insertBefore(alerta, cuerpo.firstChild);
+    }
 }
 
 /**
@@ -52,7 +133,7 @@ function crearHeader() {
  *
  * @return  {DOMElement}                Navegador hecho con javascript
  */
-function crearNav(redireccion, elementosNav) {
+function crearNav(redireccion, elementosNav, rol) {
    //Creamos el elemento nav
    let navegador = document.createElement("nav");
    //Le añadimos las clases
@@ -67,11 +148,8 @@ function crearNav(redireccion, elementosNav) {
    let botonHamburguesa = crearBoton("", {"class" : "navbar-toggler", "type": "button", "data-bs-toggle": "collapse", "data-bs-target": "#listaNav", "aria-controls": "listaNav", "aria-expanded": "false", "aria-label": "Menú hamburguesa"});
    //Creamos la lista
    let lista = crearLista("ul", crearArrayElem("crearEnlace", 3, [redireccion, elementosNav]), {"id": "listaNav", "class": "collapse navbar-collapse"});
-   //Botón para iniciar sesión
-   let botonInicioSesion = crearBoton("Iniciar sesión");
-   botonInicioSesion.setAttribute("id", "inicioSesion")
    //Añadimos todo al contenedor del nav y despues al nav
-   contenedorNav.append(logo, botonHamburguesa, lista, botonInicioSesion);
+   contenedorNav.append(logo, botonHamburguesa, lista);
    navegador.append(contenedorNav);
    //Creamos el enlace
     return navegador;
@@ -444,8 +522,8 @@ function crearElemForm(tipoElemento, atributos, texto = "") {
  */
 function crearLogin(formulario) {
     //Le quitamos el escucharo del registro (si lo tiene) y le añadimos al formulario el botón para escuchar el evento
-    formulario.removeEventListener("submit", procesarFormularioRegistro);
-    formulario.addEventListener("submit", procesarFormularioLogin);
+    formulario.removeEventListener("submit", procesarRegistro);
+    formulario.addEventListener("submit", procesarLogin);
     //Label del login
     let labelEmail = crearElemForm("label", {"for": "email"}, "Email");
     let labelClave = crearElemForm("label", {"for": "pwd"}, "Contraseña");
@@ -477,8 +555,8 @@ function crearLogin(formulario) {
  */
 function crearRegistro(formulario) {
     //Le quitamos el escucharo del registro (si lo tiene) y le añadimos al formulario el botón para escuchar el evento
-    formulario.removeEventListener("submit", procesarFormularioLogin);
-    formulario.addEventListener("submit", procesarFormularioRegistro);
+    formulario.removeEventListener("submit", procesarLogin);
+    formulario.addEventListener("submit", procesarRegistro);
     //Acordeon 1
     formulario.append(crearAcordeonDatosCuenta());
 
@@ -653,7 +731,7 @@ function editarPerfil() {
  * Procesa el formulario de login, comprobando los campos y si son correctos enviándoselos al servidor y procesando su respuesta
  *
  */
-async function procesarFormularioLogin(evento) {
+async function procesarLogin(evento) {
     //Prevenimos al botón de realizar su tarea normalmente (Enviar la petición al servidor)
     evento.preventDefault();
     //Párrafo donde mostraremos el mensaje
@@ -683,8 +761,6 @@ async function procesarFormularioLogin(evento) {
         if(Object.hasOwn(resultadoPeticion, "error")){
             throw new respuestaJSON["error"];
         }
-        //Cerramos el login y cargamos la página mostrando la cabecera de usuario
-        aparecerLogin();
         //Guardamos en sesión el usuario y su rol
         sessionStorage.setItem("email", email);
         sessionStorage.setItem("rol", resultadoPeticion["exito"]);
@@ -702,7 +778,7 @@ async function procesarFormularioLogin(evento) {
  * @param   {Event}  evento  Evento que dispara esta función
  *
  */
-async function procesarFormularioRegistro(evento){
+async function procesarRegistro(evento){
     //Prevenimos al botón de realizar su tarea normalmente (Enviar la petición al servidor)
     evento.preventDefault();
     //Párrafo donde mostraremos el mensaje
@@ -882,4 +958,40 @@ async function crearOptionGenerosFav(selectAnhadir){
             selectAnhadir.append(opcion);
         });
     }
+}
+
+/**
+ * Despliega el menú del perfil
+ *
+ * @param   {Event}  e  Evento que disparó al escuchador
+ *
+ */
+function desplegarMenuPerfil(e) {
+    let contenedorOpciones = e.target.nextSibling;
+    contenedorOpciones.style.display == "none" ? $(contenedorOpciones).slideDown(500) : $(contenedorOpciones).slideUp(500);
+}
+
+/**
+ * Cierra la sesion y recarga la página
+ *
+ * @param   {Event}  e  Evento que disparó la función
+ *
+ */
+async function desconectarPerfil(e) {
+    //Prevengo que redirija
+    e.preventDefault();
+    //Pedimos que borren del $_SESSION
+    const respuesta = await fetch("../php/login.php?desconectar=true", {
+        method: "GET",
+    });
+    const respuestaJSON = await respuesta.json();
+    if(Object.hasOwn(respuestaJSON, "exito")) {
+        //Borra el sesion storage y recarga la página
+        sessionStorage.clear();
+        location.assign("../html/index.html");
+    }
+}
+
+function cargarDatosPerfil() {
+    //Comprobamos que tenga una 
 }
