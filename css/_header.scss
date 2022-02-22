@@ -41,6 +41,7 @@ header {
 nav {
     //Incluimos el mixed contenedor para darle ancho, alto y color
     @include contenedor(100%, auto, $colorSecundario);
+    position: relative;
     cursor: pointer;
     text-transform: uppercase;
     //Border bottom
@@ -51,6 +52,62 @@ nav {
         margin-inline-end: 2%;
         margin-inline-start: 2%;
         text-transform: uppercase;
+    }
+
+    //Boton cuando tienes iniciada sesión
+    #botonPerfilUsuario {
+        padding: 0.2% 0.5%;
+    }
+
+    //Desplegable con las opciones
+    #menuPerfilUser {
+        @include contenedor(20%, auto, $colorPrincipal);
+        border-radius: $borderRadius;
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        //Top
+        inset-block-start: 100%;
+        //Right
+        inset-inline-end: 2%;
+
+        a {
+            text-align: center;
+            padding: 1%;
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+            color: $colorLetra;
+
+            &:hover {
+                background-color: aclararColor($colorPrincipal);
+            }
+
+            //Primer enlace por el border radius del contenedor
+            &:first-of-type {
+                border-radius: $borderRadius $borderRadius 0px 0px;
+            }
+
+            //Último enlace para el border radius del contenedor
+            &:last-of-type {
+                border-radius: 0px 0px $borderRadius $borderRadius;
+            }
+        }
+
+        //Adaptación a movil
+        @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+            //Menu perfil de usuario
+            & {
+                width: 50%;
+            }
+        }
+
+        //Adaptación para tablets mediante aspect ratio
+        @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px)  {
+            & {
+                width: 30%;
+            }
+        }
     }
 
     .container-fluid {

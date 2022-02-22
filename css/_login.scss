@@ -91,37 +91,75 @@
 
             //Contenedores con el datos
             div {
+                padding: 2%;
                 //Flex como padre
                 display: flex;
                 flex-wrap: wrap;
                 //Estilo
                 border-radius: $borderRadius;
 
-                //Todos los elementos input y label del div
-                input, label {
+                #imagenPerfil {
+                    border: 0px;
+                }
+
+                //Input y label de Datos perosnales
+                input, label, select {
                     margin: 2% auto;
-                    font-size: 1.1rem;
+                    flex-basis: 40%;
+                    align-items: center;
                 }
             }
 
-            //Input de Datos cuenta
-            &:first-of-type input{
-                flex-basis: 80%;
-                
-            }
-
-            //Input y label de Datos perosnales
-            &:nth-of-type(2) input, &:nth-of-type(2) label {
-                flex-basis: 40%;
-                align-items: center;
-            }
-
             //Label de Datos personales
-            &:nth-of-type(2) label {
+            label {
                 //Centramos el texto de los label
                 transform: translateY(25%);
             }
 
+        }
+
+         //Todos los elementos input y label
+         input, label {
+            font-size: 1.1rem;
+            flex-basis: 100%;
+        }
+
+         //Párrafo donde se muestra si se creó con éxito o se produjo algún error al registrarnos
+        p {
+            display: none;
+            margin-block-end: 2%;
+            position: relative;
+        }
+
+        //Clase para poner un icono antes del párrafo para mostrar que hubo un error
+        .error {
+            display: block;
+            color: $colorError;
+
+            &::before {
+                content: "";
+                display: inline-block;
+                width: $sizeIconoInfo;
+                height: $sizeIconoInfo;
+                //Posicionamiento
+                position: relative;
+                inset-inline-start: -$sizeIconoInfo/2;
+                inset-block-start: 50%;
+                //Icono de alerta
+                background-image: url("../img/iconos/iconoError.svg");
+                background-repeat: no-repeat;
+                background-size: contain;
+            }
+        }
+
+        //Clase para poner un icono antes del párrafo para mostrar que fue un éxito
+        .exito {
+            @extend .error;
+            color: $colorExito;
+
+            &::before {
+                background-image: url("../img/iconos/iconoExito.svg");
+            }
         }
     }
 
@@ -129,6 +167,10 @@
         //Estilo
         border-radius: $borderRadius;
         transition: all 2s ease-in-out;
+
+        input:not(input[type="submit"]){
+            margin: 1% auto;
+        }
         
         //Botones
         button {
@@ -148,10 +190,16 @@
         border-block-end: 1px solid $colorLetra;
     }
 
+    .acordeon:last-of-type {
+        //Margin bottom
+        margin-block-end: 2%;
+    }
+
     //Boton de registrarme
     input[type="submit"] {
         @include boton($colorPrincipal, 1.1rem);
         padding: 1%;
+        margin-block-start: 2%;
     }
 
     //Botón para cerrar inicio sesión
@@ -248,8 +296,9 @@
     }
 
     //Adaptación para tablets mediante aspect ratio
-    @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px)  {
+    @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px)   {
         & {
+            width: 100%;
             font-size: 1.5em;
             padding: 4%;
         }
@@ -275,7 +324,7 @@
 
             //Elemento date del formulario
             div:nth-of-type(2) input[type="date"]{
-                flex-basis: 53%;
+                flex-basis: 50%;
             }
 
             input[type="submit"] {
@@ -285,4 +334,16 @@
     }
 }
 
+.campoOblig {
+    &::after{
+        content: "*";
+        color: $colorError;
+        display: inline-block;
+        font-size: 1.5em;
+        //Posicionamiento
+        position: relative;
+        margin-inline-start: 1%;
+        transform: translate(0%, 15%);
+    }
+}
 

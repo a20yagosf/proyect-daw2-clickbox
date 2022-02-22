@@ -66,6 +66,7 @@ nav {
   width: 100%;
   height: auto;
   background-color: #FFB775;
+  position: relative;
   cursor: pointer;
   text-transform: uppercase;
   -webkit-border-after: 2px solid white;
@@ -77,6 +78,47 @@ nav button {
   -webkit-margin-start: 2%;
           margin-inline-start: 2%;
   text-transform: uppercase;
+}
+nav #botonPerfilUsuario {
+  padding: 0.2% 0.5%;
+}
+nav #menuPerfilUser {
+  width: 20%;
+  height: auto;
+  background-color: #0291A5;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  inset-block-start: 100%;
+  inset-inline-end: 2%;
+}
+nav #menuPerfilUser a {
+  text-align: center;
+  padding: 1%;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  color: #F3F3F3;
+}
+nav #menuPerfilUser a:hover {
+  background-color: #03bdd7;
+}
+nav #menuPerfilUser a:first-of-type {
+  border-radius: 10px 10px 0px 0px;
+}
+nav #menuPerfilUser a:last-of-type {
+  border-radius: 0px 0px 10px 10px;
+}
+@media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+  nav #menuPerfilUser {
+    width: 50%;
+  }
+}
+@media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px) {
+  nav #menuPerfilUser {
+    width: 30%;
+  }
 }
 nav .container-fluid {
   background-color: #FFB775;
@@ -412,7 +454,7 @@ main {
   width: 100%;
   height: 100%;
   display: inline-block;
-  background-image: url("../img/SuscDesignTop.svg");
+  background-image: url("../img/mosaicoDisenho/SuscDesignTop.svg");
   background-size: contain;
   background-position-y: bottom;
   background-repeat: no-repeat;
@@ -427,7 +469,7 @@ main {
   width: 100%;
   height: 100%;
   display: inline-block;
-  background-image: url("../img/SuscDesignBottom.svg");
+  background-image: url("../img/mosaicoDisenho/SuscDesignBottom.svg");
   background-size: contain;
   background-position-y: top;
   background-repeat: no-repeat;
@@ -670,7 +712,7 @@ main {
   width: 100%;
   height: 100%;
   display: inline-block;
-  background-image: url("../img/tiendaDesignTop.svg");
+  background-image: url("../img/mosaicoDisenho/tiendaDesignTop.svg");
   background-size: contain;
   background-position-y: bottom;
   background-repeat: no-repeat;
@@ -815,13 +857,13 @@ main {
 }
 
 .cuerpoMosaico {
-  background-image: url("../img/mosaico2.svg");
+  background-image: url("../img/mosaicoDisenho/mosaico.svg");
   background-size: cover;
   background-repeat: repeat-y;
 }
 
-main {
-  padding: 3%;
+#info_partidas, #filtro, #result_panel, .pagination {
+  margin: 3%;
 }
 
 .list-group {
@@ -906,6 +948,7 @@ ul li.list-group-item .btn-info {
 
 .list-group {
   max-height: 800px !important;
+  border: 1px solid rgba(0, 0, 0, 0.125);
 }
 
 .pagination li {
@@ -1114,7 +1157,7 @@ ul li.list-group-item .btn-info {
 #login {
   width: 80%;
   height: 70%;
-  background-color: #f3f3f3dc;
+  background-color: #f3f3f3;
   padding: 1%;
   border-radius: 10px;
   position: fixed;
@@ -1198,27 +1241,60 @@ ul li.list-group-item .btn-info {
   background-color: #d9d9d9;
 }
 #login form div div {
+  padding: 2%;
   display: flex;
   flex-wrap: wrap;
   border-radius: 10px;
 }
-#login form div div input, #login form div div label {
+#login form div div #imagenPerfil {
+  border: 0px;
+}
+#login form div div input, #login form div div label, #login form div div select {
   margin: 2% auto;
-  font-size: 1.1rem;
-}
-#login form div:first-of-type input {
-  flex-basis: 80%;
-}
-#login form div:nth-of-type(2) input, #login form div:nth-of-type(2) label {
   flex-basis: 40%;
   align-items: center;
 }
-#login form div:nth-of-type(2) label {
+#login form div label {
   transform: translateY(25%);
+}
+#login form input, #login form label {
+  font-size: 1.1rem;
+  flex-basis: 100%;
+}
+#login form p {
+  display: none;
+  -webkit-margin-after: 2%;
+          margin-block-end: 2%;
+  position: relative;
+}
+#login form .error, #login form .exito {
+  display: block;
+  color: #ff8e75;
+}
+#login form .error::before, #login form .exito::before {
+  content: "";
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  position: relative;
+  inset-inline-start: -12.5px;
+  inset-block-start: 50%;
+  background-image: url("../img/iconos/iconoError.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+#login form .exito {
+  color: #51a347;
+}
+#login form .exito::before {
+  background-image: url("../img/iconos/iconoExito.svg");
 }
 #login .acordeon {
   border-radius: 10px;
   transition: all 2s ease-in-out;
+}
+#login .acordeon input:not(input[type=submit]) {
+  margin: 1% auto;
 }
 #login .acordeon button {
   width: 100%;
@@ -1232,6 +1308,10 @@ ul li.list-group-item .btn-info {
   -webkit-border-after: 1px solid #F3F3F3;
           border-block-end: 1px solid #F3F3F3;
 }
+#login .acordeon:last-of-type {
+  -webkit-margin-after: 2%;
+          margin-block-end: 2%;
+}
 #login input[type=submit] {
   display: block;
   background-color: #0291A5;
@@ -1243,6 +1323,8 @@ ul li.list-group-item .btn-info {
   cursor: pointer;
   transition: all 0.5s linear;
   padding: 1%;
+  -webkit-margin-before: 2%;
+          margin-block-start: 2%;
 }
 #login input[type=submit]:hover {
   background-color: #03bdd7;
@@ -1324,8 +1406,9 @@ ul li.list-group-item .btn-info {
     flex-basis: 90%;
   }
 }
-@media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px) {
+@media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px) {
   #login {
+    width: 100%;
     font-size: 1.5em;
     padding: 4%;
   }
@@ -1345,11 +1428,22 @@ ul li.list-group-item .btn-info {
     font-size: 1.6rem;
   }
   #login form div:nth-of-type(2) input[type=date] {
-    flex-basis: 53%;
+    flex-basis: 50%;
   }
   #login form input[type=submit] {
     font-size: 1.6rem;
   }
+}
+
+.campoOblig::after {
+  content: "*";
+  color: #ff8e75;
+  display: inline-block;
+  font-size: 1.5em;
+  position: relative;
+  -webkit-margin-start: 1%;
+          margin-inline-start: 1%;
+  transform: translate(0%, 15%);
 }
 
 #perfilUsuario {
@@ -1801,4 +1895,5 @@ footer a:hover {
   width: 100%;
   height: 150px;
   border-radius: 10px;
+  z-index: 2;
 }/*# sourceMappingURL=styles.css.map */
