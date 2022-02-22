@@ -20,9 +20,9 @@
                     <li><a href="#">Productos</a></li>
                     <li><a href="#">Usuarios</a></li>
                 </ul>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="opcionesPanelAdmin" aria-controls="opcionesPanelAdmin" aria-expanded="false" aria-label="Menú hamburguesa panel de control">Prueba</button>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="opcionesPanelAdmin" aria-controls="opcionesPanelAdmin" aria-expanded="false" aria-label="Menú hamburguesa panel de control"></button>
             </div>
-            <form id="panelAdmin">
+            <!-- <form id="formPanelAdmin">
                 <h2>Cajas sorpresa</h2>
                 <label for="fecha">Fecha lanzamiento:</label>
                 <input type="date" name="fecha" id="fecha"/>
@@ -40,7 +40,46 @@
                 </select>
                 <input type="submit" value="Crear caja"/>
                 <button type="button">Cancelar</button>
-            </form>
+            </form> -->
+            <div id="contenedorElementos">
+                <form id="filtradoPartida" action="">
+                    <label for="fechaCaja">Fecha de publicación</label>
+                    <input type="date" name="fechaCaja" id="fechaCaja"/>
+                    <label for="num_jug">Número de jugadores</label>
+                    <input type="number" name="num_jug" id="num_jug"/>
+                    <label for="genero"></label>
+                    <select name="genero" id="genero">
+                        <option value="">No seleccionado</option>
+                    </select>
+                    <label for="tematica">Temática</label>
+                    <select name="tematica" id="tematica">
+                        <option value="">No seleccionado</option>
+                    </select>
+                </form>
+                <div class="contenido">
+                    <span>ID</span>
+                    <span>Fecha</span>
+                    <span>Num_JUG</span>
+                    <span>Género</span>
+                    <span>Temática</span>
+                </div>
+                <div class="contenido">
+                    <span>ID</span>
+                    <span>Fecha</span>
+                    <span>Num_JUG</span>
+                    <span>Género</span>
+                    <span>Temática</span>
+                </div>
+                <div class="pagination">
+                    <ul>
+                      <li><a href="#">&laquo;</a></li>
+                      <li><a href="#" class="active">1</a></li>
+                      <li><a href="#">2</a></li>
+                      <li><a href="#">3</a></li>
+                      <li><a href="#">&raquo;</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </main>
 </body>

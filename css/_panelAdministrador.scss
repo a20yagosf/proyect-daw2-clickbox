@@ -1,14 +1,14 @@
 
 #panelAdmin {
+    padding-block-start: 2%;
+
     div {
         width: 90%;
         margin: auto;
-        background-color: $colorLetra;
         border-radius: $borderRadius $borderRadius 0px 0px;
         //Flex como padre
         display: flex;
         justify-content: space-between;
-        align-items: center;
 
         ul {
             padding: 0% 1%;
@@ -16,7 +16,7 @@
             margin-block-end: 0%;
             //Estilo
             //Border bottom
-            border-block-end: 1px solid $colorPrincipal;
+            border-block-end: 1px solid $colorSecundario;
             //Flex como padre
             display: flex;
             justify-content: space-around;
@@ -30,10 +30,11 @@
                 //Padding-top
                 padding-block-start: 1%;
 
-                a {
+                a:not(#contenedorElementos a) {
                     display: inline-block;
                     @include contenedor(100%, 100%, transparent);
                     padding: 4%;
+                    font-size: 1.3em;
                     text-align: center;
                     color: $colorPrincipal;
 
@@ -52,24 +53,37 @@
                     border-color: $colorPrincipal $colorPrincipal transparent;
                     border-radius: $borderRadius $borderRadius 0px 0px;
                     z-index: 2;
+
+                    &:hover {
+                        background-color: aclararColor($colorPrincipal);
+                    }
                 }
             }
         }
 
+        // Botón hamburguesa
         button {
-            //Flex como hijo
-            flex-basis: 10%;
-            @include boton($colorPrincipal, 1.5rem);
+            background-image: url("../img/iconos/menuHamburguesa.svg");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position-x: 50%;
+            @include boton($colorPrincipal, 1em);
+            padding: 0% 2.5%;
         }
     }
 
     //Formulario con el panel a administrar
-    #panelAdmin {
-        //Padding bottom
-        padding-block-end: 2%;
+    #formPanelAdmin {
+        @include contenedor(90%, auto, $colorLetra);
+        margin: auto;
+        padding: 2%;
         //Estilo
+        font-size: 1.2em;
         border-radius: 0px 0px $borderRadius $borderRadius;
+        border: 1px solid $colorSecundario;
         //Flex como padre
+        display: flex;
+        flex-wrap: wrap;
         align-items: center;
         justify-content: center;
 
@@ -77,6 +91,7 @@
         h2 {
             padding: 1% 0%;
             flex-basis: 100%;
+            text-align: center;
         }
 
 
@@ -89,14 +104,48 @@
         }
 
         input[type="submit"], button {
+            @include boton($colorPrincipal, 1.5rem);
              //Margin bottom
             margin-block-end: 0%;
             margin: 0% 2%;
             padding: 0.5%;
-            //Estilo
-            font-size: 1.5rem;
             //Flex como hijo
             flex-basis: 20%;
+        }
+    }
+
+    //Contenedor con todas las cajas a mostrar
+    #contenedorElementos {
+        @include contenedor(90%, auto, $colorLetra);
+        margin: auto;
+        padding: 2%;
+        //Estilo
+        font-size: 1.2em;
+        border-radius: 0px 0px $borderRadius $borderRadius;
+        border: 1px solid $colorSecundario;
+        //Flex como padre
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        form {
+            margin-block-end: 3%;
+            //Flex como padre
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+
+            label, input {
+                text-align: center;
+            }
+        }
+
+        .contenido {
+            padding: 2% 0%;
+        }
+
+        .contenido:not(.contenido:last-of-type){
+            border-bottom: 1px solid oscurecerColor($colorLetra);
         }
     }
 }

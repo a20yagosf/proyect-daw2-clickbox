@@ -160,8 +160,9 @@ nav .container-fluid {
   }
 }
 nav button:first-of-type {
-  background-image: url("../img/menuHamburguesa.svg");
+  background-image: url("../img/iconos/menuHamburguesa.svg");
   background-size: contain;
+  background-repeat: no-repeat;
   display: block;
   background-color: #0291A5;
   border: none;
@@ -177,7 +178,7 @@ nav button:first-of-type:hover {
   background-color: #03bdd7;
 }
 nav button:first-of-type:hover {
-  background-image: url("../img/menuHamburguesaHover.svg");
+  background-image: url("../img/iconos/menuHamburguesaHover.svg");
 }
 nav ul {
   height: 100%;
@@ -996,7 +997,7 @@ ul li.list-group-item .btn-info {
   }
   #suscribirse #tiposSusc .susc {
     display: inline-block;
-    width: calc(97%/3);
+    width: 32.3333333333%;
   }
   #suscribirse #tiposSusc .susc p {
     font-size: 1.5rem;
@@ -1023,7 +1024,7 @@ ul li.list-group-item .btn-info {
   }
   #suscribirse #tiposSusc .susc {
     display: inline-block;
-    width: calc(95%/3);
+    width: 31.6666666667%;
   }
   #suscribirse #recibo {
     flex-basis: 100%;
@@ -1532,7 +1533,7 @@ ul li.list-group-item .btn-info {
 #perfilUsuario form fieldset div span {
   padding: 2%;
   margin: 1%;
-  flex-basis: calc(100%/3);
+  flex-basis: 33.3333333333%;
   flex-grow: 2;
 }
 #perfilUsuario form fieldset div button {
@@ -1669,24 +1670,26 @@ h2, h3 {
     text-align: start;
   }
   #perfilUsuario form fieldset div span {
-    flex-basis: calc(100%/3);
+    flex-basis: 33.3333333333%;
   }
+}
+#panelAdmin {
+  -webkit-padding-before: 2%;
+          padding-block-start: 2%;
 }
 #panelAdmin div {
   width: 90%;
   margin: auto;
-  background-color: #F3F3F3;
   border-radius: 10px 10px 0px 0px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
 }
 #panelAdmin div ul {
   padding: 0% 1%;
   -webkit-margin-after: 0%;
           margin-block-end: 0%;
-  -webkit-border-after: 1px solid #0291A5;
-          border-block-end: 1px solid #0291A5;
+  -webkit-border-after: 1px solid #FFB775;
+          border-block-end: 1px solid #FFB775;
   display: flex;
   justify-content: space-around;
   flex-basis: 70%;
@@ -1700,16 +1703,17 @@ h2, h3 {
   -webkit-padding-before: 1%;
           padding-block-start: 1%;
 }
-#panelAdmin div ul li a {
+#panelAdmin div ul li a:not(#contenedorElementos a) {
   display: inline-block;
   width: 100%;
   height: 100%;
   background-color: transparent;
   padding: 4%;
+  font-size: 1.3em;
   text-align: center;
   color: #0291A5;
 }
-#panelAdmin div ul li a:hover {
+#panelAdmin div ul li a:not(#contenedorElementos a):hover {
   border: 1px solid #0291A5;
   -webkit-border-after: 0px;
           border-block-end: 0px;
@@ -1723,8 +1727,60 @@ h2, h3 {
   border-radius: 10px 10px 0px 0px;
   z-index: 2;
 }
+#panelAdmin div ul li .listaActivo:hover {
+  background-color: #03bdd7;
+}
 #panelAdmin div button {
-  flex-basis: 10%;
+  background-image: url("../img/iconos/menuHamburguesa.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position-x: 50%;
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1em;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  padding: 0% 2.5%;
+}
+#panelAdmin div button:hover {
+  background-color: #03bdd7;
+}
+#panelAdmin #formPanelAdmin {
+  width: 90%;
+  height: auto;
+  background-color: #F3F3F3;
+  margin: auto;
+  padding: 2%;
+  font-size: 1.2em;
+  border-radius: 0px 0px 10px 10px;
+  border: 1px solid #FFB775;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+#panelAdmin #formPanelAdmin h2 {
+  padding: 1% 0%;
+  flex-basis: 100%;
+  text-align: center;
+}
+#panelAdmin #formPanelAdmin input, #panelAdmin #formPanelAdmin label, #panelAdmin #formPanelAdmin select {
+  flex-basis: 50%;
+}
+#panelAdmin #formPanelAdmin input, #panelAdmin #formPanelAdmin select {
+  margin: 2% 0%;
+  padding: 1%;
+  font-family: "Resolve";
+  border-radius: 5px;
+  border: 1px solid #0291A5;
+  outline-color: #FFB775;
+  transition: all 1s ease-in-out;
+}
+#panelAdmin #formPanelAdmin input[type=submit], #panelAdmin #formPanelAdmin button {
   display: block;
   background-color: #0291A5;
   border: none;
@@ -1734,40 +1790,43 @@ h2, h3 {
   color: white;
   cursor: pointer;
   transition: all 0.5s linear;
-}
-#panelAdmin div button:hover {
-  background-color: #03bdd7;
-}
-#panelAdmin #panelAdmin {
-  -webkit-padding-after: 2%;
-          padding-block-end: 2%;
-  border-radius: 0px 0px 10px 10px;
-  align-items: center;
-  justify-content: center;
-}
-#panelAdmin #panelAdmin h2 {
-  padding: 1% 0%;
-  flex-basis: 100%;
-}
-#panelAdmin #panelAdmin input, #panelAdmin #panelAdmin label, #panelAdmin #panelAdmin select {
-  flex-basis: calc(100%/2);
-}
-#panelAdmin #panelAdmin input, #panelAdmin #panelAdmin select {
-  margin: 2% 0%;
-  padding: 1%;
-  font-family: "Resolve";
-  border-radius: 5px;
-  border: 1px solid #0291A5;
-  outline-color: #FFB775;
-  transition: all 1s ease-in-out;
-}
-#panelAdmin #panelAdmin input[type=submit], #panelAdmin #panelAdmin button {
   -webkit-margin-after: 0%;
           margin-block-end: 0%;
   margin: 0% 2%;
   padding: 0.5%;
-  font-size: 1.5rem;
   flex-basis: 20%;
+}
+#panelAdmin #formPanelAdmin input[type=submit]:hover, #panelAdmin #formPanelAdmin button:hover {
+  background-color: #03bdd7;
+}
+#panelAdmin #contenedorElementos {
+  width: 90%;
+  height: auto;
+  background-color: #F3F3F3;
+  margin: auto;
+  padding: 2%;
+  font-size: 1.2em;
+  border-radius: 0px 0px 10px 10px;
+  border: 1px solid #FFB775;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+#panelAdmin #contenedorElementos form {
+  -webkit-margin-after: 3%;
+          margin-block-end: 3%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+#panelAdmin #contenedorElementos form label, #panelAdmin #contenedorElementos form input {
+  text-align: center;
+}
+#panelAdmin #contenedorElementos .contenido {
+  padding: 2% 0%;
+}
+#panelAdmin #contenedorElementos .contenido:not(.contenido:last-of-type) {
+  border-bottom: 1px solid silver;
 }
 
 footer {
