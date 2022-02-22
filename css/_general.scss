@@ -11,46 +11,111 @@
 }
 /// Características resumidas para los botones pudiendo variar ancho, color, tamaño de letra y padding
 /// @param {float} $width Ancho del boton
-/// @param {srting} $color Color del botón
+/// @param {string} $color Color del botón
 /// @param {float} $fontSize Tamaño de la letra
-@mixin boton($width, $color, $fontSize) {
-  padding: 3% 4%;
-  width: $width;
+@mixin boton($color, $fontSize) {
+  display: block;
   background-color: $color;
-  border: 0px;
+  border: none;
+  padding: 2% 3%;
   font-size: $fontSize;
-  border-radius: 10px;
+  border-radius:  $borderRadius;
   color: white;
+  cursor: pointer;
+  //Para las transiciones
+  transition: all 0.5s linear;
 
   &:hover {
     background-color: aclararColor($color);
   }
 }
 
-@mixin imagenPattern($url, $top, $translate) {
+/// Mixin para los enlaces donde le quita el underline, le pone un color y un color cuando esta encima y tiene una transicón
+/// @param {string} $color Color que tendrá el texto
+/// @param {string} $colorHover Color del texto cuando tenemos el ratón por encima
+@mixin enlace($color, $colorHover) {
+  color: $color;
+  text-decoration: none;
+  transition: all 0.5s ease-in-out;
+
+  &:hover {
+    color: $colorHover;
+  }
+}
+
+/// Mixin parar las imagenes que usamos como diseño en las diferentes partes
+/// @param {string} $url Url donde se encuentra la imagen
+/// @param {float} $top Distancia del top
+/// @param {float} $translate Cuanto hacemos de translado en Y
+@mixin imagenPattern($url, $top, $translate, $posFondo) {
   content: "";
   width: 100%;
   height: 100%;
   display: inline-block;
   background-image: $url;
   background-size: contain;
+  background-position-y: $posFondo;
   background-repeat: no-repeat;
   position: absolute;
-  top: $top;
+  //Top
+  inset-block-start: $top;
+  //Left
+  inset-inline-start: 0%;
   transform: translateY($translate);
   z-index: -1;
 }
 
+@mixin inputFormulario(){
+  //Posición
+  margin: 2% 0%;
+  padding: 1%;
+  //Estilo
+  font-family: "Resolve";
+  border-radius: 5px;
+  border: 1px solid $colorPrincipal;
+  outline-color: $colorSecundario;
+  transition: all 1s ease-in-out;
+}
+
+//Functiones
+/// Función para aclarar el color
+/// @param {string} $color Color a aclarar
+/// @return {string} Color aclarado
 @function aclararColor($color) {
   @return adjust-color($color, $lightness: 10%);
 }
 
+/// Función para oscurecer el color
+/// @param {string} $color Color a oscurecer
+/// @return {string} Color más oscuro
+@function oscurecerColor($color) {
+  @return adjust-color($color, $lightness: -20%);
+}
+
+//Fuentes
+//Fuente título
 @font-face {
   font-family: "PoetsenOne";
   src: url("../font/PoetsenOne-Regular.ttf");
 }
 
+//Fuente cuerpo
 @font-face {
   font-family: "Resolve";
   src: url("../font/Resolve-Light.otf");
+}
+
+
+//Animaciones
+//Animación para mover el texto de la alerta todo el rato
+@keyframes movimientoAlerta {
+  0% {
+    //Left
+    inset-inline-start: -44.5%;
+  }
+
+  100% {
+    //right
+    inset-inline-start: 57%;
+  }
 }

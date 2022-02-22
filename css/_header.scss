@@ -1,7 +1,19 @@
 //Header, le damos un tamaño de letra general y un peso
 header {
-    font-size: 1.3em;
-    font-weight: 900;
+    display: inline-block;
+    width: 100%;
+    font-size: 1.1em;
+    position: sticky;
+    //Top
+    inset-block-start: 0%;
+    z-index: 5;
+
+    & > nav {
+        //Padding top
+        padding-block-start: 0%!important;
+        //Pading bottom
+        padding-block-end: 0%!important;
+    }
 }
 
 //Div que se mostrará encima mostrando la última novedad
@@ -10,21 +22,112 @@ header {
     @include contenedor(100%, auto, $colorPrincipal);
     padding: 0.5%;
     text-align: center;
-    color: $colorLetra
+    color: $colorLetra;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+
+    //Contiene los iconos y el texto
+    a {
+        @include enlace($colorLetra, $colorSecundario);
+        margin: 0% 1%;
+        position: relative;
+         //Animación de las letras
+        animation: movimientoAlerta 40s linear 0s forwards infinite;
+    }
 }
 
 //Nav donde se encuentran los botones para movernos por las páginas
 nav {
     //Incluimos el mixed contenedor para darle ancho, alto y color
     @include contenedor(100%, auto, $colorSecundario);
-    padding: 0% 2%;
+    cursor: pointer;
+    text-transform: uppercase;
+    //Border bottom
+    border-block-end: 2px solid white;
+
+    //Botones generales
+    button {
+        margin-inline-end: 2%;
+        margin-inline-start: 2%;
+        text-transform: uppercase;
+    }
+
+    .container-fluid {
+        background-color: $colorSecundario;
+        padding: 0% 1%;
+
+         //Adapción a móvil
+        @media screen and (max-width: 500px) {
+            & > a {
+                order: 1;
+            } 
+
+            //Mostramos el botón hamburguesa y movemos el orden del botón hamburguesa y el logo
+            button:first-of-type {
+                display: block;
+                font-size: 0.9rem;
+            }
+
+            button:last-of-type {
+                order: 1;
+                font-size: 0.9rem;
+            }
+
+            //Ponemos de último el ul
+            ul {
+                flex-basis: 100%;
+                flex-direction: column;
+                order: 2;
+                padding: 0%;
+                //Corresponde a border-top
+                border-block-start: 0.1em solid oscurecerColor($colorSecundario);
+            }
+
+            li:not(li:first-of-type) {
+                //Border left
+                border-inline-start: none;
+                //Corresponde a border-top
+                border-block-start: 0.1em solid oscurecerColor($colorSecundario);
+            }
+
+            button:last-of-type {
+                padding: 1% 2%;
+            }
+        }
+
+         //Adaptación para móvil plegable
+        @media screen and (max-width: 300px) {
+            button:first-of-type, button:last-of-type {
+                font-size: 0.8rem;
+            }
+        }
+    }
+
+    //Botón Hamburguesa
+    button:first-of-type {
+        background-image: url("../img/menuHamburguesa.svg");
+        background-size: contain;
+        @include boton($colorPrincipal, 1em);
+        padding: 5% 5%;
+
+        &:hover {
+            background-image: url("../img/menuHamburguesaHover.svg");
+        }
+    }
 
     //Ul que contiene cada uno de los elementos del nav
     ul {
+        height: 100%;
+        flex-grow: 2;
         list-style: none;
         display: flex;
-        justify-content: space-around;
-        align-items: stretch;
+        //Margin bottom
+        margin-block-end: 0%;
+        //Usamos esto para que sirva la animación
+        overflow: hidden;
+        //Transición que usaremos para mostrar y ocultar el ul (La hereda del nav)
+        transition: inherit;
     }
 
     //Li de cada uno de los elementos
@@ -32,6 +135,8 @@ nav {
         position: relative;
         text-align: center;
         width: 100%;
+        //transciones
+        transition: all 0.5s ease-in-out;
 
         &:hover {
             background-color: aclararColor($colorDestacado);
@@ -39,29 +144,45 @@ nav {
 
         //Todos menos el primer li
         &:not(li:first-child){
-            border-left: $borderHeader solid $colorLetra;
+            //Border left
+            border-inline-start: $borderHeader solid $colorLetra;
         }
-    }
 
-    a {
-        position: relative;
-        top: 50%;
-        transform: translateY(-50%);
-        display: inline-block;
-        color: $colorLetra;
+        a {
+            line-height: $navHeight;
+            display: inline-block;
+            height: 100%;
+            width: 100%;
+            @include enlace($colorLetra, $colorPrincipalOscuro);
+        }
     }
 
     //Imagen del logo
     img {
         width: $sizeLogo;
         margin: auto;
+        padding: 5%;
+        transition: all 0.5s ease-in-out;
+
+        &:hover {
+            content: url("../img/logoClickBoxHover.svg");
+        }
     }
+
+    button:last-of-type {
+        @include boton($colorPrincipal, 1em);
+        padding: 0.3% 1%;
+    }
+
 }
 
+//Página para saber donde te encuentras
 #localizacionPag {
     display: inline-block;
-    margin-top: 1%;
-    margin-left: 2%;
+    //Margin top
+    margin-block-start: 1%;
+    //Margin left
+    margin-inline-start: 2%;
     font-size: 0.8em;
     //Ponemos 98% ya que tiene un 2% de margin-left
     width: 98%;
@@ -76,9 +197,9 @@ nav {
     }
     
     a {
-        color: $colorPrincipal;
-        padding-right: 1%;
-        text-decoration: underline;
+        @include enlace($colorPrincipal, $colorSecundario);
+        //Pading right
+        padding-inline-end: 1%;
     }
 
     a:visited {

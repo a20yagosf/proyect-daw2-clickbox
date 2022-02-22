@@ -1,0 +1,136 @@
+main#partidas-main{
+  padding: 3%;
+}
+
+.list-group {
+  max-height: 300px;
+  margin-bottom: 10px;
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch;
+}
+
+// Cambiar la paleta de bootrsrap para la lista a los colores principales
+.panel-primary > .panel-heading {
+  background-color: $colorPrincipal !important;
+  border-color: $colorPrincipal !important;
+}
+#result_panel {
+  border-radius: $borderRadius $borderRadius 0px 0px;
+  .panel-heading {
+    border-radius: inherit;
+    .panel-title {
+      color: white;
+      padding: 1%;
+    }
+  }
+}
+
+// Esconder la barra de desplazamiento 'x' & poner la 'y' en auto
+ul.list-group {
+  overflow-x: hidden;
+  overflow-y: auto;
+  font-size: 1.75rem !important;
+}
+
+// Centrar el título y modificar el tamaño de letra
+#info_partidas {
+  h2 {
+    text-align: center;
+    margin: 5%;
+  }
+  p {
+    font-size: 1.75rem;
+  }
+}
+// Cambiamos el tamaño de letra en la selección del formulario y modificamos a gusto el botón,
+// sobrescribiendo las opciones que seleccionamos en bootstrap
+#form_partidas {
+  margin: 5%;
+  font-size: 1.75rem;
+  select {
+    font-size: 1.75rem !important;
+  }
+  button {
+    width: 20% !important;
+    margin: 1vw;
+    margin-top: 0 !important;
+    background-color: $colorPrincipal !important;
+    font-size: 1.75rem !important;
+  }
+  .form-control {
+    font-size: 2rem;
+  }
+}
+// Modificando cada parte de los elementos de la lista de partidas para que se muestren a nuestro gusto, primando lo visual
+ul li.list-group-item {
+  display: flex;
+  padding: 5%;
+  div.image {
+    img {
+      width: 70%;
+    }
+  }
+  div.info {
+    width: 30%;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between !important;
+    margin: 0;
+    padding: 0;
+    font-size: 1.2rem;
+  }
+  .btn-info {
+    color: white;
+  }
+}
+// Como la base de la lista era muy pequeña para el tamaño de imagen le hemos dado unos límites más grandes
+.panel-primary {
+  max-height: 1000px !important;
+}
+.list-group {
+  max-height: 800px !important;
+}
+
+// Usando la base ofrecida por w3schools en paginación hemos adaptado nuestras necesidades a sus modelos
+
+.pagination {
+  li {
+    list-style: none;
+    display: inline-block;
+    a {
+      font-size: 1.25rem;
+      color: black;
+      float: left;
+      padding: 8px 16px;
+      text-decoration: none;
+      transition: background-color 0.3s;
+      border: 1px solid #ddd;
+      margin: 0 4px;
+    }
+    a.active {
+      background-color: $colorPrincipal;
+      color: white;
+      border: 1px solid $colorPrincipalOscuro;
+    }
+  }
+}
+
+.pagination a:hover:not(.active) {
+  background-color: #ddd;
+}
+
+// Para adaptar el formulario a las versiones portátiles
+// vamos a cambiar la disposición de algunos elementos
+
+@media (max-width:1100px)  {
+  #form_partidas{
+    flex-direction: column !important;
+  }
+  
+}
+@media (max-width:750px)  {
+  #filtro_fechas{
+    flex-direction: column;
+  }
+}

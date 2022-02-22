@@ -1,0 +1,200 @@
+
+//Página suscripciones
+#suscribirse {
+    @include contenedor(100%, 100%, transparent);
+    padding: 5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 5%;
+
+    //Adaptación para móviles mediante aspect ratio
+    @media screen and (max-aspect-ratio:  195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+        //Div contenedor #suscribirse
+        & {
+            padding: 0%;
+            flex-wrap: wrap;
+        }
+
+        #tiposSusc {
+            flex-basis: 100%;
+
+            .susc {
+                display: inline-block;
+                width: calc(97%/3);
+
+                p {
+                    font-size: 1.5rem;
+                }
+            }
+        }
+
+        #recibo {
+            flex-basis: 100%;
+            //padding bottom
+            padding-block-end: 5%;
+            margin: 5% 0%;
+
+            table {
+                thead th {
+                    font-size: 2.5em;
+                }
+            }
+
+            button {
+                width: 50%;
+            }
+        }
+        
+    }
+    //Adaptación para tablets mediante aspect ratio
+    @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px) {
+        //Div contenedor #suscribirse
+        & {
+            flex-wrap: wrap;
+        }
+
+        #tiposSusc {
+            flex-basis: 100%;
+
+            .susc {
+                display: inline-block;
+                width: calc(95%/3);
+            }
+        }
+
+        #recibo {
+            flex-basis: 100%;
+            //Margin top
+            margin-block-start: 5%;
+            font-size: 1.3rem;
+
+            button {
+                width: 50%;
+            }
+        }
+    }
+
+    //Adaptación para pantalla cuadrada
+    @media screen and (aspect-ratio: 1/1){
+        #recibo {
+            font-size: 1.3rem;
+
+            table thead th {
+                font-size: 4em;
+            }
+        }
+    }
+}
+
+//Tipo de suscripciones
+#tiposSusc {
+    flex-basis: 30%;
+
+    .susc {
+        //Tamaño y posiconamiento
+        @include boton($colorPrincipal, 2em);
+        width: $sizeTipoSusc;
+        margin: 5% 0%;
+        padding: 0%;
+        position: relative;
+
+        //Texto que tiene dentro
+        p {
+            //Tamaño y posiconamiento
+            width: 100%;
+            margin: 0% 2%;
+            padding: 2% 0%;
+            text-align: center;
+            position: relative;
+            //Top
+            inset-block-start: 35%;
+            font-size: 2rem;
+            //Estilo
+            text-transform: uppercase;
+        }
+    }
+
+    //Suscripción que está seleccionada en este momento 
+    .suscActiva {
+        background-color: $colorSecundario;
+        color: $colorPrincipal;
+        font-weight: 900;
+
+        &:hover {
+            background-color: aclararColor($colorSecundario);
+        }
+    }
+}
+
+//Recibo con todos los datos
+#recibo {
+    //Tamaños y posición
+    @include contenedor(100%, 100%, white);
+    //Estilo
+    border: 0.2em solid $colorPrincipal;
+    border-radius: $borderRadius;
+    //Flex como hijo
+    flex-basis: 60%;
+    //Grid como padre
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 85% 15%;
+    grid-template-areas: "cuerpo"
+                                      "boton";
+
+    //Cada uno de los costes
+    table {
+        //Ponemos tamaño al 90% por los márgenes que tiene
+        width: 90%;
+        height: 100%;
+        font-size: 1.5em;
+        margin: 5% auto;
+        //Grid como hijo
+        grid-area: cuerpo;
+
+        thead {
+            //Estilo
+            background-color: $colorSecundario;
+            border-radius: $borderRadius;
+        }
+
+        //Cabecera donde pone (1 MES, 6 MESES, etcc)
+        th {
+            //Tamaño y posición
+            //Margin bottom
+            text-align: center;
+            margin: 0px;
+            font-size: 5em;
+            //Estilo
+            color: $colorPrincipal;
+            border-radius: $borderRadius;
+            //Esta fuente debe estar con font-weigth 100 para permitir una buena lectura
+            font-family: "PoetsenOne";
+            font-weight: 100;
+            //Separamos un poco las letras
+            word-spacing: 0.5em;
+            text-transform: uppercase;
+            transition: all 2s ease-in-out;
+            //Grid como hijo
+            grid-area: titulo;
+        }
+
+        //Última linea donde va el total
+        tbody tr:last-of-type {
+             //Padding top
+            padding-block-start: 2%;
+            //Border top
+            border-block-start: 0.2em dashed $colorPrincipal;
+        }
+    }
+
+    //Botón para suscribirse
+    button {
+        @include boton($colorPrincipal, 1.5em);
+        padding: 2%;
+        margin: auto;
+        //Grid como hijo
+        grid-area: boton;
+    }
+}

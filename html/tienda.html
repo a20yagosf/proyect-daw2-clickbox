@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../js/funcionesGenerales.js"></script>
+    <script src="../js/partidas.js"></script>
+  </head>
+
+  <body>
+    <main id="tienda-main">
+      <div class="title">NUESTROS PRODUCTOS Y ACCESORIOS</div>
+      <form action="" id="formulario_tienda">
+        <div class="filtros_busqueda">
+          <div class="filtro_traits">
+            <p>Filtrar por:</p>
+            <div id="lista_traits">
+              <label for="generos" id="form_generos">Géneros:</label>
+              <label for="jugadores" id="form_jugadores"
+                >Nº de Jugadores:</label
+              >
+              <!-- Las opciones deberían poder generarse desde php consultando los géneros disponibles actualmente-->
+              <select name="generos" id="generos" multiple>
+                <option value="aventuras">Aventuras</option>
+                <option value="fantasia">Fantasía</option>
+                <option value="misterio">Misterio</option>
+                <option value="versus">Versus</option>
+              </select>
+              <!-- Recordar que nº de jugadores es un varchar(4) en la bd-->
+              <select name="jugadores" id="jugadores" multiple>
+                <option value="un_jugador">1</option>
+                <option value="dos_jugadores">2</option>
+                <option value="x_jugadores">3 o más</option>
+              </select>
+            </div>
+          </div>
+          <div class="filtro_nombre">
+            <label for="nombre">Nombre:</label>
+            <input
+              type="text"
+              id="nombre"
+              name="nombre"
+              placeholder="Búsqueda..."
+            />
+          </div>
+          <div class="filtro_tipo">
+            <p>Mostrar artículos del tipo:</p>
+            <fieldset>
+              <div>
+                <input
+                  type="radio"
+                  id="juegos"
+                  name="articulos"
+                  value="juegos"
+                  checked
+                />
+                <label for="juegos">Juegos</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="accesorios"
+                  name="articulos"
+                  value="accesorios"
+                />
+                <label for="accesorios">Accesorios</label>
+              </div>
+            </fieldset>
+          </div>
+          <!-- Habría que incluir js si se quisiera trabajar mejor con el precio-->
+          <!-- Posible problema: No se puede deseleccionar una vez pulsado para filtrar-->
+          <div class="filtro_precio">
+            <!-- La idea inicial es que de base se ordenen los productos por novedades y no precio-->
+            <p>Ordenar por precio:</p>
+            <fieldset>
+              <div>
+                <input
+                  type="radio"
+                  id="ascendente"
+                  name="orden_precio"
+                  value="ascendente"
+                />
+                <label for="ascendente">Ascendente</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="descendente"
+                  name="orden_precio"
+                  value="descendente"
+                />
+                <label for="descendente">Descendente</label>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+        <div class="center_submit">
+          <button class="formulario_envio" type="submit">Filtrar</button>
+        </div>
+      </form>
+      <content id="contenido_tienda">
+        <div class="item">
+          <div class="item-imagen">
+            <img src="../img/calendario_prueba.JPG" />
+          </div>
+          <div class="item-propiedades">
+            <div class="item-nombre">Calendario 2000</div>
+            <div class="item-generos">Aventuras, Misterio</div>
+            <div class="item-jugadores">6 jugadores</div>
+            <div class="item-stock">EN STOCK</div>
+            <div class="item-precio">20$</div>
+            <div class="item-descripcion">
+              Una gran aventura para toda la familia, revive todos los momentos
+              del año. Una cosa espectacular, te lo digo yo. ¡Nuevos dramas de
+              invierno! ¡Rejugable hasta morirte irl!
+            </div>
+          </div>
+        </div>
+      </content>
+    </main>
+    <!-- Script para los select multiples, creado por https://github.com/admirhodzic/multiselect-dropdown-->
+    <script src="../js/multiselect-dropdown.js"></script>
+  </body>
+</html>

@@ -3,10 +3,18 @@
     margin: 0px;
     padding: 0px;
     box-sizing: border-box;
+    font-family: "Resolve";
 }
 
 a {
     text-decoration: none;
+}
+
+//Hacemos los textos un poco más grandes y con algo más de espacio entre lineas y palabras para facilitar la lecturas
+p {
+    font-size: 1.1em;
+    line-height: 1.3em;
+    word-spacing: 0.5em;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -14,6 +22,7 @@ h1, h2, h3, h4, h5, h6 {
     font-family: "PoetsenOne";
     font-weight: 100;
 }
+
 
 //Main
 main {
@@ -25,186 +34,665 @@ main {
 #presentacion {
     @include contenedor(80%, auto, transparent);
     margin: auto;
-    margin-bottom: 5%;
+    //Margin bottom
+    margin-block-end: 5%;
     padding: 2%;
     display: flex;
     justify-content: space-evenly;
+    align-items: center;
 
+    //Contenedor con el texto
     div {
-        flex-grow: 2;
+        flex-grow: 1;
     }
 
     h2 {
-        margin-bottom: 2%;
+        //Bottom
+        margin-block-end: 2%;
     }
 
+    p {
+        text-align: justify;
+    }
+
+    //Logo
     img {
+        //Margin left
+        margin-inline-start: 5%;
         width: $sizeLogoPresentacion;
+    }
+
+    //Adaptación para móviles mediante aspect ratio
+    @media screen and (max-aspect-ratio:  195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+        //Div contenedor #presentacion
+        & {
+            flex-wrap: wrap;
+            width: 90%;
+            //Padding bottom
+            padding-block-end: 10%;
+        }
+
+        //Div con el texto, le ponemos mayor orden para que vaya después de la imagen
+        div {
+            order: 2;
+        }
+
+        //Imagen del texoto
+        img {
+            width: 50%;
+            //Margin bottom
+            margin-block-end: 5%;
+        }
+
+        //Titulo
+        h2 {
+            text-align: center;
+            //Padding bottom
+            padding-block-end: 3%;
+        }
+
+    }
+
+    //Adaptación para tablets mediante aspect ratio
+    @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px) {
+        //Contenedor #presentacion
+        & {
+            //Margin top
+            margin-block-start: 3%;
+            //Margin bottom
+            margin-block-end: 10%;
+        }
+
+        img {
+            width: 200px;
+        }
     }
 }
 
 //Suscripciones
 #suscripciones {
-    //visibility: hidden;
+    //Tamaños y posicionamiento
     @include contenedor(100%, auto, $colorSecundario);
     padding: 3% 2%;
-    display: flex;
-    justify-content: space-evenly;
-    margin-bottom: 5%;
+    //Padding top
+    padding-block-start: 0%;
+    //Margin bottom
+    margin-block-end: 5%;
+    //Margin top
+    margin-block-start: 13%;
+    //Posicionamiento en relative para poder posicionar las imágenes de antes y después
     position: relative;
 
-    //Cada uno de los div que contiene las suscripciones
-    .suscripciones {
-        img {
-            display: block;
-            width: $sizeSuscriptImg;
-        }
+    h2 {
+        //Tamaño y posicionamiento
+        display: inline-block;
+        width: 100%;
+        padding: 1%;
+        text-align: center;
+        //Estilo
+        font-size: 2.5rem;
+    }
 
-        //Boton de cada una de las suscripciones
-        button {
-            display: block;
-            margin: 5% auto;
-            @include boton(50%, $colorPrincipal, 1.1em);
+    //Indicadores del caorusel
+    .carousel-indicators button {
+        //Tamaños
+        width: 15px;
+        height: 15px;
+        //Le quitamos que lo oculte para que muestre el botón como tal
+        background-clip: unset;
+        //Lo redondeamos, le poneos todos los bordes y le quitamos el fondo
+        border-radius: 100%;
+        border: 3px solid $colorLetra;
+        background-color: transparent
+    }
+
+    //Botones de antes y despues del carousel
+    .carousel-control-prev-icon, .carousel-control-next-icon {
+        //Tamaño y posicionamiento
+        width: 4rem;
+        height: 4rem;
+        background-size: 70%;
+        background-position: 35%;
+        //Bordes para el botón
+        border: 5px solid $colorLetra;
+        border-radius: 100%;
+    }
+
+    //Para posicionar apropiadamente la flecha en el span
+    .carousel-control-next-icon {
+        background-position: 60%;
+    }
+
+    //Contenedor de la imagen y el contenido de la caja
+    .tarjeta {
+        //Posicionamiento y tamaño
+        @include contenedor(80%, 100%, $colorLetra);
+        margin: auto;
+        border-radius: $borderRadius;
+        display: flex;
+
+        & > img {
+            border-radius: $borderRadius 0px 0px $borderRadius;
         }
+    }
+
+    //Contenedor del contenido de la caja
+    .contenidoTarjeta {
+            width: 100%;
+
+            //Cabecera
+            h2 {
+                //Posicionamiento y tamaño
+                display: inline-block;
+                width: 100%;
+                padding: 1%;
+                //Margin bottom
+                margin-block-end: 2%;
+                text-align: center;
+                //Aspecto visual
+                color: $colorLetra;
+                background-color: $colorPrincipal;
+                border-radius: 0px $borderRadius 0px 0px;
+            }
+
+            ul {
+                width: 100%;
+                height: 80%;
+                //Flex
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            li {
+                padding-left: 5%;
+                //Posicionamiento para el hijo (la imagen como absoluta)
+                position: relative;
+                //Flex como hijo
+                flex-basis: 50%;
+                list-style: none; 
+            }
+
+            //Imagen de cada uno de los accesorios
+            img {
+                //Posicionamiento y tamaño
+                width: $sizeImgTarjeta;
+                position: absolute;
+                //Right
+                inset-inline-end: 15%;
+                //Top
+                inset-block-start: 50%;
+                //Centrado en el medio en Y
+                transform: translateY(-50%);
+                border-radius: $borderRadius;
+            }
+
+            //Texto de cada uno de los accesorios
+            span {
+                //Posicionamiento en Y
+                display: inline-block;
+                position: relative;
+                //Top
+                inset-block-start: 50%;
+                transform: translateY(-50%);
+                //Aspecto visual
+                font-size: 1.1em;
+                color: $colorPrincipal;
+            }
+
     }
 
     //Imagen que se muestra justo antes de suscripciones
     &:before {
-        @include imagenPattern(url("../img/SuscDesignTop.svg"), -100%, 28%);
+        @include imagenPattern(url("../img/SuscDesignTop.svg"), -99%, 0%, bottom);
     }
 
     &:after {
-        @include imagenPattern(url("../img/SuscDesignBottom.svg"),100%, 0%);
+        @include imagenPattern(url("../img/SuscDesignBottom.svg"),99%, 0%, top);
+    }
+
+    & > button:last-of-type {
+        @include boton($colorPrincipal, 1.5rem);
+        margin: 1% auto;
+        //Margin bottom
+        margin-block-end: 0%;
+        padding: 0.5% 1%;
+    }
+
+    //Adaptación para móvil del carousel 
+    @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+        & {
+            //paddin botom
+            padding-block-end: 15%;
+            //margin bottom
+            margin-block-start: 15%;
+        }
+
+        //Imagenes superior e inferior
+        &:before, &:after  {
+            width: 98%;
+        }
+
+        .tarjeta {
+            flex-direction: column;
+            width: 70%;
+
+            & > img {
+                order: 2;
+                border-radius: 0px 0px $borderRadius $borderRadius;
+                width: 100%;
+            }
+        }
+
+        .contenidoTarjeta {         
+            h2 {
+                margin: 0% auto;
+                border-radius: $borderRadius $borderRadius 0px 0px;
+            }
+
+            ul {
+                display: none;
+            }
+        }
+    }
+
+    //Adaptación para móvil plegable
+    @media screen and (max-width: 300px) {
+        & {
+            //Margin top
+            margin-block-start: 15%;
+        }
+
+        .contenidoTarjeta h2 {
+            font-size: 1.5em;
+            margin-block-end: 0%;
+        }
+
+        //Botones de antes y despues del carousel
+        .carousel-control-prev-icon, .carousel-control-next-icon {
+            height: 3rem;
+        }
+    }
+
+    //Adaptación para tablet de carousel
+    @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px)  {
+        & {
+            //Padding bottom
+            padding-block-end: 7%;
+            //Margin top
+            margin-block-start: 15%;
+        }
+
+        //Imagenes superior e inferior
+        &:before, &:after  {
+            width: 98%;
+        }
+
+        .tarjeta {
+            width: 70%;
+            flex-direction: column;
+
+            & > img {
+                order: 2;
+                border-radius: 0px 0px $borderRadius $borderRadius;
+            }
+        }
+
+        .contenidoTarjeta {         
+            h2 {
+                margin: 0% auto;
+                border-radius: $borderRadius $borderRadius 0px 0px;
+            }
+
+            ul {
+                display: none;
+            }
+        }
+    }
+
+    //Adaptación proyecto
+    @media screen and (aspect-ratio: 4/3), (aspect-ratio: 1/1) {
+        & {
+            padding: 4% auto;
+        }
+
+        &> button:last-of-type {
+            margin: 2% auto;
+        }
+
+        .contenidoTarjeta {
+            ul {
+                padding-inline-start: 0px;
+            }
+
+            li {
+                padding: 0%;
+
+                span {
+                    width: 100%;
+                    position: static;
+                    transform: none;
+                    text-align: center;
+                }
+
+                img {
+                    display: block;
+                    width: 70%;
+                    position: static;
+                    transform: none;
+                    margin: 4% auto;
+                }
+            }
+        }
     }
 }
 
 //Partidas
 #partidas {
+    //Tamaño y posicionamiento
     width: 80%;
+    align-items: center;
+    //Flex
     display: flex;
-    margin: auto;
     column-gap: 5%;
-    margin-bottom: 5%;
+    //Importante que el margen esté despues del flex para que tenga efecto
+    margin: 15% auto;
 
+    //Div con el icono de las partidas
     div:first-of-type  {
+        flex-basis: 30%;
         position: relative;
 
+        //Posicionamiento de un fondo para que vaya el botón encima
         &::after {
             content: "";
+            //Tamaño y posicionamiento
             display: inline-block;
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
             width: 70%;
             height: 20%;
-            border-radius: 10px;
+            position: absolute;
+            //Left
+            inset-inline-start: 50%;
+            //Top
+            inset-block-start: 50%;
+            //Ponerlo perfectamente en el centro
+            transform: translate(-50%, -50%);
+            //Estilos
+            border-radius: $borderRadius;
             background-color: $colorPrincipalOscuro;
+        }
+
+        //Botón de la partida
+        button {
+            //Posicionamiento en el centro
+            position: absolute;
+            //Left
+            inset-inline-start: 50%;
+            //Top
+            inset-block-start: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
         }
     }
 
     button {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 3;
-        @include boton (50%, $colorDestacado, 1em);
+        //Estilos del botón
+        @include boton ($colorDestacado, 1.5rem);
     }
 
+    //Imagen de las partidas (El triangulo)
     img {
         width: $sizePartidaImg;
     }
 
+    //Div con el texto explicativo
     div:nth-of-type(2) {
-        margin-top: 2%;
-        flex-grow: 2;
+        //Posicionamiento
+        margin-top: 2%;    
         text-align: center;
+        //Estilos
+        background-color: rgba(255, 255, 255, 0.356);
+        border-radius: $borderRadius;
+        //Flex como hijo
+        flex-basis: 60%;
+        flex-grow: 2;
 
         h2 {
             margin-bottom: 3%;
+            font-size: 2.5rem;
+        }
+
+        button {
+            margin: auto;
+            //Margin bottom
+            margin-block-end: 1%;
+            background-color: $colorPrincipal;
+        }
+
+    }
+
+    //Adaptación a movil
+    @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+        //Contenedor #partidas
+        & {
+            flex-wrap: wrap;
+            //Padding bottom
+            padding-block-end: 10%;
+        }
+
+        //Div con la imagen
+        div:first-of-type {
+            flex-basis: 100%;
+        }
+
+        //Div con el texto explicativo
+        div:nth-of-type(2){
+            //padding top
+            padding-block-start: 5%;
+        }
+
+        h2 {
+            //Padding bottom
+            padding-block-end: 5%;
+        }
+
+        button {
+            font-size: 1.2rem;
+        }
+    }
+
+    //Adaptación para tablets mediante aspect ratio
+    @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px)  {
+        //Contenedor logo partidas
+        div:first-of-type {
+            flex-basis: 70%;;
+        }
+
+        button {
+            font-size: 1.3rem;
+        }
+    }
+
+    //Adaptación para móvil plegable
+    @media screen and (max-width: 300px) {
+        button {
+            width: 60%;
+            font-size: 1rem
         }
     }
 }
 
 //Tienda
 #tienda {
-    position: relative;
+    //Tamaños y posicionamiento
     @include contenedor(100%, auto, $colorSecundario);
     margin: auto;
-    padding-bottom: 10%;
+    //padding bottom
+    padding-block-end: 10%;
+    //Posicionamiento relativo para usarlo como referencia en el absoluto
+    position: relative;
+    //Flex como padre
     display: flex;
     justify-content: space-evenly;
     flex-wrap: wrap;
 
+    //Imagen de antes del contenedor
     &:before {
-        @include imagenPattern(url("../img/SuscDesignTop.svg"), -100%, 52%);
+        @include imagenPattern(url("../img/tiendaDesignTop.svg"), -99.5%, 0%, bottom);
     }
 
     h2 {
-        flex-basis: 100%;
         text-align: center;
-        margin-bottom: 3%;
+        margin: 3% 0%;
+        //Flex como hijo
+        flex-basis: 100%;
+        font-size: 2.5rem;
+    }
+
+    //Adaptación a movil
+    @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+        &:before {
+            width: 98%;
+        }
+
+        //Contenedor tienda
+        .elementoTienda {
+            //Tamaños y posicionamiento
+            width: 70%;
+            padding: 4%;
+            //margin top
+            margin-block-start: 5%;
+
+            .id {
+                left: 12%;
+
+                //Triangulo antes del contenedor
+                &::after {
+                    top: 45%;
+                    //Le cambiamos el tamaño del borde para reducirlo
+                    //Border top
+                    border-block-start: 1.1em solid $colorPrincipal;
+                    //Right
+                    border-inline-end: 1.1em solid transparent;
+                    //Bottom
+                    border-block-end: 1.1em solid transparent;
+                    //Left
+                    border-inline-start: 1.1em solid transparent;
+                }
+            }
+
+        }
+    }
+
+    //Adaptación para móvil plegable
+    @media screen and (max-width: 300px) {
+        .elementoTienda {
+            width: 100%;
+        }
+    }
+
+    //Adaptación para tablets mediante aspect ratio
+    @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px) {
+        //Contenedor tienda
+        .elementoTienda {
+            width: 40%;
+            padding: 2.5%;
+            margin: 2%;
+            //Margin top
+            margin-block-start: 5%;
+
+            .id::after {
+                //Top
+                inset-block-start: 52%;
+                //Border top
+                border-block-start: 1.35em solid #0291A5;
+                //Border right
+                border-inline-end: 1.35em solid transparent;
+                //Bottom
+                border-block-end: 1.35em solid transparent;
+                //Left
+                border-inline-start: 1.35em solid transparent;
+            }
+
+            button {
+                font-size: 2rem
+            }
+        }
     }
 }
 
 //Cada uno de los elementos que contiene los artículos de la tienda
 .elementoTienda {
-    @include contenedor($sizeTienda, $sizeTienda, $colorLetra);
-    position: relative;
-    border-radius: 10px;
+    width: $sizeTienda;
+
+    & > div {
+        //Tamaños y posicionamienot
+        @include contenedor(100%, auto, $colorLetra);
+        position: relative;
+        border-radius: $borderRadius;
+        padding: 4%;
+    }
 
     //Div que muestra la pequeña banderita con el ID
     .id {
-        @include contenedor (15%, 20%, $colorPrincipal);
-        text-align: center;
-        padding-top: 6%;
-        font-size: 1.3em;
-        font-weight: 600;
-        color: $colorLetra;
-        //Le ponemos position absolute para que 
+        //Posicionamineto - Le ponemos position absolute para posicionarlo con respecto al elementoTienda ya que tiene relativo
         position: absolute;
-        top: 0px;
-        left: 10%;
+        //Top
+        inset-block-start: 0px;
+        //left
+        inset-inline-start: 10%;
         display: inline-block;
         z-index: 4;
+
+        //Cuadrado del id
+        div {
+            //Tamaños y posicionamiento
+            @include contenedor ($sizeID, $sizeID, $colorPrincipal);
+            //Padding top
+            padding-block-start: 25%;
+            text-align: center;
+             //Estilo
+            font-size: 1.3em;
+            font-weight: 600;
+            color: $colorLetra;
+        }
+
+        //Elemento que crea el triangulo poniendo el elemento con width y heigh 0 y visualizando solo uno de sus bordes
+        span {
+            display: inline-block;
+            width: 0;
+            height: 0;
+            //Creo Un cubo que sólo tiene 1 borde visible y el resto transparente
+            //Border top
+            border-block-start: $sizeID/2 solid $colorPrincipal;
+            //Border right
+            border-inline-end: $sizeID/2 solid transparent;
+            //Border bottom
+            border-block-end: $sizeID/2 solid transparent;
+            //Border left
+            border-inline-start: $sizeID/2 solid transparent;
+        }
     }
 
-    //Elemento que crea el triangulo poniendo el elemento con width y heigh 0 y visualizando solo uno de sus bordes
-    .id::after {
-        content: "";
-        display: inline-block;
-        width: 0;
-        height: 0;
-        position: relative;
-        top: 45%;
-        //Creo Un cubo que sólo tiene 1 borde visible y el resto transparente
-        border-top: 1.11em solid $colorPrincipal;
-        border-right: 1.11em solid transparent;
-        border-bottom: 1.11em solid transparent;
-        border-left: 1.11em solid transparent;
-    }
-
+    //Imagen artículos
     img {
-        width: 85%;
-        height: 85%;
-        transform: translate(8%, 8%);
-        border-radius: 10px;
+        width: 100%;
+        border-radius: $borderRadius;
     }
 
+    //Botón comprar
     button {
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        transform: translate(-50%, 50%);
-        @include boton (50%, $colorPrincipal, 1em);
+        @include boton ($colorPrincipal, 1.5em);
+        margin: 2% auto;
     }
 
+    //Descripción de la partida
     .descripcionCorta {
-        @include contenedor(85%, $altDescriptCorta, $colorPrincipal);
-        position: relative;
-        border-radius: 5px;
-        transform: translate(8%, -70%);
+        @include contenedor(92%, $altDescCorta, $colorPrincipal);
+        position: absolute;
+        //Bottom
+        inset-block-end: 3.5%;
+        border-radius: 0px 0px $borderRadius $borderRadius;
         padding: 2%;
 
         p {
@@ -214,24 +702,10 @@ main {
     }
 }
 
-//Diseño svg
-svg {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0%;
-    left: 0%;
-    z-index: -1;
+//Main donde irá el mosaico a repetir, hacemos que cubra todo en X y se repita en Y
+.cuerpoMosaico {
+    background-image: url("../img/mosaico2.svg");
+    background-size: cover;
+    background-repeat: repeat-y;
 
-    * {
-        fill: $colorSecundario;
-   }
-
-   rect {
-       width: 100%;
-   }
-
-    .restar {
-        fill: white;
-    }
 }
