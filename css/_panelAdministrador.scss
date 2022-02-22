@@ -2,7 +2,7 @@
 #panelAdmin {
     padding-block-start: 2%;
 
-    div {
+   & > div:first-of-type {
         width: 90%;
         margin: auto;
         border-radius: $borderRadius $borderRadius 0px 0px;
@@ -11,12 +11,10 @@
         justify-content: space-between;
 
         ul {
-            padding: 0% 1%;
+            padding: 0%;
             //Margin bottom
             margin-block-end: 0%;
             //Estilo
-            //Border bottom
-            border-block-end: 1px solid $colorSecundario;
             //Flex como padre
             display: flex;
             justify-content: space-around;
@@ -30,7 +28,7 @@
                 //Padding-top
                 padding-block-start: 1%;
 
-                a:not(#contenedorElementos a) {
+                a {
                     display: inline-block;
                     @include contenedor(100%, 100%, transparent);
                     padding: 4%;
@@ -122,11 +120,7 @@
         //Estilo
         font-size: 1.2em;
         border-radius: 0px 0px $borderRadius $borderRadius;
-        border: 1px solid $colorSecundario;
-        //Flex como padre
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+        border: 1px solid $colorPrincipal;
 
         form {
             margin-block-end: 3%;
@@ -140,12 +134,87 @@
             }
         }
 
-        .contenido {
-            padding: 2% 0%;
+        #listaElementos {
+            @include contenedor(100%, 100%, transparent);
+            text-align: center;
         }
 
-        .contenido:not(.contenido:last-of-type){
-            border-bottom: 1px solid oscurecerColor($colorLetra);
+        thead {
+            //Border bottom
+            border-block-end: 1px solid $colorPrincipal;
+
+            th {
+                color: $colorPrincipal;
+                //Margin bottom
+                padding-block-end: 1%;
+            }
         }
+
+        tbody {
+            td {
+                padding: 0.3% 0%;
+            }
+
+            tr:not(tr:last-of-type) {
+                //borer bottom
+                border-block-end: 1px solid oscurecerColor($colorLetra);
+            }
+
+            button {
+                @include boton($colorPrincipal, 1em);
+                margin: auto;
+            }
+        }
+    }
+
+    //Adaptación para móvil del carousel 
+    @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+        & {
+            #contenedorElementos {
+                width: 100%;
+                
+                #listaElementos {
+                    flex-wrap: wrap;
+                }
+            }
+        }
+    }
+
+     //Adaptación para tablet de carousel
+     @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px)  {
+         & {
+            & > div:first-of-type {
+                width: 100%;
+            }
+
+            //Formulario con el panel a administrar
+            #formPanelAdmin {
+            }
+
+            //Contenedor con todas las cajas a mostrar
+            #contenedorElementos {
+                width: 100%;
+
+                form {
+                    align-items: center;
+                }
+
+                input {
+                    flex-basis: calc(100%/3);
+                }
+
+                label {
+                    margin-block-start: 2%;
+                }
+
+                thead th {
+                    font-size: 1.2em;
+                }
+
+                tbody th {
+                    margin-block-start: 5%;
+                }
+            }
+         }
     }
 }

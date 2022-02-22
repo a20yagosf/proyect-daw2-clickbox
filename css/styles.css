@@ -997,7 +997,7 @@ ul li.list-group-item .btn-info {
   }
   #suscribirse #tiposSusc .susc {
     display: inline-block;
-    width: 32.3333333333%;
+    width: calc(97%/3);
   }
   #suscribirse #tiposSusc .susc p {
     font-size: 1.5rem;
@@ -1024,7 +1024,7 @@ ul li.list-group-item .btn-info {
   }
   #suscribirse #tiposSusc .susc {
     display: inline-block;
-    width: 31.6666666667%;
+    width: calc(95%/3);
   }
   #suscribirse #recibo {
     flex-basis: 100%;
@@ -1533,7 +1533,7 @@ ul li.list-group-item .btn-info {
 #perfilUsuario form fieldset div span {
   padding: 2%;
   margin: 1%;
-  flex-basis: 33.3333333333%;
+  flex-basis: calc(100%/3);
   flex-grow: 2;
 }
 #perfilUsuario form fieldset div button {
@@ -1670,32 +1670,30 @@ h2, h3 {
     text-align: start;
   }
   #perfilUsuario form fieldset div span {
-    flex-basis: 33.3333333333%;
+    flex-basis: calc(100%/3);
   }
 }
 #panelAdmin {
   -webkit-padding-before: 2%;
           padding-block-start: 2%;
 }
-#panelAdmin div {
+#panelAdmin > div:first-of-type {
   width: 90%;
   margin: auto;
   border-radius: 10px 10px 0px 0px;
   display: flex;
   justify-content: space-between;
 }
-#panelAdmin div ul {
-  padding: 0% 1%;
+#panelAdmin > div:first-of-type ul {
+  padding: 0%;
   -webkit-margin-after: 0%;
           margin-block-end: 0%;
-  -webkit-border-after: 1px solid #FFB775;
-          border-block-end: 1px solid #FFB775;
   display: flex;
   justify-content: space-around;
   flex-basis: 70%;
   flex-grow: 2;
 }
-#panelAdmin div ul li {
+#panelAdmin > div:first-of-type ul li {
   width: 100%;
   height: 100%;
   background-color: transparent;
@@ -1703,7 +1701,7 @@ h2, h3 {
   -webkit-padding-before: 1%;
           padding-block-start: 1%;
 }
-#panelAdmin div ul li a:not(#contenedorElementos a) {
+#panelAdmin > div:first-of-type ul li a {
   display: inline-block;
   width: 100%;
   height: 100%;
@@ -1713,13 +1711,13 @@ h2, h3 {
   text-align: center;
   color: #0291A5;
 }
-#panelAdmin div ul li a:not(#contenedorElementos a):hover {
+#panelAdmin > div:first-of-type ul li a:hover {
   border: 1px solid #0291A5;
   -webkit-border-after: 0px;
           border-block-end: 0px;
   border-radius: 10px 10px 0px 0px;
 }
-#panelAdmin div ul li .listaActivo {
+#panelAdmin > div:first-of-type ul li .listaActivo {
   background-color: #0291A5;
   color: #F3F3F3;
   border: 1px solid transparent;
@@ -1727,10 +1725,10 @@ h2, h3 {
   border-radius: 10px 10px 0px 0px;
   z-index: 2;
 }
-#panelAdmin div ul li .listaActivo:hover {
+#panelAdmin > div:first-of-type ul li .listaActivo:hover {
   background-color: #03bdd7;
 }
-#panelAdmin div button {
+#panelAdmin > div:first-of-type button {
   background-image: url("../img/iconos/menuHamburguesa.svg");
   background-size: contain;
   background-repeat: no-repeat;
@@ -1746,7 +1744,7 @@ h2, h3 {
   transition: all 0.5s linear;
   padding: 0% 2.5%;
 }
-#panelAdmin div button:hover {
+#panelAdmin > div:first-of-type button:hover {
   background-color: #03bdd7;
 }
 #panelAdmin #formPanelAdmin {
@@ -1769,7 +1767,7 @@ h2, h3 {
   text-align: center;
 }
 #panelAdmin #formPanelAdmin input, #panelAdmin #formPanelAdmin label, #panelAdmin #formPanelAdmin select {
-  flex-basis: 50%;
+  flex-basis: calc(100%/2);
 }
 #panelAdmin #formPanelAdmin input, #panelAdmin #formPanelAdmin select {
   margin: 2% 0%;
@@ -1807,10 +1805,7 @@ h2, h3 {
   padding: 2%;
   font-size: 1.2em;
   border-radius: 0px 0px 10px 10px;
-  border: 1px solid #FFB775;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  border: 1px solid #0291A5;
 }
 #panelAdmin #contenedorElementos form {
   -webkit-margin-after: 3%;
@@ -1822,11 +1817,75 @@ h2, h3 {
 #panelAdmin #contenedorElementos form label, #panelAdmin #contenedorElementos form input {
   text-align: center;
 }
-#panelAdmin #contenedorElementos .contenido {
-  padding: 2% 0%;
+#panelAdmin #contenedorElementos #listaElementos {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  text-align: center;
 }
-#panelAdmin #contenedorElementos .contenido:not(.contenido:last-of-type) {
-  border-bottom: 1px solid silver;
+#panelAdmin #contenedorElementos thead {
+  -webkit-border-after: 1px solid #0291A5;
+          border-block-end: 1px solid #0291A5;
+}
+#panelAdmin #contenedorElementos thead th {
+  color: #0291A5;
+  -webkit-padding-after: 1%;
+          padding-block-end: 1%;
+}
+#panelAdmin #contenedorElementos tbody td {
+  padding: 0.3% 0%;
+}
+#panelAdmin #contenedorElementos tbody tr:not(tr:last-of-type) {
+  -webkit-border-after: 1px solid silver;
+          border-block-end: 1px solid silver;
+}
+#panelAdmin #contenedorElementos tbody button {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1em;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  margin: auto;
+}
+#panelAdmin #contenedorElementos tbody button:hover {
+  background-color: #03bdd7;
+}
+@media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+  #panelAdmin #contenedorElementos {
+    width: 100%;
+  }
+  #panelAdmin #contenedorElementos #listaElementos {
+    flex-wrap: wrap;
+  }
+}
+@media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px) {
+  #panelAdmin > div:first-of-type {
+    width: 100%;
+  }
+  #panelAdmin #contenedorElementos {
+    width: 100%;
+  }
+  #panelAdmin #contenedorElementos form {
+    align-items: center;
+  }
+  #panelAdmin #contenedorElementos input {
+    flex-basis: calc(100%/3);
+  }
+  #panelAdmin #contenedorElementos label {
+    -webkit-margin-before: 2%;
+            margin-block-start: 2%;
+  }
+  #panelAdmin #contenedorElementos thead th {
+    font-size: 1.2em;
+  }
+  #panelAdmin #contenedorElementos tbody th {
+    -webkit-margin-before: 5%;
+            margin-block-start: 5%;
+  }
 }
 
 footer {
