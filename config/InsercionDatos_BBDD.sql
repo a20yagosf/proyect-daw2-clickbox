@@ -20,3 +20,5 @@ INSERT INTO generos
 	("Fantasía"),
 	("Infantil"),
 	("Antigüedad");
+
+-- Creamos tematicas
