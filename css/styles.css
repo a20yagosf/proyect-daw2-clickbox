@@ -660,6 +660,9 @@ main {
           margin-block-end: 1%;
   background-color: #0291A5;
 }
+#partidas div:nth-of-type(2) button:hover {
+  background-color: #03bdd7;
+}
 @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
   #partidas {
     flex-wrap: wrap;
@@ -1032,6 +1035,9 @@ ul li.list-group-item .btn-info {
             margin-block-start: 5%;
     font-size: 1.3rem;
   }
+  #suscribirse #recibo table th {
+    font-size: 3em;
+  }
   #suscribirse #recibo button {
     width: 50%;
   }
@@ -1127,6 +1133,9 @@ ul li.list-group-item .btn-info {
 }
 #recibo table td {
   padding: 2% 0%;
+}
+#recibo table td:last-of-type {
+  text-align: center;
 }
 #recibo button {
   display: block;

@@ -69,6 +69,12 @@
             margin-block-start: 5%;
             font-size: 1.3rem;
 
+            table {
+                th {
+                    font-size: 3em;
+                }
+            }
+
             button {
                 width: 50%;
             }
@@ -189,6 +195,10 @@
 
         td {
             padding: 2% 0%;
+
+            &:last-of-type {
+                text-align: center;
+            }
         }
     }
 

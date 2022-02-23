@@ -469,6 +469,10 @@ main {
             //Margin bottom
             margin-block-end: 1%;
             background-color: $colorPrincipal;
+
+            &:hover {
+                background-color: aclararColor($colorPrincipal);
+            }
         }
 
     }
