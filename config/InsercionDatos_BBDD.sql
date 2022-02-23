@@ -10,15 +10,26 @@ INSERT INTO roles
 	("CONEXION", "USUARIO ANÓNIMO");
 	
 -- Creamos los tipos de géneros
-INSERT INTO generos
-	(NOMBRE_GENERO)
-		VALUES
-	("Estrategia"),
-	("Acción"),
-	("Rol"),
-	("Terror"),
-	("Fantasía"),
-	("Infantil"),
-	("Antigüedad");
+INSERT INTO GENEROS
+    (NOMBRE_GENERO)
+        VALUES
+    ("COMPETITIVO"),
+    ("ESTRATEGIA"),
+    ("DECK BUILDING"),
+    ("DUNGEON CRAWLER"),
+    ("COOPERATIVO"),
+    ("TABLERO"),
+    ("ABSTRACTO"),
+    ("DADOS"),
+    ("FAMILIAR"), 
+    ("FANTASÍA"),
+    ("ROL"),
+    ("AVENTURA"),
+    ("CIFI"),
+    ("CARTAS"),
+    ("LÓGICA"),
+    ("CASUAL"),
+    ("TERROR")
+
 
 -- Creamos tematicas
