@@ -993,6 +993,25 @@ async function desconectarPerfil(e) {
     }
 }
 
-function cargarDatosPerfil() {
-    //Comprobamos que tenga una 
+async function cargarDatosPerfil() {
+    try{
+
+    
+    // Recoger datos usando el email del usuario para la consulta a la BD
+    // email está almacenado en sessionStorage
+    const respuesta = await fetch("../php/perfil_usuario.php",{
+        method: "POST", 
+        headers: "application/json;charset=UTF-8",
+        body: JSON.stringify({
+            "email":sessionStorage.getItem("email") 
+        })
+    }); // esto va a devolver un promise
+    
+    const respuesta_json = await respuesta.json(); //coge la respuesta y la convierte a objeto de js
+    
+}
+catch(error){
+    console.log(error);
+    // mensaje para mostrar el error
+}
 }

@@ -24,7 +24,7 @@ form#formulario_tienda {
       // la colocación de algunos selectores
       div#lista_traits{
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
         grid-template-rows: 1fr 1fr;
         #form_generos {
           grid-row: 1;
@@ -38,8 +38,12 @@ form#formulario_tienda {
           grid-row: 1;
           grid-column: 2;
         }
-        #jugadores {
+        #min_jugadores {
           grid-row: 2;
+          grid-column: 2;
+        }
+        #max_jugadores {
+          grid-row: 3;
           grid-column: 2;
         }
         // Dado que los dropdowns vienen de un script externo modificaremos

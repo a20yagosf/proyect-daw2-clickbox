@@ -862,6 +862,10 @@ main {
   background-repeat: repeat-y;
 }
 
+main#partidas-main {
+  padding: 3%;
+}
+
 #info_partidas, #filtro, #result_panel, .pagination {
   margin: 3%;
 }
@@ -1013,7 +1017,7 @@ form#formulario_tienda .filtros_busqueda .filtro_traits p {
 }
 form#formulario_tienda .filtros_busqueda .filtro_traits div#lista_traits {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr;
 }
 form#formulario_tienda .filtros_busqueda .filtro_traits div#lista_traits #form_generos {
@@ -1028,8 +1032,12 @@ form#formulario_tienda .filtros_busqueda .filtro_traits div#lista_traits #form_j
   grid-row: 1;
   grid-column: 2;
 }
-form#formulario_tienda .filtros_busqueda .filtro_traits div#lista_traits #jugadores {
+form#formulario_tienda .filtros_busqueda .filtro_traits div#lista_traits #min_jugadores {
   grid-row: 2;
+  grid-column: 2;
+}
+form#formulario_tienda .filtros_busqueda .filtro_traits div#lista_traits #max_jugadores {
+  grid-row: 3;
   grid-column: 2;
 }
 form#formulario_tienda .filtros_busqueda .filtro_traits div#lista_traits .multiselect-dropdown {
@@ -1125,7 +1133,7 @@ form#formulario_tienda div.center_submit button {
   }
   #suscribirse #tiposSusc .susc {
     display: inline-block;
-    width: calc(97%/3);
+    width: 32.3333333333%;
   }
   #suscribirse #tiposSusc .susc p {
     font-size: 1.5rem;
@@ -1152,7 +1160,7 @@ form#formulario_tienda div.center_submit button {
   }
   #suscribirse #tiposSusc .susc {
     display: inline-block;
-    width: calc(95%/3);
+    width: 31.6666666667%;
   }
   #suscribirse #recibo {
     flex-basis: 100%;
@@ -1661,7 +1669,7 @@ form#formulario_tienda div.center_submit button {
 #perfilUsuario form fieldset div span {
   padding: 2%;
   margin: 1%;
-  flex-basis: calc(100%/3);
+  flex-basis: 33.3333333333%;
   flex-grow: 2;
 }
 #perfilUsuario form fieldset div button {
@@ -1798,7 +1806,7 @@ h2, h3 {
     text-align: start;
   }
   #perfilUsuario form fieldset div span {
-    flex-basis: calc(100%/3);
+    flex-basis: 33.3333333333%;
   }
 }
 #panelAdmin div {
@@ -1879,7 +1887,7 @@ h2, h3 {
   flex-basis: 100%;
 }
 #panelAdmin #panelAdmin input, #panelAdmin #panelAdmin label, #panelAdmin #panelAdmin select {
-  flex-basis: calc(100%/2);
+  flex-basis: 50%;
 }
 #panelAdmin #panelAdmin input, #panelAdmin #panelAdmin select {
   margin: 2% 0%;
