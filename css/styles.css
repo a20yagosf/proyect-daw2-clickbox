@@ -913,6 +913,7 @@ ul.list-group {
 }
 #form_partidas select {
   font-size: 1.75rem !important;
+  background-color: white;
 }
 #form_partidas button {
   width: 20% !important;
