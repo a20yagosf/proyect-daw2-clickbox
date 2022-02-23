@@ -156,8 +156,8 @@
         thead {
             //Estilo
             background-color: $colorSecundario;
-            border-radius: $borderRadius;
         }
+
 
         //Cabecera donde pone (1 MES, 6 MESES, etcc)
         th {
@@ -168,7 +168,6 @@
             font-size: 5em;
             //Estilo
             color: $colorPrincipal;
-            border-radius: $borderRadius;
             //Esta fuente debe estar con font-weigth 100 para permitir una buena lectura
             font-family: "PoetsenOne";
             font-weight: 100;
@@ -187,6 +186,10 @@
             //Border top
             border-block-start: 0.2em dashed $colorPrincipal;
         }
+
+        td {
+            padding: 2% 0%;
+        }
     }
 
     //Botón para suscribirse
@@ -194,6 +197,8 @@
         @include boton($colorPrincipal, 1.5em);
         padding: 2%;
         margin: auto;
+        //Margin bottom
+        margin-block-end: 5%;
         //Grid como hijo
         grid-area: boton;
     }

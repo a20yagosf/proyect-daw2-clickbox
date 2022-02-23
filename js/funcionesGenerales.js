@@ -759,7 +759,7 @@ async function procesarLogin(evento) {
         const resultadoPeticion = await respuestaJSON.json();
         //Comprobamos que no saltara un error
         if(Object.hasOwn(resultadoPeticion, "error")){
-            throw new respuestaJSON["error"];
+            throw respuestaJSON["error"];
         }
         //Guardamos en sesión el usuario y su rol
         sessionStorage.setItem("email", email);
@@ -993,6 +993,78 @@ async function desconectarPerfil(e) {
     }
 }
 
-function cargarDatosPerfil() {
-    //Comprobamos que tenga una 
+async function cargarDatosPerfil() {
+
+}
+
+
+async function cargarSuscripciones() {
+    try {
+        //Nos conectamos a php para pedir todas las duraciones de las suscripciones
+        const respuesta = await fetch("../php/suscripciones.php", {
+            method: "GET"
+        });
+        const respuestaJSON = await respuesta.json();
+        //Comprobamos que no diera error
+        if(Object.hasOwn(respuestaJSON, "error")) {
+            throw respuestaJSON["error"];
+        }
+        //Creamos un button por cada uno de las suscripciones
+        let suscripciones = Object.values(respuestaJSON);
+        let cuerpo = document.querySelector("body");
+        suscripciones.forEach(suscripcion => {
+            //Creamos el botón
+            let boton = crearBoton("", {"data-id": suscripcion["duracion"], "class": "susc"});
+            //Creamos los p con la duración y mes
+            let parrafo = document.createElement("p");
+            parrafo.textContent = suscripcion["duracion"];
+            let parrafoMes = document.createElement("p");
+            parrafoMes.textContent = "Mes";
+            //Añado ambos al botón
+            boton.append(parrafo, parrafoMes);
+            cuerpo.append(boton);
+            //Lo añado al cuerpo
+            //<button type="button" data-id="1" class="susc suscActiva"><p>1</p><p>Mes</p></button>
+            //LE
+        });
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+
+/**
+ * Manda una petición a php para que cargue la información en la tabla con la suscripción seleccionada (Botón activo)
+ *
+ * @param   {Event}  e  Evento que se disparó
+ *
+ */
+async function cargarDatos(e) {
+    //ID de botón que activó el evento
+    let duracionSus = e.target.dataset.id;
+    try {
+        //Realizamos la petición
+        const respuesta = await fetch("../php/suscripciones.php", {
+            method: "POST",
+            headers: {"Content-type": "application/json;charset=utf-8"},
+            body: JSON.stringify({"duracion": duracionSus})
+        });
+        //Convertimos la respuesta a js
+        const respuestaJSON = await respuesta.json();
+        //Comprobamos que no diera error, si dió error lo mostramos por pantalla
+        if(Object.hasOwn(respuestaJSON, "error")){
+            throw respuestaJSON["error"];
+        }
+        //Ponemos los datos en la tabla
+        //Le cambiamos la cabecera con el número correcto
+        let cabeceraSuscripcion = document.querySelector("th");
+        cabeceraSuscripcion.textContent =  respuestaJSON["duracion"] + " mes";
+        let filasCuerpo = Array.from(document.querySelectorAll("tbody > tr"));
+        //En la primera línea mostramos también la duración
+        filasCuerpo[0].lastChild.textContent = respuestaJSON["precio"];
+        filasCuerpo[1].lastChild.textContent = respuestaJSON["ahorro"];
+    }
+    catch (error){
+        console.log(error);
+    }
 }

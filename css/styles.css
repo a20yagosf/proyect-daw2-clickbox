@@ -997,7 +997,7 @@ ul li.list-group-item .btn-info {
   }
   #suscribirse #tiposSusc .susc {
     display: inline-block;
-    width: calc(97%/3);
+    width: 32.3333333333%;
   }
   #suscribirse #tiposSusc .susc p {
     font-size: 1.5rem;
@@ -1024,7 +1024,7 @@ ul li.list-group-item .btn-info {
   }
   #suscribirse #tiposSusc .susc {
     display: inline-block;
-    width: calc(95%/3);
+    width: 31.6666666667%;
   }
   #suscribirse #recibo {
     flex-basis: 100%;
@@ -1106,14 +1106,12 @@ ul li.list-group-item .btn-info {
 }
 #recibo table thead {
   background-color: #FFB775;
-  border-radius: 10px;
 }
 #recibo table th {
   text-align: center;
   margin: 0px;
   font-size: 5em;
   color: #0291A5;
-  border-radius: 10px;
   font-family: "PoetsenOne";
   font-weight: 100;
   word-spacing: 0.5em;
@@ -1127,6 +1125,9 @@ ul li.list-group-item .btn-info {
   -webkit-border-before: 0.2em dashed #0291A5;
           border-block-start: 0.2em dashed #0291A5;
 }
+#recibo table td {
+  padding: 2% 0%;
+}
 #recibo button {
   display: block;
   background-color: #0291A5;
@@ -1139,6 +1140,8 @@ ul li.list-group-item .btn-info {
   transition: all 0.5s linear;
   padding: 2%;
   margin: auto;
+  -webkit-margin-after: 5%;
+          margin-block-end: 5%;
   grid-area: boton;
 }
 #recibo button:hover {
@@ -1533,7 +1536,7 @@ ul li.list-group-item .btn-info {
 #perfilUsuario form fieldset div span {
   padding: 2%;
   margin: 1%;
-  flex-basis: calc(100%/3);
+  flex-basis: 33.3333333333%;
   flex-grow: 2;
 }
 #perfilUsuario form fieldset div button {
@@ -1670,7 +1673,7 @@ h2, h3 {
     text-align: start;
   }
   #perfilUsuario form fieldset div span {
-    flex-basis: calc(100%/3);
+    flex-basis: 33.3333333333%;
   }
 }
 #panelAdmin {
@@ -1747,6 +1750,9 @@ h2, h3 {
 #panelAdmin > div:first-of-type button:hover {
   background-color: #03bdd7;
 }
+#panelAdmin > div:first-of-type a {
+  display: none;
+}
 #panelAdmin #formPanelAdmin {
   width: 90%;
   height: auto;
@@ -1767,7 +1773,7 @@ h2, h3 {
   text-align: center;
 }
 #panelAdmin #formPanelAdmin input, #panelAdmin #formPanelAdmin label, #panelAdmin #formPanelAdmin select {
-  flex-basis: calc(100%/2);
+  flex-basis: 50%;
 }
 #panelAdmin #formPanelAdmin input, #panelAdmin #formPanelAdmin select {
   margin: 2% 0%;
@@ -1855,16 +1861,85 @@ h2, h3 {
   background-color: #03bdd7;
 }
 @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+  #panelAdmin > div:first-of-type {
+    flex-wrap: wrap;
+    width: 100%;
+    background-color: #0291A5;
+  }
+  #panelAdmin > div:first-of-type ul {
+    flex-basis: 100%;
+    flex-wrap: wrap;
+  }
+  #panelAdmin > div:first-of-type ul li {
+    border: 0px;
+    border-radius: 0px;
+    flex-basis: 100%;
+    -webkit-padding-before: 0%;
+            padding-block-start: 0%;
+    width: auto;
+    height: auto;
+  }
+  #panelAdmin > div:first-of-type ul li .listaActivo {
+    border-radius: 0px;
+    background-color: #FFB775;
+  }
+  #panelAdmin > div:first-of-type ul li .listaActivo:hover {
+    border-radius: 0px;
+  }
+  #panelAdmin > div:first-of-type ul li a {
+    color: #F3F3F3;
+  }
+  #panelAdmin > div:first-of-type ul li a:hover {
+    border-radius: 0px;
+    background-color: #03bdd7;
+  }
+  #panelAdmin > div:first-of-type > a {
+    width: 100%;
+    padding: 1%;
+    font-size: 1.5em;
+    color: #F3F3F3;
+    text-align: center;
+    transition: all 0.5s ease-in-out;
+  }
+  #panelAdmin > div:first-of-type > a:hover {
+    border-radius: 10px 10px 0px 0px;
+    background-color: #FFB775;
+  }
   #panelAdmin #contenedorElementos {
     width: 100%;
+  }
+  #panelAdmin #contenedorElementos form label, #panelAdmin #contenedorElementos form input, #panelAdmin #contenedorElementos form select {
+    flex-basis: 100%;
   }
   #panelAdmin #contenedorElementos #listaElementos {
     flex-wrap: wrap;
   }
-}
-@media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px) {
-  #panelAdmin > div:first-of-type {
+  #panelAdmin th:first-of-type, #panelAdmin td:first-of-type, #panelAdmin td:last-of-type, #panelAdmin td:nth-of-type(3), #panelAdmin th:nth-of-type(3), #panelAdmin td:nth-of-type(5), #panelAdmin th:nth-of-type(5) {
+    display: none;
+  }
+  #panelAdmin #formPanelAdmin {
     width: 100%;
+  }
+  #panelAdmin #formPanelAdmin label, #panelAdmin #formPanelAdmin input, #panelAdmin #formPanelAdmin select {
+    flex-basis: 100%;
+  }
+  #panelAdmin #formPanelAdmin button, #panelAdmin #formPanelAdmin input[type=submit] {
+    -webkit-margin-before: 2%;
+            margin-block-start: 2%;
+  }
+}
+@media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px), (aspect-ratio: 1/1) and (min-width: 540px) {
+  #panelAdmin {
+    height: 75vh;
+  }
+  #panelAdmin > div:first-of-type {
+    width: 90%;
+  }
+  #panelAdmin > div:first-of-type > a {
+    display: none;
+  }
+  #panelAdmin #formPanelAdmin {
+    height: 90%;
   }
   #panelAdmin #contenedorElementos {
     width: 100%;
@@ -1873,9 +1948,10 @@ h2, h3 {
     align-items: center;
   }
   #panelAdmin #contenedorElementos input {
-    flex-basis: calc(100%/3);
+    flex-basis: 30%;
   }
   #panelAdmin #contenedorElementos label {
+    flex-basis: 20%;
     -webkit-margin-before: 2%;
             margin-block-start: 2%;
   }

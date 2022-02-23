@@ -68,6 +68,11 @@
             @include boton($colorPrincipal, 1em);
             padding: 0% 2.5%;
         }
+
+        //Enlace para abrir y cerrar los filtros en Ipad y móvil
+        a {
+            display: none;
+        }
     }
 
     //Formulario con el panel a administrar
@@ -170,25 +175,114 @@
     //Adaptación para móvil del carousel 
     @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
         & {
+
+            & > div:first-of-type {
+                flex-wrap: wrap;
+                width: 100%;
+                background-color: $colorPrincipal;
+
+                ul {
+                    flex-basis: 100%;
+                    flex-wrap: wrap;
+
+
+                    li {
+                        border: 0px;
+                        border-radius: 0px;
+                        flex-basis: 100%;
+                        padding-block-start: 0%;
+                        width: auto;
+                        height: auto; 
+
+                        .listaActivo {
+                            border-radius: 0px;
+                            background-color: $colorSecundario;
+
+                            &:hover {
+                                border-radius: 0px;
+                            }
+
+                        }
+
+                        a {
+                            color: $colorLetra;
+
+                            &:hover {
+                                border-radius: 0px;
+                                background-color: aclararColor($colorPrincipal);
+                            }
+                        }
+                    }
+                }
+
+
+                & > a {                  
+                    //Tamaños y posicionamiento
+                    width: 100%;
+                    padding: 1%;
+                    font-size: 1.5em;
+                    //Estilo
+                    color: $colorLetra;
+                    text-align: center;
+                    transition: all 0.5s ease-in-out;
+
+                    &:hover {
+                        border-radius: $borderRadius $borderRadius 0px 0px;
+                        background-color: $colorSecundario;
+                    }
+                }
+            }
+
+
             #contenedorElementos {
                 width: 100%;
+
+                form {
+                    label, input, select {
+                        flex-basis: 100%;
+                    }
+                }
                 
                 #listaElementos {
                     flex-wrap: wrap;
                 }
             }
+
+            th:first-of-type ,td:first-of-type, td:last-of-type, td:nth-of-type(3), th:nth-of-type(3), td:nth-of-type(5), th:nth-of-type(5) {
+                display: none;
+            }
+
+            
+            //Formulario con el panel a administrar
+            #formPanelAdmin {
+                width: 100%;
+
+               label, input, select {
+                    flex-basis: 100%;
+               }
+
+               button, input[type="submit"] {
+                   margin-block-start: 2%;
+               }
+            }
         }
     }
 
      //Adaptación para tablet de carousel
-     @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px)  {
+     @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px), (aspect-ratio: 1/1) and (min-width: 540px)  {
          & {
+            height: 75vh;
+
             & > div:first-of-type {
-                width: 100%;
+                width: 90%;
+
+                & > a {
+                    display: none;
+                }
             }
 
-            //Formulario con el panel a administrar
             #formPanelAdmin {
+                height: 90%;
             }
 
             //Contenedor con todas las cajas a mostrar
@@ -200,10 +294,11 @@
                 }
 
                 input {
-                    flex-basis: calc(100%/3);
+                    flex-basis: calc(30%);
                 }
 
                 label {
+                    flex-basis: calc(20%);
                     margin-block-start: 2%;
                 }
 

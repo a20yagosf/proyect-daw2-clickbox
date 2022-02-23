@@ -1,3 +1,5 @@
+@use "sass:math";
+
 //Características generales
 * {
     margin: 0px;
@@ -664,13 +666,13 @@ main {
             height: 0;
             //Creo Un cubo que sólo tiene 1 borde visible y el resto transparente
             //Border top
-            border-block-start: $sizeID/2 solid $colorPrincipal;
+            border-block-start: math.div($sizeID, 2) solid $colorPrincipal;
             //Border right
-            border-inline-end: $sizeID/2 solid transparent;
+            border-inline-end: math.div($sizeID, 2) solid transparent;
             //Border bottom
-            border-block-end: $sizeID/2 solid transparent;
+            border-block-end: math.div($sizeID, 2) solid transparent;
             //Border left
-            border-inline-start: $sizeID/2 solid transparent;
+            border-inline-start: math.div($sizeID, 2) solid transparent;
         }
     }
 

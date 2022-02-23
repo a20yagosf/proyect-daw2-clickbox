@@ -14,20 +14,22 @@
     <main class="cuerpoMosaico">
         <div id="panelAdmin">
             <div>
+                <a href="">Filtros</a>
                 <ul id="opcionesPanelAdmin">
                     <li><a href="#" class="listaActivo">Cajas sorpresa</a></li>
                     <li><a href="#">Partidas</a></li>
                     <li><a href="#">Productos</a></li>
                     <li><a href="#">Usuarios</a></li>
                 </ul>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="opcionesPanelAdmin" aria-controls="opcionesPanelAdmin" aria-expanded="false" aria-label="Menú hamburguesa panel de control"></button>
             </div>
-            <!-- <form id="formPanelAdmin">
+            <!--- <form id="formPanelAdmin">
                 <h2>Cajas sorpresa</h2>
                 <label for="fecha">Fecha lanzamiento:</label>
                 <input type="date" name="fecha" id="fecha"/>
-                <label for="num_jug">Número de jugadores:</label>
-                <input type="number" name="num_jug" id="num_jug" max="10" min="3"/>
+                <label for="min_jug">Mínimo de jugadores:</label>
+                <input type="number" name="min_jug" id="min_jug" max="10" min="3"/>
+                <label for="max_jug">Máximo de jugadores:</label>
+                <input type="number" name="max_jug" id="max_jug" max="10" min="3"/>
                 <label for="genero">Género</label>
                 <select name="genero" id="genero">
                     <option value="aventuras">Aventuras</option>
@@ -45,8 +47,10 @@
                 <form id="filtradoPartida" action="">
                     <label for="fechaCaja">Fecha</label>
                     <input type="date" name="fechaCaja" id="fechaCaja"/>
-                    <label for="num_jug">Número de jugadores</label>
-                    <input type="number" name="num_jug" id="num_jug"/>
+                    <label for="min_jug">Mínimo de jugadores</label>
+                    <input type="number" name="num_jug" id="minjug"/>
+                    <label for="max_jug">Máximo de jugadores</label>
+                    <input type="number" name="num_jug" id="max_jug"/>
                     <label for="genero">Género</label>
                     <select name="genero" id="genero">
                         <option value="">No seleccionado</option>
@@ -61,7 +65,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Fecha</th>
-                            <th>Número de jugadores</th>
+                            <th>Nº jugadores</th>
                             <th>Género</th>
                             <th>Temática</th>
                         </tr>
