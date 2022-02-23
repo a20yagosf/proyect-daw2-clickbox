@@ -992,12 +992,14 @@ async function desconectarPerfil(e) {
         location.assign("../html/index.html");
     }
 }
-
+/**
+ * Le manda a perfil_usuario.php un json con el que pedirá los datos gracias al email
+ * del usuario, recibirá un json con toda la información de vuelta y modificará el dom del perfil del usuario
+ *
+ * @return  {[type]}  [return description]
+ */
 async function cargarDatosPerfil() {
     try{
-
-    
-    // Recoger datos usando el email del usuario para la consulta a la BD
     // email está almacenado en sessionStorage
     const respuesta = await fetch("../php/perfil_usuario.php",{
         method: "POST", 
@@ -1005,13 +1007,41 @@ async function cargarDatosPerfil() {
         body: JSON.stringify({
             "email":sessionStorage.getItem("email") 
         })
-    }); // esto va a devolver un promise
+    }); // Esto va a devolver un promise
     
-    const respuesta_json = await respuesta.json(); //coge la respuesta y la convierte a objeto de js
+    const respuesta_json = await respuesta.json(); // Coge la respuesta y la convierte a objeto de js
     
+    /** Con este objeto en js vamos a modificar el DOM
+     * Añadiendo cuando sea necesario los atributos necesarios 
+     * para su correcta selección 
+    **/ 
+    // Modificamos la variable nombre y le quitamos el atributo readonly
+    document.getElementById("nombre").removeAttribute("readonly");
+    // Recuperamos el nombre
+    document.getElementById("nombre").value = respuesta_json['nombre'];
+
+    // Modificamos la variable genero y le quitamos el atributo readonly
+    document.getElementById("genero_favorito").removeAttribute("disabled");
+    // Ahora tenemos que seleccionar (con el atributo selected) la option que nos pasa el objeto
+    document.querySelector(`option[value="${respuesta_json['genero_favorito']}"]`).setAttribute("selected","selected");
+    
+    // Modificamos la variable apellidos y le quitamos el atributo readonly
+    document.getElementById("apellidos").removeAttribute("readonly");
+    // Recuperamos los apellidos
+    document.getElementById("apellidos").value = respuesta_json['apellidos'];
+
+    // Modificamos la variable telefono y le quitamos el atributo readonly
+    document.getElementById("telefono").removeAttribute("readonly");
+    // Recuperamos el telefono
+    document.getElementById("telefono").value = respuesta_json['telefono'];
+
+
+    // Modificamos la variable dirección y le quitamos el atributo readonly
+    document.getElementById("dirección").removeAttribute("readonly");
+    // Recuperamos la dirección
+    document.getElementById("dirección").value = respuesta_json['dirección'];
 }
 catch(error){
-    console.log(error);
-    // mensaje para mostrar el error
+    console.log(error); // Mensaje para mostrar el error   
 }
 }
