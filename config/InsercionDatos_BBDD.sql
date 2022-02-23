@@ -20,3 +20,11 @@ INSERT INTO generos
 	("Fantasía"),
 	("Infantil"),
 	("Antigüedad");
+	
+-- Creamos unas suscripciones de base
+INSERT INTO suscripciones
+	(DURACION, PRECIO)
+	VALUES
+	(1, 20),
+	(3, 17),
+	(6, 14);

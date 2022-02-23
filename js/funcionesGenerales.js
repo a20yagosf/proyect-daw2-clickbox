@@ -1011,7 +1011,7 @@ async function cargarSuscripciones() {
         }
         //Creamos un button por cada uno de las suscripciones
         let suscripciones = Object.values(respuestaJSON);
-        let cuerpo = document.querySelector("body");
+        let contenedorSuscripciones = document.getElementById("tiposSusc");
         suscripciones.forEach(suscripcion => {
             //Creamos el botón
             let boton = crearBoton("", {"data-id": suscripcion["duracion"], "class": "susc"});
@@ -1022,11 +1022,14 @@ async function cargarSuscripciones() {
             parrafoMes.textContent = "Mes";
             //Añado ambos al botón
             boton.append(parrafo, parrafoMes);
-            cuerpo.append(boton);
+            contenedorSuscripciones.append(boton);
             //Lo añado al cuerpo
             //<button type="button" data-id="1" class="susc suscActiva"><p>1</p><p>Mes</p></button>
-            //LE
+            //Le añadimos los listeners
+            boton.addEventListener("click", cargarDatos, true);
         });
+        //Disparamos el evento comosi pulsaramos el primer botón para que coja sus características
+        document.getElementById("tiposSusc").firstElementChild.dispatchEvent(new Event("click"));
     }
     catch (error) {
         console.log(error);
@@ -1040,8 +1043,10 @@ async function cargarSuscripciones() {
  *
  */
 async function cargarDatos(e) {
-    //ID de botón que activó el evento
-    let duracionSus = e.target.dataset.id;
+    //Botón que lleva el escuchador, usamos currentTarget porque es el elemento que tiene el event listener pegado, pero el que dispara es el hijo (los p) por eso no usamos target
+    let botonEvento = e.currentTarget;
+    //ID de botón que activó el evento, 
+    let duracionSus = botonEvento.dataset.id;
     try {
         //Realizamos la petición
         const respuesta = await fetch("../php/suscripciones.php", {
@@ -1058,13 +1063,33 @@ async function cargarDatos(e) {
         //Ponemos los datos en la tabla
         //Le cambiamos la cabecera con el número correcto
         let cabeceraSuscripcion = document.querySelector("th");
-        cabeceraSuscripcion.textContent =  respuestaJSON["duracion"] + " mes";
+        let meses = respuestaJSON["duracion"]  == 1 ? "mes" : "meses";
+        //Cabecera con X mes
+        cabeceraSuscripcion.textContent =  respuestaJSON["duracion"] + " " + meses;
         let filasCuerpo = Array.from(document.querySelectorAll("tbody > tr"));
-        //En la primera línea mostramos también la duración
-        filasCuerpo[0].lastChild.textContent = respuestaJSON["precio"];
-        filasCuerpo[1].lastChild.textContent = respuestaJSON["ahorro"];
+        //Precio
+        filasCuerpo[0].lastElementChild.textContent = respuestaJSON["precio"] + " €";
+        //Ahorras
+        filasCuerpo[1].lastElementChild.textContent = respuestaJSON["ahorro"] + "%";
+        //Total
+        filasCuerpo[2].lastElementChild.textContent = respuestaJSON["precio"] * respuestaJSON["duracion"] + " €";
+        //Comprobamos si este botón tiene ya la clase activa, usamos el métiodo contains porque es de tipo DOMTokenList
+        if(!botonEvento.classList.contains("suscActiva")) {
+            //Buscamos al botón que lo tenga
+            let botonActivo = document.querySelector("button[class='susc suscActiva']");
+            if(botonActivo != null && botonActivo != undefined) {
+                botonActivo.classList.remove("suscActiva");
+            }
+            //Se lo ponemos al botón actual
+            botonEvento.classList.add("suscActiva");
+        }
+
     }
     catch (error){
         console.log(error);
     }
+}
+
+function irSuscripciones() {
+    location.assign("../html/suscripciones.html");
 }

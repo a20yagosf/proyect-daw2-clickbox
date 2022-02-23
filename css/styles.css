@@ -1032,6 +1032,9 @@ ul li.list-group-item .btn-info {
             margin-block-start: 5%;
     font-size: 1.3rem;
   }
+  #suscribirse #recibo table th {
+    font-size: 3em;
+  }
   #suscribirse #recibo button {
     width: 50%;
   }
@@ -1127,6 +1130,9 @@ ul li.list-group-item .btn-info {
 }
 #recibo table td {
   padding: 2% 0%;
+}
+#recibo table td:last-of-type {
+  text-align: center;
 }
 #recibo button {
   display: block;
