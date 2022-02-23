@@ -759,7 +759,7 @@ async function procesarLogin(evento) {
         const resultadoPeticion = await respuestaJSON.json();
         //Comprobamos que no saltara un error
         if(Object.hasOwn(resultadoPeticion, "error")){
-            throw new respuestaJSON["error"];
+            throw respuestaJSON["error"];
         }
         //Guardamos en sesión el usuario y su rol
         sessionStorage.setItem("email", email);
@@ -993,6 +993,122 @@ async function desconectarPerfil(e) {
     }
 }
 
-function cargarDatosPerfil() {
-    //Comprobamos que tenga una 
+async function cargarDatosPerfil() {
+
+}
+
+
+async function cargarSuscripciones() {
+    try {
+        //Nos conectamos a php para pedir todas las duraciones de las suscripciones
+        const respuesta = await fetch("../php/suscripciones.php", {
+            method: "GET"
+        });
+        const respuestaJSON = await respuesta.json();
+        //Comprobamos que no diera error
+        if(Object.hasOwn(respuestaJSON, "error")) {
+            throw respuestaJSON["error"];
+        }
+        //Creamos un button por cada uno de las suscripciones
+        let suscripciones = Object.values(respuestaJSON);
+        let contenedorSuscripciones = document.getElementById("tiposSusc");
+        suscripciones.forEach(suscripcion => {
+            //Creamos el botón
+            let boton = crearBoton("", {"data-id": suscripcion["duracion"], "class": "susc"});
+            //Creamos los p con la duración y mes
+            let parrafo = document.createElement("p");
+            parrafo.textContent = suscripcion["duracion"];
+            let parrafoMes = document.createElement("p");
+            parrafoMes.textContent = "Mes";
+            //Añado ambos al botón
+            boton.append(parrafo, parrafoMes);
+            contenedorSuscripciones.append(boton);
+            //Lo añado al cuerpo
+            //<button type="button" data-id="1" class="susc suscActiva"><p>1</p><p>Mes</p></button>
+            //Le añadimos los listeners
+            boton.addEventListener("click", cargarDatos, true);
+        });
+        //Disparamos el evento comosi pulsaramos el primer botón para que coja sus características
+        document.getElementById("tiposSusc").firstElementChild.dispatchEvent(new Event("click"));
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+
+/**
+ * Manda una petición a php para que cargue la información en la tabla con la suscripción seleccionada (Botón activo)
+ *
+ * @param   {Event}  e  Evento que se disparó
+ *
+ */
+async function cargarDatos(e) {
+    //Botón que lleva el escuchador, usamos currentTarget porque es el elemento que tiene el event listener pegado, pero el que dispara es el hijo (los p) por eso no usamos target
+    let botonEvento = e.currentTarget;
+    //ID de botón que activó el evento, 
+    let duracionSus = botonEvento.dataset.id;
+    try {
+        //Realizamos la petición
+        const respuesta = await fetch("../php/suscripciones.php", {
+            method: "POST",
+            headers: {"Content-type": "application/json;charset=utf-8"},
+            body: JSON.stringify({"duracion": duracionSus})
+        });
+        //Convertimos la respuesta a js
+        const respuestaJSON = await respuesta.json();
+        //Comprobamos que no diera error, si dió error lo mostramos por pantalla
+        if(Object.hasOwn(respuestaJSON, "error")){
+            throw respuestaJSON["error"];
+        }
+        //Ponemos los datos en la tabla
+        //Le cambiamos la cabecera con el número correcto
+        let cabeceraSuscripcion = document.querySelector("th");
+        let meses = respuestaJSON["duracion"]  == 1 ? "mes" : "meses";
+        //Cabecera con X mes
+        cabeceraSuscripcion.textContent =  respuestaJSON["duracion"] + " " + meses;
+        let filasCuerpo = Array.from(document.querySelectorAll("tbody > tr"));
+        //Precio
+        filasCuerpo[0].lastElementChild.textContent = respuestaJSON["precio"] + " €";
+        //Ahorras
+        filasCuerpo[1].lastElementChild.textContent = respuestaJSON["ahorro"] + "%";
+        //Total
+        filasCuerpo[2].lastElementChild.textContent = respuestaJSON["precio"] * respuestaJSON["duracion"] + " €";
+        //Comprobamos si este botón tiene ya la clase activa, usamos el métiodo contains porque es de tipo DOMTokenList
+        if(!botonEvento.classList.contains("suscActiva")) {
+            //Buscamos al botón que lo tenga
+            let botonActivo = document.querySelector("button[class='susc suscActiva']");
+            if(botonActivo != null && botonActivo != undefined) {
+                botonActivo.classList.remove("suscActiva");
+            }
+            //Se lo ponemos al botón actual
+            botonEvento.classList.add("suscActiva");
+        }
+
+    }
+    catch (error){
+        console.log(error);
+    }
+}
+
+/**
+ * Lleva a la página de suscripciones
+ *
+ */
+function irSuscripciones() {
+    location.assign("../html/suscripciones.html");
+}
+
+/**
+ * Lleva a la página de partidas
+ *
+ */
+function irPartidas() {
+    //Comprobamos el rol del usuario (Si no tiene rol es que no esta registrado y no puede acceder a partidas)
+    if(sessionStorage["rol"] != null){
+        location.assign("../html/partidas.html");
+    }
+    else {
+        //Disparamos el evento para que aparezca el login
+        aparecerLogin();
+    }
 }
