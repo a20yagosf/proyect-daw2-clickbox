@@ -13,12 +13,11 @@ INSERT INTO productos
 		VALUES 
 	("Catán", "3-4","40","50"),
 	("Bienvenido a la mazmorra", "2-4","15","25"),
-    ("Código Secreto", "2-8","19","100"),
-    ("Timeline", "2-8","12","80"),
-    ("Patchwork", "2","18","20"),
+  ("Código Secreto", "2-8","19","100"),
+  ("Timeline", "2-8","12","80"),
+  ("Patchwork", "2","18","20"),
     ("Mondrian", "2-4","25","50"),
     ("Osopark", "2-4","27","50"),
-    ("Kitchen rush", "1-4","46","50"),
     ("Torre de gatos", "2-4","18","50"),
     ("Demon Worker", "3-4","28","50"),
     ("Vampiro: La Mascarada 5ª edición", "2-8","40","50"),
@@ -36,12 +35,14 @@ INSERT INTO productos
     ("One key", "2-6","22","50"),
     ("On the origin of species", "2-4","18","50"),
     ("Wingspan", "1-5","27","50"),
-    ("The Magnificient", "1-4","50","50"),
+  ("The Magnificient", "1-4","50","50"),
     ("Cat Café", "2-4","15","50"),
     ("Kitchen rush", "1-4","46","50"),
     -- accesorios
     ("Dado de 20 caras","NO","1","200"),
-    ("Fundas de cartas","NO","5","200")
+    ("Fundas de cartas","NO","5","200");
+COMMIT;
+
 
 INSERT INTO juegos
     (juego) 
@@ -72,7 +73,7 @@ INSERT INTO juegos
     ("24"),
     ("25"),
     ("26"),
-    ("27")
+    ("27");
 
 INSERT INTO accesorios
     (accesorio) 

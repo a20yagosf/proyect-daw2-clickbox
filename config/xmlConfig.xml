@@ -1,19 +1,19 @@
 <?xml-model href="xmlConfig.xsd" type="application/xml" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <configuracion>
     <ip>127.0.0.1</ip>
-    <nombreBD>proyecto_modular</nombreBD>
+    <nombreBD>a2da_clickbox</nombreBD>
     <usuario>
-        <nombre>conexion</nombre>
-        <clave>1234</clave>
+        <nombre>a2da_conexion</nombre>
+        <clave>123456</clave>
         <rol>conexion</rol>
     </usuario>
     <usuario>
-        <nombre>estandar</nombre>
+        <nombre>a2da_estandar</nombre>
         <clave>renaido</clave>
         <rol>estandar</rol>
     </usuario>
     <usuario>
-        <nombre>admin</nombre>
+        <nombre>a2da_admin</nombre>
         <clave>abc123.</clave>
         <rol>admin</rol>
     </usuario>
