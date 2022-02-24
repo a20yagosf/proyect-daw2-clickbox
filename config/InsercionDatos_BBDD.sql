@@ -39,3 +39,11 @@ INSERT INTO roles
 	("Asimétrico"),
 	("Losetas");
 -- Creamos tematicas
+
+-- Creamos unas suscripciones de base
+INSERT INTO suscripciones
+	(DURACION, PRECIO)
+	VALUES
+	(1, 20),
+	(3, 17),
+	(6, 14);
