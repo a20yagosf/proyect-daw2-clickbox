@@ -1,5 +1,5 @@
 -- Le indicamos al script que vamos a usar la bd del proyecto
-USE proyecto_modular;
+USE a2da_clickbox;
 
 -- Como voy a realizar varias operaciones comienzo una transaccion
 START TRANSACTION;
