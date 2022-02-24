@@ -3,17 +3,17 @@
     <ip>127.0.0.1</ip>
     <nombreBD>proyecto_modular</nombreBD>
     <usuario>
-        <nombre>conexion</nombre>
+        <nombre>a2da_conexion</nombre>
         <clave>1234</clave>
         <rol>conexion</rol>
     </usuario>
     <usuario>
-        <nombre>estandar</nombre>
+        <nombre>a2da_estandar</nombre>
         <clave>renaido</clave>
         <rol>estandar</rol>
     </usuario>
     <usuario>
-        <nombre>admin</nombre>
+        <nombre>a2da_admin</nombre>
         <clave>abc123.</clave>
         <rol>admin</rol>
     </usuario>
