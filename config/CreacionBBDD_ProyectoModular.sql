@@ -365,29 +365,29 @@ CREATE TABLE IF NOT EXISTS historico_usuarios (
 
 -- CREACIÓN DE LOS USUARIOS DE LA BD
 -- USUARIO PARA LA CONEXIÓN Y REGISTRO DE USUARIOS
-/*GRANT SELECT, INSERT ON PROYECTO_MODULAR.USUARIOS TO 'a2da_conexion'@'localhost' IDENTIFIED BY '123456';
-GRANT SELECT ON PROYECTO_MODULAR.GENEROS TO 'a2da_conexion'@'localhost';
-GRANT SELECT ON PROYECTO_MODULAR.ROLES TO 'a2da_conexion'@'localhost';
-GRANT SELECT ON PROYECTO_MODULAR.sucripciones TO 'a2da_conexion'@'localhost';
+GRANT SELECT, INSERT ON a2da_clickbox.usuarios TO 'a2da_conexion'@'localhost' IDENTIFIED BY '123456';
+GRANT SELECT ON a2da_clickbox.generos TO 'a2da_conexion'@'localhost';
+GRANT SELECT ON a2da_clickbox.roles TO 'a2da_conexion'@'localhost';
+GRANT SELECT ON a2da_clickbox.suscripciones TO 'a2da_conexion'@'localhost';
 -- USUARIO ESTÁNDAR PARA LOS USUARIOS REGISTRADOS
-GRANT SELECT, UPDATE ON PROYECTO_MODULAR.USUARIOS TO 'a2da_estandar'@'localhost' IDENTIFIED BY 'renaido';
-GRANT SELECT, INSERT ON PROYECTO_MODULAR.PEDIDOS TO 'a2da_estandar'@'localhost';
-GRANT SELECT, INSERT ON PROYECTO_MODULAR.PEDIDOS_productos TO 'a2da_estandar'@'localhost';
-GRANT SELECT, INSERT, UPDATE, DELETE ON PROYECTO_MODULAR.CARRITOS TO 'a2da_estandar'@'localhost';
-GRANT SELECT, INSERT, UPDATE, DELETE ON PROYECTO_MODULAR.productos_CARRITOS TO 'a2da_estandar'@'localhost';
+GRANT SELECT, UPDATE ON a2da_clickbox.usuarios TO 'a2da_estandar'@'localhost' IDENTIFIED BY 'renaido';
+GRANT SELECT, INSERT ON a2da_clickbox.pedidos TO 'a2da_estandar'@'localhost';
+GRANT SELECT, INSERT ON a2da_clickbox.pedidos_productos TO 'a2da_estandar'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.carritos TO 'a2da_estandar'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.productos_carritos TO 'a2da_estandar'@'localhost';
 -- USUARIO ADMINISTRADOR
-GRANT SELECT, UPDATE ON PROYECTO_MODULAR.USUARIOS TO 'a2da_admin'@'localhost' IDENTIFIED BY 'abc123.';
-GRANT SELECT, INSERT ON PROYECTO_MODULAR.PEDIDOS TO 'a2da_admin'@'localhost';
-GRANT SELECT, INSERT ON PROYECTO_MODULAR.PEDIDOS_PRODUCTOS TO 'a2da_admin'@'localhost';
-GRANT SELECT, INSERT ON PROYECTO_MODULAR.CAJAS_SORPRESA TO 'a2da_admin'@'localhost';
-GRANT SELECT, INSERT ON PROYECTO_MODULAR.CAJAS_SORPRESA_PRODUCTOS TO 'a2da_admin'@'localhost';
-GRANT SELECT, INSERT, UPDATE, DELETE ON PROYECTO_MODULAR.CARRITOS TO 'a2da_admin'@'localhost';
-GRANT SELECT, INSERT, UPDATE, DELETE ON PROYECTO_MODULAR.PRODUCTOS_CARRITOS TO 'a2da_admin'@'localhost';
-GRANT SELECT, INSERT, UPDATE ON PROYECTO_MODULAR.USUARIOS_PARTIDAS TO 'a2da_admin'@'localhost';
-GRANT SELECT, INSERT, UPDATE ON PROYECTO_MODULAR.PRODUCTOS TO 'a2da_admin'@'localhost';
-GRANT SELECT, INSERT, UPDATE ON PROYECTO_MODULAR.PARTIDAS TO 'a2da_admin'@'localhost';
-GRANT SELECT, INSERT ON PROYECTO_MODULAR.TEMATICAS TO 'a2da_admin'@'localhost';
-GRANT SELECT, INSERT ON PROYECTO_MODULAR.GENEROS TO 'a2da_admin'@'localhost'; */
+GRANT SELECT, UPDATE ON a2da_clickbox.usuarios TO 'a2da_admin'@'localhost' IDENTIFIED BY 'abc123.';
+GRANT SELECT, INSERT ON a2da_clickbox.pedidos TO 'a2da_admin'@'localhost';
+GRANT SELECT, INSERT ON a2da_clickbox.pedidos_productos TO 'a2da_admin'@'localhost';
+GRANT SELECT, INSERT ON a2da_clickbox.cajas_sorpresa TO 'a2da_admin'@'localhost';
+GRANT SELECT, INSERT ON a2da_clickbox.cajas_sorpresa_producto TO 'a2da_admin'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.carritos TO 'a2da_admin'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.productos_carritos TO 'a2da_admin'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON a2da_clickbox.usuarios_partidas TO 'a2da_admin'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON a2da_clickbox.productos TO 'a2da_admin'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON a2da_clickbox.partidas TO 'a2da_admin'@'localhost';
+GRANT SELECT, INSERT ON a2da_clickbox.tematicas TO 'a2da_admin'@'localhost';
+GRANT SELECT, INSERT ON a2da_clickbox.generos TO 'a2da_admin'@'localhost';
 
 -- DISPARADORES
 DELIMITER $$
@@ -492,4 +492,4 @@ CREATE EVENT IF NOT EXISTS actualizar_suscripciones
 		CALL actualizar_suscripciones()$$
 	
 -- Activamos el evento	
--- SET GLOBAL event_scheduler=ON$$
+SET GLOBAL event_scheduler=ON$$
