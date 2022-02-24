@@ -8,8 +8,8 @@ START TRANSACTION;
 -- NOTA: En un futuro se debe añadir descripciones a cada juego.
 -- (NOMBRE, NUM_JUG, PRECIO, STOCK, DESCRIPCION, TEMATICA) 
 -- NOTA: CAMBIAR EL FILTRO DE NUM JUGADORES EN LA TIENDA HASTA 2 JUGADORES - HASTA 4 JUGADORES - HASTA MÁS DE 4
-INSERT INTO PRODUCTOS
-	(NOMBRE, NUM_JUG, PRECIO, STOCK) 
+INSERT INTO productos
+	(nombre, num_jug, precio, stock) 
 		VALUES 
 	("Catán", "3-4","40","50"),
 	("Bienvenido a la mazmorra", "2-4","15","25"),
@@ -43,8 +43,8 @@ INSERT INTO PRODUCTOS
     ("Dado de 20 caras","NO","1","200"),
     ("Fundas de cartas","NO","5","200")
 
-INSERT INTO JUEGOS
-    (JUEGO) 
+INSERT INTO juegos
+    (juego) 
 		VALUES
     ("1"),
     ("2"),
@@ -74,10 +74,10 @@ INSERT INTO JUEGOS
     ("26"),
     ("27")
 
-INSERT INTO ACCESORIOS
-    (ACCESORIO) 
+INSERT INTO accesorios
+    (accesorio) 
 		VALUES
     ("28"),
     ("29")
-
+    
 COMMIT;
