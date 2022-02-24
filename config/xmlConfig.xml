@@ -4,7 +4,7 @@
     <nombreBD>proyecto_modular</nombreBD>
     <usuario>
         <nombre>a2da_conexion</nombre>
-        <clave>1234</clave>
+        <clave>123456</clave>
         <rol>conexion</rol>
     </usuario>
     <usuario>
