@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS accesorios (
 	accesorio INT UNSIGNED NOT NULL,
 	/** KEY Y CONSTRAINS **/
 	PRIMARY KEY (accesorio),
-	FOREIGN KEY (accesorio) REFERENCES producto (id_producto)
+	FOREIGN KEY (accesorio) REFERENCES productos (id_producto)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 ) ENGINE = INNODB;
@@ -73,8 +73,8 @@ CREATE TABLE IF NOT EXISTS accesorios (
 -- ---------------------------------------------------
 --				TABLA PRODUCTO_GENERO
 -- ---------------------------------------------------
-DROP TABLE IF EXISTS productos_GENEROS;
-CREATE TABLE IF NOT EXISTS productos_GENEROS (
+DROP TABLE IF EXISTS productos_generos;
+CREATE TABLE IF NOT EXISTS productos_generos (
 	id_producto_genero INT UNSIGNED AUTO_INCREMENT NOT NULL,
 	producto INT UNSIGNED NOT NULL,
 	genero VARCHAR(150) NOT NULL,
@@ -91,8 +91,8 @@ CREATE TABLE IF NOT EXISTS productos_GENEROS (
 -- ---------------------------------------------------
 --				TABLA SUSCRIPCION
 -- ---------------------------------------------------
-DROP TABLE IF EXISTS sucripciones;
-CREATE TABLE IF NOT EXISTS sucripciones (
+DROP TABLE IF EXISTS suscripciones;
+CREATE TABLE IF NOT EXISTS suscripciones (
 	duracion TINYINT NOT NULL,
 	precio FLOAT NOT NULL,
 	
@@ -103,8 +103,8 @@ CREATE TABLE IF NOT EXISTS sucripciones (
 -- ---------------------------------------------------
 --				TABLA ROlES
 -- ---------------------------------------------------
-DROP TABLE IF EXISTS duracion;
-CREATE TABLE IF NOT EXISTS duracion (
+DROP TABLE IF EXISTS roles;
+CREATE TABLE IF NOT EXISTS roles (
 	id_rol INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	nombre_rol VARCHAR(50) NOT NULL,
 	descripcion VARCHAR(150) NULL,
@@ -141,10 +141,10 @@ CREATE TABLE IF NOT EXISTS usuarios (
    FOREIGN KEY (rol) REFERENCES roles (id_rol)
    	ON DELETE RESTRICT
    	ON UPDATE CASCADE,
-   FOREIGN KEY (genero_favorito) REFERENCES generos (NOMBRE_GENERO)
+   FOREIGN KEY (genero_favorito) REFERENCES generos (nombre_genero)
    	ON DELETE SET NULL
    	ON UPDATE CASCADE,
-   FOREIGN KEY (suscripcion) REFERENCES sucripciones (DURACION)
+   FOREIGN KEY (suscripcion) REFERENCES suscripciones (duracion)
    	ON DELETE SET NULL
    	ON UPDATE CASCADE
 ) ENGINE = INNODB;
@@ -175,7 +175,7 @@ CREATE TABLE IF NOT EXISTS productos_carritos (
 	unidades SMALLINT UNSIGNED NOT NULL,
 	-- KEYS Y CONSTRAINS 
 	PRIMARY KEY (id_producto_carrito),
-	FOREIGN KEY (carrito) REFERENCES carrito (id_carrito)
+	FOREIGN KEY (carrito) REFERENCES carritos (id_carrito)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
 	FOREIGN KEY (producto) REFERENCES productos (id_producto)
@@ -415,7 +415,7 @@ CREATE TRIGGER comprobar_suscripcion BEFORE INSERT ON cajas_sorpresa_usuarios
 		END$$
 		
 -- DISPARADOR QUE AÑADE UNA FILA AL HISTORICO CON LOS DATOS ANTIGUOS
-DROP TRIGGER IF EXISTS historico_usuarios$
+DROP TRIGGER IF EXISTS historico_usuarios$$
 CREATE TRIGGER IF NOT EXISTS historico_usuarios BEFORE UPDATE ON usuarios
 FOR EACH ROW
 	BEGIN
@@ -477,19 +477,19 @@ BEGIN
 END$$
 
 -- PROCEDIMIENTO QUE VUELCA LA INFORMACIÓN EN HISTORICO_USUARIO Y DESPUES HACE LOS CAMPOS NECESARIOS
-DROP PROCEDURE IF EXISTS update_usuario$
+DROP PROCEDURE IF EXISTS update_usuario$$
 CREATE PROCEDURE IF NOT EXISTS update_usuario ()
 		
 -- EVENTOS
 -- EVENTO QUE CADA DÍA ACTUALIZA LAS SUSCRIPCIONES SI YA SE PASARON DE FECHA (SI TIENE RENOVAR LE AÑADE EL TIEMPO Y SI NÓ LE BORRA LA SUSCRIPCIÓN)
-DROP EVENT IF EXISTS actualizar_suscripciones$
+DROP EVENT IF EXISTS actualizar_suscripciones$$
 CREATE EVENT IF NOT EXISTS actualizar_suscripciones
 	-- LE DECIMOS QUE HAGA EL EVENTO CADA DÍA A LAS 4 DE LA MAÑANA
 	ON SCHEDULE EVERY 1 DAY
 	STARTS (TIMESTAMP(NOW()) + INTERVAL 1 DAY + INTERVAL 4 HOUR)
 	DO 
 		-- LLAMAMOS AL PROCEDIMIENTO PARA ACTUALIZAR LAS SUSCRIPCIONES, LO HACEMOS DE ESTA FORMA YA QUE ES ALGO RUTINARIO, ASÍ SE EJECUTA MÁS RÁPIDO Y ADEMÁS ES UNA TRANSACCIÓN
-		CALL actualizar_suscripciones()$
+		CALL actualizar_suscripciones()$$
 	
 -- Activamos el evento	
 -- SET GLOBAL event_scheduler=ON$$

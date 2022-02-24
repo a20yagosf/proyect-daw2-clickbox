@@ -2,16 +2,16 @@
 USE a2da_clickbox ;
 
 -- Creamos los roles
-INSERT INTO ROLES 
-	(NOMBRE_ROL, DESCRIPCION) 
+INSERT INTO roles 
+	(nombre_rol, descripcion) 
 		VALUES 
 	("a2da_admin", "USUARIOS CON PODER PARA AÑADIR Y/O MODIFICAR PRODUCTOS Y SERVICIOS"),
 	("a2da_estandar", "USUARIO REGISTRADO"),
 	("a2da_conexion", "USUARIO ANÓNIMO");
 	
 -- Creamos los tipos de géneros
-	INSERT INTO GENEROS
-    (NOMBRE_GENERO)
+	INSERT INTO generos
+    (nombre_genero)
         VALUES
     ("Competitivo"),
     ("Estrategia"),
