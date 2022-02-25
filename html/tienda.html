@@ -19,8 +19,11 @@
             <p>Filtrar por:</p>
             <div id="lista_traits">
               <label for="generos" id="form_generos">Géneros:</label>
-              <label for="jugadores" id="form_jugadores"
-                >Nº de Jugadores:</label
+              <label for="min_jugadores" id="form_min_jugadores"
+                >Mínimo de jugadores:</label
+              >
+              <label for="max_jugadores" id="form_max_jugadores"
+                >Máximo de jugadores:</label
               >
               <!-- Las opciones deberían poder generarse desde php consultando los géneros disponibles actualmente-->
               <select name="generos" id="generos" multiple>
@@ -30,10 +33,20 @@
                 <option value="versus">Versus</option>
               </select>
               <!-- Recordar que nº de jugadores es un varchar(4) en la bd-->
-              <select name="jugadores" id="jugadores" multiple>
-                <option value="un_jugador">1</option>
-                <option value="dos_jugadores">2</option>
-                <option value="x_jugadores">3 o más</option>
+              <!-- Nº jugadores será finalmente dos selects -->
+              <select name="min_jugadores" id="min_jugadores" multiple>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+              <select name="max_jugadores" id="max_jugadores" multiple>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="2">5</option>
+                <option value="3">6</option>
+                <option value="4">7</option>
+                <option value="2">8</option>
               </select>
             </div>
           </div>

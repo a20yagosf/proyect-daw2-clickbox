@@ -244,11 +244,11 @@ main {
 
     //Imagen que se muestra justo antes de suscripciones
     &:before {
-        @include imagenPattern(url("../img/SuscDesignTop.svg"), -99%, 0%, bottom);
+        @include imagenPattern(url("../img/mosaicoDisenho/SuscDesignTop.svg"), -99%, 0%, bottom);
     }
 
     &:after {
-        @include imagenPattern(url("../img/SuscDesignBottom.svg"),99%, 0%, top);
+        @include imagenPattern(url("../img/mosaicoDisenho/SuscDesignBottom.svg"),99%, 0%, top);
     }
 
     & > button:last-of-type {
@@ -538,7 +538,7 @@ main {
 
     //Imagen de antes del contenedor
     &:before {
-        @include imagenPattern(url("../img/tiendaDesignTop.svg"), -99.5%, 0%, bottom);
+        @include imagenPattern(url("../img/mosaicoDisenho/tiendaDesignTop.svg"), -99.5%, 0%, bottom);
     }
 
     h2 {
@@ -704,7 +704,7 @@ main {
 
 //Main donde irá el mosaico a repetir, hacemos que cubra todo en X y se repita en Y
 .cuerpoMosaico {
-    background-image: url("../img/mosaico2.svg");
+    background-image: url("../img/mosaicoDisenho/mosaico.svg");
     background-size: cover;
     background-repeat: repeat-y;
 

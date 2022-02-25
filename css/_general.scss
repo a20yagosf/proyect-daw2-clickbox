@@ -65,6 +65,7 @@
   z-index: -1;
 }
 
+/// Mixin para cada uno de los input o select del formulario para tener un diseño predefinido
 @mixin inputFormulario(){
   //Posición
   margin: 2% 0%;

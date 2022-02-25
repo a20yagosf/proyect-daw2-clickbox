@@ -1,6 +1,9 @@
 main#partidas-main{
   padding: 3%;
 }
+#info_partidas, #filtro, #result_panel, .pagination {
+    margin: 3%;
+  }
 
 .list-group {
   max-height: 300px;
@@ -14,6 +17,7 @@ main#partidas-main{
   background-color: $colorPrincipal !important;
   border-color: $colorPrincipal !important;
 }
+
 #result_panel {
   border-radius: $borderRadius $borderRadius 0px 0px;
   .panel-heading {
@@ -65,11 +69,13 @@ ul.list-group {
 ul li.list-group-item {
   display: flex;
   padding: 5%;
+
   div.image {
     img {
       width: 70%;
     }
   }
+
   div.info {
     width: 30%;
     display: flex !important;
@@ -80,6 +86,7 @@ ul li.list-group-item {
     padding: 0;
     font-size: 1.2rem;
   }
+
   .btn-info {
     color: white;
   }
@@ -88,8 +95,11 @@ ul li.list-group-item {
 .panel-primary {
   max-height: 1000px !important;
 }
+
+
 .list-group {
   max-height: 800px !important;
+  border: 1px solid rgba(0,0,0,.125);
 }
 
 // Usando la base ofrecida por w3schools en paginación hemos adaptado nuestras necesidades a sus modelos
