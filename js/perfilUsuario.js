@@ -10,4 +10,6 @@ window.onload = function () {
     document.getElementById("editarCuenta").addEventListener("click", editarPerfil);
     //Creamos el mapa
     crearMapa();
+    // Cargamos los datos del usuario
+    cargarDatosPerfil();
 };
