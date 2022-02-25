@@ -129,3 +129,18 @@ ul li.list-group-item {
 .pagination a:hover:not(.active) {
   background-color: #ddd;
 }
+
+// Para adaptar el formulario a las versiones portátiles
+// vamos a cambiar la disposición de algunos elementos
+
+@media (max-width:1100px)  {
+  #form_partidas{
+    flex-direction: column !important;
+  }
+  
+}
+@media (max-width:750px)  {
+  #filtro_fechas{
+    flex-direction: column;
+  }
+}

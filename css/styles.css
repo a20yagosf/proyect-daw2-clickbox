@@ -980,6 +980,16 @@ ul li.list-group-item .btn-info {
   background-color: #ddd;
 }
 
+@media (max-width: 1100px) {
+  #form_partidas {
+    flex-direction: column !important;
+  }
+}
+@media (max-width: 750px) {
+  #filtro_fechas {
+    flex-direction: column;
+  }
+}
 #suscribirse {
   width: 100%;
   height: 100%;
