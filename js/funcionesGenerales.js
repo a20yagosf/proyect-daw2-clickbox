@@ -621,7 +621,7 @@ function crearAcordeonDatosCuenta() {
     selectFavGen.append(opcionDefault);
 
     //Creamos todos los option del select
-    crearOptionGenerosFav(selectFavGen);
+    crearOptionGeneros(selectFavGen);
 
     //Array con todos los inputs
     let inputs = [inputEmail, inputClave, inputClaveRep, inputImagen, selectFavGen];
@@ -942,7 +942,7 @@ async function limpiarTodosCamposForm(archivo) {
  * @param   {DOMElement}  selectAnhadir  Select donde irán las opciones
  *
  */
-async function crearOptionGenerosFav(selectAnhadir){
+async function crearOptionGeneros(selectAnhadir){
     //Nos conectamos con el servidor para pedirle los géneros, como no envíamos datos y no devuelve datos comprometidos sólo especificamos el método
     const respuestaJSON = await fetch("../php/registro.php", {
         method: "GET",
@@ -1003,7 +1003,7 @@ async function cargarDatosPerfil() {
     // email está almacenado en sessionStorage
     const respuesta = await fetch("../php/perfil_usuario.php",{
         method: "POST", 
-        headers: "application/json;charset=UTF-8",
+        headers: {"Content-type": "application/json;charset=UTF-8"},
         body: JSON.stringify({
             "email":sessionStorage.getItem("email") 
         })
@@ -1037,9 +1037,9 @@ async function cargarDatosPerfil() {
 
 
     // Modificamos la variable dirección y le quitamos el atributo readonly
-    document.getElementById("dirección").removeAttribute("readonly");
+    document.getElementById("direccion").removeAttribute("readonly");
     // Recuperamos la dirección
-    document.getElementById("dirección").value = respuesta_json['dirección'];
+    document.getElementById("direccion").value = respuesta_json['direccion'];
 }
 catch(error){
     console.log(error); // Mensaje para mostrar el error   

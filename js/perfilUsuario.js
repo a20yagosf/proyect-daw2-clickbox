@@ -10,6 +10,8 @@ window.onload = function () {
     document.getElementById("editarCuenta").addEventListener("click", editarPerfil);
     //Creamos el mapa
     crearMapa();
+    //Cargamos los options del genero favorito
+    crearOptionGeneros(document.querySelector("select"));
     // Cargamos los datos del usuario
     cargarDatosPerfil();
 };

@@ -14,7 +14,7 @@ try {
     //Creamos una sentencia que nos devuelva los datos de un usuario del que sabemos su email
     $sentencia = "SELECT nombre, apellidos, telefono, direccion, genero_favorito FROM usuarios WHERE email = ?";
     //Devolvemos lo que nos devuelve (Error o los datos del usuario)
-    $resultado = $this->recuperDatosBD($sentencia, [$contenido_js_en_php["email"]]); //le pasamos el email y la sentencia
+    $resultado = $bd->recuperDatosBD($sentencia, [$contenido_js_en_php["email"]]); //le pasamos el email y la sentencia
     if (!$resultado instanceof PDOStatement) {
         throw new \Exception($resultado);
     }
