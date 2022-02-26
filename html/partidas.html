@@ -6,7 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="../css/styles.css" />
     <script src="../js/funcionesGenerales.js"></script>
     <script src="../js/partidas.js"></script>
   </head>
@@ -32,32 +31,25 @@
           <!-- Un select que muestra las temáticas, debería cargarlas por php 
             ya que se podrían incluir nuevas temáticas en el futuro-->
           <div id="filtro_tema" class="align-self-center d-flex flex-column">
-            <select class="formulario-tema form-select-lg form-select-block">
+            <select name="genero" id="genero" class="formulario-tema form-select-lg form-select-block">
               <!-- El value debería ser el nombre de la temática-->
-              <option selected>Todos</option>
-              <option value="piratas">Aventura</option>
-              <option value="fantasia">Fantasía</option>
-              <option value="cifi">Ciencia Ficción</option>
-              <option value="deportes">Misterio</option>
+              <option selected value="">Todos</option>
             </select>
-            <span class="form-label align-self-center"
-              >Géneros</span
-            >
+            <span class="form-label align-self-center">Géneros</span>
           </div>
           <div id="filtro_fechas" class="d-flex align-self-center">
             <div class="fecha-inicial d-flex flex-column">
-              <input class="form-control" type="date" required />
+              <input class="form-control" type="date" name="fechaIni" id="fechaIni" required />
               <span class="form-label align-self-center">Fecha inicial</span>
             </div>
             <div class="fecha-limite d-flex flex-column">
-              <input class="form-control" type="date" required />
+              <input class="form-control" type="date" name="fechaFin" id="fechaFin" required />
               <span class="form-label align-self-center">Fecha límite</span>
             </div>
           </div>
           <button
             type="button"
-            class="btn btn-primary btn-lg btn-block align-self-center"
-          >
+            class="btn btn-primary btn-lg btn-block align-self-center">
             Filtrar
           </button>
         </form>

@@ -160,6 +160,40 @@ class Bd {
     }
 
     /**
+     * Ejecuta y prepara la sentencia que le pasamos, se usa para sentencias que necesitan números como parámetros
+     *
+     * @param   string  $sentencia  Sentencia a ejecutar
+     * @param   array  $datos      Datos a añadir como parámetros
+     *
+     * @return  mixed                  Devuelve un PDOSTamente o false en caso de error
+     */
+    public function recuperarDatosBDNum($sentencia, $datos = []) {
+        try {
+            //Creo la conexión
+            $pdo = $this->conectarBD();
+            //Ejecutamos la sentencia
+            $pdoStatement = $pdo->prepare($sentencia);
+            //Cargamos los parámetros
+            $this->asignarValoresParam($datos, $pdoStatement);
+            //Ejecutamos y asignamos las variables a la vez
+            $resultado = $pdoStatement->execute();
+            if(!$resultado){
+                throw new \PDOException($pdoStatement->errorInfo()[2]);
+            }
+            //Devolvemos el $pdoStatement para poder hacer fetch con él
+            $resultado = $pdoStatement;
+        }
+        //Ambos try catch devuelve el error para mostrarlo por pantalla y poder solucionarlo, cuando lo acabemos quitaremos la muestra de los errores, esto es sólo para desarrollo
+        catch(\PDOException $pdoError) {
+            $resultado = "Error " . $pdoError->getCode() . ": " . $pdoError->getMessage();
+        }
+        catch(\Exception $error) {
+            $resultado = "Error " . $error->getCode() . ": "  . $error->getMessage();
+        }
+        return $resultado;
+    }
+
+    /**
      * Registra al usuario en la BD
      *
      * @param   array  $datosUsuario  Todos los datos a insertal del usuario
@@ -219,6 +253,22 @@ class Bd {
             $resultado = "Error " . $error->getCode() . ": " . $error->getMessage();
         }
         return $resultado;
+    }
+
+    private function asignarValoresParam($valores, $pdoStatement) {
+        //Asignamos los valores
+        foreach($valores as $indice => $valor){
+            if(is_array($valor)){
+                $this->asignarValoresParam($valor, $pdoStatement);
+            }
+            else {
+                $dato = is_string($valor) ? \PDO::PARAM_STR : \PDO::PARAM_INT;
+                $pdoStatement->bindParam((":" . $indice),$valor,$dato);
+            }
+            //Eliminamos las variables porque sino la segunda sentencia que añade se lía
+            unset($indice);
+            unset($valor);
+        }
     }
 
     public function loginUsuario($datosUsuario) {

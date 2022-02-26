@@ -621,7 +621,7 @@ function crearAcordeonDatosCuenta() {
     selectFavGen.append(opcionDefault);
 
     //Creamos todos los option del select
-    crearOptionGenerosFav(selectFavGen);
+    crearOptionGeneros(selectFavGen);
 
     //Array con todos los inputs
     let inputs = [inputEmail, inputClave, inputClaveRep, inputImagen, selectFavGen];
@@ -942,7 +942,7 @@ async function limpiarTodosCamposForm(archivo) {
  * @param   {DOMElement}  selectAnhadir  Select donde irán las opciones
  *
  */
-async function crearOptionGenerosFav(selectAnhadir){
+async function crearOptionGeneros(selectAnhadir){
     //Nos conectamos con el servidor para pedirle los géneros, como no envíamos datos y no devuelve datos comprometidos sólo especificamos el método
     const respuestaJSON = await fetch("../php/registro.php", {
         method: "GET",
@@ -1112,3 +1112,145 @@ function irPartidas() {
         aparecerLogin();
     }
 }
+
+/**
+ * Carga las partidas según el filtro que se le pase
+ *
+ * @param   {Object}  filtro  Filtro de tipo {clave: valor}
+ *
+ */
+async function cargarPartidas(filtro = {}) {
+    //Limpiamos el contenedor de las partidas
+    let lista = document.querySelector("ul[class='list-group']");
+    lista.innerHTML = "";
+    //LE añado al filtro la página y el limite
+    filtro["pagina"] = 0;
+    filtro["limite"] = 7;
+    try {
+         //Hacemos la petición
+         const respuesta = await fetch("../php/partidas.php", {
+             method: "POST",
+             headers: {"Content-type": "application/json; charset=utf-8"},
+             body: JSON.stringify(filtro)
+         });
+         //Convertimos la respues ta json
+         const respuestaJSON = await respuesta.json();
+         //Compruebo si dió error
+         if(Object.hasOwn(respuestaJSON, "error")){
+             throw respuestaJSON["error"];
+         }
+         //Limpiamos la lista
+         lista.innerHTML = "";
+         //Cargo cada uno de los li
+         crearIndiceLi(respuestaJSON["num_pag"]);
+         //Cargo los datos de las partidas
+         respuestaJSON["tuplas"].forEach(dato => {
+             lista.append(crearContenedorPartida(dato));
+         });
+    }
+    catch(error) {
+         console.log(error);
+    }
+ }
+
+ /**
+  * Crea un contenedor para una partida con los datos que le pasamos
+  *
+  * @param   {Object}  datosPartida  Tipo {"clave": valor}
+  *
+  * @return  {DOMElement}                Elemento li con los datos de la partida
+  */
+ function crearContenedorPartida(datosPartida) {
+     //Creamos un elemento de la lista
+     let elemLista = crearContenedor("li", {"class": "list-group-item"});
+     //Creamos el contenedor de la imagne
+     let contenedorImagen = crearContenedor("div", {"class": "imagen"});
+     //Creamos la imagen
+     let imagen = crearImg({"src": datosPartida["imagen_partida"]});
+     contenedorImagen.append(imagen);
+     //Creamos el contenedor de la información
+     let contenedorInfo = crearContenedor("div", {"class": "info"});
+     //Creamos un span por cada característica
+     //Juego
+     let juegoPartida = crearContenedor("span", {}, "Juego: " + datosPartida["nombre"]);
+     //Género
+     let generoPartida= crearContenedor("span", {}, "Genero: " + datosPartida["genero"]);
+     //Le damos formato al día
+     let fecha = new Date(datosPartida["fecha"]);
+     let dia = (fecha.getDate() > 9 ? fecha.getDate() : "0" + fecha.getDate());
+     let mes = fecha.getMonth() + 1 > 12 ? 1 : fecha.getMonth() + 1;
+     //Día
+     let diaPartida = crearContenedor("span", {}, "Fecha: " + dia + "-" + (mes > 9 ?mes : "0" + mes) + "-" + fecha.getFullYear());
+     //Hora
+     let horaPartida = crearContenedor("span", {}, "Hora de inicio: " + datosPartida["hora_inicio"]);
+     //Creamos los botones
+     let botonInfo = crearBoton("Información", {"type": "button", "class": "btn btn-lg btn-info"});
+     let botonReservar = crearBoton("¡Reservar!", {"type": "button", "class": "btn btn-lg btn-success"});
+     //Añadimos todo al contenedor de información
+     contenedorInfo.append(juegoPartida, generoPartida, diaPartida, horaPartida, botonInfo, botonReservar);
+     //Añadimos al elemento de la lista
+     elemLista.append(contenedorImagen, contenedorInfo);
+     return elemLista;
+ }
+
+ /**
+  * Carga las partidas con los filtros que le pusimos
+  *
+  */
+ function filtarPartidas() {
+     //Cojo los valores de los input
+     let generos = Array.from(document.querySelectorAll("option[selected]"));
+     filtros = {};
+     if(generos.length > 0){
+        filtros["genero"] = generos.map(generoActual => generoActual.value).filter(elemento => elemento != "");
+        //Quitamos el valor vacío
+     }
+     let fechaIni = document.getElementById("fechaIni").value;
+     if(fechaIni != "") {
+        filtros["fechaIni"] = fechaIni;
+     }
+     let fechaFin = document.getElementById("fechaFin").value;
+     if(fechaFin != "") {
+        filtros["fechaFin"] = fechaFin;
+     }
+     cargarPartidas(filtros);
+ }
+ 
+ /**
+  * Crea los Li con cada uno de los números
+  *
+  * @param   {int}  numero  Número de páginas
+  *
+  */
+function crearIndiceLi(numero) {
+    let contendorPaginacion = document.getElementsByClassName("pagination")[0];
+    //Lo limpiamos
+    contendorPaginacion.innerHTML = "";
+    let lista = document.createElement("ul");
+    for (let i = 1; i <= numero; i++){
+        let contenedorLi = document.createElement("li");
+        let enlace = crearEnlace("#", i);
+        contenedorLi.append(enlace);
+        //Lo añadimos al ul
+        lista.append(contenedorLi);
+    }
+    //Añadimos la lista a la paginación
+    contendorPaginacion.append(lista);
+}
+
+ /**
+  * Crea un contenedor del tipo que le pasamos con los atributos y texto que le pasamos
+  *
+  * @param   {string}  tipoContenedor  Tipo del contenedor (span, div, li, etc..)
+  * @param   {Object}  atributos       Atributos del contenedor de tipo {clave: valor} (puede no tener)
+  * @param   {string} texto              Texto que contendrá el contendor (puede estar vacio)
+  *
+  * @return  {DOMElement}                  Contenedor
+ */
+ function crearContenedor(tipoContenedor, atributos = {}, texto = "") {
+     let contenedor = document.createElement(tipoContenedor);
+     //Le asignamos los atributos
+     Object.entries(atributos).forEach(atributo => contenedor.setAttribute(atributo[0], atributo[1]));
+     contenedor.textContent = texto;
+     return contenedor;
+ } 

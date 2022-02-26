@@ -929,6 +929,7 @@ ul.list-group {
 ul li.list-group-item {
   display: flex;
   padding: 5%;
+  justify-content: space-between;
 }
 ul li.list-group-item div.image img {
   width: 70%;

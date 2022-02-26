@@ -31,8 +31,6 @@ CREATE TABLE IF NOT EXISTS productos (
    nombre VARCHAR(125) NOT NULL,
    stock INT UNSIGNED NOT NULL,
    precio FLOAT NOT NULL,
-   num_jug VARCHAR(4) NOT NULL,
-   descripcion VARCHAR(255) NULL,
    imagen_producto	VARCHAR(255) NOT NULL,
    -- RELACIONES 
    tematica VARCHAR(150) NULL,
@@ -50,10 +48,16 @@ CREATE TABLE IF NOT EXISTS productos (
 DROP TABLE IF EXISTS juegos;
 CREATE TABLE IF NOT EXISTS juegos (
 	juego INT UNSIGNED NOT NULL,
+	num_jug VARCHAR(4) NOT NULL,
+    descripcion VARCHAR(255) NULL,
+	genero VARCHAR(150) NOT NULL,
 	/** KEY Y CONSTRAINS **/
 	PRIMARY KEY (juego),
 	FOREIGN KEY (juego) REFERENCES productos (id_producto)
 		ON DELETE CASCADE
+		ON UPDATE CASCADE,
+	FOREIGN KEY (genero) REFERENCES generos (nombre_genero)
+		ON DELETE RESTRICT
 		ON UPDATE CASCADE
 ) ENGINE = INNODB;
 
@@ -131,7 +135,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
    imagen_perfil VARCHAR(255) NOT NULL,
    -- GENERO_FAVORITO  ENUM("Detectives","Estrategia","Guerra","Miedo","Puzzles","Cooperativos", "Individual","Competitivo") NULL,
    -- RELACIONES 
-   rol INT UNSIGNED NOT NULL DEFAULT 3,
+   rol INT UNSIGNED NOT NULL DEFAULT 2,
    genero_favorito VARCHAR(150) NULL,
    suscripcion TINYINT NULL,
    renovar BOOLEAN NULL,
@@ -292,6 +296,7 @@ CREATE TABLE IF NOT EXISTS partidas (
    fecha DATE NOT NULL,
    hora_inicio TIME(0) NOT NULL,
    duracion SMALLINT NOT NULL,
+   imagen_partida VARCHAR(250) NOT NULL,
    -- RELACIONES 
    director_partida VARCHAR(150) NOT NULL,
    juego_partida INT UNSIGNED NOT NULL,
@@ -373,6 +378,13 @@ GRANT SELECT ON a2da_clickbox.suscripciones TO 'a2da_conexion'@'localhost';
 GRANT SELECT, UPDATE ON a2da_clickbox.usuarios TO 'a2da_estandar'@'localhost' IDENTIFIED BY 'renaido';
 GRANT SELECT, INSERT ON a2da_clickbox.pedidos TO 'a2da_estandar'@'localhost';
 GRANT SELECT, INSERT ON a2da_clickbox.pedidos_productos TO 'a2da_estandar'@'localhost';
+GRANT SELECT ON a2da_clickbox.partidas TO 'a2da_estandar'@'localhost';
+GRANT SELECT ON a2da_clickbox.generos TO 'a2da_estandar'@'localhost';
+GRANT SELECT ON a2da_clickbox.productos TO 'a2da_estandar'@'localhost';
+GRANT SELECT ON a2da_clickbox.juegos TO 'a2da_estandar'@'localhost';
+GRANT SELECT ON a2da_clickbox.accesorios TO 'a2da_estandar'@'localhost';
+GRANT SELECT ON a2da_clickbox.roles TO 'a2da_estandar'@'localhost';
+GRANT SELECT ON a2da_clickbox.suscripciones TO 'a2da_estandar'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.carritos TO 'a2da_estandar'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.productos_carritos TO 'a2da_estandar'@'localhost';
 -- USUARIO ADMINISTRADOR
@@ -386,6 +398,9 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.productos_carritos TO 'a2d
 GRANT SELECT, INSERT, UPDATE ON a2da_clickbox.usuarios_partidas TO 'a2da_admin'@'localhost';
 GRANT SELECT, INSERT, UPDATE ON a2da_clickbox.productos TO 'a2da_admin'@'localhost';
 GRANT SELECT, INSERT, UPDATE ON a2da_clickbox.partidas TO 'a2da_admin'@'localhost';
+GRANT SELECT ON a2da_clickbox.juegos TO 'a2da_admin'@'localhost';
+GRANT SELECT ON a2da_clickbox.accesorios TO 'a2da_admin'@'localhost';
+GRANT SELECT ON a2da_clickbox.roles TO 'a2da_admin'@'localhost';
 GRANT SELECT, INSERT ON a2da_clickbox.tematicas TO 'a2da_admin'@'localhost';
 GRANT SELECT, INSERT ON a2da_clickbox.generos TO 'a2da_admin'@'localhost';
 
