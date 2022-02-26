@@ -131,6 +131,13 @@ ul li.list-group-item {
   background-color: #ddd;
 }
 
+// Dado que los dropdowns vienen de un script externo modificaremos
+// su tamaño sobreescribiendo el valor
+  .multiselect-dropdown {
+  width: 80% !important;
+  font-size: small;
+}
+
 // Para adaptar el formulario a las versiones portátiles
 // vamos a cambiar la disposición de algunos elementos
 

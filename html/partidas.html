@@ -31,9 +31,8 @@
           <!-- Un select que muestra las temáticas, debería cargarlas por php 
             ya que se podrían incluir nuevas temáticas en el futuro-->
           <div id="filtro_tema" class="align-self-center d-flex flex-column">
-            <select name="genero" id="genero" class="formulario-tema form-select-lg form-select-block">
-              <!-- El value debería ser el nombre de la temática-->
-              <option selected value="">Todos</option>
+            <!-- Las opciones deberían poder generarse desde php consultando los géneros disponibles actualmente-->
+            <select name="generos" id="generos" multiple>
             </select>
             <span class="form-label align-self-center">Géneros</span>
           </div>
@@ -167,5 +166,7 @@
         </ul>
       </div>
     </main>
+    <!-- Script para los select multiples, creado por https://github.com/admirhodzic/multiselect-dropdown-->
+    <script src="../js/multiselect-dropdown.js"></script>
   </body>
 </html>
