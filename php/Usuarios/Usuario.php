@@ -43,7 +43,7 @@ class Usuario
             try {
                 //Si no está asignado lo recuperamos de la base de datos y se lo asignamos
                 $bd = new bd();
-                $sentencia = "SELECT R.id_rol as rol FROM usuarios as U INNER JOIN roles as R ON U.rol = R.id_rol WHERE email = ?";
+                $sentencia = "SELECT rol FROM usuarios WHERE email = ?";
                 $resultadoRol = $bd->recuperDatosBD($sentencia, [$this->email]);
                 if(!is_string($resultadoRol) && $resultadoRol != false){
                     $rol = $resultadoRol->fetch(\PDO::FETCH_ASSOC)["rol"];

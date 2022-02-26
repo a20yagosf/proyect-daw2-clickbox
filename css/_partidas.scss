@@ -1,5 +1,14 @@
 #info_partidas, #filtro, #result_panel, .pagination {
-    margin: 3%;
+    padding: 3%;
+  }
+
+  #filtro {
+    // Dado que los dropdowns vienen de un script externo modificaremos
+    // su tamaño sobreescribiendo el valor
+      .multiselect-dropdown {
+        width: 100% !important;
+        font-size: small;
+    }
   }
 
 .list-group {
@@ -129,13 +138,6 @@ ul li.list-group-item {
 
 .pagination a:hover:not(.active) {
   background-color: #ddd;
-}
-
-// Dado que los dropdowns vienen de un script externo modificaremos
-// su tamaño sobreescribiendo el valor
-  .multiselect-dropdown {
-  width: 80% !important;
-  font-size: small;
 }
 
 // Para adaptar el formulario a las versiones portátiles

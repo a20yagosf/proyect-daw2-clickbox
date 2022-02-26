@@ -70,7 +70,9 @@
         }
 
         //Enlace para abrir y cerrar los filtros en Ipad y móvil
-        a {
+        & > a {
+            //Border bottom
+            border-block-end: 1px solid aclararColor($colorPrincipal);
             display: none;
         }
     }
@@ -126,6 +128,17 @@
         font-size: 1.2em;
         border-radius: 0px 0px $borderRadius $borderRadius;
         border: 1px solid $colorPrincipal;
+        position: relative;
+
+        //Botón para crear partidas
+        & > button {
+            @include boton($colorPrincipal, 1.3rem);
+            position: absolute;
+            padding: 0.5%;
+            //Right
+            inset-inline-end: 5%;
+            transform: translateY(-50%);
+        }
 
         form {
             margin-block-end: 3%;
@@ -172,7 +185,7 @@
         }
     }
 
-    //Adaptación para móvil del carousel 
+    //Adaptación para móvil
     @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
         & {
 
@@ -180,6 +193,10 @@
                 flex-wrap: wrap;
                 width: 100%;
                 background-color: $colorPrincipal;
+
+                a {
+                    display: inline-block;
+                }
 
                 ul {
                     flex-basis: 100%;
@@ -237,6 +254,18 @@
             #contenedorElementos {
                 width: 100%;
 
+                //Botón para crear partidas
+                & > button {
+                    font-size: 1.3rem;
+                    position: relative;
+                    padding: 1% 3%;
+                    //Left
+                    inset-inline-start: 50%;
+                    transform: translateX(-50%);
+                    //Margin-bottom
+                    margin-block-end: 2%;
+                }
+
                 form {
                     label, input, select {
                         flex-basis: 100%;
@@ -268,7 +297,7 @@
         }
     }
 
-     //Adaptación para tablet de carousel
+     //Adaptación para tablet
      @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px), (aspect-ratio: 1/1) and (min-width: 540px)  {
          & {
             height: 75vh;
@@ -282,12 +311,24 @@
             }
 
             #formPanelAdmin {
-                height: 90%;
+                height: 80%;
             }
 
             //Contenedor con todas las cajas a mostrar
             #contenedorElementos {
                 width: 100%;
+
+                //Botón para crear partidas
+                & > button {
+                    font-size: 1.1rem;
+                    position: absolute;
+                    padding: 0.5%;
+                    //Right
+                    inset-inline-end: 2%;
+                    transform: translateY(3%);
+                    //Margin-bottom
+                    margin-block-end: 2%;
+                }
 
                 form {
                     align-items: center;

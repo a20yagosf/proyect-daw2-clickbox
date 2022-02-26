@@ -42,7 +42,7 @@ function crearHeader() {
         let enlacePerfil;
         let salirPerfil;
         //Creamos el botón del usuario
-        switch(sessionStorage.getItem("rol")) {
+        switch(parseInt(sessionStorage.getItem("rol"))) {
             //Admin
             case 1:
                 //Creamos el botón del usuario
@@ -1254,3 +1254,20 @@ function crearIndiceLi(numero) {
      contenedor.textContent = texto;
      return contenedor;
  } 
+
+ /**
+  * Muestra y oculta las diferentes opciones de creación
+  *
+  * @param   {Event}  e  Evento que lo dispara
+  *
+  */
+ function ocultarMostrarOpcionesCreacion(e) {
+    e.preventDefault();
+    let filtros = document.getElementById("opcionesPanelAdmin");
+    console.log(filtros.style.css);
+    filtros.style.display == "none" ? $(filtros).slideDown(500) : $(filtros).slideUp(500);
+ }
+
+ function crearPartida() {
+     
+ }

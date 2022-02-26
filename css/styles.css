@@ -867,7 +867,12 @@ main {
 }
 
 #info_partidas, #filtro, #result_panel, .pagination {
-  margin: 3%;
+  padding: 3%;
+}
+
+#filtro .multiselect-dropdown {
+  width: 100% !important;
+  font-size: small;
 }
 
 .list-group {
@@ -1771,7 +1776,9 @@ h2, h3 {
 #panelAdmin > div:first-of-type button:hover {
   background-color: #03bdd7;
 }
-#panelAdmin > div:first-of-type a {
+#panelAdmin > div:first-of-type > a {
+  -webkit-border-after: 1px solid #03bdd7;
+          border-block-end: 1px solid #03bdd7;
   display: none;
 }
 #panelAdmin #formPanelAdmin {
@@ -1833,6 +1840,25 @@ h2, h3 {
   font-size: 1.2em;
   border-radius: 0px 0px 10px 10px;
   border: 1px solid #0291A5;
+  position: relative;
+}
+#panelAdmin #contenedorElementos > button {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.3rem;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  position: absolute;
+  padding: 0.5%;
+  inset-inline-end: 5%;
+  transform: translateY(-50%);
+}
+#panelAdmin #contenedorElementos > button:hover {
+  background-color: #03bdd7;
 }
 #panelAdmin #contenedorElementos form {
   -webkit-margin-after: 3%;
@@ -1887,6 +1913,9 @@ h2, h3 {
     width: 100%;
     background-color: #0291A5;
   }
+  #panelAdmin > div:first-of-type a {
+    display: inline-block;
+  }
   #panelAdmin > div:first-of-type ul {
     flex-basis: 100%;
     flex-wrap: wrap;
@@ -1929,6 +1958,15 @@ h2, h3 {
   #panelAdmin #contenedorElementos {
     width: 100%;
   }
+  #panelAdmin #contenedorElementos > button {
+    font-size: 1.3rem;
+    position: relative;
+    padding: 1% 3%;
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+    -webkit-margin-after: 2%;
+            margin-block-end: 2%;
+  }
   #panelAdmin #contenedorElementos form label, #panelAdmin #contenedorElementos form input, #panelAdmin #contenedorElementos form select {
     flex-basis: 100%;
   }
@@ -1960,10 +1998,19 @@ h2, h3 {
     display: none;
   }
   #panelAdmin #formPanelAdmin {
-    height: 90%;
+    height: 80%;
   }
   #panelAdmin #contenedorElementos {
     width: 100%;
+  }
+  #panelAdmin #contenedorElementos > button {
+    font-size: 1.1rem;
+    position: absolute;
+    padding: 0.5%;
+    inset-inline-end: 2%;
+    transform: translateY(3%);
+    -webkit-margin-after: 2%;
+            margin-block-end: 2%;
   }
   #panelAdmin #contenedorElementos form {
     align-items: center;
