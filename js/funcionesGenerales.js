@@ -1036,10 +1036,19 @@ async function cargarDatosPerfil() {
     document.getElementById("telefono").value = respuesta_json['telefono'];
 
 
-    // Modificamos la variable dirección y le quitamos el atributo readonly
+    // Modificamos la variable direccion y le quitamos el atributo readonly
     document.getElementById("direccion").removeAttribute("readonly");
-    // Recuperamos la dirección
+    // Recuperamos la direccion
     document.getElementById("direccion").value = respuesta_json['direccion'];
+
+    // Modificamos el campo ult_modif y recuperamos la fecha_ult_modif del json enviado por php
+    document.getElementById("ult_modif").value = respuesta_json['fecha_ult_modif'];
+
+    // Modificamos el campo rol y recuperamos el valor rol del json enviado por php
+    document.getElementById("rol").value = respuesta_json['rol'];
+
+    // suscripcion y renovar pueden devolver null, así que: [cuando valor = null en php pasa a json y lo decodeamos OBTENEMOS ]
+    console.log(respuesta_json['suscripcion']);
 }
 catch(error){
     console.log(error); // Mensaje para mostrar el error   
