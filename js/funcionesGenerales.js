@@ -1042,13 +1042,36 @@ async function cargarDatosPerfil() {
     document.getElementById("direccion").value = respuesta_json['direccion'];
 
     // Modificamos el campo ult_modif y recuperamos la fecha_ult_modif del json enviado por php
-    document.getElementById("ult_modif").value = respuesta_json['fecha_ult_modif'];
+    document.getElementById("ultModif").innerHTML = respuesta_json['fecha_ult_modif'];
 
     // Modificamos el campo rol y recuperamos el valor rol del json enviado por php
-    document.getElementById("rol").value = respuesta_json['rol'];
-
+    if (respuesta_json['rol']==1) {
+        document.getElementById("rol").value = "Administrador";
+    }else if(respuesta_json['rol']==2){
+        document.getElementById("rol").value = "Usuario";
+    }
+     
     // suscripcion y renovar pueden devolver null, así que: [cuando valor = null en php pasa a json y lo decodeamos OBTENEMOS ]
-    console.log(respuesta_json['suscripcion']);
+    if(!respuesta_json['suscripcion'] == null){
+        document.getElementById("suscripcion").value = respuesta_json['suscripcion'];
+    }
+    else{
+        document.getElementById("suscripcion").value = "Sin suscripción";
+    }
+
+    if(!respuesta_json['renovar'] == null){
+        document.getElementById("renovacion").innerHTML += respuesta_json['renovar'];
+    }
+    else{
+        document.getElementById("renovacion").innerHTML += "Sin suscripción";
+    }
+
+    // Modificamos el campo email recuperando del localStorage su valor
+    document.getElementById("email").value = sessionStorage.getItem("email");
+
+
+    
+    
 }
 catch(error){
     console.log(error); // Mensaje para mostrar el error   
