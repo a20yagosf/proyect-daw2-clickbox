@@ -1,22 +1,20 @@
 
 #panelAdmin {
-    div {
+    padding-block-start: 2%;
+
+   & > div:first-of-type {
         width: 90%;
         margin: auto;
-        background-color: $colorLetra;
         border-radius: $borderRadius $borderRadius 0px 0px;
         //Flex como padre
         display: flex;
         justify-content: space-between;
-        align-items: center;
 
         ul {
-            padding: 0% 1%;
+            padding: 0%;
             //Margin bottom
             margin-block-end: 0%;
             //Estilo
-            //Border bottom
-            border-block-end: 1px solid $colorPrincipal;
             //Flex como padre
             display: flex;
             justify-content: space-around;
@@ -34,6 +32,7 @@
                     display: inline-block;
                     @include contenedor(100%, 100%, transparent);
                     padding: 4%;
+                    font-size: 1.3em;
                     text-align: center;
                     color: $colorPrincipal;
 
@@ -52,24 +51,42 @@
                     border-color: $colorPrincipal $colorPrincipal transparent;
                     border-radius: $borderRadius $borderRadius 0px 0px;
                     z-index: 2;
+
+                    &:hover {
+                        background-color: aclararColor($colorPrincipal);
+                    }
                 }
             }
         }
 
+        // Botón hamburguesa
         button {
-            //Flex como hijo
-            flex-basis: 10%;
-            @include boton($colorPrincipal, 1.5rem);
+            background-image: url("../img/iconos/menuHamburguesa.svg");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position-x: 50%;
+            @include boton($colorPrincipal, 1em);
+            padding: 0% 2.5%;
+        }
+
+        //Enlace para abrir y cerrar los filtros en Ipad y móvil
+        a {
+            display: none;
         }
     }
 
     //Formulario con el panel a administrar
-    #panelAdmin {
-        //Padding bottom
-        padding-block-end: 2%;
+    #formPanelAdmin {
+        @include contenedor(90%, auto, $colorLetra);
+        margin: auto;
+        padding: 2%;
         //Estilo
+        font-size: 1.2em;
         border-radius: 0px 0px $borderRadius $borderRadius;
+        border: 1px solid $colorSecundario;
         //Flex como padre
+        display: flex;
+        flex-wrap: wrap;
         align-items: center;
         justify-content: center;
 
@@ -77,6 +94,7 @@
         h2 {
             padding: 1% 0%;
             flex-basis: 100%;
+            text-align: center;
         }
 
 
@@ -89,14 +107,209 @@
         }
 
         input[type="submit"], button {
+            @include boton($colorPrincipal, 1.5rem);
              //Margin bottom
             margin-block-end: 0%;
             margin: 0% 2%;
             padding: 0.5%;
-            //Estilo
-            font-size: 1.5rem;
             //Flex como hijo
             flex-basis: 20%;
         }
+    }
+
+    //Contenedor con todas las cajas a mostrar
+    #contenedorElementos {
+        @include contenedor(90%, auto, $colorLetra);
+        margin: auto;
+        padding: 2%;
+        //Estilo
+        font-size: 1.2em;
+        border-radius: 0px 0px $borderRadius $borderRadius;
+        border: 1px solid $colorPrincipal;
+
+        form {
+            margin-block-end: 3%;
+            //Flex como padre
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+
+            label, input {
+                text-align: center;
+            }
+        }
+
+        #listaElementos {
+            @include contenedor(100%, 100%, transparent);
+            text-align: center;
+        }
+
+        thead {
+            //Border bottom
+            border-block-end: 1px solid $colorPrincipal;
+
+            th {
+                color: $colorPrincipal;
+                //Margin bottom
+                padding-block-end: 1%;
+            }
+        }
+
+        tbody {
+            td {
+                padding: 0.3% 0%;
+            }
+
+            tr:not(tr:last-of-type) {
+                //borer bottom
+                border-block-end: 1px solid oscurecerColor($colorLetra);
+            }
+
+            button {
+                @include boton($colorPrincipal, 1em);
+                margin: auto;
+            }
+        }
+    }
+
+    //Adaptación para móvil del carousel 
+    @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+        & {
+
+            & > div:first-of-type {
+                flex-wrap: wrap;
+                width: 100%;
+                background-color: $colorPrincipal;
+
+                ul {
+                    flex-basis: 100%;
+                    flex-wrap: wrap;
+
+
+                    li {
+                        border: 0px;
+                        border-radius: 0px;
+                        flex-basis: 100%;
+                        padding-block-start: 0%;
+                        width: auto;
+                        height: auto; 
+
+                        .listaActivo {
+                            border-radius: 0px;
+                            background-color: $colorSecundario;
+
+                            &:hover {
+                                border-radius: 0px;
+                            }
+
+                        }
+
+                        a {
+                            color: $colorLetra;
+
+                            &:hover {
+                                border-radius: 0px;
+                                background-color: aclararColor($colorPrincipal);
+                            }
+                        }
+                    }
+                }
+
+
+                & > a {                  
+                    //Tamaños y posicionamiento
+                    width: 100%;
+                    padding: 1%;
+                    font-size: 1.5em;
+                    //Estilo
+                    color: $colorLetra;
+                    text-align: center;
+                    transition: all 0.5s ease-in-out;
+
+                    &:hover {
+                        border-radius: $borderRadius $borderRadius 0px 0px;
+                        background-color: $colorSecundario;
+                    }
+                }
+            }
+
+
+            #contenedorElementos {
+                width: 100%;
+
+                form {
+                    label, input, select {
+                        flex-basis: 100%;
+                    }
+                }
+                
+                #listaElementos {
+                    flex-wrap: wrap;
+                }
+            }
+
+            th:first-of-type ,td:first-of-type, td:last-of-type, td:nth-of-type(3), th:nth-of-type(3), td:nth-of-type(5), th:nth-of-type(5) {
+                display: none;
+            }
+
+            
+            //Formulario con el panel a administrar
+            #formPanelAdmin {
+                width: 100%;
+
+               label, input, select {
+                    flex-basis: 100%;
+               }
+
+               button, input[type="submit"] {
+                   margin-block-start: 2%;
+               }
+            }
+        }
+    }
+
+     //Adaptación para tablet de carousel
+     @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px), (aspect-ratio: 1/1) and (min-width: 540px)  {
+         & {
+            height: 75vh;
+
+            & > div:first-of-type {
+                width: 90%;
+
+                & > a {
+                    display: none;
+                }
+            }
+
+            #formPanelAdmin {
+                height: 90%;
+            }
+
+            //Contenedor con todas las cajas a mostrar
+            #contenedorElementos {
+                width: 100%;
+
+                form {
+                    align-items: center;
+                }
+
+                input {
+                    flex-basis: calc(30%);
+                }
+
+                label {
+                    flex-basis: calc(20%);
+                    margin-block-start: 2%;
+                }
+
+                thead th {
+                    font-size: 1.2em;
+                }
+
+                tbody th {
+                    margin-block-start: 5%;
+                }
+            }
+         }
     }
 }

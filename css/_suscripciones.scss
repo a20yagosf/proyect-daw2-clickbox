@@ -69,6 +69,12 @@
             margin-block-start: 5%;
             font-size: 1.3rem;
 
+            table {
+                th {
+                    font-size: 3em;
+                }
+            }
+
             button {
                 width: 50%;
             }
@@ -156,8 +162,8 @@
         thead {
             //Estilo
             background-color: $colorSecundario;
-            border-radius: $borderRadius;
         }
+
 
         //Cabecera donde pone (1 MES, 6 MESES, etcc)
         th {
@@ -168,7 +174,6 @@
             font-size: 5em;
             //Estilo
             color: $colorPrincipal;
-            border-radius: $borderRadius;
             //Esta fuente debe estar con font-weigth 100 para permitir una buena lectura
             font-family: "PoetsenOne";
             font-weight: 100;
@@ -187,6 +192,14 @@
             //Border top
             border-block-start: 0.2em dashed $colorPrincipal;
         }
+
+        td {
+            padding: 2% 0%;
+
+            &:last-of-type {
+                text-align: center;
+            }
+        }
     }
 
     //Botón para suscribirse
@@ -194,6 +207,8 @@
         @include boton($colorPrincipal, 1.5em);
         padding: 2%;
         margin: auto;
+        //Margin bottom
+        margin-block-end: 5%;
         //Grid como hijo
         grid-area: boton;
     }

@@ -14,20 +14,22 @@
     <main class="cuerpoMosaico">
         <div id="panelAdmin">
             <div>
+                <a href="">Filtros</a>
                 <ul id="opcionesPanelAdmin">
                     <li><a href="#" class="listaActivo">Cajas sorpresa</a></li>
                     <li><a href="#">Partidas</a></li>
                     <li><a href="#">Productos</a></li>
                     <li><a href="#">Usuarios</a></li>
                 </ul>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="opcionesPanelAdmin" aria-controls="opcionesPanelAdmin" aria-expanded="false" aria-label="Menú hamburguesa panel de control">Prueba</button>
             </div>
-            <form id="panelAdmin">
+            <!--- <form id="formPanelAdmin">
                 <h2>Cajas sorpresa</h2>
                 <label for="fecha">Fecha lanzamiento:</label>
                 <input type="date" name="fecha" id="fecha"/>
-                <label for="num_jug">Número de jugadores:</label>
-                <input type="number" name="num_jug" id="num_jug" max="10" min="3"/>
+                <label for="min_jug">Mínimo de jugadores:</label>
+                <input type="number" name="min_jug" id="min_jug" max="10" min="3"/>
+                <label for="max_jug">Máximo de jugadores:</label>
+                <input type="number" name="max_jug" id="max_jug" max="10" min="3"/>
                 <label for="genero">Género</label>
                 <select name="genero" id="genero">
                     <option value="aventuras">Aventuras</option>
@@ -40,7 +42,65 @@
                 </select>
                 <input type="submit" value="Crear caja"/>
                 <button type="button">Cancelar</button>
-            </form>
+            </form> -->
+            <div id="contenedorElementos">
+                <form id="filtradoPartida" action="">
+                    <label for="fechaCaja">Fecha</label>
+                    <input type="date" name="fechaCaja" id="fechaCaja"/>
+                    <label for="min_jug">Mínimo de jugadores</label>
+                    <input type="number" name="num_jug" id="minjug"/>
+                    <label for="max_jug">Máximo de jugadores</label>
+                    <input type="number" name="num_jug" id="max_jug"/>
+                    <label for="genero">Género</label>
+                    <select name="genero" id="genero">
+                        <option value="">No seleccionado</option>
+                    </select>
+                    <label for="tematica">Temática</label>
+                    <select name="tematica" id="tematica">
+                        <option value="">No seleccionado</option>
+                    </select>
+                </form>
+                <table id="listaElementos">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Fecha</th>
+                            <th>Nº jugadores</th>
+                            <th>Género</th>
+                            <th>Temática</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ID</td>
+                            <td>Fecha</td>
+                            <td>Número de jugadores</td>
+                            <td>Género</td>
+                            <td>Temática</td>
+                            <td><button>Editar</button></td>
+                            <td><button>Eliminar</button></td>
+                        </tr>
+                        <tr>
+                            <td>ID</td>
+                            <td>Fecha</td>
+                            <td>Número de jugadores</td>
+                            <td>Género</td>
+                            <td>Temática</td>
+                            <td><button>Editar</button></td>
+                            <td><button>Eliminar</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="pagination">
+                    <ul>
+                      <li><a href="#">&laquo;</a></li>
+                      <li><a href="#" class="active">1</a></li>
+                      <li><a href="#">2</a></li>
+                      <li><a href="#">3</a></li>
+                      <li><a href="#">&raquo;</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </main>
 </body>

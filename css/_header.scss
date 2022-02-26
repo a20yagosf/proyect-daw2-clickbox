@@ -163,13 +163,14 @@ nav {
 
     //Botón Hamburguesa
     button:first-of-type {
-        background-image: url("../img/menuHamburguesa.svg");
+        background-image: url("../img/iconos/menuHamburguesa.svg");
         background-size: contain;
+        background-repeat: no-repeat;
         @include boton($colorPrincipal, 1em);
         padding: 5% 5%;
 
         &:hover {
-            background-image: url("../img/menuHamburguesaHover.svg");
+            background-image: url("../img/iconos/menuHamburguesaHover.svg");
         }
     }
 
