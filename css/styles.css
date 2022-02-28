@@ -1941,37 +1941,6 @@ h2, h3 {
   color: white;
   cursor: pointer;
   transition: all 0.5s linear;
-<<<<<<< HEAD
-}
-#panelAdmin div button:hover {
-  background-color: #03bdd7;
-}
-#panelAdmin #panelAdmin {
-  -webkit-padding-after: 2%;
-          padding-block-end: 2%;
-  border-radius: 0px 0px 10px 10px;
-  align-items: center;
-  justify-content: center;
-}
-#panelAdmin #panelAdmin h2 {
-  padding: 1% 0%;
-  flex-basis: 100%;
-}
-#panelAdmin #panelAdmin input, #panelAdmin #panelAdmin label, #panelAdmin #panelAdmin select {
-  flex-basis: 50%;
-}
-#panelAdmin #panelAdmin input, #panelAdmin #panelAdmin select {
-  margin: 2% 0%;
-  padding: 1%;
-  font-family: "Resolve";
-  border-radius: 5px;
-  border: 1px solid #0291A5;
-  outline-color: #FFB775;
-  transition: all 1s ease-in-out;
-}
-#panelAdmin #panelAdmin input[type=submit], #panelAdmin #panelAdmin button {
-=======
->>>>>>> a3b09c1a2980068a92b4f2fc7345d39cc09be56c
   -webkit-margin-after: 0%;
           margin-block-end: 0%;
   margin: 0% 2%;
