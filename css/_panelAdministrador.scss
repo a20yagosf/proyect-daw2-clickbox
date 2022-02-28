@@ -92,6 +92,12 @@
         align-items: center;
         justify-content: center;
 
+        //Párrafo donde se muestra el mensaje de éxito o error
+        p {
+            flex-basis: 100%;
+            text-align: center;
+        }
+
         //Titulo sección
         h2 {
             padding: 1% 0%;
@@ -119,6 +125,13 @@
         }
     }
 
+    #filtradoPartida {
+        input[type='submit'] {
+            @include boton ($colorPrincipal, 1.2em);
+            padding: 0% 0.5%
+        }
+    }
+
     //Contenedor con todas las cajas a mostrar
     #contenedorElementos {
         @include contenedor(90%, auto, $colorLetra);
@@ -130,15 +143,6 @@
         border: 1px solid $colorPrincipal;
         position: relative;
 
-        //Botón para crear partidas
-        & > button {
-            @include boton($colorPrincipal, 1.3rem);
-            position: absolute;
-            padding: 0.5%;
-            //Right
-            inset-inline-end: 5%;
-            transform: translateY(-50%);
-        }
 
         form {
             margin-block-end: 3%;
@@ -165,6 +169,13 @@
                 color: $colorPrincipal;
                 //Margin bottom
                 padding-block-end: 1%;
+
+                //Botón para crear partidas
+                button {
+                    @include boton($colorPrincipal, 1.3rem);
+                    padding: 0.5%;
+                    margin: auto;
+                }
             }
         }
 

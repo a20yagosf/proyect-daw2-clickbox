@@ -127,6 +127,46 @@ class Bd {
         return $resultado;
     }
 
+
+    /**
+     * Método para realizar insert, update o delete (Estático)
+     *
+     * @param   string  $sentencia  Sentencia de la BD a ejecutar
+     * @param   array  $datos      Array con los parámetros a asignar en la función preparada
+     *
+     * @return  mixed             Devuelve el id o error
+     */
+    public function agregarModificarDatosBDNum($sentencia, $datos){
+        try {
+            //Creo la conexión
+            $pdo = $this->conectarBD();
+            //Ejecutamos la sentencia
+            $pdoStatement = $pdo->prepare($sentencia);
+            //Asignamos los valores
+            foreach($datos as $indice => $valor){
+                $tipoDato = is_string($valor) ? \PDO::PARAM_STR : \PDO::PARAM_INT;
+                $pdoStatement->bindParam(":" . $indice, $valor, $tipoDato);
+                //Limpiamos $indice o valor sino da error para los datos a partir del primero
+                unset($indice);
+                unset($valor);
+            }
+            //Ejecutamos y asignamos las variables a la vez
+            $resultado = $pdoStatement->execute();
+            if(!$resultado){
+                throw new \PDOException($pdoStatement->errorInfo()[2]);
+            }
+            $resultado = $pdo->lastInsertId();
+        }
+        //Ambos try catch devuelve el error para mostrarlo por pantalla y poder solucionarlo, cuando lo acabemos quitaremos la muestra de los errores, esto es sólo para desarrollo
+        catch(\PDOException $pdoError) {
+            $resultado = "Error " . $pdoError->getCode() . ": " . $pdoError->getMessage();
+        }
+        catch(\Exception $error) {
+            $resultado = "Error " . $error->getCode() . ": " . $error->getMessage();
+        }
+        return $resultado;
+    }
+
     /**
      * Método para realizar select (Estático)
      *
@@ -231,13 +271,14 @@ class Bd {
                 throw new \Exception("Ya existe un usuario registrado con ese correo");
             }
             //Comprobamos que se subiera bien el fichero y lo movemos a una carpeta en el disco duro
-            $resultado = $this->gestionarFichero($fichero, $datosUsuario["email"]);
+            $carpetaFichero = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR  . "img" . DIRECTORY_SEPARATOR  . $datosUsuario["email"];
+            $resultado = $this->gestionarFichero($fichero, $datosUsuario["email"], $carpetaFichero);
             //Si no se pudo mover mandamos un error
             if(mb_stristr($resultado, "error") != false){
                 throw new \Exception($resultado);
             }
             //Añadimos al array la ruta del archivo para guardarla en la BD
-            $datosUsuario["imagenPerfil"] = $resultado;
+            $datosUsuario["imagenPerfil"] = ".." . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR . $datosUsuario["email"] . DIRECTORY_SEPARATOR . $fichero["name"];
             //Hasheamos la contraseña
             $datosUsuario["pwd"] = password_hash($datosUsuario["pwd"], PASSWORD_DEFAULT);
             //Convertimos todos los campos NO obligatorios que NO se rellenaron a null
@@ -255,6 +296,14 @@ class Bd {
         return $resultado;
     }
 
+    /**
+     * Asigna los valores a los parametros del PDOStatement
+     *
+     * @param   array  $valores       Array de valores a asignar
+     * @param   [type]  $pdoStatement  [$pdoStatement description]
+     *
+     * @return  [type]                 [return description]
+     */
     private function asignarValoresParam($valores, $pdoStatement) {
         //Asignamos los valores
         foreach($valores as $indice => $valor){
@@ -317,9 +366,8 @@ class Bd {
      *
      * @return  mixed            Si la operación salió bien (boolean) o hubo algún error (string con el error)
      */
-    private function gestionarFichero($fichero, $usuario){
+    public function gestionarFichero($fichero, $carpetaFichero){
         //Carpeta donde guardaremos el fichero
-        $carpetaFichero = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR  . "img" . DIRECTORY_SEPARATOR  . $usuario;
         try {
             //Comprobamos que no hubiese errores en la subida
             if($fichero["error"] != 0){

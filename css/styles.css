@@ -1287,28 +1287,6 @@ ul li.list-group-item .btn-info {
           margin-block-end: 2%;
   position: relative;
 }
-#login form .error, #login form .exito {
-  display: block;
-  color: #ff8e75;
-}
-#login form .error::before, #login form .exito::before {
-  content: "";
-  display: inline-block;
-  width: 25px;
-  height: 25px;
-  position: relative;
-  inset-inline-start: -12.5px;
-  inset-block-start: 50%;
-  background-image: url("../img/iconos/iconoError.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-}
-#login form .exito {
-  color: #51a347;
-}
-#login form .exito::before {
-  background-image: url("../img/iconos/iconoExito.svg");
-}
 #login .acordeon {
   border-radius: 10px;
   transition: all 2s ease-in-out;
@@ -1453,6 +1431,30 @@ ul li.list-group-item .btn-info {
   #login form input[type=submit] {
     font-size: 1.6rem;
   }
+}
+
+.error, .exito {
+  display: block;
+  color: #ff8e75;
+}
+.error::before, .exito::before {
+  content: "";
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  position: relative;
+  inset-inline-start: -12.5px;
+  inset-block-start: 50%;
+  background-image: url("../img/iconos/iconoError.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.exito {
+  color: #51a347;
+}
+.exito::before {
+  background-image: url("../img/iconos/iconoExito.svg");
 }
 
 .campoOblig::after {
@@ -1795,6 +1797,10 @@ h2, h3 {
   align-items: center;
   justify-content: center;
 }
+#panelAdmin #formPanelAdmin p {
+  flex-basis: 100%;
+  text-align: center;
+}
 #panelAdmin #formPanelAdmin h2 {
   padding: 1% 0%;
   flex-basis: 100%;
@@ -1831,6 +1837,21 @@ h2, h3 {
 #panelAdmin #formPanelAdmin input[type=submit]:hover, #panelAdmin #formPanelAdmin button:hover {
   background-color: #03bdd7;
 }
+#panelAdmin #filtradoPartida input[type=submit] {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.2em;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  padding: 0% 0.5%;
+}
+#panelAdmin #filtradoPartida input[type=submit]:hover {
+  background-color: #03bdd7;
+}
 #panelAdmin #contenedorElementos {
   width: 90%;
   height: auto;
@@ -1841,24 +1862,6 @@ h2, h3 {
   border-radius: 0px 0px 10px 10px;
   border: 1px solid #0291A5;
   position: relative;
-}
-#panelAdmin #contenedorElementos > button {
-  display: block;
-  background-color: #0291A5;
-  border: none;
-  padding: 2% 3%;
-  font-size: 1.3rem;
-  border-radius: 10px;
-  color: white;
-  cursor: pointer;
-  transition: all 0.5s linear;
-  position: absolute;
-  padding: 0.5%;
-  inset-inline-end: 5%;
-  transform: translateY(-50%);
-}
-#panelAdmin #contenedorElementos > button:hover {
-  background-color: #03bdd7;
 }
 #panelAdmin #contenedorElementos form {
   -webkit-margin-after: 3%;
@@ -1884,6 +1887,22 @@ h2, h3 {
   color: #0291A5;
   -webkit-padding-after: 1%;
           padding-block-end: 1%;
+}
+#panelAdmin #contenedorElementos thead th button {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.3rem;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  padding: 0.5%;
+  margin: auto;
+}
+#panelAdmin #contenedorElementos thead th button:hover {
+  background-color: #03bdd7;
 }
 #panelAdmin #contenedorElementos tbody td {
   padding: 0.3% 0%;

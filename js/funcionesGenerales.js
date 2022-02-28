@@ -1,4 +1,27 @@
 /**
+ * Clase fecha con la fecha correcta
+ */
+class Fecha {
+    constructor(fecha) {
+        this.fecha = this.formatearFecha(new Date(fecha));
+    }
+
+    getFecha() {
+        return this.fecha;
+    }
+
+    /**
+     * Formatea la fecha le pasan
+     * @param {Date}  Fecha a formatear
+     */
+    formatearFecha(fecha) {
+        let dia = fecha.getDate() < 9 ? "0" + fecha.getDate() : fecha.getDate();
+        let mes = fecha.getMonth() + 1 > 12 ?  1 :  fecha.getMonth() + 1 ;
+        return dia + "-" + (mes < 9 ? "0" + mes : mes) + "-" + fecha.getFullYear();
+    }
+}
+
+/**
  * Crea el mapa a partir de la API de Lefletjs
  *
  */
@@ -341,7 +364,7 @@ function crearArrayElem(callback,  numElementos, argumentos) {
 
         case "crearElemForm":
             for(let i = 0; i < numElementos; i++){
-                argumentos.length < 3 ? arrayElementos.push(crearElemForm(argumentos[0][i], argumentos[1][i])) : arrayElementos.push(crearElemForm(argumentos[0][i], argumentos[1][i], argumentos[2][i]));
+                argumentos.length < 3 ? arrayElementos.push(crearElem(argumentos[0][i], argumentos[1][i])) : arrayElementos.push(crearElem(argumentos[0][i], argumentos[1][i], argumentos[2][i]));
             }
             break;
     }
@@ -504,7 +527,7 @@ function cambiarForm(e) {
  *
  * @return  {DOMElement}                Elemento a crear
  */
-function crearElemForm(tipoElemento, atributos, texto = "") {
+function crearElem(tipoElemento, atributos, texto = "") {
     //Creamos el elemento
     let elementoForm = document.createElement(tipoElemento);
     //Le asignamos los atributos conviertiendolos a [clave, valor]
@@ -525,11 +548,11 @@ function crearLogin(formulario) {
     formulario.removeEventListener("submit", procesarRegistro);
     formulario.addEventListener("submit", procesarLogin);
     //Label del login
-    let labelEmail = crearElemForm("label", {"for": "email"}, "Email");
-    let labelClave = crearElemForm("label", {"for": "pwd"}, "Contraseña");
+    let labelEmail = crearElem("label", {"for": "email"}, "Email");
+    let labelClave = crearElem("label", {"for": "pwd"}, "Contraseña");
     //Input login
-    let inputEmail = crearElemForm("input",{"type": "email", "name": "email", "placeholder": "Correo electrónico", "id": "email"});
-    let inputClave = crearElemForm("input",{"type": "password", "name": "pwd", "placeholder": "Contraseña", "id": "pwd"});
+    let inputEmail = crearElem("input",{"type": "email", "name": "email", "placeholder": "Correo electrónico", "id": "email"});
+    let inputClave = crearElem("input",{"type": "password", "name": "pwd", "placeholder": "Contraseña", "id": "pwd"});
     //Creamos los input y los añadimos al formulario
     formulario.append(labelEmail, inputEmail, labelClave, inputClave);
     //Marcamos los campos Obligatorios
@@ -569,7 +592,7 @@ function crearRegistro(formulario) {
     let parrafoResult = document.createElement("p");
     parrafoResult.setAttribute("id", "resultadoForm");
     //Botón de registro
-    let botonRegistro = crearElemForm("input", {"type": "submit", "value": "Registrarme"});
+    let botonRegistro = crearElem("input", {"type": "submit", "value": "Registrarme"});
     //Botón para móvil para poder salir
     let botonCancelar = crearBoton("Cancelar", {"type": "button"});
     botonCancelar.setAttribute("class", "movil");
@@ -598,20 +621,20 @@ function crearAcordeonDatosCuenta() {
     let divAcordeon1 = document.createElement("div");
 
     //Creamos todos los label
-    let labelEmail = crearElemForm("label", {"for": "email"}, "Email");
-    let labelClave = crearElemForm("label", {"for": "pwd"}, "Contraseña");
-    let labelClaveRep = crearElemForm("label", {"for": "pwd2"}, "Repetir contraseña");
-    let labelImagen = crearElemForm("label", {"for": "imagenPerfil"}, "Imagen de perfil");
-    let labelFavGen = crearElemForm("label", {"for": "genero_favorito"}, "Género favorito");
+    let labelEmail = crearElem("label", {"for": "email"}, "Email");
+    let labelClave = crearElem("label", {"for": "pwd"}, "Contraseña");
+    let labelClaveRep = crearElem("label", {"for": "pwd2"}, "Repetir contraseña");
+    let labelImagen = crearElem("label", {"for": "imagenPerfil"}, "Imagen de perfil");
+    let labelFavGen = crearElem("label", {"for": "genero_favorito"}, "Género favorito");
     //Array con todos los label
     let labels =[labelEmail, labelClave, labelClaveRep, labelImagen, labelFavGen];
 
     //Creamos todos los inputs
-    let inputEmail = crearElemForm("input", {"type": "text", "name": "email", "id": "email"});
-    let inputClave = crearElemForm("input", {"type": "password", "name": "pwd", "id": "pwd"});
-    let inputClaveRep = crearElemForm("input", {"type": "password", "name": "pwd2", "id": "pwd2"});
-    let inputImagen = crearElemForm("input", {"type": "file", "name": "imagenPerfil", "id": "imagenPerfil"});
-    let selectFavGen = crearElemForm("select", {"name": "genero_favorito", "id": "genero_favorito"});
+    let inputEmail = crearElem("input", {"type": "text", "name": "email", "id": "email"});
+    let inputClave = crearElem("input", {"type": "password", "name": "pwd", "id": "pwd"});
+    let inputClaveRep = crearElem("input", {"type": "password", "name": "pwd2", "id": "pwd2"});
+    let inputImagen = crearElem("input", {"type": "file", "name": "imagenPerfil", "id": "imagenPerfil"});
+    let selectFavGen = crearElem("select", {"name": "genero_favorito", "id": "genero_favorito"});
     
     //Option por defecto
     let opcionDefault = document.createElement("option");
@@ -652,20 +675,20 @@ function crearAcordeonDatosPersonales() {
     let divAcordeon2 = document.createElement("div");
 
     //Todos los labl del acordeon
-    let labelNombre = crearElemForm("label", {"for": "nombre"}, "Nombre");
-    let labelApellidos= crearElemForm("label", {"for": "apellidos"}, "Apellidos");
-    let labelTelf = crearElemForm("label", {"for": "telf"}, "Teléfono");
-    let labelFechaNac = crearElemForm("label", {"for": "fecha_nac"}, "Fecha de nacimiento");
-    let labelDirc= crearElemForm("label", {"for": "direccion"}, "Dirección");
+    let labelNombre = crearElem("label", {"for": "nombre"}, "Nombre");
+    let labelApellidos= crearElem("label", {"for": "apellidos"}, "Apellidos");
+    let labelTelf = crearElem("label", {"for": "telf"}, "Teléfono");
+    let labelFechaNac = crearElem("label", {"for": "fecha_nac"}, "Fecha de nacimiento");
+    let labelDirc= crearElem("label", {"for": "direccion"}, "Dirección");
     //Array con los label
     let labelPersonales = [labelNombre, labelApellidos, labelTelf, labelFechaNac, labelDirc];
 
     //Todos los input
-    let inputNombre = crearElemForm("input",  {"type": "text", "name": "nombre", "id": "nombre"});
-    let inputApellidos= crearElemForm("input", {"type": "text", "name": "apellidos", "id": "apellidos"});
-    let inputTelf = crearElemForm("input", {"type": "telf", "name": "telf", "id": "telf"});
-    let inputFechaNac = crearElemForm("input", {"type": "date", "name": "fecha_nac", "id": "fecha_nac"});
-    let inputDirc= crearElemForm("input", {"type": "text", "name": "direccion", "id": "direccion"});
+    let inputNombre = crearElem("input",  {"type": "text", "name": "nombre", "id": "nombre"});
+    let inputApellidos= crearElem("input", {"type": "text", "name": "apellidos", "id": "apellidos"});
+    let inputTelf = crearElem("input", {"type": "telf", "name": "telf", "id": "telf"});
+    let inputFechaNac = crearElem("input", {"type": "date", "name": "fecha_nac", "id": "fecha_nac"});
+    let inputDirc= crearElem("input", {"type": "text", "name": "direccion", "id": "direccion"});
     //Array con todos los input
     let inputPersonales = [inputNombre, inputApellidos, inputTelf, inputFechaNac, inputDirc];
 
@@ -764,7 +787,12 @@ async function procesarLogin(evento) {
         //Guardamos en sesión el usuario y su rol
         sessionStorage.setItem("email", email);
         sessionStorage.setItem("rol", resultadoPeticion["exito"]);
-        location.assign("../html/index.html");
+        if(resultadoPeticion["exito"] == 1){
+            location.assign("../html/panelAdministrador.html");
+        }
+        else {
+            location.assign("../html/index.html");
+        }
     }
     catch($error){
         //Asignamos al p el mensaje
@@ -1026,7 +1054,7 @@ async function cargarSuscripciones() {
             //Lo añado al cuerpo
             //<button type="button" data-id="1" class="susc suscActiva"><p>1</p><p>Mes</p></button>
             //Le añadimos los listeners
-            boton.addEventListener("click", cargarDatos, true);
+            boton.addEventListener("click", cargarSuscripciones, true);
         });
         //Disparamos el evento comosi pulsaramos el primer botón para que coja sus características
         document.getElementById("tiposSusc").firstElementChild.dispatchEvent(new Event("click"));
@@ -1042,7 +1070,7 @@ async function cargarSuscripciones() {
  * @param   {Event}  e  Evento que se disparó
  *
  */
-async function cargarDatos(e) {
+async function cargarSuscripciones(e) {
     //Botón que lleva el escuchador, usamos currentTarget porque es el elemento que tiene el event listener pegado, pero el que dispara es el hijo (los p) por eso no usamos target
     let botonEvento = e.currentTarget;
     //ID de botón que activó el evento, 
@@ -1142,7 +1170,7 @@ async function cargarPartidas(filtro = {}) {
          //Limpiamos la lista
          lista.innerHTML = "";
          //Cargo cada uno de los li
-         crearIndiceLi(respuestaJSON["num_pag"]);
+         crearPaginacion(respuestaJSON["num_pag"]);
          //Cargo los datos de las partidas
          respuestaJSON["tuplas"].forEach(dato => {
              lista.append(crearContenedorPartida(dato));
@@ -1222,10 +1250,18 @@ async function cargarPartidas(filtro = {}) {
   * @param   {int}  numero  Número de páginas
   *
   */
-function crearIndiceLi(numero) {
-    let contendorPaginacion = document.getElementsByClassName("pagination")[0];
-    //Lo limpiamos
-    contendorPaginacion.innerHTML = "";
+function crearPaginacion(numero) {
+    //Comprobamos si existe ya un contenedor de paginación
+    let contenedorPaginacion = document.querySelector(".pagination");
+    //Comprobamos si no existe
+    if(contenedorPaginacion == null){
+        contenedorPaginacion = crearContenedor("div", {"class": "pagination"});
+    }
+    //Si existe lo limpiamos
+    else {
+        contenedorPaginacion.innerHTML = "";
+    }
+    //Creamos el ul
     let lista = document.createElement("ul");
     for (let i = 1; i <= numero; i++){
         let contenedorLi = document.createElement("li");
@@ -1235,7 +1271,9 @@ function crearIndiceLi(numero) {
         lista.append(contenedorLi);
     }
     //Añadimos la lista a la paginación
-    contendorPaginacion.append(lista);
+    contenedorPaginacion.append(lista);
+    //Devolvemos el contenedor
+    return contenedorPaginacion;
 }
 
  /**
@@ -1268,6 +1306,306 @@ function crearIndiceLi(numero) {
     filtros.style.display == "none" ? $(filtros).slideDown(500) : $(filtros).slideUp(500);
  }
 
- function crearPartida() {
-     
+ /**
+  * Crea una partida en la BD
+  * @param {Event}  Evento que dispara
+  */
+async function crearPartida(e) {
+    //Prevenimos que envíe el formulario
+    e.preventDefault();
+    let resultado = document.getElementById("resultadoOperacion")
+    try {
+        let camposOblig = ["fecha", "hora_inicio", "duracion", "plazas_min", "plazas_totales"];
+        //Comprobamos que cubriera todo
+        if(!comprobarCamposOblig(camposOblig)){
+            throw "Debe cubrir todos los campos";
+        }
+        //Comprobamos que la fecha sea válida
+        let fecha = document.getElementById("fecha").value;
+        if(!validarFecha(fecha)) {
+            throw "Debe introducir una fecha válida";
+        }
+        //Datos
+        let juego = document.querySelector("select").options[document.querySelector("select").selectedIndex].value;
+        let hora_inicio = document.getElementById("hora_inicio").value;
+        let duracion = document.getElementById("duracion").value;
+        let plazas_min = document.getElementById("plazas_min").value;
+        let plazas_totales = document.getElementById("plazas_totales").value;
+        let imagen = document.getElementById("imagen_partida").files[0];
+        let datosPartida = {"juego_partida": juego, "fecha": fecha, "hora_inicio": hora_inicio, "duracion": duracion, "plazas_min": plazas_min, "plazas_totales": plazas_totales};
+        //Mensaje que enviaremos
+        const mensajeJSON = new FormData();
+        mensajeJSON.append("imagenPartida", imagen);
+        mensajeJSON.append("datosPartida", JSON.stringify(datosPartida));
+        //Lanzamos la petición
+        const respuesta = await fetch("../php/panelAdministrador.php", {
+            method: "POST",
+            body: mensajeJSON
+        });
+        const respuestaJSON = await respuesta.json();
+        if(Object.hasOwn(respuestaJSON, "error")) {
+            throw respuestaJSON["error"];
+        }
+        resultado.textContent = "Se ha creado la partida con éxito";
+        resultado.removeAttribute("class", "error");
+        resultado.setAttribute("class", "exito");
+    }
+    catch($error) {
+        resultado.textContent = $error;
+        resultado.removeAttribute("class", "exito");
+        resultado.setAttribute("class", "error");
+    }
  }
+
+/**
+ * Carga las opciones de los diferentes juegos
+ *
+ * @param   {DOMElement}  select  Select al que añadirlo
+ *
+ */
+async function cargarOpcionesJuegos(select) {
+    try {
+        //Creamos la petición para pedir los juegos almacenados (su nombre)
+        const respuesta = await fetch("../php/panelAdministrador.php?juego=true", {
+            //Como no pasamos información confidencial lo hacemos por GET
+            method: "GET",
+        });
+        //Traducimos la respuesta
+        const respuestaJSON = await respuesta.json();
+        //Comprobamos que devolviera los juegos mirando que no tenga error
+        if(Object.hasOwn(respuestaJSON, "error")){
+            throw respuestaJSON["error"];
+        }
+        else if(Object.hasOwn(respuestaJSON, "noAdmin")) {
+            //Lo redirige a inicio ya que no es un administrador
+            location.replace("../html/index.html");
+        }
+        //Cargamos los juegos en el select
+        respuestaJSON["juegos"].forEach(juego => {
+            //Creamos el option
+            let opcion = document.createElement("option");
+            opcion.setAttribute("value", juego["id_producto"]);
+            opcion.textContent = juego["nombre"];
+            select.append(opcion);
+        });
+    }
+    catch(error){
+        console.log(error);
+    }
+ }
+
+/**
+ * Restringe el acceso a los que no son usuarios
+ *
+ * @return  {boolean}  Devuelve
+ */
+function restringirAccesoNoRegistrados() {
+    //Compruebo el rol que tiene
+    $rol = sessionStorage.getItem("rol");
+    //Si es undefined (no está registrado)
+    if($rol == undefined || $rol == null){
+        //Lo redirigimos a la página principal
+        location.replace("../html/index.html"); 
+    }
+}
+
+ /**
+  * No permite el acceso a ciertas páginas si no eres admin
+  *
+  */
+ function restringirAccesoNoAdmin() {
+     //Compruebo el rol que tiene
+     $rol = sessionStorage.getItem("rol");
+     if($rol != 1) {
+         //Lo redirigimos a la página principal
+        location.replace("../html/index.html");
+     }
+ }
+
+ /**
+  * Carga la página de filtrar partidas
+  *
+  * @param   {Object}  filtros  Filtros a aplicar tipo {clave: valor}
+  * @param   {int}        Página en la nos encontramos
+  *
+  */
+function cargarPartidasAdmin() {
+    let contenedorAdmin = document.getElementById("panelAdmin");
+    //Limpiamos el contenedor
+    if(contenedorAdmin.firstElementChild.nextElementSibling != null){
+        contenedorAdmin.removeChild(contenedorAdmin.firstElementChild.nextElementSibling);
+    }
+    //Falta botón para cambiar a modo reservas!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //Creamos el contenedor que almacenará todo
+    let contenedor = crearContenedor("div", {"id": "contenedorElementos"});
+    //Formulario de filtrado
+    let formFiltrado = crearContenedor("form", {"id": "filtradoPartida", "action": "../php/panelAdministrador.php", "method": "POST"});
+    //Le añadimos el escuchador al formulario
+    formFiltrado.addEventListener("submit", activarFiltro);
+    //Creamos cada uno de los label e inputs de filtrado
+    let labelJuego = crearElem("label", {"for": "juego_partida"}, "Juego");
+    let inputJuego = crearElem("input", {"type": "text", "name": "juego_partida", "id": "juego_partida"});
+    labelJuego.append(inputJuego);
+    let labelFecha = crearElem("label", {"for": "fecha"}, "Fecha");
+    let inputFecha = crearElem("input", {"type": "date", "name": "fecha", "id": "fecha"});
+    labelFecha.append(inputFecha);
+    let inputSubmit = crearElem("input", {"type": "submit", "value": "Filtrar"});
+    //Añadimos todos al form
+    formFiltrado.append(labelJuego, labelFecha, inputSubmit);
+    //Creamos la tabla
+    let tabla = crearContenedor("table", {"id": "listaElementos"});
+    //Creamos el thead
+    let encabezadoTabla = document.createElement("thead");
+    //Creamos la fila del encabezado menos la última fila del botón
+    let filaEncabezado = crearFilaTabla("th", ["ID", "Juego", "Fecha", "Nº jugadores", "Director partida"]);
+    //Creo el th del botón
+    let encabezadoBoton = crearContenedor("th", {"colspan": "2"});
+    //Creo el botón
+    let botonEncabezado = crearBoton("Nueva partida +");
+    //Añadimos el escuchador
+    botonEncabezado.addEventListener("click", modoCrearPartidasAdmin);
+    //Añadimos todo al encabezado y después a la tabla
+    encabezadoBoton.append(botonEncabezado);
+    filaEncabezado.append(encabezadoBoton);
+    encabezadoTabla.append(filaEncabezado);
+    tabla.append(encabezadoTabla);
+    //Cuerpo de la tabla
+    let cuerpoTabla = document.createElement("tbody");
+    tabla.append(cuerpoTabla);
+    //Añadimos todo al contenedor
+    contenedor.append(formFiltrado, tabla);
+    //Añadimos todo al cuerpo
+    contenedorAdmin.append(contenedor);
+    filtrarPartidasAdmin();
+}
+
+/**
+ * Crea el modo para crear partida
+ */
+function modoCrearPartidasAdmin() {
+    let contenedorAdmin = document.getElementById("panelAdmin");
+    //Limpiamos el contenedor
+    if(contenedorAdmin.firstElementChild.nextElementSibling != null){
+        contenedorAdmin.removeChild(contenedorAdmin.firstElementChild.nextElementSibling);
+    }
+    //Creamos el formulario
+    let formulario = crearElem("form", {"id": "formPanelAdmin", "action": "../php/panelAdministrador.php", "method": "POST"});
+    //Creamos cada uno de los label
+    let labelJuego = crearElem("label", {"for": "juego_partida"}, "Juego");
+    let selectJuego = crearElem("select", {"name": "juego_partida", "id": "juego_partida"});
+    //Creamos sus option
+    cargarOpcionesJuegos(selectJuego);
+    let labelFecha = crearElem("label", {"for": "fecha"}, "Fecha");
+    let inputFecha = crearElem("input", {"type": "date", "name": "fecha", "id": "fecha"});
+    let horaInicio = crearElem("label", {"for": "hora_inicio"}, "Hora de inicio");
+    let inputHoraInicio = crearElem("input", {"type": "time", "name": "hora_inicio", "id": "hora_inicio"});
+    let labelDuracion = crearElem("label", {"for": "duracion"}, "Duración");
+    let inputDuracion = crearElem("input", {"type": "number", "name": "duracion", "id": "duracion"});
+    let labelPlazasMin = crearElem("label", {"for": "plazas_min"}, "Plazas mínimas");
+    let inputPlazasMin = crearElem("input", {"type": "number", "name": "plazas_min", "id": "plazas_min"});
+    let labelPlazasTotales = crearElem("label", {"for": "plazas_totales"}, "Plazas totales");
+    let inputPlazasTotales = crearElem("input", {"type": "number", "name": "plazas_totales", "id": "plazas_totales"});
+    let labelImagenPartida =  crearElem("label", {"for": "imagen_partida"}, "Imagen partida");
+    let inputImagenPartida = crearElem("input", {"type": "file", "name": "imagen_partida", "id": "imagen_partida"});
+    let resultado = crearElem("p", {"id": "resultadoOperacion"});
+    let botonSubmit = crearElem("input", {"type": "submit", "value": "Crear partida"});
+    //Añadimos el escuchador
+    formulario.addEventListener("submit", crearPartida);
+    let botonCancelar = crearBoton("Cancelar", {"type": "button"});
+    //Añadimos ele scuchado al botón
+    botonCancelar.addEventListener("click", cargarPartidasAdmin);
+    //Añadimos todo al formulario
+    formulario.append(labelJuego, selectJuego, labelFecha, inputFecha, horaInicio, inputHoraInicio, labelDuracion, inputDuracion, labelPlazasMin, inputPlazasMin, labelPlazasTotales, inputPlazasTotales, labelImagenPartida, inputImagenPartida, resultado, botonSubmit, botonCancelar);
+    contenedorAdmin.append(formulario);
+}
+
+/**
+ * Llama a filtrar las partidas
+ *
+ * @param   {Event}  e  Evento que lo dispara
+ *
+ */
+function activarFiltro(e){
+    e.preventDefault();
+    pagina = e.target.nodeName == "LI" ? e.target.textContent : 0;
+    //Cogemos los filtros
+    let juego = document.getElementById("juego_partida").value;
+    let fecha = document.getElementById("fecha").value;
+    filtrarPartidasAdmin({"juego_partida": juego, "fecha": fecha}, pagina);
+}
+
+/**
+ * Filtra las partidas según los filtros que le pasemos
+ *
+  * @param   {Object}  filtros  Filtros a aplicar tipo {clave: valor}
+  * @param   {int}        Página en la nos encontramos
+  *
+  */
+async function filtrarPartidasAdmin(filtros = {}, pagina = 0) {
+    let contenedor = document.getElementById("contenedorElementos");
+    let cuerpoTabla = document.querySelector("tbody");
+    //Limpiamos el cuerpo de la tabla
+    cuerpoTabla.innerHTML = "";
+     //Le añadimos la página y el limite de tuplas por pagina
+     filtros["pagina"] = pagina;
+     filtros["limite"] = 7;
+     try {
+         //Crea la petición
+         const respuesta = await fetch("../php/panelAdministrador.php", {
+             method: "POST",
+             header: {"Content-type": "application/json; charset=utf-8"},
+             body: JSON.stringify({"filtrosPartida": filtros})
+         });
+         //Traducimos la respuesta
+         const respuestaJSON = await respuesta.json();
+         //Comprobamos que no diera error
+         if(Object.hasOwn(respuestaJSON, "error")) {
+             throw respuestaJSON["error"];
+         }
+         //Creamos cada fila de la tabla
+         respuestaJSON["partidas"].forEach(datosPartidas => {
+             //La fecha la formateamos a formato Español
+            datosPartidas["fecha"] = new Fecha(datosPartidas["fecha"]).getFecha();
+             let fila = crearFilaTabla("td", Object.values(datosPartidas));
+             //Creamos los dos botones para editar y eliminar
+             let celdaEditar = document.createElement("td");
+             let editar = crearBoton("Editar");
+             celdaEditar.append(editar);
+             let celdaEliminar = document.createElement("td");
+             let eliminar = crearBoton("Eliminar");
+             celdaEliminar.append(eliminar);
+             //Añadimos los botones a la fila
+             fila.append(celdaEditar, celdaEliminar);
+             //Añadimos todo al cuerpo de la tabla
+             cuerpoTabla.append(fila);
+         });
+         //Creamos la paginación
+         contenedor.append(crearPaginacion(respuestaJSON["numPag"]));
+     }
+     catch (error){
+         console.log(error);
+     }
+}
+
+/**
+ * Crea una fila de una tabla
+ *
+ * @param   {string}       tipoCelda           Tipo de celda td o th
+ * @param   {string[]}  textoElementos      Cada uno de los textos de los elementos
+ * @param   {Object}       atributosElementos  Atributos que tendrán todas las celdas
+ *
+ * @return  {DOMElement}                               Fila
+ */
+function crearFilaTabla(tipoCelda, textoElementos, atributosElementos = {}) {
+    //Creamos la fila
+    let fila = document.createElement("tr");
+    //Creamos cada uno de los td
+    textoElementos.forEach(elemento => {
+        let celda = document.createElement(tipoCelda);
+        celda.textContent = elemento;
+        Object.entries(atributosElementos).forEach(atributo => celda.setAttribute(atributo[0], atributo[1]));
+        //Lo añadimos a la fila
+        fila.append(celda);
+    });
+    return fila;
+}
