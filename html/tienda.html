@@ -114,25 +114,89 @@
           <button class="formulario_envio" type="submit">Filtrar</button>
         </div>
       </form>
-      <content id="contenido_tienda">
+
+      <!-- Aquí van los artículos-->
+      <div id="contenido_tienda">
+        <div class="item">
+          <div class="item-imagen">
+            <img src="../img/calendario_prueba.JPG" />
+          </div>
+          <!-- La descripción se carga en más información -->
+          <div class="item-propiedades">
+            <div class="item-nombre">Calendario 2000</div>
+            <div class="item-generos">Aventuras</div>
+            <div class="item-jugadores">2-4 jug.</div>
+            <div class="item-precio">20$/unidad</div>
+            <div class="item-carrito">
+              <!-- Botón Comprar para añadir al carrito -->
+              <!-- A través de js añade el producto al carrito -->
+              <button>Comprar</button>
+            </div>
+          </div>
+        </div>
+        <!-- Más ejemplos que luego borrar de items-->
         <div class="item">
           <div class="item-imagen">
             <img src="../img/calendario_prueba.JPG" />
           </div>
           <div class="item-propiedades">
             <div class="item-nombre">Calendario 2000</div>
-            <div class="item-generos">Aventuras, Misterio</div>
-            <div class="item-jugadores">6 jugadores</div>
-            <div class="item-stock">EN STOCK</div>
-            <div class="item-precio">20$</div>
-            <div class="item-descripcion">
-              Una gran aventura para toda la familia, revive todos los momentos
-              del año. Una cosa espectacular, te lo digo yo. ¡Nuevos dramas de
-              invierno! ¡Rejugable hasta morirte irl!
-            </div>
+            <div class="item-generos">Aventuras</div>
+            <div class="item-jugadores">2-4 jug.</div>
+            <div class="item-precio">20$/unidad</div>
+            <div class="item-carrito"><button>Comprar</button></div>
           </div>
         </div>
-      </content>
+
+        <div class="item">
+          <div class="item-imagen">
+            <img src="../img/calendario_prueba.JPG" />
+          </div>
+          <div class="item-propiedades">
+            <div class="item-nombre">Calendario 2000</div>
+            <div class="item-generos">Terror</div>
+            <div class="item-jugadores">2-4 jug.</div>
+            <div class="item-precio">20$/unidad</div>
+            <div class="item-carrito"><button disabled>Fuera de stock</button></div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-imagen">
+            <img src="../img/calendario_prueba.JPG" />
+          </div>
+          <div class="item-propiedades">
+            <div class="item-nombre">Calendario 2000</div>
+            <div class="item-generos">Aventuras</div>
+            <div class="item-jugadores">2-4 jug.</div>
+            <div class="item-precio">20$/unidad</div>
+            <div class="item-carrito"><button disabled>Fuera de stock</button></div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-imagen">
+            <img src="../img/calendario_prueba.JPG" />
+          </div>
+          <div class="item-propiedades">
+            <div class="item-nombre">Calendario 2000</div>
+            <div class="item-generos">Aventuras</div>
+            <div class="item-jugadores">2-4 jug.</div>
+            <div class="item-precio">20$/unidad</div>
+            <div class="item-carrito"><button disabled>Fuera de stock</button></div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-imagen">
+            <img src="../img/calendario_prueba.JPG" />
+          </div>
+          <div class="item-propiedades">
+            <div class="item-nombre">Calendario 2000</div>
+            <div class="item-generos">Aventuras</div>
+            <div class="item-jugadores">2-4 jug.</div>
+            <div class="item-precio">20$/unidad</div>
+            <div class="item-carrito"><button disabled>Fuera de stock</button></div>
+          </div>
+        </div>
+      </div>
     </main>
     <!-- Script para los select multiples, creado por https://github.com/admirhodzic/multiselect-dropdown-->
     <script src="../js/multiselect-dropdown.js"></script>

@@ -995,6 +995,7 @@ ul li.list-group-item .btn-info {
   }
 }
 main div.title {
+  color: #0291A5;
   text-align: center;
   font-size: 2rem;
   margin: 2%;
@@ -1117,6 +1118,94 @@ form#formulario_tienda div.center_submit button {
   font-size: 16px;
 }
 
+#contenido_tienda {
+  width: 100%;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  display: grid;
+  justify-items: center;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-gap: 1%;
+  grid-auto-rows: minmax(5%, auto);
+}
+#contenido_tienda .item {
+  width: 80%;
+  margin-bottom: 10%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  border: 2px solid #0291A5;
+  padding: 10%;
+}
+#contenido_tienda .item .item-imagen {
+  display: flex;
+  justify-content: center;
+}
+#contenido_tienda .item .item-imagen img {
+  width: 80%;
+}
+#contenido_tienda .item .item-propiedades {
+  margin-top: 8%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+  row-gap: 10%;
+}
+#contenido_tienda .item .item-propiedades div {
+  margin: 1%;
+}
+#contenido_tienda .item .item-propiedades .item-nombre {
+  color: #0291A5;
+  grid-row: 1;
+  grid-column: 1/span 2;
+}
+#contenido_tienda .item .item-propiedades .item-generos {
+  color: #FFB775;
+  grid-row: 2/span 1;
+  grid-column: 1/span 2;
+}
+#contenido_tienda .item .item-propiedades .item-jugadores {
+  grid-row: 3;
+  grid-column: 1;
+}
+#contenido_tienda .item .item-propiedades .item-precio {
+  grid-row: 3;
+  grid-column: 2;
+}
+#contenido_tienda .item .item-propiedades .item-carrito {
+  grid-row: 4;
+  grid-column: 1/span 2;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+#contenido_tienda .item .item-propiedades .item-carrito button {
+  background-color: #0291A5;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  padding: 2% 4%;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+#contenido_tienda .item .item-propiedades .item-carrito button:disabled {
+  background-color: #bfbfbf;
+}
+
+@media screen and (max-width: 768px) {
+  div#contenido_tienda {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+@media screen and (max-width: 540px) {
+  div#contenido_tienda {
+    grid-template-columns: 1fr 1fr;
+  }
+}
 #suscribirse {
   width: 100%;
   height: 100%;
