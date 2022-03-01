@@ -2382,3 +2382,4 @@ async function mostrarResultado(fila, resultado) {
     //Esperamos 1 segundo y cargamos las reservas otra vez
     setTimeout(cargarReservasAdmin, 2000);
 }
+}
