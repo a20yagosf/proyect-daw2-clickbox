@@ -128,6 +128,94 @@ class Bd {
     }
 
     /**
+     * Ejecuta diversas funciones en una transacción
+     *
+     * @param   array  $sentencias  Array de sentencias a ejecutar
+     * @param   array  $datos       Array con los datos a asignar
+     *
+     * @return  mixed               Puede devolver error
+     */
+    public function agregarModDatosNumTransaction($sentencias, $datos) {
+        try {
+            //Creamos la conexión
+            $pdo = $this->conectarBD();
+            //Iniciamos la transacción
+            $pdo->beginTransaction();
+            //Recorremos las sentencias y vamos ejecutándolas
+            for ($i = 0; $i < count($sentencias); $i++){
+                $pdoStatement = $pdo->prepare($sentencias[$i]);
+                if(!$pdoStatement){
+                    throw new \PDOException($pdo->errorInfo()[2]);
+                }
+                //asignamos los datos
+                foreach($datos[$i] as $indice => $valor) {
+                    $dato = is_string($valor) ? \PDO::PARAM_STR : \PDO::PARAM_INT;
+                    $pdoStatement->bindParam(":" . $indice, $valor, $dato);
+                    //Eliminamos el $indice y valor para que no de errores
+                    unset($indice);
+                    unset($valor);
+                }
+                //Lo ejecutamos
+                $resultado = $pdoStatement->execute();
+                if(!$resultado){
+                    throw new \PDOException($pdoStatement->errorInfo()[2]);
+                }
+            }
+            //Si llegamos hasta aquí es que se ejecutó todo
+            $pdo->commit();
+        }
+        //Ambos try catch devuelve el error para mostrarlo por pantalla y poder solucionarlo, cuando lo acabemos quitaremos la muestra de los errores, esto es sólo para desarrollo
+        catch(\PDOException $pdoError) {
+            $pdo->rollBack();
+            return "Error " . $pdoError->getCode() . ": " . $pdoError->getMessage();
+        }
+        catch(\Exception $error) {
+            $pdo->rollBack();
+            return "Error " . $error->getCode() . ": " . $error->getMessage();
+        }
+    }
+
+
+    /**
+     * Método para realizar insert, update o delete (Estático)
+     *
+     * @param   string  $sentencia  Sentencia de la BD a ejecutar
+     * @param   array  $datos      Array con los parámetros a asignar en la función preparada
+     *
+     * @return  mixed             Devuelve el id o error
+     */
+    public function agregarModificarDatosBDNum($sentencia, $datos){
+        try {
+            //Creo la conexión
+            $pdo = $this->conectarBD();
+            //Ejecutamos la sentencia
+            $pdoStatement = $pdo->prepare($sentencia);
+            //Asignamos los valores
+            foreach($datos as $indice => $valor){
+                $tipoDato = is_string($valor) ? \PDO::PARAM_STR : \PDO::PARAM_INT;
+                $pdoStatement->bindParam(":" . $indice, $valor, $tipoDato);
+                //Limpiamos $indice o valor sino da error para los datos a partir del primero
+                unset($indice);
+                unset($valor);
+            }
+            //Ejecutamos y asignamos las variables a la vez
+            $resultado = $pdoStatement->execute();
+            if(!$resultado){
+                throw new \PDOException($pdoStatement->errorInfo()[2]);
+            }
+            $resultado = $pdo->lastInsertId();
+        }
+        //Ambos try catch devuelve el error para mostrarlo por pantalla y poder solucionarlo, cuando lo acabemos quitaremos la muestra de los errores, esto es sólo para desarrollo
+        catch(\PDOException $pdoError) {
+            $resultado = "Error " . $pdoError->getCode() . ": " . $pdoError->getMessage();
+        }
+        catch(\Exception $error) {
+            $resultado = "Error " . $error->getCode() . ": " . $error->getMessage();
+        }
+        return $resultado;
+    }
+
+    /**
      * Método para realizar select (Estático)
      *
      * @param   string  $sentencia  Sentencia de la BD a ejecutar
@@ -143,6 +231,40 @@ class Bd {
             $pdoStatement = $pdo->prepare($sentencia);
             //Ejecutamos y asignamos las variables a la vez
             $resultado = $pdoStatement->execute($datos);
+            if(!$resultado){
+                throw new \PDOException($pdoStatement->errorInfo()[2]);
+            }
+            //Devolvemos el $pdoStatement para poder hacer fetch con él
+            $resultado = $pdoStatement;
+        }
+        //Ambos try catch devuelve el error para mostrarlo por pantalla y poder solucionarlo, cuando lo acabemos quitaremos la muestra de los errores, esto es sólo para desarrollo
+        catch(\PDOException $pdoError) {
+            $resultado = "Error " . $pdoError->getCode() . ": " . $pdoError->getMessage();
+        }
+        catch(\Exception $error) {
+            $resultado = "Error " . $error->getCode() . ": "  . $error->getMessage();
+        }
+        return $resultado;
+    }
+
+    /**
+     * Ejecuta y prepara la sentencia que le pasamos, se usa para sentencias que necesitan números como parámetros
+     *
+     * @param   string  $sentencia  Sentencia a ejecutar
+     * @param   array  $datos      Datos a añadir como parámetros
+     *
+     * @return  mixed                  Devuelve un PDOSTamente o false en caso de error
+     */
+    public function recuperarDatosBDNum($sentencia, $datos = []) {
+        try {
+            //Creo la conexión
+            $pdo = $this->conectarBD();
+            //Ejecutamos la sentencia
+            $pdoStatement = $pdo->prepare($sentencia);
+            //Cargamos los parámetros
+            $this->asignarValoresParam($datos, $pdoStatement);
+            //Ejecutamos y asignamos las variables a la vez
+            $resultado = $pdoStatement->execute();
             if(!$resultado){
                 throw new \PDOException($pdoStatement->errorInfo()[2]);
             }
@@ -197,13 +319,14 @@ class Bd {
                 throw new \Exception("Ya existe un usuario registrado con ese correo");
             }
             //Comprobamos que se subiera bien el fichero y lo movemos a una carpeta en el disco duro
-            $resultado = $this->gestionarFichero($fichero, $datosUsuario["email"]);
+            $carpetaFichero = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR  . "img" . DIRECTORY_SEPARATOR . "usuarios" . DIRECTORY_SEPARATOR  . $datosUsuario["email"];
+            $resultado = $this->gestionarFichero($fichero, $carpetaFichero);
             //Si no se pudo mover mandamos un error
             if(mb_stristr($resultado, "error") != false){
                 throw new \Exception($resultado);
             }
             //Añadimos al array la ruta del archivo para guardarla en la BD
-            $datosUsuario["imagenPerfil"] = $resultado;
+            $datosUsuario["imagenPerfil"] = ".." . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR . $datosUsuario["email"] . DIRECTORY_SEPARATOR . $fichero["name"];
             //Hasheamos la contraseña
             $datosUsuario["pwd"] = password_hash($datosUsuario["pwd"], PASSWORD_DEFAULT);
             //Convertimos todos los campos NO obligatorios que NO se rellenaron a null
@@ -211,7 +334,7 @@ class Bd {
             //Fecha de registro (Como es ahora metemos nosotros la fecha actual) con la zona horaria de Europa, lo mismo para ultima modificación y ultimo acceso
             $fechaRegistro = new DateTime("now");
             //Sentencia para insertar los datos en la BD, no aparece el rol porque por defecto añade el rol estándar en la BD
-            $sentencia = "INSERT INTO usuarios (email, pwd, nombre, apellidos, telefono, fecha_nac, fecha_registro, direccion, fecha_ult_modif, fecha_ult_acceso, rol, genero_favorito, imagen_perfil) VALUES (?, ?, ?, ?, ?, ?, '" . date_format($fechaRegistro, "Y-m-d") .  "', ?, '" . date_format($fechaRegistro, "Y-m-d")  . "', '" . date_format($fechaRegistro, "Y-m-d")  . "', 3, ?, ?);";
+            $sentencia = "INSERT INTO usuarios (email, pwd, nombre, apellidos, telefono, fecha_nac, fecha_registro, direccion, fecha_ult_modif, fecha_ult_acceso, rol, genero_favorito, imagen_perfil) VALUES (?, ?, ?, ?, ?, ?, '" . date_format($fechaRegistro, "Y-m-d") .  "', ?, '" . date_format($fechaRegistro, "Y-m-d")  . "', '" . date_format($fechaRegistro, "Y-m-d")  . "', 2, ?, ?);";
             //Ejecutamos la sentencia mediante la función que asignará los valores a la sentencia preparada y devolverá el resultado
             $resultado = $this->agregarModificarDatosBD($sentencia, $datosUsuario);
         }
@@ -219,6 +342,30 @@ class Bd {
             $resultado = "Error " . $error->getCode() . ": " . $error->getMessage();
         }
         return $resultado;
+    }
+
+    /**
+     * Asigna los valores a los parametros del PDOStatement
+     *
+     * @param   array  $valores       Array de valores a asignar
+     * @param   [type]  $pdoStatement  [$pdoStatement description]
+     *
+     * @return  [type]                 [return description]
+     */
+    private function asignarValoresParam($valores, $pdoStatement) {
+        //Asignamos los valores
+        foreach($valores as $indice => $valor){
+            if(is_array($valor)){
+                $this->asignarValoresParam($valor, $pdoStatement);
+            }
+            else {
+                $dato = is_string($valor) ? \PDO::PARAM_STR : \PDO::PARAM_INT;
+                $pdoStatement->bindParam((":" . $indice),$valor,$dato);
+            }
+            //Eliminamos las variables porque sino la segunda sentencia que añade se lía
+            unset($indice);
+            unset($valor);
+        }
     }
 
     public function loginUsuario($datosUsuario) {
@@ -267,9 +414,8 @@ class Bd {
      *
      * @return  mixed            Si la operación salió bien (boolean) o hubo algún error (string con el error)
      */
-    private function gestionarFichero($fichero, $usuario){
+    public function gestionarFichero($fichero, $carpetaFichero){
         //Carpeta donde guardaremos el fichero
-        $carpetaFichero = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR  . "img" . DIRECTORY_SEPARATOR  . $usuario;
         try {
             //Comprobamos que no hubiese errores en la subida
             if($fichero["error"] != 0){
@@ -284,7 +430,7 @@ class Bd {
             }
             $nuevaRutaArchivo = $carpetaFichero . DIRECTORY_SEPARATOR . $fichero["name"];
             //Movemos el archivo a la carpeta creada
-            $resultado = move_uploaded_file($fichero["tmp_name"], $carpetaFichero . DIRECTORY_SEPARATOR . $fichero["name"]);
+            $resultado = move_uploaded_file($fichero["tmp_name"], $nuevaRutaArchivo);
             //Si no se pudo mover lanzamos una excepción
             if(!$resultado){
                 throw new \RuntimeException("No se puede realizar el cambio de localización del archivo");
@@ -326,3 +472,4 @@ class Bd {
         return isset($resultado["pwd"]) ? $resultado["pwd"]: false;
     }
 }
+

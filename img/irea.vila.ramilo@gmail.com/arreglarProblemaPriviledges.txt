@@ -1,2 +1,0 @@
-En el shell de phpadmin ejecutar:
-mysqlcheck -u root -p --auto-repair --check --optimize --all-databases para reparar

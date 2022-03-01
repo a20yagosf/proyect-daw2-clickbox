@@ -26,10 +26,10 @@ trait Formulario {
     /**
      * Valida cada uno de los campos (No lo devuelve ya se ven afectados)
      *
-     * @param   array    $datos  Array con los datos a validar 
+     * @param   mixed    $datos  Array con los datos a validar o un dato solo
      *
      */
-    private function validarCamposForm(&$datos, $index = 0) {
+    protected function validarCamposForm(&$datos, $index = 0) {
         //Comprueba si es un array
         if(is_array($datos)){
             array_walk($datos, [$this, "validarCamposForm"]);
@@ -44,7 +44,7 @@ trait Formulario {
         }
     }
 
-    private function comprobarCamposNoOblig(&$campos, $camposOblig) {
+    protected function comprobarCamposNoOblig(&$campos, $camposOblig) {
         //Conseguimos sólo los campos no obligatorios
         $camposNoOblig = array_diff($campos, $camposOblig);
         //Recorremos los campos no obligatorios y comprobamos si no se ha introducido nada, si es el caso, introducimos null

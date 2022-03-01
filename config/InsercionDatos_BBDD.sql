@@ -1,5 +1,5 @@
 -- Ponemos que use esa BD 
-USE a2da_clickbox ;
+USE a2da_clickbox;
 
 -- Creamos los roles
 INSERT INTO roles 

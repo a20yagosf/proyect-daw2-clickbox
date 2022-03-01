@@ -19,7 +19,7 @@
   border: none;
   padding: 2% 3%;
   font-size: $fontSize;
-  border-radius:  $borderRadius;
+  border-radius: $borderRadius;
   color: white;
   cursor: pointer;
   //Para las transiciones
@@ -66,7 +66,7 @@
 }
 
 /// Mixin para cada uno de los input o select del formulario para tener un diseño predefinido
-@mixin inputFormulario(){
+@mixin inputFormulario() {
   //Posición
   margin: 2% 0%;
   padding: 1%;
@@ -76,6 +76,16 @@
   border: 1px solid $colorPrincipal;
   outline-color: $colorSecundario;
   transition: all 1s ease-in-out;
+}
+
+@mixin botonNoActivo() {
+  background-color: $botonNoActivo;
+  box-shadow: inset 0px 0px 10px 0px rgba(0, 0, 0, 0.438);
+  transition: all 0.5s ease-in-out;
+
+  &:hover {
+    background-color: oscurecerColor($botonNoActivo);
+  }
 }
 
 //Functiones
@@ -105,7 +115,6 @@
   font-family: "Resolve";
   src: url("../font/Resolve-Light.otf");
 }
-
 
 //Animaciones
 //Animación para mover el texto de la alerta todo el rato

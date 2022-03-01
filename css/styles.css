@@ -870,8 +870,21 @@ main#partidas-main {
   padding: 3%;
 }
 
+#divBloqueaPantalla {
+  width: 100%;
+  height: 100%;
+  background-color: green;
+  position: absolute;
+  inset-block-start: 0%;
+  z-index: 5;
+}
 #info_partidas, #filtro, #result_panel, .pagination {
-  margin: 3%;
+  padding: 3%;
+}
+
+#filtro .multiselect-dropdown {
+  width: 100% !important;
+  font-size: small;
 }
 
 .list-group {
@@ -933,6 +946,7 @@ ul.list-group {
 ul li.list-group-item {
   display: flex;
   padding: 5%;
+  justify-content: space-between;
 }
 ul li.list-group-item div.image img {
   width: 70%;
@@ -1492,32 +1506,9 @@ form#formulario_tienda div.center_submit button {
   flex-basis: 100%;
 }
 #login form p {
-  display: none;
   -webkit-margin-after: 2%;
           margin-block-end: 2%;
   position: relative;
-}
-#login form .error, #login form .exito {
-  display: block;
-  color: #ff8e75;
-}
-#login form .error::before, #login form .exito::before {
-  content: "";
-  display: inline-block;
-  width: 25px;
-  height: 25px;
-  position: relative;
-  inset-inline-start: -12.5px;
-  inset-block-start: 50%;
-  background-image: url("../img/iconos/iconoError.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-}
-#login form .exito {
-  color: #51a347;
-}
-#login form .exito::before {
-  background-image: url("../img/iconos/iconoExito.svg");
 }
 #login .acordeon {
   border-radius: 10px;
@@ -1663,6 +1654,30 @@ form#formulario_tienda div.center_submit button {
   #login form input[type=submit] {
     font-size: 1.6rem;
   }
+}
+
+.error, .exito {
+  display: block;
+  color: #ff8e75;
+}
+.error::before, .exito::before {
+  content: "";
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  position: relative;
+  inset-inline-start: -12.5px;
+  inset-block-start: 50%;
+  background-image: url("../img/iconos/iconoError.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.exito {
+  color: #51a347;
+}
+.exito::before {
+  background-image: url("../img/iconos/iconoExito.svg");
 }
 
 .campoOblig::after {
@@ -1986,7 +2001,9 @@ h2, h3 {
 #panelAdmin > div:first-of-type button:hover {
   background-color: #03bdd7;
 }
-#panelAdmin > div:first-of-type a {
+#panelAdmin > div:first-of-type > a {
+  -webkit-border-after: 1px solid #03bdd7;
+          border-block-end: 1px solid #03bdd7;
   display: none;
 }
 #panelAdmin #formPanelAdmin {
@@ -2003,13 +2020,46 @@ h2, h3 {
   align-items: center;
   justify-content: center;
 }
+#panelAdmin #formPanelAdmin p {
+  flex-basis: 100%;
+  text-align: center;
+}
 #panelAdmin #formPanelAdmin h2 {
   padding: 1% 0%;
   flex-basis: 100%;
   text-align: center;
 }
-#panelAdmin #formPanelAdmin input, #panelAdmin #formPanelAdmin label, #panelAdmin #formPanelAdmin select {
+#panelAdmin #formPanelAdmin input, #panelAdmin #formPanelAdmin label, #panelAdmin #formPanelAdmin select, #panelAdmin #formPanelAdmin .inputDesplegable {
   flex-basis: 50%;
+}
+#panelAdmin #formPanelAdmin .inputDesplegable {
+  position: relative;
+}
+#panelAdmin #formPanelAdmin .inputDesplegable input {
+  margin: 2% 0%;
+  padding: 1%;
+  font-family: "Resolve";
+  border-radius: 5px;
+  border: 1px solid #0291A5;
+  outline-color: #FFB775;
+  transition: all 1s ease-in-out;
+  width: 100%;
+  margin: 0%;
+  padding: 2%;
+}
+#panelAdmin #formPanelAdmin .inputDesplegable ul {
+  position: absolute;
+  background-color: white;
+  padding: 0px;
+  width: 100%;
+  border: 1px solid #0291A5;
+}
+#panelAdmin #formPanelAdmin .inputDesplegable ul li {
+  padding: 1%;
+  list-style: none;
+}
+#panelAdmin #formPanelAdmin .inputDesplegable ul li:hover {
+  background-color: #03bdd7;
 }
 #panelAdmin #formPanelAdmin input, #panelAdmin #formPanelAdmin select {
   margin: 2% 0%;
@@ -2039,6 +2089,21 @@ h2, h3 {
 #panelAdmin #formPanelAdmin input[type=submit]:hover, #panelAdmin #formPanelAdmin button:hover {
   background-color: #03bdd7;
 }
+#panelAdmin #filtradoPartida input[type=submit] {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.2em;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  padding: 0% 0.5%;
+}
+#panelAdmin #filtradoPartida input[type=submit]:hover {
+  background-color: #03bdd7;
+}
 #panelAdmin #contenedorElementos {
   width: 90%;
   height: auto;
@@ -2048,6 +2113,7 @@ h2, h3 {
   font-size: 1.2em;
   border-radius: 0px 0px 10px 10px;
   border: 1px solid #0291A5;
+  position: relative;
 }
 #panelAdmin #contenedorElementos form {
   -webkit-margin-after: 3%;
@@ -2073,6 +2139,22 @@ h2, h3 {
   color: #0291A5;
   -webkit-padding-after: 1%;
           padding-block-end: 1%;
+}
+#panelAdmin #contenedorElementos thead th button {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.3rem;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  padding: 0.5%;
+  margin: auto;
+}
+#panelAdmin #contenedorElementos thead th button:hover {
+  background-color: #03bdd7;
 }
 #panelAdmin #contenedorElementos tbody td {
   padding: 0.3% 0%;
@@ -2101,6 +2183,9 @@ h2, h3 {
     flex-wrap: wrap;
     width: 100%;
     background-color: #0291A5;
+  }
+  #panelAdmin > div:first-of-type a {
+    display: inline-block;
   }
   #panelAdmin > div:first-of-type ul {
     flex-basis: 100%;
@@ -2144,6 +2229,15 @@ h2, h3 {
   #panelAdmin #contenedorElementos {
     width: 100%;
   }
+  #panelAdmin #contenedorElementos > button {
+    font-size: 1.3rem;
+    position: relative;
+    padding: 1% 3%;
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+    -webkit-margin-after: 2%;
+            margin-block-end: 2%;
+  }
   #panelAdmin #contenedorElementos form label, #panelAdmin #contenedorElementos form input, #panelAdmin #contenedorElementos form select {
     flex-basis: 100%;
   }
@@ -2175,10 +2269,19 @@ h2, h3 {
     display: none;
   }
   #panelAdmin #formPanelAdmin {
-    height: 90%;
+    height: 80%;
   }
   #panelAdmin #contenedorElementos {
     width: 100%;
+  }
+  #panelAdmin #contenedorElementos > button {
+    font-size: 1.1rem;
+    position: absolute;
+    padding: 0.5%;
+    inset-inline-end: 2%;
+    transform: translateY(3%);
+    -webkit-margin-after: 2%;
+            margin-block-end: 2%;
   }
   #panelAdmin #contenedorElementos form {
     align-items: center;
@@ -2198,6 +2301,43 @@ h2, h3 {
     -webkit-margin-before: 5%;
             margin-block-start: 5%;
   }
+}
+
+#contenedorBotones {
+  -webkit-margin-after: 2%;
+          margin-block-end: 2%;
+  display: flex;
+  justify-content: center;
+}
+#contenedorBotones button {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.1em;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  display: inline-block;
+  padding: 1%;
+}
+#contenedorBotones button:hover {
+  background-color: #03bdd7;
+}
+#contenedorBotones button:first-of-type {
+  border-radius: 10px 0px 0px 10px;
+}
+#contenedorBotones button:last-of-type {
+  border-radius: 0px 10px 10px 0px;
+}
+#contenedorBotones .noActivo {
+  background-color: #bfbfbf;
+  box-shadow: inset 0px 0px 10px 0px rgba(0, 0, 0, 0.438);
+  transition: all 0.5s ease-in-out;
+}
+#contenedorBotones .noActivo:hover {
+  background-color: #8c8c8c;
 }
 
 footer {

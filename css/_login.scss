@@ -59,13 +59,7 @@
 
         //Clase para poner un fondo gris al elemento y un poco de sombra para que se diferencia bin
         .noActivo {
-            background-color: $botonNoActivo;
-            box-shadow: inset 0px 0px 10px 0px rgba(0, 0, 0, 0.438);
-            transition: all 0.5s ease-in-out;
-
-            &:hover {
-                background-color: oscurecerColor($botonNoActivo)
-            }
+            @include botonNoActivo();
         }
     }
 
@@ -128,40 +122,8 @@
 
          //Párrafo donde se muestra si se creó con éxito o se produjo algún error al registrarnos
         p {
-            display: none;
             margin-block-end: 2%;
             position: relative;
-        }
-
-        //Clase para poner un icono antes del párrafo para mostrar que hubo un error
-        .error {
-            display: block;
-            color: $colorError;
-
-            &::before {
-                content: "";
-                display: inline-block;
-                width: $sizeIconoInfo;
-                height: $sizeIconoInfo;
-                //Posicionamiento
-                position: relative;
-                inset-inline-start: math.div(-$sizeIconoInfo, 2);
-                inset-block-start: 50%;
-                //Icono de alerta
-                background-image: url("../img/iconos/iconoError.svg");
-                background-repeat: no-repeat;
-                background-size: contain;
-            }
-        }
-
-        //Clase para poner un icono antes del párrafo para mostrar que fue un éxito
-        .exito {
-            @extend .error;
-            color: $colorExito;
-
-            &::before {
-                background-image: url("../img/iconos/iconoExito.svg");
-            }
         }
     }
 
@@ -333,6 +295,37 @@
                 font-size: 1.6rem;
             }
         }
+    }
+}
+
+ //Clase para poner un icono antes del párrafo para mostrar que hubo un error
+ .error {
+    display: block;
+    color: $colorError;
+
+    &::before {
+        content: "";
+        display: inline-block;
+        width: $sizeIconoInfo;
+        height: $sizeIconoInfo;
+        //Posicionamiento
+        position: relative;
+        inset-inline-start: math.div(-$sizeIconoInfo, 2);
+        inset-block-start: 50%;
+        //Icono de alerta
+        background-image: url("../img/iconos/iconoError.svg");
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+}
+
+//Clase para poner un icono antes del párrafo para mostrar que fue un éxito
+.exito {
+    @extend .error;
+    color: $colorExito;
+
+    &::before {
+        background-image: url("../img/iconos/iconoExito.svg");
     }
 }
 

@@ -2,7 +2,16 @@ main#partidas-main{
   padding: 3%;
 }
 #info_partidas, #filtro, #result_panel, .pagination {
-    margin: 3%;
+    padding: 3%;
+  }
+
+  #filtro {
+    // Dado que los dropdowns vienen de un script externo modificaremos
+    // su tamaño sobreescribiendo el valor
+      .multiselect-dropdown {
+        width: 100% !important;
+        font-size: small;
+    }
   }
 
 .list-group {
@@ -72,6 +81,7 @@ ul.list-group {
 ul li.list-group-item {
   display: flex;
   padding: 5%;
+  justify-content: space-between;
 
   div.image {
     img {

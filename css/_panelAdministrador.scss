@@ -70,7 +70,9 @@
         }
 
         //Enlace para abrir y cerrar los filtros en Ipad y móvil
-        a {
+        & > a {
+            //Border bottom
+            border-block-end: 1px solid aclararColor($colorPrincipal);
             display: none;
         }
     }
@@ -90,6 +92,12 @@
         align-items: center;
         justify-content: center;
 
+        //Párrafo donde se muestra el mensaje de éxito o error
+        p {
+            flex-basis: 100%;
+            text-align: center;
+        }
+
         //Titulo sección
         h2 {
             padding: 1% 0%;
@@ -98,8 +106,36 @@
         }
 
 
-        input, label, select {
+        input, label, select, .inputDesplegable {
             flex-basis: calc(100%/2);
+        }
+
+        .inputDesplegable {
+            position: relative;
+
+            input {
+                @include inputFormulario();
+                width: 100%;
+                margin: 0%;
+                padding: 2%;
+            }
+
+            ul {
+                position: absolute;
+                background-color: white;
+                padding: 0px;
+                width: 100%;
+                border: 1px solid $colorPrincipal;
+
+                li {
+                    padding: 1%;
+                    list-style: none;
+
+                    &:hover {
+                        background-color: aclararColor($colorPrincipal);
+                    }
+                }
+            }
         }
 
         input, select {
@@ -117,6 +153,13 @@
         }
     }
 
+    #filtradoPartida {
+        input[type='submit'] {
+            @include boton ($colorPrincipal, 1.2em);
+            padding: 0% 0.5%
+        }
+    }
+
     //Contenedor con todas las cajas a mostrar
     #contenedorElementos {
         @include contenedor(90%, auto, $colorLetra);
@@ -126,6 +169,8 @@
         font-size: 1.2em;
         border-radius: 0px 0px $borderRadius $borderRadius;
         border: 1px solid $colorPrincipal;
+        position: relative;
+
 
         form {
             margin-block-end: 3%;
@@ -152,6 +197,13 @@
                 color: $colorPrincipal;
                 //Margin bottom
                 padding-block-end: 1%;
+
+                //Botón para crear partidas
+                button {
+                    @include boton($colorPrincipal, 1.3rem);
+                    padding: 0.5%;
+                    margin: auto;
+                }
             }
         }
 
@@ -172,7 +224,7 @@
         }
     }
 
-    //Adaptación para móvil del carousel 
+    //Adaptación para móvil
     @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
         & {
 
@@ -180,6 +232,10 @@
                 flex-wrap: wrap;
                 width: 100%;
                 background-color: $colorPrincipal;
+
+                a {
+                    display: inline-block;
+                }
 
                 ul {
                     flex-basis: 100%;
@@ -237,6 +293,18 @@
             #contenedorElementos {
                 width: 100%;
 
+                //Botón para crear partidas
+                & > button {
+                    font-size: 1.3rem;
+                    position: relative;
+                    padding: 1% 3%;
+                    //Left
+                    inset-inline-start: 50%;
+                    transform: translateX(-50%);
+                    //Margin-bottom
+                    margin-block-end: 2%;
+                }
+
                 form {
                     label, input, select {
                         flex-basis: 100%;
@@ -268,7 +336,7 @@
         }
     }
 
-     //Adaptación para tablet de carousel
+     //Adaptación para tablet
      @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px), (aspect-ratio: 1/1) and (min-width: 540px)  {
          & {
             height: 75vh;
@@ -282,12 +350,24 @@
             }
 
             #formPanelAdmin {
-                height: 90%;
+                height: 80%;
             }
 
             //Contenedor con todas las cajas a mostrar
             #contenedorElementos {
                 width: 100%;
+
+                //Botón para crear partidas
+                & > button {
+                    font-size: 1.1rem;
+                    position: absolute;
+                    padding: 0.5%;
+                    //Right
+                    inset-inline-end: 2%;
+                    transform: translateY(3%);
+                    //Margin-bottom
+                    margin-block-end: 2%;
+                }
 
                 form {
                     align-items: center;
@@ -311,5 +391,32 @@
                 }
             }
          }
+    }
+}
+
+//Div con los botones para alternar entre partidas y reservas
+#contenedorBotones {
+    //Margin bottom
+    margin-block-end: 2%;
+    //Flex como padre
+    display: flex;
+    justify-content: center;
+
+    button {
+        @include boton($colorPrincipal, 1.1em);
+        display: inline-block;
+        padding: 1%;
+
+        &:first-of-type {
+            border-radius: $borderRadius 0px 0px $borderRadius;
+        }
+
+        &:last-of-type {
+            border-radius: 0px $borderRadius $borderRadius 0px;
+        }
+    }
+
+    .noActivo {
+        @include botonNoActivo();
     }
 }

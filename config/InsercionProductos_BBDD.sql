@@ -9,76 +9,93 @@ START TRANSACTION;
 -- (NOMBRE, NUM_JUG, PRECIO, STOCK, DESCRIPCION, TEMATICA) 
 -- NOTA: CAMBIAR EL FILTRO DE NUM JUGADORES EN LA TIENDA HASTA 2 JUGADORES - HASTA 4 JUGADORES - HASTA MÁS DE 4
 INSERT INTO productos
-	(nombre, num_jug, precio, stock) 
+	(nombre, precio, stock, imagen_producto) 
 		VALUES 
-	("Catán", "3-4","40","50"),
-	("Bienvenido a la mazmorra", "2-4","15","25"),
-  ("Código Secreto", "2-8","19","100"),
-  ("Timeline", "2-8","12","80"),
-  ("Patchwork", "2","18","20"),
-  ("Mondrian", "2-4","25","50"),
-  ("Osopark", "2-4","27","50"),
-  ("Torre de gatos", "2-4","18","50"),
-  ("Demon Worker", "3-4","28","50"),
-  ("Vampiro: La Mascarada 5ª edición", "2-8","40","50"),
-  ("Maho Shojo", "3-6","30","50"),
-  ("Luna Capital", "1-4","35","50"),
-  ("Plata", "2-6","10","50"),
-  ("Lapsus", "2-8","14","50"),
-  ("The Game", "1-5","14","50"),
-  ("Not Alone", "2-7","18","50"),
-  ("Space Opera", "2-4","26","50"),
-  ("4 Seasons", "2","14","50"),
-  ("Sword Art Online: Sword of fellows", "1-4","27","50"),
-  ("Axio", "2-4","30","50"),
-  ("Trapwords", "4-8","10","50"),
-  ("One key", "2-6","22","50"),
-  ("On the origin of species", "2-4","18","50"),
-  ("Wingspan", "1-5","27","50"),
-  ("The Magnificient", "1-4","50","50"),
-  ("Cat Café", "2-4","15","50"),
-   ("Kitchen rush", "1-4","46","50"),
+	("Catán", 40, 50, "../img/juegos/catan.jpg"),
+	("Bienvenido a la mazmorra", 15, 25, "../img/juegos/bienvenidoAlaMazmorra.jpg"),
+  ("Código Secreto", 19 , 100, "../img/juegos/codigoSecreto.png"),
+  ("Timeline", 12 , 80, "../img/juegos/timeline.jpg"),
+  ("Patchwork",  18 , 20, "../img/juegos/patchwork.jpg"),
+  ("Mondrian",25,50, "../img/imagenNoDisponible.jpg"),
+  ("Osopark", 27 , 50, "../img/juegos/Osopark.jpg"),
+  ("Torre de gatos", 18 , 50, "../img/juegos/Torredegatos.jpg"),
+  ("Demon Worker",28,50, "../img/juegos/DemonWorker.jpg"),
+  ("Vampiro: La Mascarada 5ª edición",40,50, "../img/juegos/Vampiro_LaMascarada.jpg"),
+  ("Maho Shojo",30,50, "../img/imagenNoDisponible.jpg"),
+  ("Luna Capital",35,50, "../img/imagenNoDisponible.jpg"),
+  ("Plata",10,50, "../img/imagenNoDisponible.jpg"),
+  ("Lapsus",14,50, "../img/imagenNoDisponible.jpg"),
+  ("The Game",14,50, "../img/imagenNoDisponible.jpg"),
+  ("Not Alone", 18,50, "../img/imagenNoDisponible.jpg"),
+  ("Space Opera",26,50, "../img/imagenNoDisponible.jpg"),
+  ("4 Seasons",14,50, "../img/juegos/4Seasons.jpg"),
+  ("Sword Art Online: Sword of fellows",27,50, "../img/juegos/SwordArtOnline_Swordoffellows.jpg"),
+  ("Axio",30,50,  "../img/juegos/Axio.jpg"),
+  ("Trapwords",10,50, "../img/imagenNoDisponible.jpg"),
+  ("One key",22,50, "../img/imagenNoDisponible.jpg"),
+  ("On the origin of species",18,50, "../img/juegos/Ontheoriginofspecies.jpg"),
+  ("Wingspan", 27,50, "../img/juegos/Wingspan.jpg"),
+  ("The Magnificient",50,50, "../img/imagenNoDisponible.jpg"),
+  ("Cat Café",15,50, "../img/juegos/Catcafe.jpg"),
+   ("Kitchen rush",46,50, "../img/juegos/Kitchenrush.jpg"),
     -- accesorios
-  ("Dado de 20 caras","NO","1","200"),
-  ("Fundas de cartas","NO","5","200");
-COMMIT;
-
+  ("Dado de 20 caras", 1,200, "../accesorios/Dado20Caras.jpg"),
+  ("Fundas de cartas", 5,200, "../accesorios/FundaCartas.jpg");
 
 INSERT INTO juegos
-    (juego) 
+    (juego, num_jug, genero) 
 		VALUES
-    ("1"),
-    ("2"),
-    ("3"),
-    ("4"),
-    ("5"),
-    ("6"),
-    ("7"),
-    ("8"),
-    ("9"),
-    ("10"),
-    ("11"),
-    ("12"),
-    ("13"),
-    ("14"),
-    ("15"),
-    ("16"),
-    ("17"),
-    ("18"),
-    ("19"),
-    ("20"),
-    ("21"),
-    ("22"),
-    ("23"),
-    ("24"),
-    ("25"),
-    ("26"),
-    ("27");
+    (1, "3-4", "Estrategia"),
+    (2,  "2-4", "Competitivo"),
+    (3,  "2-8", "Competitivo"),
+    (4, "2-8", "Cartas"),
+    (5, "2", "Estrategia"),
+    (6,  "2-4", "Abstracto"),
+    (7, "2-4", "Gestión"),
+    (8, "2-4", "Competitivo"),
+    (9, "3-4", "Competitivo"),
+    (10,  "2-8","Terror"),
+    (11, "3-6", "Anime"),
+    (12, "1-4", "Estrategia"),
+    (13, "2-6", "Competitivo"),
+    (14, "2-8", "Abstracto"),
+    (15, "1-5", "Abstracto"),
+    (16, "2-7", "Terror"),
+    (17, "2-4", "Estrategia"),
+    (18,"1-4", "Cartas"),
+    (19,"2","Anime"),
+    (20,"2-4", "Losetas"),
+    (21, "4-8", "Dungeon Crawler"),
+    (22,"2-6", "Cartas"),
+    (23, "2-4", "Estrategia"),
+    (24, "1-5", "Deck Building"),
+    (25,  "1-4", "Competitivo"),
+    (26,"2-4", "Competitivo"),
+    (27, "1-4", "Familiar");
 
 INSERT INTO accesorios
     (accesorio) 
 		VALUES
-    ("28"),
-    ("29");
+    (28),
+    (29);
     
 COMMIT;
+
+/**
+id_partida INT UNSIGNED AUTO_INCREMENT NOT NULL,
+   plazas_min TINYINT NOT NULL,
+   plazas_totales TINYINT NOT NULL,
+   fecha DATE NOT NULL,
+   hora_inicio TIME(0) NOT NULL,
+   duracion SMALLINT NOT NULL,
+   imagen_partida VARCHAR(250) NOT NULL,
+   -- RELACIONES 
+   director_partida VARCHAR(150) NOT NULL,
+   juego_partida INT UNSIGNED NOT NULL,
+   -- KEYS Y CONSTRAINS 
+   PRIMARY KEY (id_partida),
+   FOREIGN KEY (director_partida) REFERENCES usuarios (email)
+		ON DELETE RESTRICT
+      ON UPDATE CASCADE,
+	FOREIGN KEY (juego_partida) REFERENCES juegos (juego)
+  **/
