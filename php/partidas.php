@@ -9,14 +9,25 @@ try {
     $filtros = (array)json_decode(file_get_contents("php://input"));
     //Cojo el usuario de la variable de sesión
     $usuario = new user($_SESSION["usuario"]["email"]);
-    $datosPartidas = $usuario->filtarPartidas($filtros);
-    //Compruebo que me devolviera algo
-    if(!is_array($datosPartidas)){
-        throw new \Exception($datosPartidas);
+    //Reservar partida
+    if(isset($filtros["partidaReservar"])){
+        $usuario->reservarPartida($filtros["partidaReservar"], $usuario->getEmail());
+        $datosPartidas = ["exito" => "reservado con éxito"];
     }
-    else if(count($datosPartidas["tuplas"]) == 0){
-        throw new \Exception("No hay ninguna partida");
+    //Filtrar las partidas
+    else {
+        $datosPartidas = $usuario->filtarPartidas($filtros);
+        //Compruebo que me devolviera algo
+        if(!is_array($datosPartidas)){
+            throw new \Exception($datosPartidas);
+        }
+        else if(count($datosPartidas["tuplas"]) == 0){
+            throw new \Exception("No hay ninguna partida");
+        }
     }
+}
+catch(\PDOException $pdoError){
+    $datosPartidas = ["error" => $pdoError->getMessage()];
 }
 catch(\Exception $error){
     $datosPartidas = ["error" => $error->getMessage()];

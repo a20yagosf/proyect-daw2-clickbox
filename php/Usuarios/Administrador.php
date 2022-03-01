@@ -145,8 +145,109 @@ class Administrador extends user{
             throw new \PDOException($resultado);
         }
     }
-    public function aceptarSolicitudPartida(){
 
+    /**
+     * Acepta la solicitud de reserva del usuairo
+     *
+     * @param   array  $datosReserva  Array con los datos a agregar en la consulta (id_partida e usuario)
+     *
+     * @return  void                 No devuelve nada
+     */
+    public function aceptarSolicitudPartida ($datosReserva) {
+        $this->validarCamposForm($datosReserva);
+        //Instanciamos bd
+        $bd = new bd();
+        $sentencia = "UPDATE usuarios_partidas SET reservada = 1 WHERE partida = :id_partida AND usuario = :usuario;";
+        //Convertimos el id  a int ya que como viene de json viene como string
+        $datosReserva["id_partida"] = intval($datosReserva["id_partida"]);
+        $resultado = $bd->agregarModificarDatosBDNum($sentencia, $datosReserva);
+        if(is_string($resultado) && stripos($resultado, "error") !== false){
+            throw new \PDOException($resultado);
+        }
+    }
+
+    /**
+     * Elimina la solicitud de reserva
+     *
+     * @param   array  $datosReserva  Array con los datos a agregar (id_partida e usuario)
+     *
+     * @return  void                 No devuelve nada
+     */
+    public function rechazarSolicitudPartida($datosReserva) {
+        $this->validarCamposForm($datosReserva);
+        //Instanciamos bd
+        $bd = new bd();
+        $sentencia = "DELETE FROM usuarios_partidas WHERE partida = :id_partida AND usuario = :usuario;";
+        //Convertimos el id  a int ya que como viene de json viene como string
+        $datosReserva["id_partida"] = intval($datosReserva["id_partida"]);
+        $resultado = $bd->agregarModificarDatosBDNum($sentencia, $datosReserva);
+        if(is_string($resultado) && stripos($resultado, "error") !== false){
+            throw new \PDOException($resultado);
+        }
+    }
+
+    public function filtrarReservas($datosPartida) {
+        try {
+            //Validamos los campos
+            $this->validarCamposForm($datosPartida);
+            //Comprobamos las fechas
+            $fecha1 = $datosPartida["fecha"] ?? "";
+            $fecha2 = $datosPartida["fechaFin"] ?? "";
+            $fechas = $this->comprobarFechas($fecha1, $fecha2, false);
+            //Parametros que le vamos a pasar para filtrar los datos
+            $datosFiltrado = [];
+            //Sentencias
+            //Sentencia para contar el número de páginas es como la normal pero contando las tuplas sin limitar
+            $sentenciaNumPag = "SELECT COUNT(UP.id_partida_reservada) as num_pag FROM usuarios_partidas as UP";
+            //Sentenica para los datos
+            $sentencia = "SELECT UP.partida as id_partida, UP.usuario, P.fecha, PR.nombre, P.director_partida  FROM usuarios_partidas as UP INNER JOIN partidas as P ON UP.reservada = 0 AND UP.partida = P.id_partida INNER JOIN productos as PR ON P.juego_partida = PR.id_producto";
+            //Compruebo si se aplicó algún filtro
+            if(!empty($datosPartida["usuario"])){
+                $sentenciaNumPag .= " AND (UP.usuario LIKE :usuario)";
+                $sentencia .= " AND (UP.usuario LIKE :usuario)";
+                //Convertimos el elemento a int ya que como viene de  JS viene como cadena
+                $datosFiltrado["usuario"] = "%" . $datosPartida["usuario"] . "%";
+            }
+            //Compruebo cuantas fechas tengo
+            if(count($fechas) == 2) {
+                $sentenciaNumPag .= " AND (DATE(P.fecha) BETWEEN :fechaIni AND :fechaFin)";
+                $sentencia .= " AND (DATE(P.fecha) BETWEEN :fechaIni AND :fechaFin)";
+                $datosFiltrado["fechaIni"] = $fechas[0];
+                $datosFiltrado["fechaFin"] = $fechas[1];
+            }
+            else if(count($fechas) == 1){
+                $sentenciaNumPag .= " AND (DATE(P.fecha) >= :fechaIni)";
+                $sentencia .= " AND (DATE(P.fecha) >= :fechaIni)";
+                $datosFiltrado["fechaIni"] = $fechas[0];
+            }
+            //Calculamos el número de páginas
+            $numPag = $this->calcularNumPag($sentenciaNumPag, $datosFiltrado);
+            //Añadimos el límite para la sentencia que recupera los datos
+            $sentencia .= " LIMIT :pagina, :limite ;";
+            //Convertimos los elementos a int ya que como viene de  JS viene como cadena
+            $datosFiltrado["pagina"] = intval($datosPartida["pagina"]);
+            $datosFiltrado["limite"] = intval($datosPartida["limite"]); 
+            //Instanciamos la bd
+            $bd = new bd();
+            //Envio la petición
+            $pdoStatement = $bd->recuperarDatosBDNum($sentencia, $datosFiltrado);
+            if(!$pdoStatement instanceof \PDOStatement){
+                throw new \PDOException($pdoStatement);
+            }
+            //Cogemos los valores con fetchAll ya que los tenemos limitados, como mucho devuelve 7 tuplas
+            $tuplas = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
+            if(!is_nan(intval($numPag))){
+                $numPag = floor($numPag / $datosFiltrado["limite"]);
+            }
+            $respuesta = ["numPag" => $numPag, "reservas" => $tuplas];
+        }
+        catch(\PDOException $pdoError) {
+            $respuesta = "Error " . $pdoError->getCode() . " :" . $pdoError->getMessage();
+        }
+        catch(\Exception $error){
+            $respuesta = "Error " . $error->getCode() . " :" . $error->getMessage();
+        }
+        return $respuesta;
     }
 
     /**

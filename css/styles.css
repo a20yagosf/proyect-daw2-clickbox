@@ -866,6 +866,14 @@ main {
   background-repeat: repeat-y;
 }
 
+#divBloqueaPantalla {
+  width: 100%;
+  height: 100%;
+  background-color: green;
+  position: absolute;
+  inset-block-start: 0%;
+  z-index: 5;
+}
 #info_partidas, #filtro, #result_panel, .pagination {
   padding: 3%;
 }
@@ -1282,7 +1290,6 @@ ul li.list-group-item .btn-info {
   flex-basis: 100%;
 }
 #login form p {
-  display: none;
   -webkit-margin-after: 2%;
           margin-block-end: 2%;
   position: relative;

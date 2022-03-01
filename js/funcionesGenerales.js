@@ -782,7 +782,7 @@ async function procesarLogin(evento) {
         const resultadoPeticion = await respuestaJSON.json();
         //Comprobamos que no saltara un error
         if(Object.hasOwn(resultadoPeticion, "error")){
-            throw respuestaJSON["error"];
+            throw resultadoPeticion["error"];
         }
         //Guardamos en sesión el usuario y su rol
         sessionStorage.setItem("email", email);
@@ -853,9 +853,12 @@ async function procesarRegistro(evento){
         });
         const mensaje = await resultadoJSON.json();
         //Cambiamos el mensaje y le añadimos la claseque trae de respuesta del php (Si dio un error el atributo será error y el mensaje de error sino éxito y su mensaje)
-        let propiedadObjeto = Object.hasOwn(mensaje, "exito") ? "exito" : "error" ;
-        resultado.textContent = mensaje[propiedadObjeto];
+        if(Object.hasOwn(mensaje, "error")) {
+            throw mensaje["error"];
+        }
+        resultado.textContent = mensaje["exito"];
         resultado.classList = propiedadObjeto;
+        limpiarCampo(resultado, 2000);
         //Si es éxito borramos los input del formulario
         if(propiedadObjeto == "exito") {
             await limpiarTodosCamposForm(true);
@@ -1211,9 +1214,11 @@ async function cargarPartidas(filtro = {}) {
      let diaPartida = crearContenedor("span", {}, "Fecha: " + dia + "-" + (mes > 9 ?mes : "0" + mes) + "-" + fecha.getFullYear());
      //Hora
      let horaPartida = crearContenedor("span", {}, "Hora de inicio: " + datosPartida["hora_inicio"]);
-     //Creamos los botones
-     let botonInfo = crearBoton("Información", {"type": "button", "class": "btn btn-lg btn-info"});
-     let botonReservar = crearBoton("¡Reservar!", {"type": "button", "class": "btn btn-lg btn-success"});
+     //Creamos los botones y le añadimos a cada uno un data-id con el id de la partida
+     let botonInfo = crearBoton("Información", {"type": "button", "class": "btn btn-lg btn-info", "data-id": datosPartida["id_partida"]});
+     let botonReservar = crearBoton("¡Reservar!", {"type": "button", "class": "btn btn-lg btn-success", "data-id": datosPartida["id_partida"]});
+     //Añadimos los escuchadores
+     botonReservar.addEventListener("click", reservarPartida);
      //Añadimos todo al contenedor de información
      contenedorInfo.append(juegoPartida, generoPartida, diaPartida, horaPartida, botonInfo, botonReservar);
      //Añadimos al elemento de la lista
@@ -1321,7 +1326,7 @@ async function crearPartida(e) {
     e.preventDefault();
     let resultado = document.getElementById("resultadoOperacion")
     try {
-        let camposOblig = ["fecha", "hora_inicio", "duracion", "plazas_min", "plazas_totales"];
+        let camposOblig = ["fecha", "hora_inicio", "duracion", "plazas_min", "plazas_totales", "nombre_juego"];
         //Comprobamos que cubriera todo
         if(!comprobarCamposOblig(camposOblig)){
             throw "Debe cubrir todos los campos";
@@ -1332,7 +1337,7 @@ async function crearPartida(e) {
             throw "Debe introducir una fecha válida";
         }
         //Datos
-        let juego = document.querySelector("select").options[document.querySelector("select").selectedIndex].value;
+        let juego = document.getElementById("nombre_juego").dataset.id;
         let hora_inicio = document.getElementById("hora_inicio").value;
         let duracion = document.getElementById("duracion").value;
         let plazas_min = document.getElementById("plazas_min").value;
@@ -1455,6 +1460,9 @@ function cargarPartidasAdmin() {
     let botonPartidas = crearBoton("Partidas", {"type": "button", "data-nombre": "partidas"});
     let botonReservas = crearBoton("Reservas", {"type": "button", "data-nombre": "reservas", "class": "noActivo"});
     contenedorBotones.append(botonPartidas, botonReservas);
+    //Añadimos los escuchadores
+    botonPartidas.addEventListener("click", cargarPartidasAdmin);
+    botonReservas.addEventListener("click", cargarReservasAdmin);
 
     //Creamos el contenedor que almacenará todo
     let contenedor = crearContenedor("div", {"id": "contenedorElementos"});
@@ -1506,17 +1514,21 @@ function cargarPartidasAdmin() {
 /**
  * Carga la página con las reservas
  */
-function cargarReservasAdmin() {
-    let contenedorAdmin = document.getElementById("panelAdmin");
+function cargarReservasAdmin() { 
+    let contenedorPanelAdmin = document.getElementById("panelAdmin");
     //Limpiamos el contenedor
-    if(contenedorAdmin.firstElementChild.nextElementSibling != null){
-        contenedorAdmin.removeChild(contenedorAdmin.firstElementChild.nextElementSibling);
+    if(contenedorPanelAdmin.firstElementChild.nextElementSibling != null){
+        console.log(contenedorPanelAdmin.firstElementChild.nextElementSibling);
+        contenedorPanelAdmin.removeChild(contenedorPanelAdmin.firstElementChild.nextElementSibling);
     }
     //Creamos unos botones para cambiar a modo reserva
     let contenedorBotones = crearContenedor("div", {"id": "contenedorBotones"});
-    let botonPartidas = crearBoton("Partidas", {"type": "button", "data-nombre": "partidas"});
-    let botonReservas = crearBoton("Reservas", {"type": "button", "data-nombre": "reservas", "class": "noActivo"});
+    let botonPartidas = crearBoton("Partidas", {"type": "button", "data-nombre": "partidas", "class": "noActivo"});
+    let botonReservas = crearBoton("Reservas", {"type": "button", "data-nombre": "reservas"});
     contenedorBotones.append(botonPartidas, botonReservas);
+    //Añadimos los escuchadores
+    botonPartidas.addEventListener("click", cargarPartidasAdmin);
+    botonReservas.addEventListener("click", cargarReservasAdmin);
 
     //Creamos el contenedor que almacenará todo
     let contenedor = crearContenedor("div", {"id": "contenedorElementos"});
@@ -1528,26 +1540,40 @@ function cargarReservasAdmin() {
     let labelUsuario = crearElem("label", {"for": "usuario"}, "Usuario");
     let inputUsuario = crearElem("input", {"type": "text", "name": "usuario", "id": "usuario"});
     labelUsuario.append(inputUsuario);
-    let labelEstado = crearElem("label", {"for": "estado"}, "Estado");
-    let selectEstado = crearElem("select", {"name": "estado", "id": "estado"});
-    let optionPediente = crearElem("option", {}, "Pediente");
-    let optionAceptada = crearElem("option", {}, "Aceptada");
-    selectEstado.append(optionPediente, optionAceptada);
-    labelEstado.append(selectEstado);
-    formFiltrado.append(labelUsuario, labelEstado);
+    let labelFechaIni = crearElem("label", {"for": "fechaIni"}, "Fecha inicio");
+    let inputFechaIni = crearElem("input", {"type": "date", "name": "fechaIni", "id": "fechaIni"});
+    labelFechaIni.append(inputFechaIni);
+    let labelFechaFin = crearElem("label", {"for": "fechaFin"}, "Fecha fin");
+    let inputFechaFin = crearElem("input", {"type": "date", "name": "fechaFin", "id": "fechaFin"});
+    labelFechaFin.append(inputFechaFin);
+    let inputFiltrar = crearElem("input", {"type": "submit", "value": "Filtrar"});
+    formFiltrado.append(labelUsuario, labelFechaIni, labelFechaFin, inputFiltrar);
 
     //Creamos la tabla
     let tabla = crearContenedor("table", {"id": "listaElementos"});
     //Creamos el thead
     let encabezadoTabla = document.createElement("thead");
     //Creamos la fila del encabezado menos la última fila del botón
-    let filaEncabezado = crearFilaTabla("th", ["Usuario", "partida", "Fecha", "Nº jugadores", "Director partida"]);
+    let filaEncabezado = crearFilaTabla("th", ["Usuario", "Fecha", "Juego", "Director partida"]);
     //Creo el th para que ocupe como los botones de aceptar y rechazar
     let encabezadoBoton = crearContenedor("th", {"colspan": "2"});
+    filaEncabezado.append(encabezadoBoton);
+    encabezadoTabla.append(filaEncabezado);
+    let cuerpoTabla = document.createElement("tbody");
+    tabla.append(encabezadoTabla, cuerpoTabla);
+
+    //Añadimos todo al contenedor
+    contenedor.append(contenedorBotones, formFiltrado, tabla);
+    panelAdmin.append(contenedor);
+
+    //Cargamos todas las reservas
+    filtrarReservasAdmin();
 }
 
 /**
- * Crea el modo para crear partida
+ * Crear el contendor con las partidas para Admin (todas las partidas)
+ *
+ * @return  {void}  No devuelve nada
  */
 function modoCrearPartidasAdmin() {
     let contenedorAdmin = document.getElementById("panelAdmin");
@@ -1559,9 +1585,13 @@ function modoCrearPartidasAdmin() {
     let formulario = crearElem("form", {"id": "formPanelAdmin", "action": "../php/panelAdministrador.php", "method": "POST"});
     //Creamos cada uno de los label
     let labelJuego = crearElem("label", {"for": "juego_partida"}, "Juego");
-    let selectJuego = crearElem("select", {"name": "juego_partida", "id": "juego_partida"});
-    //Creamos sus option
-    cargarOpcionesJuegos(selectJuego);
+     //Contenedor para el input para poder mostrar un desplegable
+     let contenedorInputNombre = crearContenedor("div", {"class": "inputDesplegable"});
+    let inputJuego = crearElem("input", {"name": "nombre_juego", "id": "nombre_juego", "type": "text"});
+    contenedorInputNombre.append(inputJuego);
+    //Añadimos los escuchadores
+    inputJuego.addEventListener("keyup", buscarJuegoNombreEscribir);
+    inputJuego.addEventListener("focusout", eliminarDesplegable);
     let labelFecha = crearElem("label", {"for": "fecha"}, "Fecha");
     let inputFecha = crearElem("input", {"type": "date", "name": "fecha", "id": "fecha"});
     let horaInicio = crearElem("label", {"for": "hora_inicio"}, "Hora de inicio");
@@ -1582,7 +1612,7 @@ function modoCrearPartidasAdmin() {
     //Añadimos ele scuchado al botón
     botonCancelar.addEventListener("click", cargarPartidasAdmin);
     //Añadimos todo al formulario
-    formulario.append(labelJuego, selectJuego, labelFecha, inputFecha, horaInicio, inputHoraInicio, labelDuracion, inputDuracion, labelPlazasMin, inputPlazasMin, labelPlazasTotales, inputPlazasTotales, labelImagenPartida, inputImagenPartida, resultado, botonSubmit, botonCancelar);
+    formulario.append(labelJuego, contenedorInputNombre, labelFecha, inputFecha, horaInicio, inputHoraInicio, labelDuracion, inputDuracion, labelPlazasMin, inputPlazasMin, labelPlazasTotales, inputPlazasTotales, labelImagenPartida, inputImagenPartida, resultado, botonSubmit, botonCancelar);
     contenedorAdmin.append(formulario);
 }
 
@@ -1663,6 +1693,69 @@ async function filtrarPartidasAdmin(filtros = {}, pagina = 0) {
 }
 
 /**
+ * Filtra las partidas según los parámetros
+ *
+ * @param   {Object}  filtros  Filtros de tipo {clave: valor}
+ * @param   {int}  pagina   Número de la página en la que estamos
+ *
+ * @return  {void}           No devuelve nada
+ */
+async function filtrarReservasAdmin(filtros = {}, pagina = 0) {
+    let contenedor = document.getElementById("contenedorElementos");
+    //Añadimos la página y el limite a los filtros
+    filtros["pagina"] = pagina;
+    filtros["limite"] = 7;
+    try {
+        //Creamos la petición
+        const respuesta = await fetch("../php/panelAdministrador.php", {
+            method: "POST",
+            headers: {"Content-type": "application/json; charset=utf-8;"},
+            body: JSON.stringify({"filtarReservas": filtros})
+        });
+        //Traducimos la respuesta
+        const respuestaJSON = await respuesta.json();
+        //Comprobamos que no hubiese un error
+        if(Object.hasOwn(respuestaJSON, "error")) {
+            throw respuestaJSON["error"];
+        }
+        //Cargamos cada una de las filas
+        let cuerpoTabla = document.querySelector("tbody");
+        //Convertimos la fecha a una fecha española
+        respuestaJSON["reservas"].forEach(partida => {
+            partida["fecha"] = new Fecha(partida["fecha"]).getFecha();
+            //Cogemos el id y lo eliminamos
+            let idPartida = partida["id_partida"];
+            delete partida["id_partida"];
+            //Creamos la fila
+            let fila = crearFilaTabla("td", partida);
+            //Le añadimos los dos botones para aceptar o eliminar reservas
+            //Creamos el td del botón tambien
+            let tdAceptar = document.createElement("td");
+            let botonAceptar = crearBoton("Aceptar", {"type": "button", "data-id": idPartida, "data-accion": "aceptar"});
+            tdAceptar.append(botonAceptar);
+            //Añadimos los escuchadores
+            botonAceptar.addEventListener("click", procesarReserva);
+            let tdRechazar = document.createElement("td");
+            let botonRechazar = crearBoton("Rechazar", {"type": "button", "data-id": idPartida, "data-accion": "rechazar"});
+            tdRechazar.append(botonRechazar);
+            //Añadimos los escuchadores
+            botonRechazar.addEventListener("click", procesarReserva);
+            fila.append(tdAceptar, tdRechazar);
+            //La añadimos al cuerpo
+            cuerpoTabla.append(fila);
+        });
+        //Creamos la paginación
+        contenedor.append(crearPaginacion(respuestaJSON["numPag"], filtros["pagina"]));
+        //Le añadimos el escuchador a cada uno de ellos
+        let listaLi = document.querySelectorAll("li");
+        listaLi.forEach(elementoLi => elementoLi.firstElementChild.addEventListener("click", cogerFiltrosPartidasAdmin));
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+
+/**
  * Función intermedia para que los enlaces cojan los filtros y se los pase a filtrar paritdas admin
  * @param {Event}   Evento disparado
  */
@@ -1692,6 +1785,9 @@ function crearFilaTabla(tipoCelda, textoElementos, atributosElementos = {}) {
     //Creamos la fila
     let fila = document.createElement("tr");
     //Creamos cada uno de los td
+    if(!Array.isArray(textoElementos)){
+        textoElementos = Object.values(textoElementos);
+    }
     textoElementos.forEach(elemento => {
         let celda = document.createElement(tipoCelda);
         celda.textContent = elemento;
@@ -1709,7 +1805,7 @@ function crearFilaTabla(tipoCelda, textoElementos, atributosElementos = {}) {
  * @param   {int}  tiempo  Tiempo que espera antes de limpiarlo
  *
  */
-async function limpiarCampo(campo, tiempo) {
+async function limpiarCampo(campo, tiempo = 2000) {
     setTimeout(() => {
         campo.innerHTML = "";
         campo.removeAttribute("class");
@@ -1808,11 +1904,12 @@ async function modoEditarPartida(e) {
     inputDirectorPartida.addEventListener("focusout", eliminarDesplegable);
     let parrafoResultado = crearElem("p", {"id": "resultadoOperacion"});
     //Creamos los botones para guardar, cancelar o eliminar partida
-    let inputGuardar = crearElem("input", {"type": "submit", "value": "Guarda cambios"});
+    let inputGuardar = crearElem("input", {"type": "submit", "value": "Guarda cambios", "data-id": idPartida});
     let botonEliminar = crearElem("button", {"type": "button", "id": "eliminarPartida"}, "Eliminar partida");
     let botonCancelar = crearElem("button", {"type": "button", "id": "cancelarPartida"}, "Cancelar");
     //Le añadimos el escuchador
     botonCancelar.addEventListener("click", cargarPartidasAdmin);
+    botonEliminar.addEventListener("click", eliminarPartidaEdicion);
     //Añadimos todo al formulario
     formEditPartida.append(labelNombre, contenedorInputNombre, labelFecha, inputFecha, labelPlazasMin, inputPlazasMin, labelPlazasTotales, inputPlazasTotales, labelHoraInicio, inputHoraInicio, labelDuracion, inputDuracion, labelDirectorPartida, contenedorInputDirectorPartida, parrafoResultado, inputGuardar, botonEliminar, botonCancelar);
     //Añadimos todo al contenedor de elementos
@@ -1861,14 +1958,14 @@ async function guardarCambiosEditarPartida(e) {
             //Si no estñan vacios salimos de la función
             throw "Debe cubrir todos los campos";
         }
-        //Cogemos el id de la partida !!!!!!!!!!!Mal este es el id del juego
-        let idPartida = document.getElementById("nombre_juego").getAttribute("data-id");
+        //Cogemos el id del juego de la partida
+        let idJuegoPartida = document.getElementById("nombre_juego").getAttribute("data-id");
         //Cogemos los datos que hay en los input
         let datosPartida = {};
         //Eliminamos el dato del nombre de juego
         camposPartida.shift();
         camposPartida.forEach(campo => datosPartida[campo] = document.getElementById(campo).value);
-        datosPartida["juego_partida"] = idPartida;
+        datosPartida["juego_partida"] = idJuegoPartida;
         //Enviamos la petición
         const respuesta = await fetch("../php/panelAdministrador.php", {
             method: "POST",
@@ -1908,8 +2005,19 @@ function eliminarPartidaTabla(e) {
     }
 }
 
-function eliminarPartidaEdicion() {
-    let idPartida = split(";");
+/**
+ * Manda eliminar la partida en la que nos encontramos
+ *
+ * @param   {Event}  e  Evento que lo dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+function eliminarPartidaEdicion(e) {
+    //Cogemos el id del botón de guardar cambios
+    let idPartida = e.currentTarget.previousSibling.dataset.id;
+    if(confirm("Esta seguro que quiere borrar la partida?")) {
+        eliminarPartida(idPartida);
+    }
 }
 
 /**
@@ -2068,4 +2176,129 @@ async function eliminarDesplegable() {
         let desplegable = document.querySelector(".contenedorDesplegable");
         desplegable.remove();
     }, 200);
+}
+/**
+ * Reserva la partida (Si puede)
+ *
+ * @param   {Event}  e  Evento que se disparó
+ *
+ * @return  {void}     No devuelve nada
+ */
+async function reservarPartida(e) {
+    //Cogemos el id de su atributo
+    let idPartida = e.currentTarget.dataset.id;
+    try {
+        //Creamos la petición
+        const respuesta = await fetch("../php/partidas.php", {
+            method: "POST",
+            headers: {"Content-type": "application/json; charset=utf-8;"},
+            body: JSON.stringify({"partidaReservar": idPartida})
+        });
+        //Traducimos la respuesta
+        const respuestaJSON = await respuesta.json();
+        //Comprobamos que no diera un error
+        if(Object.hasOwn(respuestaJSON, "error")) {
+            throw respuestaJSON["error"];
+        }
+        //Mostramos el mensaje y volvemos a cargar las partidas
+        alert(mensaje);
+        cargarPartidas();
+    }
+    catch(error){
+        alert(error);
+        //crearAlertResultado(error);
+    }
+}
+
+
+/**
+ * Crea un div que bloquea la pantalla con un alert en el medio para la información que necesita
+ *
+ * @param   {string}  mensaje  Mensaje a mostrar
+ *
+ * @return  {void}           No devuelve nada
+ */
+function crearAlertResultado(mensaje) {
+    //Creamos un div
+    let contenedorBloqueante = crearContenedor("div",  {"id": "divBloqueaPantalla"});
+    let contenedorResultado = crearContenedor("div");
+    let parrafoResultado = document.createElement("p");
+    parrafoResultado.textContent = mensaje;
+    let botonAceptar = crearBoton("Aceptar");
+    contenedorResultado.append(parrafoResultado, botonAceptar);
+    contenedorBloqueante.append(contenedorResultado);
+    document.querySelector("body").append(contenedorBloqueante);
+    contenedorBloqueante.x
+    //Le damos el focus al contenedor resultado
+    contenedorResultado.focus();
+}
+
+/**
+ * Elimina el div bloqueante
+ *
+ * @param   {Event}  e  Evento que se disparó
+ *
+ * @return  {void}     No devuelve nada
+ */
+function eliminarAlertResultado(e){
+    //Eliminamos el div que bloquea
+    let contenedorResultado = e.currentTarget.parentElement.parentElement;
+    contenedorResultado.remove();
+}
+
+/**
+ * Procesa la reserva (acepta o rechaza)
+ *
+ * @param   {Eventq}  e  Evento que se disparó
+ *
+ * @return  {void}     No devuelve nada
+ */
+async function procesarReserva(e) {
+    //Cogemos del botón si es para aceptar o rechazar
+    let idPartida = e.currentTarget.dataset.id;
+    let accionRealizar = e.currentTarget.dataset.accion;
+    let contenedorFila = e.currentTarget.parentElement.parentElement;
+    //Cogemos el usuario del que es la reserva (El primer td su texto)
+    let usuario = contenedorFila.firstChild.textContent;
+    try {
+        //Procesamos la respuesta
+        const respuesta = await fetch("../php/panelAdministrador.php", { 
+            method: "POST",
+            headers: {"Content-type": "application/json; charset=utf-8;"},
+            body: JSON.stringify({"procesarReserva": accionRealizar, "datosReserva" : {"id_partida": idPartida, "usuario": usuario}})
+        });
+        //Traducimos la respuesta
+        const respuestaJSON = await respuesta.json();
+        //Comprobamos que no diera error
+        if(Object.hasOwn(respuestaJSON, "error")){
+            throw respuestaJSON["error"];
+        }
+        resultado = accionRealizar == "aceptar" ? "Aceptada" : "Rechazada";
+        mostrarResultado(contenedorFila, resultado);
+    }
+    catch(error){
+        alert(error);
+    }
+}
+
+/**
+ * Muestra el resultado (Si se aceptó o rechazó y vuelve a cargar las reservas)
+ *
+ * @param   {DOMElement}  fila       Fila a cambiar
+ * @param   {string}  resultado  Operación realizada
+ *
+ * @return  {void}             No devuelve nada
+ */
+async function mostrarResultado(fila, resultado) {
+    //Eliminamos los dos botones (Los últimos td)
+    fila.removeChild(fila.lastElementChild);
+    fila.removeChild(fila.lastElementChild);
+    //Creamos un td con el resultado
+    let celda = document.createElement("td");
+    celda.textContent = resultado;
+    celda.classList.add("exito");
+    //Lo añadimos a la fila
+    fila.append(celda);
+    //Esperamos 1 segundo y cargamos las reservas otra vez
+    setTimeout(cargarReservasAdmin, 2000);
 }

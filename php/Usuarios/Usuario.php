@@ -24,8 +24,8 @@ class Usuario
 
     use formulario;
 
-    public function __construct($email)
-    {
+    public function __construct($email) {
+        $this->validarCamposForm($email);
         $this->email = $email;
     }
 
@@ -35,13 +35,11 @@ class Usuario
      *
      * @return  string  Email del usuario
      */
-    public function getEmail()
-    {
+    public function getEmail()   {
         return $this->email;
     }
 
-    public function getRol()
-    {
+    public function getRol()  {
         //Comprobamos si lo tiene asignado
         if (!isset($this->rol)) {
             try {
@@ -67,8 +65,7 @@ class Usuario
      *
      * @return  array Devuelve un array con los datos de dicho usuario
      */
-    public function cargarDatos()
-    {
+    public function cargarDatos() {
         // Declaro la sentencia sql para recuperar los datos del usuario
         $sql1 = "SELECT id_usuario,
                         email,
@@ -103,9 +100,45 @@ class Usuario
     public function realizarPedido()
     {
     }
-    public function reservarPartida()
-    {
+
+    /**
+     * Guarda el momento del inicio de sesión
+     *
+     * @return  void  No devuelve nada
+     */
+    public function guardarInicioSesion() {
+        //Instanciamos bd
+        $bd = new bd();
+        $sentencia = "UPDATE usuarios SET fecha_ult_acceso = NOW() WHERE email = ?";
+        $resultado = $bd->agregarModificarDatosBD($sentencia, [$this->getEmail()]);
+        if($resultado === false) {
+            throw new \PDOException($resultado);
+        }
     }
+
+    /**
+     * Reserva una partida para el usuario
+     *
+     * @param   int  $idPartida  ID de la partida
+     * @param   string  $email      Email del usuario
+     *
+     * @return  void              No devuelve nada
+     */
+    public function reservarPartida($idPartida, $email) {
+        $datosReserva = ["partida" => $idPartida, "usuario" => $email];
+        $this->validarCamposForm($datosReserva);
+        //Instanciamos la BD
+        $bd = new bd();
+        //Creamos al sentencia
+        $sentencia = "INSERT INTO usuarios_partidas (usuario, partida, momento_reserva, reservada) VALUES (:usuario, :partida, NOW(), 0);";
+        //Convertimos el id a int porque viene como string
+        $datosReserva["partida"] = intval($datosReserva["partida"]);
+        $resultado = $bd->agregarModificarDatosBDNum($sentencia, $datosReserva);
+        if(is_string($resultado) && stripos($resultado, "error") !== false) {
+            throw new \PDOException($resultado);
+        }
+    }
+    
     public function cancelarPartida()
     {
     }
@@ -128,15 +161,15 @@ class Usuario
      */
     public function filtarPartidas($filtro) {
         $this->validarCamposForm($filtro);
-        $fecha1 = $filtro["fechaIni"];
-        $fecha2 = $filtro["fechaFin"];
+        $fecha1 = $filtro["fechaIni"] ?? "";
+        $fecha2 = $filtro["fechaFin"] ?? "";
         $fechas = $this->comprobarFechas($fecha1, $fecha2, true);
         //Sentencia para contar el número de páginas es como la normal pero contando las tuplas sin limitar
-        $sentenciaNumPag = "SELECT COUNT(P.id_partida) as num_pag FROM partidas as P INNER JOIN productos as PR ON P.juego_partida = PR.id_producto INNER JOIN juegos AS J ON PR.id_producto = J.juego";
+        $sentenciaNumPag = "SELECT COUNT(P.id_partida) as num_pag FROM partidas as P";
         //Sentencia para pedir los datos
-        $sentencia = "SELECT PR.nombre, P.imagen_partida,  J.genero, P.fecha, P.hora_inicio FROM partidas as P INNER JOIN productos as PR ON P.juego_partida = PR.id_producto INNER JOIN juegos AS J ON PR.id_producto = J.juego";
+        $sentencia = "SELECT P.id_partida, PR.nombre, P.imagen_partida,  J.genero, P.fecha, P.hora_inicio FROM partidas as P INNER JOIN productos as PR ON P.id_partida NOT IN (SELECT partida FROM usuarios_partidas WHERE usuario = :usuario) AND P.juego_partida = PR.id_producto INNER JOIN juegos AS J ON PR.id_producto = J.juego";
         //Datos que pasaremos a la sentencia como parámetros a sustituir
-        $datosFiltrado = [];
+        $datosFiltrado = ["usuario" => $this->getEmail()];
         //Recorremos los filtros y vamos añadiendo
         if (!empty($filtro["genero"])) {
             //Como consigo el género como un string le voy concatenando los elementos (por si hay mas de uno)
@@ -164,8 +197,9 @@ class Usuario
         $numPag = $this->calcularNumPag($sentenciaNumPag, $datosFiltrado);
         //Añadimos el límite para la sentencia que recupera los datos
         $sentencia .= " LIMIT :pagina, :limite ;";
-        $datosFiltrado["pagina"] = $filtro["pagina"];
-        $datosFiltrado["limite"] = $filtro["limite"];
+        //Los converitmos a int porque como vienen del JSON vienen como string
+        $datosFiltrado["pagina"] = intval($filtro["pagina"]);
+        $datosFiltrado["limite"] = intval($filtro["limite"]);
         //Instancio la BD
         $bd = new bd();
         //Envio la petición

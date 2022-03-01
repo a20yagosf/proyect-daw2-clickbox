@@ -715,3 +715,27 @@ main {
     background-repeat: repeat-y;
 
 }
+
+//Div que bloquea toda la pantalla para mostrar un alert o confirm
+#divBloqueaPantalla {
+    @include contenedor(100%, 100%, green);
+    position: absolute;
+    //Top
+    inset-block-start: 0%;
+    z-index: 5;
+
+    div {
+        @include contendor(80%, auto, $colorLetra);
+        padding: 1%;
+        position: relative;
+        //Top
+        inset-block-start: 50%;
+        //Left
+        inset-inline-start: 50%;
+        transform: translate(-50%, -50%);
+
+        button {
+            @include boton($colorPrincipal, 1.5em);
+        }
+    }
+}

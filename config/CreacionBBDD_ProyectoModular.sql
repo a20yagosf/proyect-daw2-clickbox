@@ -130,8 +130,8 @@ CREATE TABLE IF NOT EXISTS usuarios (
    fecha_registro DATE NOT NULL,
    direccion VARCHAR(150) NULL,
    fecha_nac DATE NOT NULL,
-   fecha_ult_modif DATE NOT NULL,
-   fecha_ult_acceso DATE NOT NULL,
+   fecha_ult_modif DATETIME NOT NULL,
+   fecha_ult_acceso DATETIME NOT NULL,
    imagen_perfil VARCHAR(255) NOT NULL,
    -- GENERO_FAVORITO  ENUM("Detectives","Estrategia","Guerra","Miedo","Puzzles","Cooperativos", "Individual","Competitivo") NULL,
    -- RELACIONES 
@@ -315,14 +315,13 @@ CREATE TABLE IF NOT EXISTS partidas (
 -- ---------------------------------------------------
 DROP TABLE IF EXISTS usuarios_partidas;
 CREATE TABLE IF NOT EXISTS usuarios_partidas (
-	id_partida_reservada INT UNSIGNED AUTO_INCREMENT NOT NULL,
 	usuario VARCHAR(150) NOT NULL,
    partida INT UNSIGNED NOT NULL,
    momento_reserva DATETIME NOT NULL,
    reservada BOOLEAN NOT NULL,
 
    -- KEYS Y CONSTRAINS 
-   PRIMARY KEY (id_partida_reservada),
+   PRIMARY KEY (usuario, partida),
    FOREIGN KEY FK_USUARIO_RESERVO (usuario) REFERENCES usuarios (email)
 		ON DELETE RESTRICT -- SI UN USUARIO QUIERE BORRAR SU CUENTA CON UNA PARTIDA RESERVADA, NO LE DEJARÁ HASTA QUE CANCELE LA RESERVA 
       ON UPDATE CASCADE,
@@ -387,6 +386,7 @@ GRANT SELECT ON a2da_clickbox.roles TO 'a2da_estandar'@'localhost';
 GRANT SELECT ON a2da_clickbox.suscripciones TO 'a2da_estandar'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.carritos TO 'a2da_estandar'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.productos_carritos TO 'a2da_estandar'@'localhost';
+GRANT SELECT, INSERT, DELETE ON a2da_clickbox.usuarios_partidas TO 'a2da_estandar'@'localhost';
 -- USUARIO ADMINISTRADOR
 GRANT SELECT, UPDATE ON a2da_clickbox.usuarios TO 'a2da_admin'@'localhost' IDENTIFIED BY 'abc123.';
 GRANT SELECT, INSERT ON a2da_clickbox.pedidos TO 'a2da_admin'@'localhost';

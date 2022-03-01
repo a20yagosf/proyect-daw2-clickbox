@@ -319,8 +319,8 @@ class Bd {
                 throw new \Exception("Ya existe un usuario registrado con ese correo");
             }
             //Comprobamos que se subiera bien el fichero y lo movemos a una carpeta en el disco duro
-            $carpetaFichero = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR  . "img" . DIRECTORY_SEPARATOR  . $datosUsuario["email"];
-            $resultado = $this->gestionarFichero($fichero, $datosUsuario["email"], $carpetaFichero);
+            $carpetaFichero = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR  . "img" . DIRECTORY_SEPARATOR . "usuarios" . DIRECTORY_SEPARATOR  . $datosUsuario["email"];
+            $resultado = $this->gestionarFichero($fichero, $carpetaFichero);
             //Si no se pudo mover mandamos un error
             if(mb_stristr($resultado, "error") != false){
                 throw new \Exception($resultado);
@@ -430,7 +430,7 @@ class Bd {
             }
             $nuevaRutaArchivo = $carpetaFichero . DIRECTORY_SEPARATOR . $fichero["name"];
             //Movemos el archivo a la carpeta creada
-            $resultado = move_uploaded_file($fichero["tmp_name"], $carpetaFichero . DIRECTORY_SEPARATOR . $fichero["name"]);
+            $resultado = move_uploaded_file($fichero["tmp_name"], $nuevaRutaArchivo);
             //Si no se pudo mover lanzamos una excepción
             if(!$resultado){
                 throw new \RuntimeException("No se puede realizar el cambio de localización del archivo");
@@ -472,3 +472,4 @@ class Bd {
         return isset($resultado["pwd"]) ? $resultado["pwd"]: false;
     }
 }
+

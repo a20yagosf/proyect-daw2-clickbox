@@ -46,11 +46,13 @@ try {
     //Si está en modo edición de una partida
     else if(isset($datosPOST["id_partida"])) {
         $partida = $admin->recuperarDatosActualesPartida($datosPOST["id_partida"]);
+        $opcionesCookie = ["secure" => true, "samesite" => "None"];
         //Creamos una cookie con la partida en la que estamos
-        setcookie("partida", $datosPOST["id_partida"]);
+        setcookie("partida", $datosPOST["id_partida"], $opcionesCookie);
         //Devolvemos los datos (Si no devolvió nada salta la excepción por lo que si llegamos aquí es que hay datos)
         $devolver = $partida;
     }
+    //Editar partida
     else if(isset($datosPOST["edicion_partida"])){
         //Cogemos el id de la partida de la cookie que creamos
         $datosPOST["edicion_partida"]["id_partida"] = $_COOKIE["partida"];
@@ -63,6 +65,22 @@ try {
         $admin->eliminarPartida($datosPOST["idPartidaEliminar"]);
         //Devolvemos exito (Si da error salta la excepción por lo que si llegamos aquí es que hay datos)
         $devolver = ["exito"=> "Datos actualizados con éxito"];
+    }
+    //Filtra las reservas
+    else if(isset($datosPOST["filtarReservas"])){
+        $reservas = $admin->filtrarReservas($datosPOST["filtarReservas"]);
+        //Devolvemos exito (Si da error salta la excepción por lo que si llegamos aquí es que hay datos)
+        $devolver = $reservas;
+    }
+    //Aceptar reserva
+    else if($datosPOST["procesarReserva"]) {
+        if($datosPOST["procesarReserva"] == "aceptar") {
+            $admin->aceptarSolicitudPartida($datosPOST["datosReserva"]);
+        }
+        else {
+            $admin->rechazarSolicitudPartida($datosPOST["datosReserva"]);
+        }
+        $devolver = ["exito" => "Reserva procesada"];
     }
 }
 catch(\PDOException $pdoError) {
