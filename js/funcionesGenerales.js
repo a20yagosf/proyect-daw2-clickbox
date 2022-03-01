@@ -857,12 +857,9 @@ async function procesarRegistro(evento){
             throw mensaje["error"];
         }
         resultado.textContent = mensaje["exito"];
-        resultado.classList = propiedadObjeto;
+        resultado.classList = "exito";
         limpiarCampo(resultado, 2000);
-        //Si es éxito borramos los input del formulario
-        if(propiedadObjeto == "exito") {
-            await limpiarTodosCamposForm(true);
-        }
+        await limpiarTodosCamposForm(true);
     }
     catch($error){
         //Asignamos al p el mensaje
