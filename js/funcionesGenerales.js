@@ -1107,7 +1107,7 @@ async function cargarDatosPerfil() {
 catch(error){
     console.log(error); // Mensaje para mostrar el error   
 }
-
+}
 
 async function cargarSuscripciones() {
     try {
@@ -2381,5 +2381,4 @@ async function mostrarResultado(fila, resultado) {
     fila.append(celda);
     //Esperamos 1 segundo y cargamos las reservas otra vez
     setTimeout(cargarReservasAdmin, 2000);
-}
 }
