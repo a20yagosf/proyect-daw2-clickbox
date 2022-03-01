@@ -334,7 +334,7 @@ class Bd {
             //Fecha de registro (Como es ahora metemos nosotros la fecha actual) con la zona horaria de Europa, lo mismo para ultima modificación y ultimo acceso
             $fechaRegistro = new DateTime("now");
             //Sentencia para insertar los datos en la BD, no aparece el rol porque por defecto añade el rol estándar en la BD
-            $sentencia = "INSERT INTO usuarios (email, pwd, nombre, apellidos, telefono, fecha_nac, fecha_registro, direccion, fecha_ult_modif, fecha_ult_acceso, rol, genero_favorito, imagen_perfil) VALUES (?, ?, ?, ?, ?, ?, '" . date_format($fechaRegistro, "Y-m-d") .  "', ?, '" . date_format($fechaRegistro, "Y-m-d")  . "', '" . date_format($fechaRegistro, "Y-m-d")  . "', 2, ?, ?);";
+            $sentencia = "INSERT INTO usuarios (email, pwd, nombre, apellidos, telefono, fecha_nac, fecha_registro, direccion, fecha_ult_modif, fecha_ult_acceso, rol, genero_favorito, imagen_perfil) VALUES (?, ?, ?, ?, ?, ?, '" . date_format($fechaRegistro, "Y-m-d") .  "', ?, NOW(), NOW(), 2, ?, ?);";
             //Ejecutamos la sentencia mediante la función que asignará los valores a la sentencia preparada y devolverá el resultado
             $resultado = $this->agregarModificarDatosBD($sentencia, $datosUsuario);
         }

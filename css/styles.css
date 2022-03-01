@@ -874,6 +874,31 @@ main {
   inset-block-start: 0%;
   z-index: 5;
 }
+#divBloqueaPantalla div {
+  width: 80%;
+  height: auto;
+  background-color: #F3F3F3;
+  padding: 1%;
+  position: relative;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  transform: translate(-50%, -50%);
+}
+#divBloqueaPantalla div button {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.5em;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+}
+#divBloqueaPantalla div button:hover {
+  background-color: #03bdd7;
+}
+
 #info_partidas, #filtro, #result_panel, .pagination {
   padding: 3%;
 }

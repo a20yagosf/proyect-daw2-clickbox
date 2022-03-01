@@ -725,7 +725,7 @@ main {
     z-index: 5;
 
     div {
-        @include contendor(80%, auto, $colorLetra);
+        @include contenedor(80%, auto, $colorLetra);
         padding: 1%;
         position: relative;
         //Top
