@@ -59,13 +59,7 @@
 
         //Clase para poner un fondo gris al elemento y un poco de sombra para que se diferencia bin
         .noActivo {
-            background-color: $botonNoActivo;
-            box-shadow: inset 0px 0px 10px 0px rgba(0, 0, 0, 0.438);
-            transition: all 0.5s ease-in-out;
-
-            &:hover {
-                background-color: oscurecerColor($botonNoActivo)
-            }
+            @include botonNoActivo();
         }
     }
 

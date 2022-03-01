@@ -106,8 +106,36 @@
         }
 
 
-        input, label, select {
+        input, label, select, .inputDesplegable {
             flex-basis: calc(100%/2);
+        }
+
+        .inputDesplegable {
+            position: relative;
+
+            input {
+                @include inputFormulario();
+                width: 100%;
+                margin: 0%;
+                padding: 2%;
+            }
+
+            ul {
+                position: absolute;
+                background-color: white;
+                padding: 0px;
+                width: 100%;
+                border: 1px solid $colorPrincipal;
+
+                li {
+                    padding: 1%;
+                    list-style: none;
+
+                    &:hover {
+                        background-color: aclararColor($colorPrincipal);
+                    }
+                }
+            }
         }
 
         input, select {
@@ -363,5 +391,32 @@
                 }
             }
          }
+    }
+}
+
+//Div con los botones para alternar entre partidas y reservas
+#contenedorBotones {
+    //Margin bottom
+    margin-block-end: 2%;
+    //Flex como padre
+    display: flex;
+    justify-content: center;
+
+    button {
+        @include boton($colorPrincipal, 1.1em);
+        display: inline-block;
+        padding: 1%;
+
+        &:first-of-type {
+            border-radius: $borderRadius 0px 0px $borderRadius;
+        }
+
+        &:last-of-type {
+            border-radius: 0px $borderRadius $borderRadius 0px;
+        }
+    }
+
+    .noActivo {
+        @include botonNoActivo();
     }
 }

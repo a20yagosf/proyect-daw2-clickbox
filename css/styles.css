@@ -1806,8 +1806,37 @@ h2, h3 {
   flex-basis: 100%;
   text-align: center;
 }
-#panelAdmin #formPanelAdmin input, #panelAdmin #formPanelAdmin label, #panelAdmin #formPanelAdmin select {
+#panelAdmin #formPanelAdmin input, #panelAdmin #formPanelAdmin label, #panelAdmin #formPanelAdmin select, #panelAdmin #formPanelAdmin .inputDesplegable {
   flex-basis: 50%;
+}
+#panelAdmin #formPanelAdmin .inputDesplegable {
+  position: relative;
+}
+#panelAdmin #formPanelAdmin .inputDesplegable input {
+  margin: 2% 0%;
+  padding: 1%;
+  font-family: "Resolve";
+  border-radius: 5px;
+  border: 1px solid #0291A5;
+  outline-color: #FFB775;
+  transition: all 1s ease-in-out;
+  width: 100%;
+  margin: 0%;
+  padding: 2%;
+}
+#panelAdmin #formPanelAdmin .inputDesplegable ul {
+  position: absolute;
+  background-color: white;
+  padding: 0px;
+  width: 100%;
+  border: 1px solid #0291A5;
+}
+#panelAdmin #formPanelAdmin .inputDesplegable ul li {
+  padding: 1%;
+  list-style: none;
+}
+#panelAdmin #formPanelAdmin .inputDesplegable ul li:hover {
+  background-color: #03bdd7;
 }
 #panelAdmin #formPanelAdmin input, #panelAdmin #formPanelAdmin select {
   margin: 2% 0%;
@@ -2049,6 +2078,43 @@ h2, h3 {
     -webkit-margin-before: 5%;
             margin-block-start: 5%;
   }
+}
+
+#contenedorBotones {
+  -webkit-margin-after: 2%;
+          margin-block-end: 2%;
+  display: flex;
+  justify-content: center;
+}
+#contenedorBotones button {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.1em;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  display: inline-block;
+  padding: 1%;
+}
+#contenedorBotones button:hover {
+  background-color: #03bdd7;
+}
+#contenedorBotones button:first-of-type {
+  border-radius: 10px 0px 0px 10px;
+}
+#contenedorBotones button:last-of-type {
+  border-radius: 0px 10px 10px 0px;
+}
+#contenedorBotones .noActivo {
+  background-color: #bfbfbf;
+  box-shadow: inset 0px 0px 10px 0px rgba(0, 0, 0, 0.438);
+  transition: all 0.5s ease-in-out;
+}
+#contenedorBotones .noActivo:hover {
+  background-color: #8c8c8c;
 }
 
 footer {

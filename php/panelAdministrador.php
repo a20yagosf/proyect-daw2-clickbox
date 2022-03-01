@@ -11,7 +11,7 @@ try {
     //Creamos al usuario administrador
     $admin = new admin($_SESSION["usuario"]["email"], $_SESSION["usuario"]["rol"]);
     //Filtro de las partidas (Si es que lo envié)
-    $filtroPartidas = (array) json_decode(file_get_contents("php://input"), true);
+    $datosPOST = json_decode(file_get_contents("php://input"), true);
     //Compruebamos si me pidió los juegos
     if(isset($_GET["juego"])) {
         $juegos = $admin->cargarJuegos();
@@ -37,11 +37,32 @@ try {
         }
     }
     //Si se está cargando el panel de partidas
-    else if(isset($filtroPartidas["filtrosPartida"])) {
-        $partidas = $admin->filtarPartidas($filtroPartidas["filtrosPartida"]);
+    else if(isset($datosPOST["filtrosPartida"])) {
+        $partidas = $admin->filtarPartidas($datosPOST["filtrosPartida"]);
         if($partidas){
             $devolver = $partidas;
         }
+    }
+    //Si está en modo edición de una partida
+    else if(isset($datosPOST["id_partida"])) {
+        $partida = $admin->recuperarDatosActualesPartida($datosPOST["id_partida"]);
+        //Creamos una cookie con la partida en la que estamos
+        setcookie("partida", $datosPOST["id_partida"]);
+        //Devolvemos los datos (Si no devolvió nada salta la excepción por lo que si llegamos aquí es que hay datos)
+        $devolver = $partida;
+    }
+    else if(isset($datosPOST["edicion_partida"])){
+        //Cogemos el id de la partida de la cookie que creamos
+        $datosPOST["edicion_partida"]["id_partida"] = $_COOKIE["partida"];
+        $admin->editarPartida($datosPOST["edicion_partida"]);
+        //Devolvemos exito (Si da error salta la excepción por lo que si llegamos aquí es que hay datos)
+        $devolver = ["exito"=> "Datos actualizados con éxito"];
+    }
+    //Eliminar la partida
+    else if(isset($datosPOST["idPartidaEliminar"])) {
+        $admin->eliminarPartida($datosPOST["idPartidaEliminar"]);
+        //Devolvemos exito (Si da error salta la excepción por lo que si llegamos aquí es que hay datos)
+        $devolver = ["exito"=> "Datos actualizados con éxito"];
     }
 }
 catch(\PDOException $pdoError) {

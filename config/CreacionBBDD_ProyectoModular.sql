@@ -397,7 +397,9 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.carritos TO 'a2da_admin'@'
 GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.productos_carritos TO 'a2da_admin'@'localhost';
 GRANT SELECT, INSERT, UPDATE ON a2da_clickbox.usuarios_partidas TO 'a2da_admin'@'localhost';
 GRANT SELECT, INSERT, UPDATE ON a2da_clickbox.productos TO 'a2da_admin'@'localhost';
-GRANT SELECT, INSERT, UPDATE ON a2da_clickbox.partidas TO 'a2da_admin'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.partidas TO 'a2da_admin'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.usuarios_partidas TO 'a2da_admin'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.partidas_generos TO 'a2da_admin'@'localhost';
 GRANT SELECT ON a2da_clickbox.juegos TO 'a2da_admin'@'localhost';
 GRANT SELECT ON a2da_clickbox.accesorios TO 'a2da_admin'@'localhost';
 GRANT SELECT ON a2da_clickbox.roles TO 'a2da_admin'@'localhost';

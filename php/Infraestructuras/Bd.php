@@ -127,6 +127,54 @@ class Bd {
         return $resultado;
     }
 
+    /**
+     * Ejecuta diversas funciones en una transacción
+     *
+     * @param   array  $sentencias  Array de sentencias a ejecutar
+     * @param   array  $datos       Array con los datos a asignar
+     *
+     * @return  mixed               Puede devolver error
+     */
+    public function agregarModDatosNumTransaction($sentencias, $datos) {
+        try {
+            //Creamos la conexión
+            $pdo = $this->conectarBD();
+            //Iniciamos la transacción
+            $pdo->beginTransaction();
+            //Recorremos las sentencias y vamos ejecutándolas
+            for ($i = 0; $i < count($sentencias); $i++){
+                $pdoStatement = $pdo->prepare($sentencias[$i]);
+                if(!$pdoStatement){
+                    throw new \PDOException($pdo->errorInfo()[2]);
+                }
+                //asignamos los datos
+                foreach($datos[$i] as $indice => $valor) {
+                    $dato = is_string($valor) ? \PDO::PARAM_STR : \PDO::PARAM_INT;
+                    $pdoStatement->bindParam(":" . $indice, $valor, $dato);
+                    //Eliminamos el $indice y valor para que no de errores
+                    unset($indice);
+                    unset($valor);
+                }
+                //Lo ejecutamos
+                $resultado = $pdoStatement->execute();
+                if(!$resultado){
+                    throw new \PDOException($pdoStatement->errorInfo()[2]);
+                }
+            }
+            //Si llegamos hasta aquí es que se ejecutó todo
+            $pdo->commit();
+        }
+        //Ambos try catch devuelve el error para mostrarlo por pantalla y poder solucionarlo, cuando lo acabemos quitaremos la muestra de los errores, esto es sólo para desarrollo
+        catch(\PDOException $pdoError) {
+            $pdo->rollBack();
+            return "Error " . $pdoError->getCode() . ": " . $pdoError->getMessage();
+        }
+        catch(\Exception $error) {
+            $pdo->rollBack();
+            return "Error " . $error->getCode() . ": " . $error->getMessage();
+        }
+    }
+
 
     /**
      * Método para realizar insert, update o delete (Estático)
@@ -286,7 +334,7 @@ class Bd {
             //Fecha de registro (Como es ahora metemos nosotros la fecha actual) con la zona horaria de Europa, lo mismo para ultima modificación y ultimo acceso
             $fechaRegistro = new DateTime("now");
             //Sentencia para insertar los datos en la BD, no aparece el rol porque por defecto añade el rol estándar en la BD
-            $sentencia = "INSERT INTO usuarios (email, pwd, nombre, apellidos, telefono, fecha_nac, fecha_registro, direccion, fecha_ult_modif, fecha_ult_acceso, rol, genero_favorito, imagen_perfil) VALUES (?, ?, ?, ?, ?, ?, '" . date_format($fechaRegistro, "Y-m-d") .  "', ?, '" . date_format($fechaRegistro, "Y-m-d")  . "', '" . date_format($fechaRegistro, "Y-m-d")  . "', 3, ?, ?);";
+            $sentencia = "INSERT INTO usuarios (email, pwd, nombre, apellidos, telefono, fecha_nac, fecha_registro, direccion, fecha_ult_modif, fecha_ult_acceso, rol, genero_favorito, imagen_perfil) VALUES (?, ?, ?, ?, ?, ?, '" . date_format($fechaRegistro, "Y-m-d") .  "', ?, '" . date_format($fechaRegistro, "Y-m-d")  . "', '" . date_format($fechaRegistro, "Y-m-d")  . "', 2, ?, ?);";
             //Ejecutamos la sentencia mediante la función que asignará los valores a la sentencia preparada y devolverá el resultado
             $resultado = $this->agregarModificarDatosBD($sentencia, $datosUsuario);
         }

@@ -2,10 +2,8 @@
 
 namespace Usuarios;
 
-use DateTime;
 use \Infraestructuras\Bd as bd;
-use PDOException;
-use PDOStatement;
+use \Traits\Formulario as formulario;
 
 class Usuario
 {
@@ -23,6 +21,8 @@ class Usuario
     protected $suscripcion;
     protected $renovar;
     protected $fecha_ini_suscripcion;
+
+    use formulario;
 
     public function __construct($email)
     {
@@ -127,9 +127,10 @@ class Usuario
      * @return  array           La información de cada una de las tuplas
      */
     public function filtarPartidas($filtro) {
+        $this->validarCamposForm($filtro);
         $fecha1 = $filtro["fechaIni"];
         $fecha2 = $filtro["fechaFin"];
-        $fechas = $this->comprobarFechas($fecha1, $fecha2);
+        $fechas = $this->comprobarFechas($fecha1, $fecha2, true);
         //Sentencia para contar el número de páginas es como la normal pero contando las tuplas sin limitar
         $sentenciaNumPag = "SELECT COUNT(P.id_partida) as num_pag FROM partidas as P INNER JOIN productos as PR ON P.juego_partida = PR.id_producto INNER JOIN juegos AS J ON PR.id_producto = J.juego";
         //Sentencia para pedir los datos
@@ -189,14 +190,13 @@ class Usuario
      *
      * @return  int                  Número de páginas que necesita
      */
-    function calcularNumPag($sentencia, $datos = [])
-    {
+    function calcularNumPag($sentencia, $datos = []) {
         try {
             //Instancio la BD
             $bd = new bd();
             //Envio la petición
             $pdoStatement = $bd->recuperarDatosBDNum($sentencia, $datos);
-            if (!$pdoStatement instanceof PDOStatement) {
+            if (!$pdoStatement instanceof \PDOStatement) {
                 throw new \PDOException($pdoStatement);
             }
             //Solo hacemos un fetch ya que sólo devolverá un número (el número de página a crear)
@@ -214,20 +214,22 @@ class Usuario
      *
      * @param   string  $fecha1  Fecha 1
      * @param   string  $fecha2  Fecha2
+     * @param   boolean $soloActuales No deja que las fechas sean anteriores a la fecha actual
      *
      * @return  array           Array con las fechas ordenadas (puede tener 2, 1 o 0 fechas)
      */
-    protected function comprobarFechas($fecha1, $fecha2 = "")
-    {
+    protected function comprobarFechas($fecha1, $fecha2 = "", $soloActuales = true) {
         //Comprobamos que ambos tengan valor
         $validez1 = !empty($fecha1);
         $validez2 = !empty($fecha2);
         $fechasOrdenadas = [];
         //Si ambas tienen valor
         if ($validez1 && $validez2) {
-            //Comprobamos que sean posteriores al tiempo actual, sino le asignamos la fecha actual
-            $fecha1 = $this->devolverFechasPostDiaActual($fecha1);
-            $fecha2 = $this->devolverFechasPostDiaActual($fecha2);
+            if($soloActuales) {
+                //Comprobamos que sean posteriores al tiempo actual, sino le asignamos la fecha actual
+                $fecha1 = $this->devolverFechasPostDiaActual($fecha1);
+                $fecha2 = $this->devolverFechasPostDiaActual($fecha2);
+            }
             //Comprobamos cual es mayor y asignamos en ese orden
             if ($fecha1 < $fecha2) {
                 $fechasOrdenadas = [$fecha1, $fecha2];
@@ -241,14 +243,18 @@ class Usuario
         }
         //Sólo la primera tiene valor
         else if ($validez1 && !$validez2) {
-            //Comprobamos que sea posteriores al tiempo actual, sino le asignamos la fecha actual
-            $fecha1 = $this->devolverFechasPostDiaActual($fecha1);
+            if($soloActuales) {
+                //Comprobamos que sea posteriores al tiempo actual, sino le asignamos la fecha actual
+                $fecha1 = $this->devolverFechasPostDiaActual($fecha1);
+            }
             $fechasOrdenadas = [$fecha1];
         }
         //Sólo la segunda tiene valor
         else if (!$validez1 && $validez2) {
-            //Comprobamos que sea posteriores al tiempo actual, sino le asignamos la fecha actual
-            $fecha2 = $this->devolverFechasPostDiaActual($fecha2);
+            if($soloActuales) {
+                //Comprobamos que sea posteriores al tiempo actual, sino le asignamos la fecha actual
+                $fecha2 = $this->devolverFechasPostDiaActual($fecha2);
+            }
             $fechasOrdenadas = [$fecha2];
         }
         return $fechasOrdenadas;
@@ -266,5 +272,31 @@ class Usuario
         $fechaSeg = strtotime($fecha);
         $fechaActualSeg = strtotime("now");
         return $fechaSeg >= $fechaActualSeg ? $fecha : date("Y-m-d");
+    }
+
+    /**
+     * Busca nombres similares al que le pasamos
+     *
+     * @param   string  $nombreJuego  Nombre del juego a buscar
+     *
+     * @return  mixed                O una excepción o un PDOStatement
+     */
+    public function buscarNombreJuego($nombreJuego) {
+        //Validamos el campo
+        $this->validarCamposForm($nombreJuego);
+        //Instanciamos bd
+        $bd = new bd();
+        //Creamos la sentencia
+        $sentencia = "SELECT id_producto, nombre  FROM productos WHERE nombre LIKE ? LIMIT 0, 5";
+        $datosAsignar = ["%" . $nombreJuego . "%"];
+        //Pasamos el dato a un array para enviarselo a la función
+        $pdoStatement = $bd->recuperDatosBD($sentencia, $datosAsignar);
+        //Comprobamos que nos devolviera un PDOStatement
+        if(!$pdoStatement instanceof \PDOStatement){
+            throw new \PDOException($pdoStatement);
+        }
+        //Hacemos fetchAll ya que la búsqueda está limitada a 5 como mucho
+        $juegos = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
+        return $juegos;
     }
 }

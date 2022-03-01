@@ -1170,7 +1170,7 @@ async function cargarPartidas(filtro = {}) {
          //Limpiamos la lista
          lista.innerHTML = "";
          //Cargo cada uno de los li
-         crearPaginacion(respuestaJSON["num_pag"]);
+         crearPaginacion(respuestaJSON["num_pag"], filtro["pagina"]);
          //Cargo los datos de las partidas
          respuestaJSON["tuplas"].forEach(dato => {
              lista.append(crearContenedorPartida(dato));
@@ -1250,7 +1250,7 @@ async function cargarPartidas(filtro = {}) {
   * @param   {int}  numero  Número de páginas
   *
   */
-function crearPaginacion(numero) {
+function crearPaginacion(numero, pagina) {
     //Comprobamos si existe ya un contenedor de paginación
     let contenedorPaginacion = document.querySelector(".pagination");
     //Comprobamos si no existe
@@ -1261,19 +1261,25 @@ function crearPaginacion(numero) {
     else {
         contenedorPaginacion.innerHTML = "";
     }
-    //Creamos el ul
-    let lista = document.createElement("ul");
-    for (let i = 1; i <= numero; i++){
-        let contenedorLi = document.createElement("li");
-        let enlace = crearEnlace("#", i);
-        contenedorLi.append(enlace);
-        //Lo añadimos al ul
-        lista.append(contenedorLi);
+    //Comprobamos que sea mayor a 1
+    if(numero > 1) {
+        //Creamos el ul
+        let lista = document.createElement("ul");
+        for (let i = 1; i <= numero + 1; i++){
+            let contenedorLi = document.createElement("li");
+            let enlace = crearElem("a", {"href": "#", "data-partida": i}, i);
+            contenedorLi.append(enlace);
+            //Lo añadimos al ul
+            lista.append(contenedorLi);
+        }
+        //Añadimos la lista a la paginación
+        contenedorPaginacion.append(lista);
+        //Ponemos la página en la que estamos como activo
+        lista.childNodes[pagina].firstElementChild.classList.add("active");
+        //Devolvemos el contenedor
+        return contenedorPaginacion;
     }
-    //Añadimos la lista a la paginación
-    contenedorPaginacion.append(lista);
-    //Devolvemos el contenedor
-    return contenedorPaginacion;
+    return "";
 }
 
  /**
@@ -1349,6 +1355,15 @@ async function crearPartida(e) {
         resultado.textContent = "Se ha creado la partida con éxito";
         resultado.removeAttribute("class", "error");
         resultado.setAttribute("class", "exito");
+        //Limpiamos la ventana de éxito
+        limpiarCampo(resultado, 2000);
+        //Limpiamos el resto de campos del formulario
+        let todosInput = Array.from(document.querySelectorAll("input:not(input[type='file'], input[type='submit'])"));
+        limpiarCampoArrayInput(todosInput, 2000);
+        //Limpiamos el campo File
+        limpiarCampoFile(document.getElementById("imagen_partida"), 2000);
+        //Limpiamos el select
+        limpiarCampoSelect(document.querySelector("select"), 2000);
     }
     catch($error) {
         resultado.textContent = $error;
@@ -1435,7 +1450,12 @@ function cargarPartidasAdmin() {
     if(contenedorAdmin.firstElementChild.nextElementSibling != null){
         contenedorAdmin.removeChild(contenedorAdmin.firstElementChild.nextElementSibling);
     }
-    //Falta botón para cambiar a modo reservas!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //Creamos unos botones para cambiar a modo reserva
+    let contenedorBotones = crearContenedor("div", {"id": "contenedorBotones"});
+    let botonPartidas = crearBoton("Partidas", {"type": "button", "data-nombre": "partidas"});
+    let botonReservas = crearBoton("Reservas", {"type": "button", "data-nombre": "reservas", "class": "noActivo"});
+    contenedorBotones.append(botonPartidas, botonReservas);
+
     //Creamos el contenedor que almacenará todo
     let contenedor = crearContenedor("div", {"id": "contenedorElementos"});
     //Formulario de filtrado
@@ -1446,12 +1466,16 @@ function cargarPartidasAdmin() {
     let labelJuego = crearElem("label", {"for": "juego_partida"}, "Juego");
     let inputJuego = crearElem("input", {"type": "text", "name": "juego_partida", "id": "juego_partida"});
     labelJuego.append(inputJuego);
-    let labelFecha = crearElem("label", {"for": "fecha"}, "Fecha");
+    let labelFecha = crearElem("label", {"for": "fecha"}, "Fecha inicio");
     let inputFecha = crearElem("input", {"type": "date", "name": "fecha", "id": "fecha"});
+    let labelFechaFin = crearElem("label", {"for": "fechaFin"}, "Fecha fin");
+    let inputFechaFin = crearElem("input", {"type": "date", "name": "fechaFin", "id": "fechaFin"});
     labelFecha.append(inputFecha);
+    labelFechaFin.append(inputFechaFin);
     let inputSubmit = crearElem("input", {"type": "submit", "value": "Filtrar"});
     //Añadimos todos al form
-    formFiltrado.append(labelJuego, labelFecha, inputSubmit);
+    formFiltrado.append(labelJuego, labelFecha, labelFechaFin, inputSubmit);
+
     //Creamos la tabla
     let tabla = crearContenedor("table", {"id": "listaElementos"});
     //Creamos el thead
@@ -1473,10 +1497,53 @@ function cargarPartidasAdmin() {
     let cuerpoTabla = document.createElement("tbody");
     tabla.append(cuerpoTabla);
     //Añadimos todo al contenedor
-    contenedor.append(formFiltrado, tabla);
+    contenedor.append(contenedorBotones, formFiltrado, tabla);
     //Añadimos todo al cuerpo
     contenedorAdmin.append(contenedor);
     filtrarPartidasAdmin();
+}
+
+/**
+ * Carga la página con las reservas
+ */
+function cargarReservasAdmin() {
+    let contenedorAdmin = document.getElementById("panelAdmin");
+    //Limpiamos el contenedor
+    if(contenedorAdmin.firstElementChild.nextElementSibling != null){
+        contenedorAdmin.removeChild(contenedorAdmin.firstElementChild.nextElementSibling);
+    }
+    //Creamos unos botones para cambiar a modo reserva
+    let contenedorBotones = crearContenedor("div", {"id": "contenedorBotones"});
+    let botonPartidas = crearBoton("Partidas", {"type": "button", "data-nombre": "partidas"});
+    let botonReservas = crearBoton("Reservas", {"type": "button", "data-nombre": "reservas", "class": "noActivo"});
+    contenedorBotones.append(botonPartidas, botonReservas);
+
+    //Creamos el contenedor que almacenará todo
+    let contenedor = crearContenedor("div", {"id": "contenedorElementos"});
+    //Formulario de filtrado
+    let formFiltrado = crearContenedor("form", {"id": "filtradoPartida", "action": "../php/panelAdministrador.php", "method": "POST"});
+    //Le añadimos el escuchador al formulario
+    formFiltrado.addEventListener("submit", activarFiltro);
+    //Creamos cada uno de los label e inputs de filtrado
+    let labelUsuario = crearElem("label", {"for": "usuario"}, "Usuario");
+    let inputUsuario = crearElem("input", {"type": "text", "name": "usuario", "id": "usuario"});
+    labelUsuario.append(inputUsuario);
+    let labelEstado = crearElem("label", {"for": "estado"}, "Estado");
+    let selectEstado = crearElem("select", {"name": "estado", "id": "estado"});
+    let optionPediente = crearElem("option", {}, "Pediente");
+    let optionAceptada = crearElem("option", {}, "Aceptada");
+    selectEstado.append(optionPediente, optionAceptada);
+    labelEstado.append(selectEstado);
+    formFiltrado.append(labelUsuario, labelEstado);
+
+    //Creamos la tabla
+    let tabla = crearContenedor("table", {"id": "listaElementos"});
+    //Creamos el thead
+    let encabezadoTabla = document.createElement("thead");
+    //Creamos la fila del encabezado menos la última fila del botón
+    let filaEncabezado = crearFilaTabla("th", ["Usuario", "partida", "Fecha", "Nº jugadores", "Director partida"]);
+    //Creo el th para que ocupe como los botones de aceptar y rechazar
+    let encabezadoBoton = crearContenedor("th", {"colspan": "2"});
 }
 
 /**
@@ -1531,7 +1598,8 @@ function activarFiltro(e){
     //Cogemos los filtros
     let juego = document.getElementById("juego_partida").value;
     let fecha = document.getElementById("fecha").value;
-    filtrarPartidasAdmin({"juego_partida": juego, "fecha": fecha}, pagina);
+    let fechaFin = document.getElementById("fechaFin").value;
+    filtrarPartidasAdmin({"juego_partida": juego, "fecha": fecha, "fechaFin": fechaFin}, pagina);
 }
 
 /**
@@ -1570,9 +1638,13 @@ async function filtrarPartidasAdmin(filtros = {}, pagina = 0) {
              //Creamos los dos botones para editar y eliminar
              let celdaEditar = document.createElement("td");
              let editar = crearBoton("Editar");
+             //Le añadimos el escuchador al boton
+             editar.addEventListener("click", modoEditarPartida);
              celdaEditar.append(editar);
              let celdaEliminar = document.createElement("td");
              let eliminar = crearBoton("Eliminar");
+             //Le añadimos el escuchador
+             eliminar.addEventListener("click", eliminarPartidaTabla);
              celdaEliminar.append(eliminar);
              //Añadimos los botones a la fila
              fila.append(celdaEditar, celdaEliminar);
@@ -1580,11 +1652,31 @@ async function filtrarPartidasAdmin(filtros = {}, pagina = 0) {
              cuerpoTabla.append(fila);
          });
          //Creamos la paginación
-         contenedor.append(crearPaginacion(respuestaJSON["numPag"]));
+         contenedor.append(crearPaginacion(respuestaJSON["numPag"], filtros["pagina"]));
+         //Le añadimos el escuchador a cada uno de ellos
+         let listaLi = document.querySelectorAll("li");
+         listaLi.forEach(elementoLi => elementoLi.firstElementChild.addEventListener("click", cogerFiltrosPartidasAdmin));
      }
      catch (error){
          console.log(error);
      }
+}
+
+/**
+ * Función intermedia para que los enlaces cojan los filtros y se los pase a filtrar paritdas admin
+ * @param {Event}   Evento disparado
+ */
+function cogerFiltrosPartidasAdmin(e) {
+    //Cogemos los filtros 
+    let juego = document.getElementById("juego_partida");
+    let datosFiltro = juego.value != "" ? {"juego_partida": juego} : {};
+    let fechaInicio = document.getElementById("fecha");
+    fechaInicio.value != "" ? datosFiltro["fecha"] = fechaInicio : "";
+    let fechaFin = document.getElementById("fechaFin");
+    fechaFin.value != "" ? datosFiltro["fechaFin"] = fechaFin : "";
+    //Cogemos el número del enlace clicado y le restamos uno (Ya que empieza en 0)
+    let pagina = e.currentTarget.dataset.partida - 1;
+    filtrarPartidasAdmin(datosFiltro, pagina);
 }
 
 /**
@@ -1608,4 +1700,372 @@ function crearFilaTabla(tipoCelda, textoElementos, atributosElementos = {}) {
         fila.append(celda);
     });
     return fila;
+}
+
+/**
+ * Limpia el campo despues del tiempo que le pasamos
+ *
+ * @param   {DOMElement}  campo  Elemento a limpiar
+ * @param   {int}  tiempo  Tiempo que espera antes de limpiarlo
+ *
+ */
+async function limpiarCampo(campo, tiempo) {
+    setTimeout(() => {
+        campo.innerHTML = "";
+        campo.removeAttribute("class");
+    }, tiempo);
+}
+
+/**
+ * Limpia el campo despues del tiempo que le pasamos
+ *
+ * @param   {DOMElement}  campo  Elemento a limpiar
+ * @param   {int}  tiempo  Tiempo que espera antes de limpiarlo
+ *
+ */
+ async function limpiarCampoArrayInput(campos, tiempo) {
+    setTimeout(() => {
+        campos.forEach(campo => campo.value = "");
+    }, tiempo);
+}
+
+/**
+ * Limpia el campo file despues del tiempo que le pasamos
+ *
+ * @param   {DOMElement}  campo  Elemento a limpiar
+ * @param   {int}  tiempo  Tiempo que espera antes de limpiarlo
+ *
+ */
+async function limpiarCampoFile(campo, tiempo){
+    setTimeout(() => {
+        //Para limpiar el tipo file lo clonamos y sustituimos, tenemos que hacer todo esto porque no nos deja cambiar el valor a un elemento activo por seguridad
+        let clon = campo.cloneNode();
+        clon.value = "";
+        campo.replaceWith(clon);
+    }, tiempo);
+}
+
+
+/**
+ * Limpia el campo select (Poniendo el primer elemento como seleccionado)
+ *
+ * @param   {DOMElement}  campo  Elemento a limpiar
+ * @param   {int}  tiempo  Tiempo que espera antes de limpiarlo
+ *
+ */
+async function limpiarCampoSelect(campo, tiempo){
+    setTimeout(() => {
+        //Para limpiar el tipo file lo clonamos y sustituimos, tenemos que hacer todo esto porque no nos deja cambiar el valor a un elemento activo por seguridad
+        campo.options[0].setAttribute("selected", "selected");
+    }, tiempo);
+}
+
+/**
+ * Carga el modo editar de la partida
+ *
+ * @param   {Event}  e  Evento que se dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+async function modoEditarPartida(e) {
+    //Cogemos el id de la partida (El texto del primer elementod el padre)
+    let idPartida = e.currentTarget.parentElement.parentElement.firstElementChild.textContent;
+
+    //Limpiamos el contenedor (Si tiene algún formulario o el contenedor elementos)
+    let panelAdmin = document.getElementById("panelAdmin");
+    if(panelAdmin.firstElementChild.nextElementSibling != "") {
+        panelAdmin.removeChild(panelAdmin.firstElementChild.nextElementSibling);
+    }
+    //Creamos el formulario con las opciones
+    let formEditPartida = crearContenedor("form", {"id": "formPanelAdmin", "action": "../php/panelAdministrador.php", "method": "POST"});
+    formEditPartida.addEventListener("submit", guardarCambiosEditarPartida);
+    //Creamos cada uno de los elementos
+    let labelNombre = crearElem("label", {"for": "nombre_juego"}, "Nombre juego");
+    //Contenedor para el input para poder mostrar un desplegable
+    let contenedorInputNombre = crearContenedor("div", {"class": "inputDesplegable"});
+    let inputNombre = crearElem("input", {"type": "text", "name": "nombre_juego", "id": "nombre_juego"});
+    contenedorInputNombre.append(inputNombre);
+    //Le asignamos el escuchador
+    inputNombre.addEventListener("keyup", buscarJuegoNombreEscribir);
+    inputNombre.addEventListener("focusout", eliminarDesplegable);
+    let labelFecha = crearElem("label", {"for": "fecha"}, "Fecha");
+    let inputFecha = crearElem("input", {"type": "date", "name": "fecha", "id": "fecha"});
+    let labelPlazasMin =crearElem("label", {"for": "plazas_min"}, "Plazas mínimas");
+    let inputPlazasMin = crearElem("input", {"type": "number", "name": "plazas_min", "id": "plazas_min"});
+    let labelPlazasTotales = crearElem("label", {"for": "plazas_totales"}, "Plazas totales");
+    let inputPlazasTotales= crearElem("input", {"type": "number", "name": "plazas_totales", "id": "plazas_totales"});
+    let labelHoraInicio = crearElem("label", {"for": "hora_inicio"}, "Hora de inicio");
+    let inputHoraInicio = crearElem("input", {"type": "time", "name": "hora_inicio", "id": "hora_inicio"});
+    let labelDuracion = crearElem("label", {"for": "duracion"}, "Duracion");
+    let inputDuracion = crearElem("input", {"type": "number", "name": "duracion", "id": "duracion"});
+    let labelDirectorPartida = crearElem("label", {"for": "director_partida"}, "Director/a partida");
+    //Contenedor para el input para poder mostrar un desplegable
+    let contenedorInputDirectorPartida = crearContenedor("div", {"class": "inputDesplegable"});
+    let inputDirectorPartida = crearElem("input", {"type": "text", "name": "director_partida", "id": "director_partida"});
+    contenedorInputDirectorPartida.append(inputDirectorPartida);
+    //Le asignamos el escuchador
+    inputDirectorPartida.addEventListener("keyup", buscarDirectoresEscribir);
+    inputDirectorPartida.addEventListener("focusout", eliminarDesplegable);
+    let parrafoResultado = crearElem("p", {"id": "resultadoOperacion"});
+    //Creamos los botones para guardar, cancelar o eliminar partida
+    let inputGuardar = crearElem("input", {"type": "submit", "value": "Guarda cambios"});
+    let botonEliminar = crearElem("button", {"type": "button", "id": "eliminarPartida"}, "Eliminar partida");
+    let botonCancelar = crearElem("button", {"type": "button", "id": "cancelarPartida"}, "Cancelar");
+    //Le añadimos el escuchador
+    botonCancelar.addEventListener("click", cargarPartidasAdmin);
+    //Añadimos todo al formulario
+    formEditPartida.append(labelNombre, contenedorInputNombre, labelFecha, inputFecha, labelPlazasMin, inputPlazasMin, labelPlazasTotales, inputPlazasTotales, labelHoraInicio, inputHoraInicio, labelDuracion, inputDuracion, labelDirectorPartida, contenedorInputDirectorPartida, parrafoResultado, inputGuardar, botonEliminar, botonCancelar);
+    //Añadimos todo al contenedor de elementos
+    panelAdmin.append(formEditPartida);
+
+   try {
+        //Mandamos una petición para coger todos los datos de la partida
+        const respuesta = await fetch("../php/panelAdministrador.php", {
+            method: "POST",
+            headers: {"Content-type": "application/json; charset=utf8;"},
+            body: JSON.stringify({"id_partida": idPartida})
+        });
+        //Traducimos la respuesta
+        const respuestaJSON = await respuesta.json();
+        //Comprobamos que no diera error
+        if(Object.hasOwn("error")){
+            throw respuestaJSON["error"];
+        }
+        //Quitamos el id del array de datos devueltos y lo eliminamos
+        idPartida = respuestaJSON["juego_partida"];
+        delete respuestaJSON["juego_partida"];
+        //Asignamos el valor a cada uno de los input, dividimos en objeto en array de 0: id 1: valor y se lo asignamos
+        Object.entries(respuestaJSON).forEach(input => document.getElementById(input[0]).value = input[1]);
+        //Asignamos al input el atributo data-idPartida
+        inputNombre.setAttribute("data-id", idPartida);
+   }
+   catch (error){
+       console.log(error);
+   }
+}
+
+/**
+ * Actualiza los datos editados en la BD
+ *
+ * @param   {Event}  e  Evento que la dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+async function guardarCambiosEditarPartida(e) {
+    e.preventDefault();
+    let parrafo = document.getElementById("resultadoOperacion");
+    try {
+        let camposPartida = ["nombre_juego", "fecha", "plazas_min", "plazas_totales", "hora_inicio", "duracion", "director_partida"];
+        //Comprobamos que tengan valor
+        if(!comprobarCamposOblig(camposPartida)) {
+            //Si no estñan vacios salimos de la función
+            throw "Debe cubrir todos los campos";
+        }
+        //Cogemos el id de la partida !!!!!!!!!!!Mal este es el id del juego
+        let idPartida = document.getElementById("nombre_juego").getAttribute("data-id");
+        //Cogemos los datos que hay en los input
+        let datosPartida = {};
+        //Eliminamos el dato del nombre de juego
+        camposPartida.shift();
+        camposPartida.forEach(campo => datosPartida[campo] = document.getElementById(campo).value);
+        datosPartida["juego_partida"] = idPartida;
+        //Enviamos la petición
+        const respuesta = await fetch("../php/panelAdministrador.php", {
+            method: "POST",
+            headers: {"Content-type": "application/json; charset=utf-8;"},
+            body: JSON.stringify({"edicion_partida" : datosPartida})
+        });
+        //Traducimos la respuesta
+        const respuestaJSON = await respuesta.json();
+        //Comprobamos si se dio un error
+        if(Object.hasOwn(respuestaJSON, "error")) {
+            throw respuestaJSON["error"];
+        }
+        //Si no se dio un error es que se cambiaron con éxito asique mostramos mensaje de éxito
+        parrafo.textContent = "Datos actualizados con éxito";
+        parrafo.classList.remove("error");
+        parrafo.classList.add("exito");
+        limpiarCampo(parrafo, 500);
+    }
+    catch (error){
+        parrafo.textContent = error;
+        parrafo.classList.remove("exito");
+        parrafo.classList.add("error");
+    }
+}
+
+/**
+ * Elimina la partida si acepta el administrador
+ *
+ * @param   {[type]}  idPartida  [idPartida description]
+ *
+ * @return  {[type]}             [return description]
+ */
+function eliminarPartidaTabla(e) {
+    let idPartida = e.currentTarget.parentElement.parentElement.firstChild.textContent;
+    if(confirm("Esta seguro que quiere borrar la partida?")) {
+        eliminarPartida(idPartida);
+    }
+}
+
+function eliminarPartidaEdicion() {
+    let idPartida = split(";");
+}
+
+/**
+ * Elimina la partida de la BD
+ *
+ * @param   {int}  idPartida  ID de la partida
+ *
+ * @return  {void}             No devuelve nada
+ */
+async function eliminarPartida(idPartida) {
+    try {
+        //Creamos la conexión
+        const respuesta = await fetch("../php/panelAdministrador.php", {
+            method: "POST",
+            headers: {"Content-type": "application/json; charset=utf-8"},
+            body: JSON.stringify({"idPartidaEliminar": idPartida})
+        });
+        //Traducimos la respuesta
+        const respuestaJSON = await respuesta.json();
+        //Comprobamos que no hubiese ningún error
+        if(Object.hasOwn(respuestaJSON, "error")) {
+            throw respuestaJSON["error"];
+        }
+        //Recargamos las partidar
+        cargarPartidasAdmin();
+    }
+    catch(error) {
+        console.log(error);
+    }
+}
+
+
+
+/**
+ * Busca los juegos que coincidan con lo que escribe y muestra un desplegable con ellos
+ *
+ * @return  {void}  No devuelve nada
+ */
+async function buscarJuegoNombreEscribir() {
+    //Cogemos el contenido del input
+    let inputJuego = document.getElementById("nombre_juego");
+    let nombreJuego = inputJuego.value;
+    try {
+        //Creamos la petición
+        const respuesta = await fetch("../php/busquedasGenerales.php", {
+            method: "POST",
+            header: {"Content-type": "application/json; charset=utf-8;"},
+            body: JSON.stringify({"nombre_juego": nombreJuego})
+        });
+        //Traducimos la respuesta
+        const respuestaJSON = await respuesta.json();
+        //Comprobamos que no diera un error
+        if(Object.hasOwn(respuestaJSON, "error")) {
+            throw respuestaJSON["error"];
+        }
+        //Asignamos el valor al input y le añadimos el id como atributo de tipo data-nombre
+        crearContenedorDesplegable(inputJuego, respuestaJSON["nombreJuego"]);
+        //Añadimos el evento al li para que al clicar se añada el juego como texto al input
+        let elementosLi = Array.from(inputJuego.parentElement.querySelector(".contenedorDesplegable").childNodes);
+        elementosLi.forEach(elemento => elemento.addEventListener("click", asignarTextoInput));
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+
+/**
+ * Busca los directores que coincidan con lo que escribe y muestra un desplegable con ellos
+ *
+ * @return  {void}  No devuelve nada
+ */
+ async function buscarDirectoresEscribir() {
+    //Cogemos el contenido del input
+    let inputDirectorPartida = document.getElementById("director_partida");
+    let nombreDirectorPartida = inputDirectorPartida.value;
+    try {
+        //Creamos la petición
+        const respuesta = await fetch("../php/busquedasGenerales.php", {
+            method: "POST",
+            header: {"Content-type": "application/json; charset=utf-8;"},
+            body: JSON.stringify({"director_partida": nombreDirectorPartida})
+        });
+        //Traducimos la respuesta
+        const respuestaJSON = await respuesta.json();
+        //Comprobamos que no diera un error
+        if(Object.hasOwn(respuestaJSON, "error")) {
+            throw respuestaJSON["error"];
+        }
+        //Asignamos el valor al input y le añadimos el id como atributo de tipo data-nombre
+        crearContenedorDesplegable(inputDirectorPartida, respuestaJSON["directorPartida"]);
+        //Añadimos el evento al li para que al clicar se añada el juego como texto al input
+        let elementosLi = Array.from(inputDirectorPartida.querySelector(".contenedorDesplegable").childNodes);
+        elementosLi.forEach(elemento => elemento.addEventListener("click", asignarTextoInput));
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+
+/**
+ * Crea un contenedor desplegable con la información que le pasamos
+ *
+ * @param   {DOMElement}  inputRef          Input de referencia al que añadir el desplegable
+ * @param   {Object}  datosDesplegable  Datos que se almacenarán en el desplegable
+ *
+ * @return  {void}                    No devuelve nada
+ */
+function crearContenedorDesplegable(inputRef, datosDesplegable) {
+    //Creamos un contenedor para el input (si exite lo eliminamos)
+    let contenedorDesplegable = inputRef.parentElement.querySelector(".contenedorDesplegable");
+    //Si existe lo eliminamos
+    if(contenedorDesplegable != null) {
+        inputRef.parentElement.removeChild(contenedorDesplegable);
+    }
+    contenedorDesplegable = crearElem("ul", {"class": "contenedorDesplegable"});
+    //Le creamos cada uno de los li
+    datosDesplegable.forEach(juego => {
+        let elementoLi = crearElem("li", {"data-id": juego["id_producto"]}, juego["nombre"]);
+        elementoLi.addEventListener("click", asignarTextoInput);
+        //Lo añadimos al ul
+        contenedorDesplegable.append(elementoLi);
+    });
+    //Añadimos el ul al input
+    inputRef.parentElement.append(contenedorDesplegable);
+}
+
+/**
+ * Asigna el valor del li clicado  
+ *
+ * @param   {Event}  e  Evento que se disparó
+ *
+ * @return  {void}     No devuelve nada
+ */
+function asignarTextoInput(e) {
+    let elementoLi = e.currentTarget;
+    //Cogemos el padre del padre de li (li => ul => ContenedorDiv => input)
+    let contenedorDesplegable =elementoLi.parentElement.parentElement;
+    let inputRef = contenedorDesplegable.firstChild;
+    //Le asignamos el valor del li
+    inputRef.value = elementoLi.textContent;
+    //Asignamos el atributo data-idPartida
+    inputRef.setAttribute("data-id", elementoLi.getAttribute("data-id"));
+    //Eliminamos el contenedor de opciones
+    //contenedorDesplegable.removeChild(elementoLi.parentElement);
+}
+
+/**
+ * Elimina el desplegable cuando se pierde el focus del input
+ *
+ *
+ * @return  {void}     No devuelve nada
+ */
+async function eliminarDesplegable() {
+    //Esperamos un poco para que dé tiempo a ejecutarse el li si se pulsó
+    setTimeout(() =>{
+        let desplegable = document.querySelector(".contenedorDesplegable");
+        desplegable.remove();
+    }, 200);
 }

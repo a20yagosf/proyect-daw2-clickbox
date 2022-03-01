@@ -78,11 +78,6 @@ INSERT INTO accesorios
 		VALUES
     (28),
     (29);
-
-  INSERT INTO partidas
-    (plazas_min, plazas_totales, fecha, hora_inicio, duracion, imagen_partida, director_partida, juego_partida)
-    VALUES
-    (2, 5, "2022-06-12", TIME("15:30:22"), 30, "../img/juegos/Axio.jpg", "irea.vila.ramilo@gmail.com", 2);
     
 COMMIT;
 
