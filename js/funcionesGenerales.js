@@ -1025,8 +1025,12 @@ async function cargarDatosPerfil() {
 
 }
 
-
-async function cargarSuscripciones() {
+/**
+ * Carga los tipos de suscripciones
+ *
+ * @return  {void}  No devuelve nada
+ */
+async function cargarTiposSuscripciones() {
     try {
         //Nos conectamos a php para pedir todas las duraciones de las suscripciones
         const respuesta = await fetch("../php/suscripciones.php", {
@@ -1056,8 +1060,10 @@ async function cargarSuscripciones() {
             //Le añadimos los listeners
             boton.addEventListener("click", cargarSuscripciones, true);
         });
-        //Disparamos el evento comosi pulsaramos el primer botón para que coja sus características
+        //Disparamos el evento como si pulsaramos el primer botón para que coja sus características
         document.getElementById("tiposSusc").firstElementChild.dispatchEvent(new Event("click"));
+        //Le añadimos el escuchador al botón de suscribirse
+        document.getElementById("recibo").querySelector("button").addEventListener("click", suscribirse);
     }
     catch (error) {
         console.log(error);
@@ -1116,6 +1122,45 @@ async function cargarSuscripciones(e) {
     catch (error){
         console.log(error);
     }
+}
+
+/**
+ * Se suscribe a una suscripción si no tiene una suscripción activa y está registrado
+ *
+ * @return  {void}  No devuelve nada
+ */
+async function suscribirse() {
+   //Comprobamos que estemos suscritos viendo la cookie de sesion
+   if(sessionStorage["email"] == undefined){
+       aparecerLogin();
+   }
+   else {
+        try {
+            //Cogemos la suscripción activa su id para saber el tipo de suscripción a la que nos estamos suscribiendo
+            let suscripcionActiva = document.querySelector(".suscActiva").dataset.id;
+            //Iniciamos la petición
+            const respuesta = await fetch("../php/suscripciones.php", {
+                method: "POST",
+                headers: {"Content-type": "application/json; charset=utf-8"},
+                body: JSON.stringify({"suscribirse": suscripcionActiva}),
+            });
+            //Traducimos la respuesta
+            const respuestaJSON = await respuesta.json();
+            //Comprobamos que no diera un error
+            if(Object.hasOwn(respuestaJSON, "error")){
+                throw respuestaJSON["error"];
+            }
+            else if(Object.hasOwn(respuestaJSON, "noSuscrita")){
+                aparecerLogin();
+            }
+            else {
+                alert("Suscripción realizada con éxito");
+            }
+        }
+        catch(error){
+            alert(error);
+        }
+   }
 }
 
 /**

@@ -2,8 +2,11 @@
 
 namespace Usuarios;
 
+use DateInterval;
+use DateTime;
 use \Infraestructuras\Bd as bd;
 use \Traits\Formulario as formulario;
+use \ServiciosProductos\Suscripcion as suscription;
 
 class Usuario
 {
@@ -142,8 +145,53 @@ class Usuario
     public function cancelarPartida()
     {
     }
-    public function suscribirse()
-    {
+
+    /**
+     * Suscribe al usuario a esa suscripción
+     *
+     * @param   [type]  $duracion  [$duracion description]
+     *
+     * @return  [type]             [return description]
+     */
+    public function suscribirse($duracion) {
+        try {
+            //Instanciamos bd
+            $bd = new bd();
+            //Comprobamos si ya tiene una suscripción
+            $sentencia = "SELECT suscripcion, fecha_ini_suscripcion FROM usuarios WHERE email = ?;";
+            $pdoStatement = $bd->recuperDatosBD($sentencia, [$this->getEmail()]);
+            if(!$pdoStatement instanceof \PDOStatement){
+                throw new \PDOException($pdoStatement);
+            }
+            $datosSuscripcion = $pdoStatement->fetch();
+            //Comprobamos si tiene una suscripions
+            if($datosSuscripcion["suscripcion"] != "") {
+                //Si tiene una suscripción comprobamos que no esté caducada
+                $fechaIniSusc = new \DateTime($datosSuscripcion["fecha_ini_suscripcion"]);
+                $intervalSusc = new \DateInterval("P" . $datosSuscripcion["suscripcion"] . "M");
+                //Lo sumamos
+                $fechaIniSusc->add($intervalSusc);
+                if($fechaIniSusc->diff(new DateTime())->days > 0){
+                    throw new \Exception("Ya tienes una suscripción activa!!");
+                }
+            }
+            //Creamos la sentencia, por defecto se pondrá renovar a true y la fecha actual de la suscripcion
+            $sentencia = "UPDATE usuarios SET suscripcion = :suscripcion, renovar = 1, fecha_ini_suscripcion = NOW() WHERE email = :email;";
+            //Array con los datos que tenemos que pasarle
+            $datosAnhadir = ["suscripcion" => intval($duracion), "email" => $this->getEmail()];
+            $resultado = $bd->agregarModificarDatosBDNum($sentencia, $datosAnhadir);
+            //Comprobamos que no diera un error
+            if(is_string($resultado) && stripos($resultado, "error") !== false){
+                throw new \PDOException($resultado);
+            }
+        }
+        catch (\PDOException $pdoError){
+            $devolver = "Error " . $pdoError->getMessage();
+        }
+        catch (\Exception $error){
+            $devolver = "Error " . $error->getMessage();
+        }
+        return $devolver ?? true;
     }
     public function cerrarSesion()
     {
