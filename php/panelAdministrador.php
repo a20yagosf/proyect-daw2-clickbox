@@ -62,9 +62,12 @@ try {
     }
     //Eliminar la partida
     else if(isset($datosPOST["idPartidaEliminar"])) {
-        $admin->eliminarPartida($datosPOST["idPartidaEliminar"]);
+        $resultado = $admin->eliminarPartida($datosPOST["idPartidaEliminar"]);
+        if(is_string($resultado) && stripos($resultado, "error") !== false){
+            throw new \Exception($resultado);
+        }
         //Devolvemos exito (Si da error salta la excepción por lo que si llegamos aquí es que hay datos)
-        $devolver = ["exito"=> "Datos actualizados con éxito"];
+        $devolver = ["exito"=> "Datos actualizados con exito"];
     }
     //Filtra las reservas
     else if(isset($datosPOST["filtarReservas"])){
@@ -72,14 +75,18 @@ try {
         //Devolvemos exito (Si da error salta la excepción por lo que si llegamos aquí es que hay datos)
         $devolver = $reservas;
     }
-    //Aceptar reserva
+    //Procesar reserva
     else if($datosPOST["procesarReserva"]) {
         if($datosPOST["procesarReserva"] == "aceptar") {
-            $admin->aceptarSolicitudPartida($datosPOST["datosReserva"]);
+            $resultado = $admin->aceptarSolicitudPartida($datosPOST["datosReserva"]);
         }
         else {
-            $admin->rechazarSolicitudPartida($datosPOST["datosReserva"]);
+            $resultado = $admin->rechazarSolicitudPartida($datosPOST["datosReserva"]);
         }
+        if(is_string($resultado) && stripos($resultado, "error") !== false){
+            throw new \Exception($resultado);
+        }
+
         $devolver = ["exito" => "Reserva procesada"];
     }
 }

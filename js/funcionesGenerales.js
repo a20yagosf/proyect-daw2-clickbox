@@ -1147,39 +1147,51 @@ function irPartidas() {
  * @param   {Object}  filtro  Filtro de tipo {clave: valor}
  *
  */
-async function cargarPartidas(filtro = {}) {
+async function cargarPartidas(filtro = {}, pagina = 0, limite = 7) {
     //Limpiamos el contenedor de las partidas
     let lista = document.querySelector("ul[class='list-group']");
+    let paginacion = document.querySelector(".pagination");
+    //Buscamos si ya hay una paginación y si la hay la borramos
+    if(paginacion != null){
+        paginacion.remove();
+    }
     lista.innerHTML = "";
     //LE añado al filtro la página y el limite
-    filtro["pagina"] = 0;
-    filtro["limite"] = 7;
+    filtro["pagina"] = pagina;
+    filtro["limite"] = limite;
     try {
-         //Hacemos la petición
-         const respuesta = await fetch("../php/partidas.php", {
-             method: "POST",
-             headers: {"Content-type": "application/json; charset=utf-8"},
-             body: JSON.stringify(filtro)
-         });
-         //Convertimos la respues ta json
-         const respuestaJSON = await respuesta.json();
-         //Compruebo si dió error
-         if(Object.hasOwn(respuestaJSON, "error")){
-             throw respuestaJSON["error"];
-         }
-         //Limpiamos la lista
-         lista.innerHTML = "";
+        //Hacemos la petición
+        const respuesta = await fetch("../php/partidas.php", {
+            method: "POST",
+            headers: {"Content-type": "application/json; charset=utf-8"},
+            body: JSON.stringify(filtro)
+        });
+        //Convertimos la respues ta json
+        const respuestaJSON = await respuesta.json();
+        //Compruebo si dió error
+        if(Object.hasOwn(respuestaJSON, "error")){
+            throw respuestaJSON["error"];
+        }
+        //Limpiamos la lista
+        lista.innerHTML = "";
          //Cargo cada uno de los li
-         crearPaginacion(respuestaJSON["num_pag"], filtro["pagina"]);
+        paginacion = crearPaginacion(respuestaJSON["numPag"], filtro["pagina"]);
+        if(paginacion != ""){
+            document.querySelector("#result_panel").insertAdjacentElement("afterend", paginacion);
+        }
+        //Le añadimos los escuchadores
+        let elementosLi = document.querySelectorAll(".pagination li");
+        elementosLi.forEach(elemento => elemento.firstElementChild.addEventListener("click", filtrarPartidas));
          //Cargo los datos de las partidas
-         respuestaJSON["tuplas"].forEach(dato => {
-             lista.append(crearContenedorPartida(dato));
-         });
+        respuestaJSON["tuplas"].forEach(dato => {
+            lista.append(crearContenedorPartida(dato));
+        });
     }
     catch(error) {
          console.log(error);
     }
  }
+ 
 
  /**
   * Crea un contenedor para una partida con los datos que le pasamos
@@ -1203,14 +1215,14 @@ async function cargarPartidas(filtro = {}) {
      let juegoPartida = crearContenedor("span", {}, "Juego: " + datosPartida["nombre"]);
      //Género
      let generoPartida= crearContenedor("span", {}, "Genero: " + datosPartida["genero"]);
-     //Le damos formato al día
-     let fecha = new Date(datosPartida["fecha"]);
-     let dia = (fecha.getDate() > 9 ? fecha.getDate() : "0" + fecha.getDate());
-     let mes = fecha.getMonth() + 1 > 12 ? 1 : fecha.getMonth() + 1;
+     //Le damos formato al día y la hora
+     let fecha = new Fecha(datosPartida["fecha"]).getFecha();
+     console.log(typeof datosPartida["hora_inicio"]);
+     let hora_inicio = datosPartida["hora_inicio"].substring(0, datosPartida["hora_inicio"].length -3);
      //Día
-     let diaPartida = crearContenedor("span", {}, "Fecha: " + dia + "-" + (mes > 9 ?mes : "0" + mes) + "-" + fecha.getFullYear());
+     let diaPartida = crearContenedor("span", {}, "Fecha: " + fecha);
      //Hora
-     let horaPartida = crearContenedor("span", {}, "Hora de inicio: " + datosPartida["hora_inicio"]);
+     let horaPartida = crearContenedor("span", {}, "Hora de inicio: " + hora_inicio);
      //Creamos los botones y le añadimos a cada uno un data-id con el id de la partida
      let botonInfo = crearBoton("Información", {"type": "button", "class": "btn btn-lg btn-info", "data-id": datosPartida["id_partida"]});
      let botonReservar = crearBoton("¡Reservar!", {"type": "button", "class": "btn btn-lg btn-success", "data-id": datosPartida["id_partida"]});
@@ -1226,8 +1238,13 @@ async function cargarPartidas(filtro = {}) {
  /**
   * Carga las partidas con los filtros que le pusimos
   *
+  * @param {Event} Evento que lo dispara
+  * 
   */
- function filtarPartidas() {
+ function filtrarPartidas(e) {
+    e.preventDefault();
+    let limite = 7;
+    let pagina = (e.currentTarget.dataset.partida - 1) * limite ?? 0;
      //Cojo los valores de los input
      let generos = Array.from(document.querySelectorAll("option[selected]"));
      filtros = {};
@@ -1243,7 +1260,7 @@ async function cargarPartidas(filtro = {}) {
      if(fechaFin != "") {
         filtros["fechaFin"] = fechaFin;
      }
-     cargarPartidas(filtros);
+     cargarPartidas(filtros, pagina, limite);
  }
  
  /**
@@ -1253,6 +1270,7 @@ async function cargarPartidas(filtro = {}) {
   *
   */
 function crearPaginacion(numero, pagina) {
+    pagina = pagina / 7;
     //Comprobamos si existe ya un contenedor de paginación
     let contenedorPaginacion = document.querySelector(".pagination");
     //Comprobamos si no existe
@@ -1264,7 +1282,7 @@ function crearPaginacion(numero, pagina) {
         contenedorPaginacion.innerHTML = "";
     }
     //Comprobamos que sea mayor a 1
-    if(numero > 1) {
+    if(numero > 0) {
         //Creamos el ul
         let lista = document.createElement("ul");
         for (let i = 1; i <= numero + 1; i++){
@@ -1765,7 +1783,7 @@ function cogerFiltrosPartidasAdmin(e) {
     let fechaFin = document.getElementById("fechaFin");
     fechaFin.value != "" ? datosFiltro["fechaFin"] = fechaFin : "";
     //Cogemos el número del enlace clicado y le restamos uno (Ya que empieza en 0)
-    let pagina = e.currentTarget.dataset.partida - 1;
+    let pagina = (e.currentTarget.dataset.partida - 1) * 7;
     filtrarPartidasAdmin(datosFiltro, pagina);
 }
 
@@ -2198,7 +2216,7 @@ async function reservarPartida(e) {
             throw respuestaJSON["error"];
         }
         //Mostramos el mensaje y volvemos a cargar las partidas
-        alert(mensaje);
+        alert("Partida reservada con éxito, cuando se procese la reserva se te enviará un correo diciend fue aceptada o no");
         cargarPartidas();
     }
     catch(error){

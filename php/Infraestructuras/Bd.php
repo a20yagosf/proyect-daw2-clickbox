@@ -175,19 +175,34 @@ class Bd {
         }
     }
 
+    /**
+     * Conecta con PDo e inicia la transacción, es usado para cuanto tenemos que hacer opciones que no tienen que ver con la BD pero necesitamos que si fallan se anulen las acciones en la BD también
+     *
+     * @return  PDO  Devuelve el pdo
+     */
+    public function iniciarTransaccionManual() {
+        //Leemos la configuración
+        $pdo = $this->conectarBD();
+        //iniciamos la transaccion
+        $pdo->beginTransaction();
+        return $pdo;
+    }
 
     /**
      * Método para realizar insert, update o delete (Estático)
      *
      * @param   string  $sentencia  Sentencia de la BD a ejecutar
      * @param   array  $datos      Array con los parámetros a asignar en la función preparada
+     * @param   PDO     $pdo    Elemento PDO que usamos en una transaccion manual
      *
      * @return  mixed             Devuelve el id o error
      */
-    public function agregarModificarDatosBDNum($sentencia, $datos){
+    public function agregarModificarDatosBDNum($sentencia, $datos, $pdo = ""){
         try {
-            //Creo la conexión
-            $pdo = $this->conectarBD();
+            if($pdo == "") {
+                //Creo la conexión
+                $pdo = $this->conectarBD();
+            }
             //Ejecutamos la sentencia
             $pdoStatement = $pdo->prepare($sentencia);
             //Asignamos los valores
@@ -252,13 +267,16 @@ class Bd {
      *
      * @param   string  $sentencia  Sentencia a ejecutar
      * @param   array  $datos      Datos a añadir como parámetros
+     * @param   PDO     $pdo    Elemento PDO que usamos en una transaccion manual
      *
      * @return  mixed                  Devuelve un PDOSTamente o false en caso de error
      */
-    public function recuperarDatosBDNum($sentencia, $datos = []) {
+    public function recuperarDatosBDNum($sentencia, $datos = [], $pdo = "") {
         try {
-            //Creo la conexión
-            $pdo = $this->conectarBD();
+            if($pdo == ""){
+                //Creo la conexión
+                $pdo = $this->conectarBD();
+            }
             //Ejecutamos la sentencia
             $pdoStatement = $pdo->prepare($sentencia);
             //Cargamos los parámetros

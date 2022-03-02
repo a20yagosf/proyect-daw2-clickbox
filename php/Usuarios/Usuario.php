@@ -165,7 +165,7 @@ class Usuario
         $fecha2 = $filtro["fechaFin"] ?? "";
         $fechas = $this->comprobarFechas($fecha1, $fecha2, true);
         //Sentencia para contar el número de páginas es como la normal pero contando las tuplas sin limitar
-        $sentenciaNumPag = "SELECT COUNT(P.id_partida) as num_pag FROM partidas as P";
+        $sentenciaNumPag = "SELECT COUNT(P.id_partida) as num_pag FROM partidas as P WHERE P.id_partida NOT IN (SELECT partida FROM usuarios_partidas WHERE usuario = :usuario)";
         //Sentencia para pedir los datos
         $sentencia = "SELECT P.id_partida, PR.nombre, P.imagen_partida,  J.genero, P.fecha, P.hora_inicio FROM partidas as P INNER JOIN productos as PR ON P.id_partida NOT IN (SELECT partida FROM usuarios_partidas WHERE usuario = :usuario) AND P.juego_partida = PR.id_producto INNER JOIN juegos AS J ON PR.id_producto = J.juego";
         //Datos que pasaremos a la sentencia como parámetros a sustituir
@@ -173,24 +173,28 @@ class Usuario
         //Recorremos los filtros y vamos añadiendo
         if (!empty($filtro["genero"])) {
             //Como consigo el género como un string le voy concatenando los elementos (por si hay mas de uno)
-            $filtrado = " WHERE genero IN (";
+            $sentenciaNumPag .= " AND genero IN (";
+            $sentencia .= " AND genero IN (";
             foreach ($filtro["genero"] as $indice => $valor) {
-                $filtrado .= ":" . $indice . ", ";
+                $sentenciaNumPag .= ":" . $indice . ", ";
+                $sentencia .= ":" . $indice . ", ";
             }
             //Quito la última coma y espacio
-            $filtrado = mb_substr($filtrado, 0, -2);
-            $filtrado .= ")";
+            $sentenciaNumPag = mb_substr($sentencia, 0, -2);
+            $sentenciaNumPag .= ")";
+            $sentencia = mb_substr($sentencia, 0, -2);
+            $sentencia .= ")";
             $datosFiltrado["genero"] = $filtro["genero"];
         }
         //Compruebo cuantas fechas tengo
         if (count($fechas) == 2) {
-            $sentenciaNumPag .= isset($filtrado) ? $filtrado . " AND DATE(P.fecha) BETWEEN :fechaIni AND :fechaFin" : " WHERE DATE(P.fecha) BETWEEN :fechaIni AND :fechaFin";
-            $sentencia .= isset($filtrado) ? $filtrado . " AND DATE(P.fecha) BETWEEN :fechaIni AND :fechaFin" : " WHERE DATE(P.fecha) BETWEEN :fechaIni AND :fechaFin";
+            $sentenciaNumPag .= " AND (DATE(P.fecha) BETWEEN :fechaIni AND :fechaFin)";
+            $sentencia .= " AND (DATE(P.fecha) BETWEEN :fechaIni AND :fechaFin)";
             $datosFiltrado["fechaIni"] = $fechas[0];
             $datosFiltrado["fechaFin"] = $fechas[1];
         } else if (count($fechas) == 1) {
-            $sentenciaNumPag .= isset($filtrado) ? " AND (DATE(P.fecha) >= :fechaIni" : " WHERE DATE(P.fecha) >= :fechaIni)";
-            $sentencia .= isset($filtrado) ? " AND (DATE(P.fecha) >= :fechaIni" : " WHERE DATE(P.fecha) >= :fechaIni)";
+            $sentenciaNumPag .= " AND (DATE(P.fecha) >= :fechaIni)";
+            $sentencia .= " AND (DATE(P.fecha) >= :fechaIni)";
             $datosFiltrado["fechaIni"] = $fechas[0];
         }
         //Calculamos el número de páginas
@@ -321,7 +325,7 @@ class Usuario
         //Instanciamos bd
         $bd = new bd();
         //Creamos la sentencia
-        $sentencia = "SELECT id_producto, nombre  FROM productos WHERE nombre LIKE ? LIMIT 0, 5";
+        $sentencia = "SELECT PR.id_producto, PR.nombre  FROM productos AS PR INNER JOIN juegos AS J ON PR.id_producto = J.juego AND nombre LIKE ? LIMIT 0, 5";
         $datosAsignar = ["%" . $nombreJuego . "%"];
         //Pasamos el dato a un array para enviarselo a la función
         $pdoStatement = $bd->recuperDatosBD($sentencia, $datosAsignar);
