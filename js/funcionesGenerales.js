@@ -1369,7 +1369,7 @@ function crearPaginacion(numero, pagina) {
   *
   * @param   {string}  tipoContenedor  Tipo del contenedor (span, div, li, etc..)
   * @param   {Object}  atributos       Atributos del contenedor de tipo {clave: valor} (puede no tener)
-  * @param   {string} texto              Texto que contendrá el contendor (puede estar vacio)
+  * @param   {string} texto              Texto que contendrá el contenedor (puede estar vacio)
   *
   * @return  {DOMElement}                  Contenedor
  */
@@ -1648,7 +1648,7 @@ function cargarReservasAdmin() {
 }
 
 /**
- * Crear el contendor con las partidas para Admin (todas las partidas)
+ * Crear el contenedor con las partidas para Admin (todas las partidas)
  *
  * @return  {void}  No devuelve nada
  */

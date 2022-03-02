@@ -1,28 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ClickBox</title>
     <!-- Script con todas las funciones -->
     <script src="../js/funcionesGenerales.js"></script>
     <!-- Que se ejecutará en esta página -->
     <script src="../js/panelAdministrador.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <main class="cuerpoMosaico">
-        <div id="panelAdmin">
-            <div>
-                <a href="#">Opciones de creación</a>
-                <ul id="opcionesPanelAdmin">
-                    <li><a href="#">Cajas sorpresa</a></li>
-                    <li><a href="#" class="listaActivo">Partidas</a></li>
-                    <li><a href="#">Productos</a></li>
-                    <li><a href="#">Usuarios</a></li>
-                </ul>
-            </div>
-             <!---<form id="formPanelAdmin">
+      <div id="panelAdmin">
+        <div>
+          <a href="#">Opciones de creación</a>
+          <ul id="opcionesPanelAdmin">
+            <li><a href="#">Cajas sorpresa</a></li>
+            <li><a href="#" class="listaActivo">Partidas</a></li>
+            <li><a href="#">Productos</a></li>
+            <li><a href="#">Usuarios</a></li>
+          </ul>
+        </div>
+        <!-- Comentar esto porque se carga todo desde JS-->
+
+        <!-- <form id="formPanelAdmin">
                 <h2>Cajas sorpresa</h2>
                 <label for="fecha">Fecha lanzamiento:</label>
                 <input type="date" name="fecha" id="fecha"/>
@@ -42,8 +44,76 @@
                 </select>
                 <input type="submit" value="Crear caja"/>
                 <button type="button">Cancelar</button>
-            </form>-->
-            <!--<div id="contenedorElementos">
+            </form> -->
+        <div id="formPanelAdmin">
+          <div id="contenedorElementos">
+            <table id="filtroUsuarios">
+              <thead>
+                <h2>Filtro de usuarios</h2>
+                <tr>
+                  <th>Email del usuario</th>
+                  <th>Rol</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input type="text" name="email" id="filtro-email" placeholder="Buscar por..."/></td>
+                  <td>
+                    <select name="rol" id="filtro-rol">
+                      <option value="estandar">Estándar</option>
+                      <option value="admin">Administrador</option>
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table id="listaElementos">
+              <thead>
+                <h2>Usuarios y roles</h2>
+                <tr>
+                  <th>Email</th>
+                  <th>Rol</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>ejemplo@gmail.com</td>
+                  <td>
+                    <select name="nuevo_rol" id="ejemplo@gmail.com">
+                      <option value="admin" selected>Administrador</option>
+                      <option value="estandar">Estándar</option>
+                    </select>
+                  </td>
+                  <td><button onclick="recogerDatos()">Guardar</button></td>
+                </tr>
+                <tr>
+                  <td>ejemplo@gmail.com</td>
+                  <td>
+                    <select name="nuevo_rol" id="ejemplo@gmail.com">
+                      <option value="admin" selected>Administrador</option>
+                      <option value="estandar">Estándar</option>
+                    </select>
+                  </td>
+                  <td><button onclick="recogerDatos()">Guardar</button></td>
+                </tr>
+                <tr>
+                  <td>ejemplo@gmail.com</td>
+                  <td>
+                    <select name="nuevo_rol" id="ejemplo@gmail.com">
+                      <option value="admin">Administrador</option>
+                      <option value="estandar" selected>Estándar</option>
+                    </select>
+                  </td>
+                  <td><button onclick="recogerDatos()">Guardar</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!--<div id="contenedorElementos">
                 <form id="filtradoPartida" action="">
                     <label for="fechaCaja">Fecha</label>
                     <input type="date" name="fechaCaja" id="fechaCaja"/>
@@ -91,8 +161,8 @@
                             <td><button>Eliminar</button></td>
                         </tr>
                     </tbody>
-                </table> -->
-                <!--<form action="" id="formPanelAdmin">
+                </table> 
+                <form action="" id="formPanelAdmin">
                     <label for="juego_partida">Juego</label>
                     <select name="juego" id="juego"></select>
                     <label for="fecha">Fecha</label>
@@ -110,8 +180,9 @@
                     <p id="resultadoOperacion"></p>
                     <input type="submit" value="Crear partida"/>
                     <button type="button">Cancelar</button>
-                </form> -->
-        </div>
+                </form>
+        </div> -->
+      </div>
     </main>
-</body>
+  </body>
 </html>

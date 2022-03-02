@@ -12,7 +12,7 @@ window.onload = function () {
     //document.getElementById("formPanelAdmin").addEventListener("submit", crearPartida);
     //Cargamos las opciones de los juegos
    //cargarOpcionesJuegos(document.querySelector("select"));
-   cargarPartidasAdmin();
+   //cargarPartidasAdmin();
     //Creamos el mapa
     crearMapa();
 };

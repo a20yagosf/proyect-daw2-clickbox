@@ -188,6 +188,12 @@
             @include contenedor(100%, 100%, transparent);
             text-align: center;
         }
+        // listaFiltros tiene el mismo estilo que listaElementos, a menos que se cambie en un futuro
+        #filtroUsuarios{
+            @include contenedor(100%, 100%, transparent);
+            text-align: center;
+        }
+
 
         thead {
             //Border bottom
