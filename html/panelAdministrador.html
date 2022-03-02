@@ -64,6 +64,9 @@
                       <option value="admin">Administrador</option>
                     </select>
                   </td>
+                  <td>
+                    <button onclick="filtrarUsuarios()">Filtrar</button>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -79,34 +82,14 @@
               </thead>
               <tbody>
                 <tr>
-                  <td>ejemplo@gmail.com</td>
+                  <td>cambio@gmail.com</td>
                   <td>
-                    <select name="nuevo_rol" id="ejemplo@gmail.com">
-                      <option value="admin" selected>Administrador</option>
-                      <option value="estandar">Estándar</option>
+                    <select name="nuevo_rol" id="cambio@gmail.com">
+                      <option value="1">Administrador</option>
+                      <option value="2" selected>Estándar</option>
                     </select>
                   </td>
-                  <td><button onclick="recogerDatos()">Guardar</button></td>
-                </tr>
-                <tr>
-                  <td>ejemplo@gmail.com</td>
-                  <td>
-                    <select name="nuevo_rol" id="ejemplo@gmail.com">
-                      <option value="admin" selected>Administrador</option>
-                      <option value="estandar">Estándar</option>
-                    </select>
-                  </td>
-                  <td><button onclick="recogerDatos()">Guardar</button></td>
-                </tr>
-                <tr>
-                  <td>ejemplo@gmail.com</td>
-                  <td>
-                    <select name="nuevo_rol" id="ejemplo@gmail.com">
-                      <option value="admin">Administrador</option>
-                      <option value="estandar" selected>Estándar</option>
-                    </select>
-                  </td>
-                  <td><button onclick="recogerDatos()">Guardar</button></td>
+                  <td><button id="eventoprueba">Guardar</button></td> <!-- Al generar por js debería ser un addEventListener()-->
                 </tr>
               </tbody>
             </table>

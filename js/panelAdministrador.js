@@ -11,8 +11,13 @@ window.onload = function () {
     document.getElementById("panelAdmin").querySelector("a").addEventListener("click", ocultarMostrarOpcionesCreacion);
     //document.getElementById("formPanelAdmin").addEventListener("submit", crearPartida);
     //Cargamos las opciones de los juegos
-   //cargarOpcionesJuegos(document.querySelector("select"));
-   //cargarPartidasAdmin();
+    //cargarOpcionesJuegos(document.querySelector("select"));
+    //Cargamos las partidas
+    //cargarPartidasAdmin();
+    //Cargamos los usuarios
+    //cargarUsuariosAdmin(); //todavía no implementado
+        // una pequeña prueba para usar currentTarget
+        document.getElementById("eventoprueba").addEventListener("click", recogerDatos);
     //Creamos el mapa
     crearMapa();
 };

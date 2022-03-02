@@ -1693,6 +1693,28 @@ function modoCrearPartidasAdmin() {
     contenedorAdmin.append(formulario);
 }
 
+async function recogerDatos(e){
+    //Seleccionamos el td con el correo del usuario
+    let emailUsuario = e.currentTarget.parentElement.parentElement.firstElementChild.textContent;
+    //Ahora que sabemos el email podemos usarlo para seleccionar el id de igual valor, que será el select con la opción que queremos que tenga
+    let rolUsuario = document.getElementById(emailUsuario).value;  
+    //Le mandamos la información para el cambio de usuario al php
+    const respuestaJSON = await fetch("../php/cambiarRol.php", {
+        method: "POST",
+        headers: {"Content-type": "application/json; charset=utf-8"},
+        body: JSON.stringify({"email": emailUsuario, "rol": rolUsuario, "admin":sessionStorage.getItem("email")}) //mandamos a mayores el email del supuesto admin para comprobar en php
+    });
+    // Toca recibir la respuesta
+    console.log(respuestaJSON); // prueba
+    const respuestaJS = await respuestaJSON.json(); // Coge la respuesta y la convierte a objeto de js
+    console.log("Prueba");  // prueba
+    if (respuestaJS==true) {
+        window.alert("Base de datos actualizada");
+    }else{
+        window.alert("No se ha podido actualizar la base de datos");
+    }
+}
+
 /**
  * Llama a filtrar las partidas
  *
