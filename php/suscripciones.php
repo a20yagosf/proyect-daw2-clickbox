@@ -57,7 +57,7 @@ else if(isset($duracionSus["duracion"])) {
     }
 }
 //Suscribirse
-else {
+else if(isset($duracionSus["suscribirse"])) {
     //Iniciamos sesión ya que sólo podran suscribirse los usuarioss
     session_start();
     if(!isset($_SESSION["usuario"])){
@@ -73,6 +73,20 @@ else {
         else {
             $mensajeDevolver = ["exito" => "Suscrito con exito"];
         }
+    }
+}
+//Cancelar suscripcion
+else {
+    //Iniciamos sesión ya que sólo podran suscribirse los usuarioss
+    session_start();
+    $usuario = new user($_SESSION["usuario"]["email"]);
+    $resultado = $usuario->cancelarRenovacionSusc();
+    //Comprobamos que no diera error
+     if($resultado !== true){
+        $mensajeDevolver = ["error" => $resultado];
+    }
+    else {
+        $mensajeDevolver = ["exito" => "Renovación cancelada con exito"];
     }
 }
 //Se lo devolvemos a js

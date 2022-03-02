@@ -5,6 +5,7 @@ namespace Usuarios;
 use DateInterval;
 use DateTime;
 use \Infraestructuras\Bd as bd;
+use Infraestructuras\Email;
 use \Traits\Formulario as formulario;
 use \ServiciosProductos\Suscripcion as suscription;
 
@@ -149,9 +150,9 @@ class Usuario
     /**
      * Suscribe al usuario a esa suscripción
      *
-     * @param   [type]  $duracion  [$duracion description]
+     * @param   string  $duracion  Duración de la suscripcion (Es una string porque en el JSON se convierte)
      *
-     * @return  [type]             [return description]
+     * @return  boolean           Devuelve un error o true si todo fue bien
      */
     public function suscribirse($duracion) {
         try {
@@ -176,6 +177,8 @@ class Usuario
                 }
             }
             //Creamos la sentencia, por defecto se pondrá renovar a true y la fecha actual de la suscripcion
+            $fechaIniSusc = new DateTime();
+            //Añadimos la fecha de inicio de suscripción porque fue generada por nosotros con control, por lo que podemos confiar de ella
             $sentencia = "UPDATE usuarios SET suscripcion = :suscripcion, renovar = 1, fecha_ini_suscripcion = NOW() WHERE email = :email;";
             //Array con los datos que tenemos que pasarle
             $datosAnhadir = ["suscripcion" => intval($duracion), "email" => $this->getEmail()];
@@ -183,6 +186,12 @@ class Usuario
             //Comprobamos que no diera un error
             if(is_string($resultado) && stripos($resultado, "error") !== false){
                 throw new \PDOException($resultado);
+            }
+            //Enviamos el correo
+            $email = new Email();
+            $correoEnviado = $email->enviarCorreos($this->getEmail(), "suscribirse", ["duracion" => intval($duracion), "fecha_ini_suscripcion" => $fechaIniSusc]);
+            if($correoEnviado !== true) {
+                throw new \Exception($correoEnviado);
             }
         }
         catch (\PDOException $pdoError){
@@ -193,9 +202,33 @@ class Usuario
         }
         return $devolver ?? true;
     }
-    public function cerrarSesion()
-    {
+
+    /**
+     * Cancela la renovación de la suscripción
+     *
+     * @return  boolean  Devuelve true si se completó bien la operación
+     */
+    public function cancelarRenovacionSusc() {
+        //Instanciamos bd
+        $bd = new bd();
+        //Creamos la sentnecia
+        $sentencia = "UPDATE usuarios SET renovar = 0 WHERE email = ?;";
+        $resultado = $bd->agregarModificarDatosBD($sentencia, [$this->getEmail()]);
+        if(is_string($resultado) && stripos($resultado, "error") !== false){
+            throw new \PDOException($resultado);
+        }
+        return true;
     }
+
+    /**
+     * Cierra la sesión eliminando la variable de sesión de usuario
+     *
+     * @return  void  No devuelve nada
+     */
+    public function cerrarSesion(){
+        unset($_SESSION["usuario"]);
+    }
+
     public function cargarCambios_perfil()
     {
     }

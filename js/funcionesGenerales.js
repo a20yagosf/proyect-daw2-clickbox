@@ -1164,6 +1164,34 @@ async function suscribirse() {
 }
 
 /**
+ * Cancela la renovación de la suscripción
+ *
+ * @return  {void}  No devuelve nada
+ */
+async function cancelarRenovacionSusc() {
+    try {
+        //Iniciamos la petición
+        const respuesta = await fetch("../php/suscripciones.php", {
+            method: "POST",
+            headers: {"Content-type": "application/json; charset=utf-8"},
+            body: JSON.stringify({"cancelarSuscripcion": true}),
+        });
+        //Traducimos la respuesta
+        const respuestaJSON = await respuesta.json();
+        //Comprobamos que no diera un error
+        if(Object.hasOwn(respuestaJSON, "error")){
+            throw respuestaJSON["error"];
+        }
+        else {
+            alert("Renovación cancelada con éxito");
+        }
+    }
+    catch(error){
+        alert(error);
+    }
+}
+
+/**
  * Lleva a la página de suscripciones
  *
  */

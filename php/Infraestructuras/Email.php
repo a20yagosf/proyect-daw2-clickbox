@@ -5,6 +5,7 @@ namespace Infraestructuras;
  * Utilizamos la librería de terceros PHPMailer proporcionada por Composer
  */
 
+use DateInterval;
 use DateTime;
 use \DOMDocument;
 use \PHPMailer\PHPMailer\PHPMailer;
@@ -85,6 +86,11 @@ class Email {
                 $datos["fecha"] = date_format(new DateTime($datos["fecha"]), "d-m-Y");
                 $cuerpoCorreo = $this->crearCorreoCancelacionPartida($datos);
                 $asunto = "Cacelación partida " . $datos["fecha"];
+                break;
+
+            case "suscribirse":
+                $cuerpoCorreo = $this->crearCorreoSuscripción($datos);
+                $asunto = "Suscripción a ClickBox";
                 break;
                 
         }
@@ -178,6 +184,38 @@ class Email {
         $mensaje .= ' <p style="font-family: Resolve; text-align: justify flex-basis: 100%;">Sentimos comunicaros que la partida prevista para el día ' . $datosPartida["fecha"] . ' fue cancelada por motivos ajenos a la organización. Que esto no detenga tus ganas de probar, échale un vistazo a otras partidas que organizamos</p>';
         //Enlace a la página
         $mensaje .= '<a href="http://clickbox.a2.daw2d.iesteis.gal/" style="display:block; width: max-content; padding: 1.5%; text-decoration: none; margin: auto; background-color: #026a79; color: white; border-radius: 10px; margin-block-end: 2%;">Buscar más partidas</a></div>';
+        //Texto información sobre correo autogenerado
+        $mensaje .= '<p style="text-align: justify;">Este mensaje ha sido enviada desde una cuenta de sólo envío. Por favor no responda a este mensage. Si tiene alguna duda o pregunta correspondiente a esta reserva póngase en contacto con nosotros <a href="clickbox.a2.daw2d.iesteis.gal">aquí</a></p>';
+        //Cerramos todo
+        $mensaje .= '</div></body></html>';
+        return $mensaje;
+    }
+
+    /**
+     * Crea el cuerpo para los correos de suscripción
+     *
+     * @param   array  $datosSuscripcion  Array con los datos de la suscripción
+     *
+     * @return  string                     Cadena con el mensaje
+     */
+    private function crearCorreoSuscripción($datosSuscripcion) {
+        //Le sumamos a cuando se suscribió la duración de la suscripción
+        $fechaRenovacion = $datosSuscripcion["fecha_ini_suscripcion"]->add(new \DateInterval("P" . ($datosSuscripcion["duracion"] - 1) . "M"))->format("d-m-Y");
+        //Cabecera
+        $mensaje = '<!DOCTYPE html><html lang="es"><head><meta charset=UTF-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Clickbox</title></head>';
+        //Div contenedor de todo con sus estilos
+        $mensaje .= '<body style="background-size: cover; margin: 0px;">';
+        //Div que conteien toda la información y el div que conteien el logo, titulo y texto
+        $mensaje .= '<div style="box-sizing: border-box; background-color: white; width: 50%; padding: 3%; position: relative; inset-inline-start: 50%; transform: translate(-50%); border-inline-start: 2px solid #026a79; border-inline-end: 2px solid #026a79;"><div  style="margin-block-end: 5%;">';
+        //Logo
+        $mensaje .= '<img src="/logoClickBox.svg" alt="Logo ClickBox" style="width: 300px; display: block; margin: auto;"/>';
+        //Titulo
+        $mensaje .= '<h1 style="font-family: PoetsenOne; text-align: center; margin-block-end: 4%; color: #026a79; flex-basis: 100%;">Te has suscrito ' . $datosSuscripcion["duracion"] . (intval($datosSuscripcion["duracion"]) == 1 ? " mes" : " meses")  .' a ClickBox</h1>';
+        //Mensaje
+        $mensaje .= ' <p style="font-family: Resolve; text-align: justify flex-basis: 100%;">Cada mes mientras dure la suscripción te enviaremos ha casa una caja con algún juego de mesa para que puedas descubrir juegos interesantes sin tener que dedicar tiempo a buscarlos. Ten en cuenta que la suscripciones se renuevan automaticamente, si no quieres recibir más cajas deberás cancelar la suscripción antes de la fecha de renovación</p>';
+        $mensaje .= ' <p style="font-family: Resolve; text-align: justify flex-basis: 100%;">Tu fecha de renovación es el ' . $fechaRenovacion . '. Si quiere cancelar la suscripción pulse el siguiente enlace</p>';
+        //Enlace a la página
+        $mensaje .= '<a href="http://clickbox.a2.daw2d.iesteis.gal/" style="display:block; width: max-content; padding: 1.5%; text-decoration: none; margin: auto; background-color: #026a79; color: white; border-radius: 10px; margin-block-end: 2%;">Desactivar suscripción</a></div>';
         //Texto información sobre correo autogenerado
         $mensaje .= '<p style="text-align: justify;">Este mensaje ha sido enviada desde una cuenta de sólo envío. Por favor no responda a este mensage. Si tiene alguna duda o pregunta correspondiente a esta reserva póngase en contacto con nosotros <a href="clickbox.a2.daw2d.iesteis.gal">aquí</a></p>';
         //Cerramos todo
