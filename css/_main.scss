@@ -8,6 +8,12 @@
     font-family: "Resolve";
 }
 
+body {
+    .monocromatico {
+        filter: grayscale(1);
+    }
+}
+
 a {
     text-decoration: none;
 }
@@ -737,5 +743,91 @@ main {
         button {
             @include boton($colorPrincipal, 1.5em);
         }
+    }
+}
+
+//Botones de accesibilidad
+#botonAccesiblidad {
+    @include boton($colorPrincipal, 1em);
+    padding: 2%;
+    background-image: url("../img/iconos/accesibilidad.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    position: fixed;
+    //Right
+    inset-inline-end: 1%;
+    //Top
+    inset-block-start: 50%;
+    z-index: 6;
+}
+
+#botonAccesiblidad + div {
+    width: max-content;
+    padding: 1%;
+    background-color: $colorLetra;
+    border: 1px solid $colorPrincipal;
+    border-radius: $borderRadius;
+    position: fixed;
+    z-index: 10;
+    //Top
+    inset-block-start: 50%;
+    //Left
+    inset-inline-end: 5%;
+    transform: translateY(-25%);
+}
+
+//Botón tipo Toggle
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    //Left
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+}
+
+//Ocultamos el checkbox por defecto
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+
+    &:checked + .slider {
+        background-color: $colorSecundario;
+    }
+      
+    &:focus + .slider {
+        box-shadow: 0 0 1px $colorSecundario;
+    }
+
+    &:checked + .slider::before {
+        transform: translateX(26px);
+    }
+}
+
+//El slider de fondo
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: all 0.4s ease-in-out;
+    border-radius: $borderRadius;
+
+    &::before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: all 0.4s ease-in-out;
+        border-radius: $borderRadius;
     }
 }

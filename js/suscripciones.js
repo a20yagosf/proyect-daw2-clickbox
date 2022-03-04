@@ -3,6 +3,7 @@
 cargarScripts();
 
 window.onload = function () {
+    loginAutomatico();
     //Creamos el header
     crearHeader();
     crearFooter();
@@ -11,4 +12,5 @@ window.onload = function () {
     cargarTiposSuscripciones();
     //Creamos el mapa
     crearMapa();
+    crearBotonAccesibilidad();
 };

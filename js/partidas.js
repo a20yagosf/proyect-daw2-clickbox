@@ -2,6 +2,7 @@
 cargarScripts();
 
 window.onload = function () {
+    loginAutomatico();
     //Creamos el header
     crearHeader();
     crearFooter();
@@ -14,4 +15,5 @@ window.onload = function () {
     document.getElementById("filtro_fechas").nextElementSibling.addEventListener("click", filtrarPartidas);
     //Creamos el mapa
     crearMapa();
+    crearBotonAccesibilidad();
 };

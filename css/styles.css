@@ -277,6 +277,10 @@ nav button:last-of-type:hover {
   font-family: "Resolve";
 }
 
+body .monocromatico {
+  filter: grayscale(1);
+}
+
 a {
   text-decoration: none;
 }
@@ -897,6 +901,92 @@ main {
 }
 #divBloqueaPantalla div button:hover {
   background-color: #03bdd7;
+}
+
+#botonAccesiblidad {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1em;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  padding: 2%;
+  background-image: url("../img/iconos/accesibilidad.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: 50%;
+  position: fixed;
+  inset-inline-end: 1%;
+  inset-block-start: 50%;
+  z-index: 6;
+}
+#botonAccesiblidad:hover {
+  background-color: #03bdd7;
+}
+
+#botonAccesiblidad + div {
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  padding: 1%;
+  background-color: #F3F3F3;
+  border: 1px solid #0291A5;
+  border-radius: 10px;
+  position: fixed;
+  z-index: 10;
+  inset-block-start: 50%;
+  inset-inline-end: 5%;
+  transform: translateY(-25%);
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.switch input:checked + .slider {
+  background-color: #FFB775;
+}
+.switch input:focus + .slider {
+  box-shadow: 0 0 1px #FFB775;
+}
+.switch input:checked + .slider::before {
+  transform: translateX(26px);
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: all 0.4s ease-in-out;
+  border-radius: 10px;
+}
+.slider::before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: all 0.4s ease-in-out;
+  border-radius: 10px;
 }
 
 #info_partidas, #filtro, #result_panel, .pagination {

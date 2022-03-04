@@ -4,6 +4,9 @@ use \Usuarios\Usuario as user;
 require_once "autocarga.php";
 session_start();
 
+//Cogemos los datos y los decodificamos
+$datosUsuairo = json_decode(file_get_contents("php://input"));
+
 try {
     if(isset($_GET["desconectar"])){
     //Borramos la variable de sesión
@@ -11,10 +14,15 @@ try {
     $user->cerrarSesion();
     $mensaje =["exito" => "Se borró con éxito"];
     }
+    else if(isset($datosUsuairo->iniciarSesion)) {
+        //Creamos un objeto usuairo con su email y lo guardamos en una variable de sesión
+        $usuario = new user($datosUsuairo->iniciarSesion);
+        //Cargamos el rol del usuario
+        $mensaje  = ["exito" => $usuario->getRol()];
+        $_SESSION["usuario"] = ["email" => $usuario->getEmail(), "rol" => $usuario->getRol()];
+        $usuario->guardarInicioSesion();
+    }
     else {
-            //Cogemos los datos y los decodificamos
-            $datosUsuairo = json_decode(file_get_contents("php://input"));
-
             //Instanciamos BD
             $bd = new bd();
             //Comprobamos que el usuario exista

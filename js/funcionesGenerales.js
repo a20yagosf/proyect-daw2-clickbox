@@ -784,9 +784,8 @@ async function procesarLogin(evento) {
         if(Object.hasOwn(resultadoPeticion, "error")){
             throw resultadoPeticion["error"];
         }
-        //Guardamos en sesión el usuario y su rol
-        sessionStorage.setItem("email", email);
-        sessionStorage.setItem("rol", resultadoPeticion["exito"]);
+        //Guardamos tambien en localStorage el email
+        localStorage.setItem("email", email);
         if(resultadoPeticion["exito"] == 1){
             location.assign("../html/panelAdministrador.html");
         }
@@ -798,6 +797,45 @@ async function procesarLogin(evento) {
         //Asignamos al p el mensaje
         resultado.textContent = "Error: " + $error;
         resultado.classList = "error";
+    }
+}
+
+/**
+ * Inicia sesión de forma automática si ya lo hicimso antes y no nos desconectamos
+ *
+ * @return  {void}  No devuelve nada
+ */
+async function loginAutomatico() {
+    //Comprobamos si tiene en localStorage guardado la cuenta y que no este ya iniciado sesión
+    if(sessionStorage["email"] == undefined && localStorage["email"] !== undefined){
+        try {
+            email = localStorage["email"];
+            const respuestaJSON = await fetch("../php/login.php", {
+                method: "POST",
+                headers: {"Content-type": "application/json; charset=utf-8"},
+                body: JSON.stringify({"iniciarSesion": email})
+            });
+            //Cogemos el mensaje y esperamos a que este listo
+            const resultadoPeticion = await respuestaJSON.json();
+            //Comprobamos que no saltara un error
+            if(Object.hasOwn(resultadoPeticion, "error")){
+                throw resultadoPeticion["error"];
+            }
+            //Guardamos en sesión el usuario y su rol (Su rol lo guardamos de la petición porque pudo cambiar)
+            sessionStorage.setItem("email", localStorage["email"]);
+            sessionStorage.setItem("rol", resultadoPeticion["exito"]);
+            if(resultadoPeticion["exito"] == 1){
+                location.assign("../html/panelAdministrador.html");
+            }
+            else {
+                //recargamos la página
+                location.reload();
+            }
+        }
+        catch($error){
+            //Asignamos al p el mensaje
+            console.log("Error: " + $error);
+        }
     }
 }
 
@@ -860,6 +898,9 @@ async function procesarRegistro(evento){
         resultado.classList = "exito";
         limpiarCampo(resultado, 2000);
         await limpiarTodosCamposForm(true);
+        //Guardamos el email en localStorage e iniciamos sesión
+        localStorage.setItem("email", email);
+        loginAutomatico();
     }
     catch($error){
         //Asignamos al p el mensaje
@@ -1015,7 +1056,8 @@ async function desconectarPerfil(e) {
     });
     const respuestaJSON = await respuesta.json();
     if(Object.hasOwn(respuestaJSON, "exito")) {
-        //Borra el sesion storage y recarga la página
+        //Borra el sesion storage, localstorage y recarga la página
+        localStorage.clear();
         sessionStorage.clear();
         location.assign("../html/index.html");
     }
@@ -2389,4 +2431,106 @@ async function mostrarResultado(fila, resultado) {
     fila.append(celda);
     //Esperamos 1 segundo y cargamos las reservas otra vez
     setTimeout(cargarReservasAdmin, 2000);
+}
+
+/**
+ * Crea el botony el menu de accesibilidad
+ *
+ * @return  {void}  No devuelve nada
+ */
+function crearBotonAccesibilidad () {
+    let boton = crearBoton("", {"type": "button", "id": "botonAccesiblidad"});
+    //Creamos el div con las opciones
+    let contenedorAcessibilidad = crearContenedor("div", {"id": "menuAccesibilidad"});
+    let cabeceraAccesiblidad = crearContenedor("h3", {}, "Modo monocromático");
+    let botonAccesibilidad = crearToggleSwitch();
+    contenedorAcessibilidad.append(cabeceraAccesiblidad, botonAccesibilidad);
+    document.querySelector("body").append(boton, contenedorAcessibilidad);
+    //Añadimos el escuchador
+    boton.addEventListener("click", ocultarMenuAccesibilidad);
+    //Activamos el evento para que oculte el menú
+    boton.dispatchEvent(new Event("click"));
+}
+
+/**
+ * Crea la parte del botón toggle como tal
+ *
+ * @return  {DOMElement}  El elemento toggle
+ */
+function crearToggleSwitch () {
+    //creamos un label de tipo checked
+    let boton = crearElem("label", {"class": "switch"});
+    let inputCheckbox = crearElem("input" , {"type": "checkbox", "id": "monocromatico"});
+    let circuloToggle = crearElem("span", {"class": "slider"});
+    boton.append(inputCheckbox, circuloToggle);
+    //Añadimos el escuchador
+    boton.addEventListener("click", cambiarModo);
+    //Comprobamos si tenemos una cookie con el modo
+
+    return boton;
+}
+
+/**
+ * Oculta y muestra el botón de accesibilidad
+ *
+ * @return  {void}  No devuelve nada
+ */
+function ocultarMenuAccesibilidad() {
+    let contenedorAcessibilidad = document.getElementById("menuAccesibilidad");
+    //Ocultamos el contenedor de opciones
+    $(contenedorAcessibilidad).animate({width: "toggle"});
+}
+
+/**
+ * Cambia el modo de monocromatico o estandar
+ *
+ * @return  {void}  None
+ */
+function cambiarModo() {
+    //Cogemos el botón de monocromatico
+    let botonCambio = document.getElementById("monocromatico");
+    if(botonCambio.checked) {
+        //Buscamos todos los elementos y le ponemosla clase monocromatico
+        let body = document.querySelector("body");
+        cambiarClaseMonocromaticoRecursivo(body);
+    }
+    else {
+        //Buscamos todos los elementos y le ponemosla clase monocromatico
+        let body = document.querySelector("body");
+        retirarClaseMonocromaticoRecursivo(body);
+    }
+}
+
+/**
+ * Cambia el modo a blanco y negro de manera recursiva
+ *
+ * @param   {DOMElement}  elemento  Elemento DOM
+ *
+ * @return  {void}            No devuelve nada
+ */
+function cambiarClaseMonocromaticoRecursivo(elemento) {
+    //Comprobamos si ya tiene la clase y se la ponemos si no la tiene
+    if(!elemento.classList.contains("monocromatico")) {
+        elemento.classList.add("monocromatico");
+    }
+    //Cogemos sus hijos y los pasamos
+    let hijos = Array.from(elemento.children);
+    hijos.forEach(hijo => cambiarClaseMonocromaticoRecursivo(hijo));
+}
+
+/**
+ * Elimina la clase monocromático de todos los elementos de manera recursiva
+ *
+ * @param   {DOMElement}  elemento  Elemento DOM
+ *
+ * @return  {void}            No devuelve nada
+ */
+function retirarClaseMonocromaticoRecursivo(elemento) {
+    //Comprobamos si ya tiene la clase y se la ponemos si no la tiene
+    if(elemento.classList.contains("monocromatico")) {
+        elemento.classList.remove("monocromatico");
+    }
+    //Cogemos sus hijos y los pasamos
+    let hijos = Array.from(elemento.children);
+    hijos.forEach(hijo => retirarClaseMonocromaticoRecursivo(hijo));
 }

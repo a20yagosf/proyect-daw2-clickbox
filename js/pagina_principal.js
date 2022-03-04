@@ -2,6 +2,7 @@
 cargarScripts();
 
 window.onload = function () {
+    loginAutomatico();
     //Creamos el header
     crearHeader();
     crearFooter();
@@ -16,4 +17,5 @@ window.onload = function () {
     botonesPartidas.forEach(boton => boton.addEventListener("click", irPartidas));
     //Creamos el mapa
     crearMapa();
+    crearBotonAccesibilidad();
 };
