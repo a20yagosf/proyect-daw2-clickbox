@@ -1702,7 +1702,7 @@ async function recogerDatos(e){
     const respuestaJSON = await fetch("../php/cambiarRol.php", {
         method: "POST",
         headers: {"Content-type": "application/json; charset=utf-8"},
-        body: JSON.stringify({"email": emailUsuario, "rol": rolUsuario, "admin":sessionStorage.getItem("email")}) //mandamos a mayores el email del supuesto admin para comprobar en php
+        body: JSON.stringify({"email": emailUsuario, "rol": rolUsuario}) //mandamos a mayores el email del supuesto admin para comprobar en php
     });
     // Toca recibir la respuesta
     console.log(respuestaJSON); // prueba

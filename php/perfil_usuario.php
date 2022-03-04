@@ -24,8 +24,8 @@ try {
     }
     echo json_encode($resultado);
 } catch (\PDOException $pdoError) {
-    echo ["error"=>"Error " . $pdoError->getCode() . ": " . $pdoError->getMessage()];
+    echo json_encode(["error"=>"Error " . $pdoError->getCode() . ": " . $pdoError->getMessage()]);
 } catch (\Exception $error) {
-    echo ["error"=>"Error " . $error->getCode() . ": " . $error->getMessage()];
+    echo json_encode(["error"=>"Error " . $error->getCode() . ": " . $error->getMessage()]);
 }
 
