@@ -248,7 +248,7 @@ class Email {
         $email->SetFrom('clickbox@a2.daw2d.iesteis.gal', 'ClickBox');
         $email->Subject = utf8_decode($asunto);
         //Añadimos la imagen
-        $email->addAttachment("../../img/logo.svg", "logo", "logo.svg");
+        $email->addAttachment( dirname(__FILE__, 2) . DIRECTORY_SEPARATOR .  "img/logoClickBox.svg", "logo");
         //Añadimos el mensaje
         $email->MsgHTML($cuerpo);
         //Ponemos que codifique en UTF8
