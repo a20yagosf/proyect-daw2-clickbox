@@ -116,7 +116,7 @@ class Email {
             //Div que conteien toda la información y el div que conteien el logo, titulo y texto
             $mensaje .= '<div style="box-sizing: border-box; background-color: white; width: 50%; padding: 3%; position: relative; inset-inline-start: 50%; transform: translate(-50%); border-inline-start: 2px solid #026a79; border-inline-end: 2px solid #026a79;"><div>';
             //Logo
-            $mensaje .= '<img src="/logoClickBox.svg" alt="Logo ClickBox" style="width: 300px; display: block; margin: auto;"/>';
+            $mensaje .= '<img src="cid:logo" alt="Logo ClickBox" style="width: 300px; display: block; margin: auto;"/>';
             //Titulo
             $mensaje .= '<h1 style="font-family: PoetsenOne; text-align: center; margin-block-end: 4%; color: #026a79;">Reserva partida ' . $datosReserva["fecha"] . ': Aceptada</h1>';
             //Eliminamos la variable ya que ya no nos hace falta
@@ -135,7 +135,7 @@ class Email {
             //Cerramos la tabla
             $mensaje .= '</table></div>';
             //Texto información sobre correo autogenerado
-            $mensaje .= '<p style="text-align: justify;">Este mensaje ha sido enviada desde una cuenta de sólo envío. Por favor no responda a este mensage. Si tiene alguna duda o pregunta correspondiente a esta reserva póngase en contacto con nosotros <a href="clickbox.a2.daw2d.iesteis.gal">aquí</a></p>';
+            $mensaje .= '<p style="text-align: justify;">Este mensaje ha sido enviada desde una cuenta de sólo envío. Por favor no responda a este mensaje. Si tiene alguna duda o pregunta correspondiente a esta reserva póngase en contacto con nosotros <a href="clickbox.a2.daw2d.iesteis.gal">aquí</a></p>';
             //Cerramos todo
             $mensaje .= '</div></body></html>';
         }
@@ -147,7 +147,7 @@ class Email {
             //Div que conteien toda la información y el div que conteien el logo, titulo y texto
             $mensaje .= '<div style="box-sizing: border-box; background-color: white; width: 50%; padding: 3%; position: relative; inset-inline-start: 50%; transform: translate(-50%); border-inline-start: 2px solid #026a79; border-inline-end: 2px solid #026a79;"><div  style="margin-block-end: 5%;">';
             //Logo
-            $mensaje .= '<img src="/logoClickBox.svg" alt="Logo ClickBox" style="width: 300px; display: block; margin: auto;"/>';
+            $mensaje .= '<img src="cid:logo" alt="Logo ClickBox" style="width: 300px; display: block; margin: auto;"/>';
             //Titulo
             $mensaje .= '<h1 style="font-family: PoetsenOne; text-align: center; margin-block-end: 4%; color: #026a79; flex-basis: 100%;">Reserva partida ' . $datosReserva["fecha"] . ': Rechazada</h1>';
             //Mensaje
@@ -155,7 +155,7 @@ class Email {
             //Enlace a la página
             $mensaje .= '<a href="http://clickbox.a2.daw2d.iesteis.gal/" style="display:block; width: max-content; padding: 1.5%; text-decoration: none; margin: auto; background-color: #026a79; color: white; border-radius: 10px; margin-block-end: 2%;">Buscar más partidas</a></div>';
             //Texto información sobre correo autogenerado
-            $mensaje .= '<p style="text-align: justify;">Este mensaje ha sido enviada desde una cuenta de sólo envío. Por favor no responda a este mensage. Si tiene alguna duda o pregunta correspondiente a esta reserva póngase en contacto con nosotros <a href="clickbox.a2.daw2d.iesteis.gal">aquí</a></p>';
+            $mensaje .= '<p style="text-align: justify;">Este mensaje ha sido enviada desde una cuenta de sólo envío. Por favor no responda a este mensaje. Si tiene alguna duda o pregunta correspondiente a esta reserva póngase en contacto con nosotros <a href="clickbox.a2.daw2d.iesteis.gal">aquí</a></p>';
             //Cerramos todo
             $mensaje .= '</div></body></html>';
         }
@@ -177,7 +177,7 @@ class Email {
         //Div que conteien toda la información y el div que conteien el logo, titulo y texto
         $mensaje .= '<div style="box-sizing: border-box; background-color: white; width: 50%; padding: 3%; position: relative; inset-inline-start: 50%; transform: translate(-50%); border-inline-start: 2px solid #026a79; border-inline-end: 2px solid #026a79;"><div  style="margin-block-end: 5%;">';
         //Logo
-        $mensaje .= '<img src="/logoClickBox.svg" alt="Logo ClickBox" style="width: 300px; display: block; margin: auto;"/>';
+        $mensaje .= '<img src="cid:logo" alt="Logo ClickBox" style="width: 300px; display: block; margin: auto;"/>';
         //Titulo
         $mensaje .= '<h1 style="font-family: PoetsenOne; text-align: center; margin-block-end: 4%; color: #026a79; flex-basis: 100%;">Partida ' . $datosPartida["fecha"] . ': Cancelada</h1>';
         //Mensaje
@@ -185,7 +185,7 @@ class Email {
         //Enlace a la página
         $mensaje .= '<a href="http://clickbox.a2.daw2d.iesteis.gal/" style="display:block; width: max-content; padding: 1.5%; text-decoration: none; margin: auto; background-color: #026a79; color: white; border-radius: 10px; margin-block-end: 2%;">Buscar más partidas</a></div>';
         //Texto información sobre correo autogenerado
-        $mensaje .= '<p style="text-align: justify;">Este mensaje ha sido enviada desde una cuenta de sólo envío. Por favor no responda a este mensage. Si tiene alguna duda o pregunta correspondiente a esta reserva póngase en contacto con nosotros <a href="clickbox.a2.daw2d.iesteis.gal">aquí</a></p>';
+        $mensaje .= '<p style="text-align: justify;">Este mensaje ha sido enviada desde una cuenta de sólo envío. Por favor no responda a este mensaje. Si tiene alguna duda o pregunta correspondiente a esta reserva póngase en contacto con nosotros <a href="clickbox.a2.daw2d.iesteis.gal">aquí</a></p>';
         //Cerramos todo
         $mensaje .= '</div></body></html>';
         return $mensaje;
@@ -208,7 +208,7 @@ class Email {
         //Div que conteien toda la información y el div que conteien el logo, titulo y texto
         $mensaje .= '<div style="box-sizing: border-box; background-color: white; width: 50%; padding: 3%; position: relative; inset-inline-start: 50%; transform: translate(-50%); border-inline-start: 2px solid #026a79; border-inline-end: 2px solid #026a79;"><div  style="margin-block-end: 5%;">';
         //Logo
-        $mensaje .= '<img src="/logoClickBox.svg" alt="Logo ClickBox" style="width: 300px; display: block; margin: auto;"/>';
+        $mensaje .= '<img src="cid:logo" alt="Logo ClickBox" style="width: 300px; display: block; margin: auto;"/>';
         //Titulo
         $mensaje .= '<h1 style="font-family: PoetsenOne; text-align: center; margin-block-end: 4%; color: #026a79; flex-basis: 100%;">Te has suscrito ' . $datosSuscripcion["duracion"] . (intval($datosSuscripcion["duracion"]) == 1 ? " mes" : " meses")  .' a ClickBox</h1>';
         //Mensaje
@@ -217,7 +217,7 @@ class Email {
         //Enlace a la página
         $mensaje .= '<a href="http://clickbox.a2.daw2d.iesteis.gal/" style="display:block; width: max-content; padding: 1.5%; text-decoration: none; margin: auto; background-color: #026a79; color: white; border-radius: 10px; margin-block-end: 2%;">Desactivar suscripción</a></div>';
         //Texto información sobre correo autogenerado
-        $mensaje .= '<p style="text-align: justify;">Este mensaje ha sido enviada desde una cuenta de sólo envío. Por favor no responda a este mensage. Si tiene alguna duda o pregunta correspondiente a esta reserva póngase en contacto con nosotros <a href="clickbox.a2.daw2d.iesteis.gal">aquí</a></p>';
+        $mensaje .= '<p style="text-align: justify;">Este mensaje ha sido enviada desde una cuenta de sólo envío. Por favor no responda a este mensaje. Si tiene alguna duda o pregunta correspondiente a esta reserva póngase en contacto con nosotros <a href="clickbox.a2.daw2d.iesteis.gal">aquí</a></p>';
         //Cerramos todo
         $mensaje .= '</div></body></html>';
         return $mensaje;
@@ -247,8 +247,10 @@ class Email {
         $email->Password = $config[1]; //contraseña de gmail   
         $email->SetFrom('clickbox@a2.daw2d.iesteis.gal', 'ClickBox');
         $email->Subject = utf8_decode($asunto);
+        //Añadimos la imagen
+        $email->addAttachment("../../img/logo.svg", "logo", "logo.svg");
         //Añadimos el mensaje
-        $email->MsgHTML($cuerpo, "../../img");
+        $email->MsgHTML($cuerpo);
         //Ponemos que codifique en UTF8
         $email->CharSet = "UTF-8";
         //Añadimos cada uno de los correos

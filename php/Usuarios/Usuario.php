@@ -92,6 +92,7 @@ class Usuario
         $arrayDatos = $conBd->recuperDatosBD($sql1, $email); // "email" es el dato identificador
         return $arrayDatos;
     }
+    
     public function modificarDatos()
     {
     }
@@ -226,7 +227,8 @@ class Usuario
      * @return  void  No devuelve nada
      */
     public function cerrarSesion(){
-        unset($_SESSION["usuario"]);
+        session_destroy($_SESSION["usuario"]);
+        session_unset($_SESSION["usuario"]);
     }
 
     public function cargarCambios_perfil()
