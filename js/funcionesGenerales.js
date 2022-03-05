@@ -1211,26 +1211,30 @@ async function suscribirse() {
  * @return  {void}  No devuelve nada
  */
 async function cancelarRenovacionSusc() {
-    try {
-        //Iniciamos la petición
-        const respuesta = await fetch("../php/suscripciones.php", {
-            method: "POST",
-            headers: {"Content-type": "application/json; charset=utf-8"},
-            body: JSON.stringify({"cancelarSuscripcion": true}),
-        });
-        //Traducimos la respuesta
-        const respuestaJSON = await respuesta.json();
-        //Comprobamos que no diera un error
-        if(Object.hasOwn(respuestaJSON, "error")){
-            throw respuestaJSON["error"];
+    //Comprobamos que tenga una suscripción
+    if(document.getElementById) {
+        try {
+            //Iniciamos la petición
+            const respuesta = await fetch("../php/suscripciones.php", {
+                method: "POST",
+                headers: {"Content-type": "application/json; charset=utf-8"},
+                body: JSON.stringify({"cancelarSuscripcion": true}),
+            });
+            //Traducimos la respuesta
+            const respuestaJSON = await respuesta.json();
+            //Comprobamos que no diera un error
+            if(Object.hasOwn(respuestaJSON, "error")){
+                throw respuestaJSON["error"];
+            }
+            else {
+                alert("Renovación cancelada con éxito");
+            }
         }
-        else {
-            alert("Renovación cancelada con éxito");
+        catch(error){
+            alert(error);
         }
     }
-    catch(error){
-        alert(error);
-    }
+    
 }
 
 /**
@@ -2450,6 +2454,10 @@ function crearBotonAccesibilidad () {
     boton.addEventListener("click", ocultarMenuAccesibilidad);
     //Activamos el evento para que oculte el menú
     boton.dispatchEvent(new Event("click"));
+    //Activamos o no el modo monocromatico
+    let botonModoMonocromatico = document.getElementById("monocromatico");
+    localStorage.getItem("modoMonocromatico") == "activado" ? botonModoMonocromatico.checked = true : botonModoMonocromatico.checked = false;
+    botonModoMonocromatico.dispatchEvent(new Event("click"));
 }
 
 /**
@@ -2464,7 +2472,7 @@ function crearToggleSwitch () {
     let circuloToggle = crearElem("span", {"class": "slider"});
     boton.append(inputCheckbox, circuloToggle);
     //Añadimos el escuchador
-    boton.addEventListener("click", cambiarModo);
+    inputCheckbox.addEventListener("click", cambiarModo);
     //Comprobamos si tenemos una cookie con el modo
 
     return boton;
@@ -2493,11 +2501,14 @@ function cambiarModo() {
         //Buscamos todos los elementos y le ponemosla clase monocromatico
         let body = document.querySelector("body");
         cambiarClaseMonocromaticoRecursivo(body);
+        //Guardamos en que modo está
+        localStorage.setItem("modoMonocromatico", "activado");
     }
     else {
         //Buscamos todos los elementos y le ponemosla clase monocromatico
         let body = document.querySelector("body");
         retirarClaseMonocromaticoRecursivo(body);
+        localStorage.setItem("modoMonocromatico", "desactivado");
     }
 }
 

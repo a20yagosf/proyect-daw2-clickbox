@@ -1683,6 +1683,9 @@ ul li.list-group-item .btn-info {
   outline-color: #FFB775;
   transition: all 1s ease-in-out;
 }
+#perfilUsuario form fieldset div label[for=renovacion], #perfilUsuario form fieldset div #renovacion {
+  flex-basis: 33.3333333333%;
+}
 #perfilUsuario form fieldset div span {
   padding: 2%;
   margin: 1%;

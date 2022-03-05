@@ -15,7 +15,7 @@ window.onload = function () {
     //Botones para ir a partidas
     let botonesPartidas = Array.from(document.getElementById("partidas").querySelectorAll("button"));
     botonesPartidas.forEach(boton => boton.addEventListener("click", irPartidas));
+    crearBotonAccesibilidad();
     //Creamos el mapa
     crearMapa();
-    crearBotonAccesibilidad();
 };
