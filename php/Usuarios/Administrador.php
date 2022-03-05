@@ -18,6 +18,14 @@ class Administrador extends user{
     public function CargarCambiosPerfilTodos(){
         
     }
+    /**
+     * Se hizo en un archivo php a parte, se debería pasar dentro de la clase
+     *
+     * @param   [type]  $usuario    [$usuario description]
+     * @param   [type]  $rolActual  [$rolActual description]
+     *
+     * @return  [type]              [return description]
+     */
     public function CambiarRol($usuario, $rolActual){
         
     }
@@ -350,11 +358,20 @@ class Administrador extends user{
         return $resultado;
     }
 
+    public function cargarUsuarios(){   // en desarrollo, está aquí para comparar con otros métodos
+        // Instancio la bd
+        $bd = new bd();
+        // Sentencia para pedir los usuarios, como en otros métodos similares limitamos el número de usuarios controlados
+        // ya que el número máximo estaría fuera de nuestro control, este límite será 100
+        $sentencia = "SELECT email, rol FROM usuarios LIMIT 0, 100;";
+
+    }
+
     //Directores partida
     public function buscarNombreDirectorPartida($datosDirector) {
         //Validamos el campo
-        $this->validarCamposForm($datosDirector);
-        //Instanciamos bd
+        $this->validarCamposForm($datosDirectr);
+        //Instanciamos bdo
         $bd = new bd();
         //Creamos la sentencia
         $sentencia = "SELECT email as nombre  FROM usuarios WHERE rol = 1 AND email LIKE ? LIMIT 0, 5";
