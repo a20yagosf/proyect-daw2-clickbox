@@ -2842,3 +2842,12 @@ function crearInteriorCarrusel(contenidoElemento) {
     contenedorInterior.firstElementChild.classList.add("active");
     return contenedorInterior;
 }
+
+function cargarModoPartidasAdmin() {
+
+}
+
+function cargarModoUsuariosAdmin() {
+    //Creamos el formulario
+    let formulario = crearContenedor("form", {"id": "formPanelAdmin"});
+}
