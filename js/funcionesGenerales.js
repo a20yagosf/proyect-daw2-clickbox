@@ -1157,7 +1157,10 @@ async function cargarDatosPerfil() {
     catch(error){
         console.log(error);
     }
+    // Modificamos el campo email recuperando del localStorage su valor
+    document.getElementById("email").value = sessionStorage.getItem("email");   
 }
+
 /**
  * Carga los tipos de suscripciones
  *
