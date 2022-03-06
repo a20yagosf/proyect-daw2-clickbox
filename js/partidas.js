@@ -2,6 +2,7 @@
 cargarScripts();
 
 window.onload = function () {
+    loginAutomatico();
     //Creamos el header
     crearHeader();
     crearFooter();
@@ -11,7 +12,8 @@ window.onload = function () {
     crearOptionGeneros(document.getElementById("generos"));
     cargarPartidas();
     //Añadimos el escuchador a filtro
-    document.getElementById("filtro_fechas").nextElementSibling.addEventListener("click", filtarPartidas);
+    document.getElementById("filtro_fechas").nextElementSibling.addEventListener("click", filtrarPartidas);
     //Creamos el mapa
     crearMapa();
+    crearBotonAccesibilidad();
 };

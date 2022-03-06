@@ -3,6 +3,7 @@ namespace Usuarios;
 
 use \Infraestructuras\Bd as bd;
 use \Usuarios\Usuario as user;
+use \Infraestructuras\Email as mail;
 
 
 class Administrador extends user{
@@ -141,16 +142,54 @@ class Administrador extends user{
         $this->validarCamposForm($idPartida);
         //instanciamos bd
         $bd = new bd();
-        //Creamos la sentencia
-        $sentencia2 = "DELETE FROM usuarios_partidas WHERE partida = :id_partida";
-        $sentencia = "DELETE FROM partidas WHERE id_partida = :id_partida";
-        $sentencia3 = "DELETE FROM partidas_generos WHERE partida = :id_partida";
-        $sentencias = [$sentencia2, $sentencia, $sentencia3];
-        //Convertimos el id a int
-        $idPartida = intval($idPartida);
-        $resultado = $bd->agregarModDatosNumTransaction($sentencias, [["id_partida" =>  $idPartida], ["id_partida" =>  $idPartida], ["id_partida" =>  $idPartida]]);
-        if(is_string($resultado) && stripos($resultado, "error") !== false){
-            throw new \PDOException($resultado);
+        try {
+            //Iniciamos la transacción manual
+            $pdo = $bd->iniciarTransaccionManual();
+            //Convertimos el id a int
+            $idPartida = ["id_partida" => intval($idPartida)];
+            //Cogemos los datos de la partida
+            $sentenciaPartida = "SELECT fecha from partidas WHERE id_partida = :id_partida;";
+            $pdoStatement = $bd->recuperarDatosBDNum($sentenciaPartida, $idPartida);
+            if(!$pdoStatement instanceof \PDOStatement){
+                throw new \PDOException($pdoStatement);
+            }
+            $fechaPartida = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
+            unset($pdoStatement);
+            //Cogemos los correos que estean asociados a esa
+            $sentenciaDatos = "SELECT usuario FROM usuarios_partidas WHERE partida = :id_partida;";
+            $pdoStatement = $bd->recuperarDatosBDNum($sentenciaDatos, $idPartida);
+            if(!$pdoStatement instanceof \PDOStatement){
+                throw new \PDOException($pdoStatement);
+            }
+            //Creamos la sentencia
+            $sentencia2 = "DELETE FROM usuarios_partidas WHERE partida = :id_partida";
+            $sentencia = "DELETE FROM partidas WHERE id_partida = :id_partida";
+            $sentencia3 = "DELETE FROM partidas_generos WHERE partida = :id_partida";
+            $sentencias = [$sentencia2, $sentencia, $sentencia3];
+            foreach($sentencias as $sentencia) {
+                $resultado = $bd->agregarModificarDatosBDNum($sentencia, $idPartida, $pdo);
+                //Comprobamos que no diera error
+                if(is_string($resultado) && stripos($resultado, "error") !== false){
+                    throw new \PDOException($resultado);
+                }
+            }
+            //Si llegamos hasta aquí es que no hubo ningún error asique Enviamos el correo a cada uno de las personas
+            $email = new mail();
+            while($tupla = $pdoStatement->fetch(\PDO::FETCH_ASSOC)){
+                $correoEnviado = $email->enviarCorreos($tupla["usuario"], "cancelar partida", $fechaPartida);
+                if($correoEnviado !== true) {
+                    throw new \Exception($correoEnviado);
+                }
+            }
+            $pdo->commit();
+        }
+        catch (\PDOException $pdoError){
+            $pdo->rollBack();
+            return "Error " . $pdoError->getMessage();
+        }
+        catch(\Exception $error){
+            $pdo->rollBack();
+            return "Error " . $error->getMessage();
         }
     }
 
@@ -163,14 +202,46 @@ class Administrador extends user{
      */
     public function aceptarSolicitudPartida ($datosReserva) {
         $this->validarCamposForm($datosReserva);
-        //Instanciamos bd
-        $bd = new bd();
-        $sentencia = "UPDATE usuarios_partidas SET reservada = 1 WHERE partida = :id_partida AND usuario = :usuario;";
         //Convertimos el id  a int ya que como viene de json viene como string
         $datosReserva["id_partida"] = intval($datosReserva["id_partida"]);
-        $resultado = $bd->agregarModificarDatosBDNum($sentencia, $datosReserva);
-        if(is_string($resultado) && stripos($resultado, "error") !== false){
-            throw new \PDOException($resultado);
+        //Instanciamos bd
+        $bd = new bd();
+        try {
+            //Iniciamos una transacción manual
+            $pdo = $bd->iniciarTransaccionManual();
+            //Relizamos una consulta para coger los datos de la partida
+            $sentencia = "SELECT P.fecha, P.hora_inicio, P.duracion, PR.nombre as juego FROM partidas AS P INNER JOIN productos AS PR ON P.id_partida = :id_partida AND P.juego_partida = PR.id_producto;";
+            $pdoStatement = $bd->recuperarDatosBDNum($sentencia, ["id_partida" => $datosReserva["id_partida"]]);
+            if(!$pdoStatement instanceof \PDOStatement){
+                throw new \PDOException($pdoStatement);
+            }
+            $datos = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
+            if(empty($datos)){
+                throw new \Exception("No existe esa partida");
+            }
+            //Sentencia para hacer update
+            $sentencia = "UPDATE usuarios_partidas SET reservada = 1 WHERE partida = :id_partida AND usuario = :usuario;";
+            $resultado = $bd->agregarModificarDatosBDNum($sentencia, $datosReserva);
+            if(is_string($resultado) && stripos($resultado, "error") !== false){
+                throw new \PDOException($resultado);
+            }
+            //Si llegó hasta aquí es que se realizó con éxito por lo que enviamos el correo
+            $email = new mail();
+            //Añadimos a datos que ha sido aceptada
+            $datos["aceptada"] = true;
+            $correoEnviado = $email->enviarCorreos($datosReserva["usuario"], "reserva", $datos);
+            if($correoEnviado !== true) {
+                throw new \Exception($correoEnviado);
+            }
+            $pdo->commit();
+        }
+        catch (\PDOException $pdoError){
+            $pdo->rollBack();
+            return "Error " . $pdoError->getMessage();
+        }
+        catch(\Exception $error){
+            $pdo->rollBack();
+            return "Error " . $error->getMessage();
         }
     }
 
@@ -185,12 +256,43 @@ class Administrador extends user{
         $this->validarCamposForm($datosReserva);
         //Instanciamos bd
         $bd = new bd();
-        $sentencia = "DELETE FROM usuarios_partidas WHERE partida = :id_partida AND usuario = :usuario;";
-        //Convertimos el id  a int ya que como viene de json viene como string
-        $datosReserva["id_partida"] = intval($datosReserva["id_partida"]);
-        $resultado = $bd->agregarModificarDatosBDNum($sentencia, $datosReserva);
-        if(is_string($resultado) && stripos($resultado, "error") !== false){
-            throw new \PDOException($resultado);
+        try {
+            //Iniciamos una transacción manual
+            $pdo = $bd->iniciarTransaccionManual();
+            //Relizamos una consulta para coger los datos de la partida
+            $sentencia = "SELECT P.fecha, P.hora_inicio, P.duracion, PR.nombre as juego FROM partidas AS P INNER JOIN productos AS PR ON P.id_partida = :id_partida AND P.juego_partida = PR.id_producto;";
+            $pdoStatement = $bd->recuperarDatosBDNum($sentencia, ["id_partida" => $datosReserva["id_partida"]], $pdo);
+            if(!$pdoStatement instanceof \PDOStatement){
+                throw new \PDOException($pdoStatement);
+            }
+            $datos = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
+            if(empty($datos)){
+                throw new \Exception("No existe esa partida");
+            }
+            //Sentencia para elimina de la BD
+            $sentencia = "DELETE FROM usuarios_partidas WHERE partida = :id_partida AND usuario = :usuario;";
+            //Convertimos el id  a int ya que como viene de json viene como string
+            $datosReserva["id_partida"] = intval($datosReserva["id_partida"]);
+            $resultado = $bd->agregarModificarDatosBDNum($sentencia, $datosReserva);
+            if(is_string($resultado) && stripos($resultado, "error") !== false){
+                throw new \PDOException($resultado);
+            }
+            //Si llegó hasta aquí es que se realizó con éxito por lo que enviamos el correo
+            $email = new mail();
+            //Añadimos a datos que ha sido rechazada
+            $datos["rechazada"] = true;
+            $correoEnviado = $email->enviarCorreos($datosReserva["usuario"], "reserva", $datos);
+            if($correoEnviado !== true) {
+                throw new \Exception($correoEnviado);
+            }
+        }
+        catch (\PDOException $pdoError){
+            $pdo->rollBack();
+            return "Error " . $pdoError->getMessage();
+        }
+        catch(\Exception $error){
+            $pdo->rollBack();
+            return "Error " . $error->getMessage();
         }
     }
 
@@ -206,7 +308,7 @@ class Administrador extends user{
             $datosFiltrado = [];
             //Sentencias
             //Sentencia para contar el número de páginas es como la normal pero contando las tuplas sin limitar
-            $sentenciaNumPag = "SELECT COUNT(UP.id_partida_reservada) as num_pag FROM usuarios_partidas as UP";
+            $sentenciaNumPag = "SELECT COUNT(UP.partida) as num_pag FROM usuarios_partidas as UP";
             //Sentenica para los datos
             $sentencia = "SELECT UP.partida as id_partida, UP.usuario, P.fecha, PR.nombre, P.director_partida  FROM usuarios_partidas as UP INNER JOIN partidas as P ON UP.reservada = 0 AND UP.partida = P.id_partida INNER JOIN productos as PR ON P.juego_partida = PR.id_producto";
             //Compruebo si se aplicó algún filtro

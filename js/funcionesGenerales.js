@@ -784,9 +784,8 @@ async function procesarLogin(evento) {
         if(Object.hasOwn(resultadoPeticion, "error")){
             throw resultadoPeticion["error"];
         }
-        //Guardamos en sesión el usuario y su rol
-        sessionStorage.setItem("email", email);
-        sessionStorage.setItem("rol", resultadoPeticion["exito"]);
+        //Guardamos tambien en localStorage el email
+        localStorage.setItem("email", email);
         if(resultadoPeticion["exito"] == 1){
             location.assign("../html/panelAdministrador.html");
         }
@@ -798,6 +797,45 @@ async function procesarLogin(evento) {
         //Asignamos al p el mensaje
         resultado.textContent = "Error: " + $error;
         resultado.classList = "error";
+    }
+}
+
+/**
+ * Inicia sesión de forma automática si ya lo hicimso antes y no nos desconectamos
+ *
+ * @return  {void}  No devuelve nada
+ */
+async function loginAutomatico() {
+    //Comprobamos si tiene en localStorage guardado la cuenta y que no este ya iniciado sesión
+    if(sessionStorage["email"] == undefined && localStorage["email"] !== undefined){
+        try {
+            email = localStorage["email"];
+            const respuestaJSON = await fetch("../php/login.php", {
+                method: "POST",
+                headers: {"Content-type": "application/json; charset=utf-8"},
+                body: JSON.stringify({"iniciarSesion": email})
+            });
+            //Cogemos el mensaje y esperamos a que este listo
+            const resultadoPeticion = await respuestaJSON.json();
+            //Comprobamos que no saltara un error
+            if(Object.hasOwn(resultadoPeticion, "error")){
+                throw resultadoPeticion["error"];
+            }
+            //Guardamos en sesión el usuario y su rol (Su rol lo guardamos de la petición porque pudo cambiar)
+            sessionStorage.setItem("email", localStorage["email"]);
+            sessionStorage.setItem("rol", resultadoPeticion["exito"]);
+            if(resultadoPeticion["exito"] == 1){
+                location.assign("../html/panelAdministrador.html");
+            }
+            else {
+                //recargamos la página
+                location.reload();
+            }
+        }
+        catch($error){
+            //Asignamos al p el mensaje
+            console.log("Error: " + $error);
+        }
     }
 }
 
@@ -860,6 +898,12 @@ async function procesarRegistro(evento){
         resultado.classList = "exito";
         limpiarCampo(resultado, 2000);
         await limpiarTodosCamposForm(true);
+<<<<<<< HEAD
+=======
+        //Guardamos el email en localStorage e iniciamos sesión
+        localStorage.setItem("email", email);
+        loginAutomatico();
+>>>>>>> 8e7548e5d263c430f75e57b6ab5b4878fe56a615
     }
     catch($error){
         //Asignamos al p el mensaje
@@ -1015,7 +1059,8 @@ async function desconectarPerfil(e) {
     });
     const respuestaJSON = await respuesta.json();
     if(Object.hasOwn(respuestaJSON, "exito")) {
-        //Borra el sesion storage y recarga la página
+        //Borra el sesion storage, localstorage y recarga la página
+        localStorage.clear();
         sessionStorage.clear();
         location.assign("../html/index.html");
     }
@@ -1106,7 +1151,16 @@ catch(error){
 }
 }
 
+<<<<<<< HEAD
 async function cargarSuscripciones() {
+=======
+/**
+ * Carga los tipos de suscripciones
+ *
+ * @return  {void}  No devuelve nada
+ */
+async function cargarTiposSuscripciones() {
+>>>>>>> 8e7548e5d263c430f75e57b6ab5b4878fe56a615
     try {
         //Nos conectamos a php para pedir todas las duraciones de las suscripciones
         const respuesta = await fetch("../php/suscripciones.php", {
@@ -1136,8 +1190,10 @@ async function cargarSuscripciones() {
             //Le añadimos los listeners
             boton.addEventListener("click", cargarSuscripciones, true);
         });
-        //Disparamos el evento comosi pulsaramos el primer botón para que coja sus características
+        //Disparamos el evento como si pulsaramos el primer botón para que coja sus características
         document.getElementById("tiposSusc").firstElementChild.dispatchEvent(new Event("click"));
+        //Le añadimos el escuchador al botón de suscribirse
+        document.getElementById("recibo").querySelector("button").addEventListener("click", suscribirse);
     }
     catch (error) {
         console.log(error);
@@ -1199,6 +1255,77 @@ async function cargarSuscripciones(e) {
 }
 
 /**
+ * Se suscribe a una suscripción si no tiene una suscripción activa y está registrado
+ *
+ * @return  {void}  No devuelve nada
+ */
+async function suscribirse() {
+   //Comprobamos que estemos suscritos viendo la cookie de sesion
+   if(sessionStorage["email"] == undefined){
+       aparecerLogin();
+   }
+   else {
+        try {
+            //Cogemos la suscripción activa su id para saber el tipo de suscripción a la que nos estamos suscribiendo
+            let suscripcionActiva = document.querySelector(".suscActiva").dataset.id;
+            //Iniciamos la petición
+            const respuesta = await fetch("../php/suscripciones.php", {
+                method: "POST",
+                headers: {"Content-type": "application/json; charset=utf-8"},
+                body: JSON.stringify({"suscribirse": suscripcionActiva}),
+            });
+            //Traducimos la respuesta
+            const respuestaJSON = await respuesta.json();
+            //Comprobamos que no diera un error
+            if(Object.hasOwn(respuestaJSON, "error")){
+                throw respuestaJSON["error"];
+            }
+            else if(Object.hasOwn(respuestaJSON, "noSuscrita")){
+                aparecerLogin();
+            }
+            else {
+                alert("Suscripción realizada con éxito");
+            }
+        }
+        catch(error){
+            alert(error);
+        }
+   }
+}
+
+/**
+ * Cancela la renovación de la suscripción
+ *
+ * @return  {void}  No devuelve nada
+ */
+async function cancelarRenovacionSusc() {
+    //Comprobamos que tenga una suscripción
+    if(document.getElementById) {
+        try {
+            //Iniciamos la petición
+            const respuesta = await fetch("../php/suscripciones.php", {
+                method: "POST",
+                headers: {"Content-type": "application/json; charset=utf-8"},
+                body: JSON.stringify({"cancelarSuscripcion": true}),
+            });
+            //Traducimos la respuesta
+            const respuestaJSON = await respuesta.json();
+            //Comprobamos que no diera un error
+            if(Object.hasOwn(respuestaJSON, "error")){
+                throw respuestaJSON["error"];
+            }
+            else {
+                alert("Renovación cancelada con éxito");
+            }
+        }
+        catch(error){
+            alert(error);
+        }
+    }
+    
+}
+
+/**
  * Lleva a la página de suscripciones
  *
  */
@@ -1227,39 +1354,51 @@ function irPartidas() {
  * @param   {Object}  filtro  Filtro de tipo {clave: valor}
  *
  */
-async function cargarPartidas(filtro = {}) {
+async function cargarPartidas(filtro = {}, pagina = 0, limite = 7) {
     //Limpiamos el contenedor de las partidas
     let lista = document.querySelector("ul[class='list-group']");
+    let paginacion = document.querySelector(".pagination");
+    //Buscamos si ya hay una paginación y si la hay la borramos
+    if(paginacion != null){
+        paginacion.remove();
+    }
     lista.innerHTML = "";
     //LE añado al filtro la página y el limite
-    filtro["pagina"] = 0;
-    filtro["limite"] = 7;
+    filtro["pagina"] = pagina;
+    filtro["limite"] = limite;
     try {
-         //Hacemos la petición
-         const respuesta = await fetch("../php/partidas.php", {
-             method: "POST",
-             headers: {"Content-type": "application/json; charset=utf-8"},
-             body: JSON.stringify(filtro)
-         });
-         //Convertimos la respues ta json
-         const respuestaJSON = await respuesta.json();
-         //Compruebo si dió error
-         if(Object.hasOwn(respuestaJSON, "error")){
-             throw respuestaJSON["error"];
-         }
-         //Limpiamos la lista
-         lista.innerHTML = "";
+        //Hacemos la petición
+        const respuesta = await fetch("../php/partidas.php", {
+            method: "POST",
+            headers: {"Content-type": "application/json; charset=utf-8"},
+            body: JSON.stringify(filtro)
+        });
+        //Convertimos la respues ta json
+        const respuestaJSON = await respuesta.json();
+        //Compruebo si dió error
+        if(Object.hasOwn(respuestaJSON, "error")){
+            throw respuestaJSON["error"];
+        }
+        //Limpiamos la lista
+        lista.innerHTML = "";
          //Cargo cada uno de los li
-         crearPaginacion(respuestaJSON["num_pag"], filtro["pagina"]);
+        paginacion = crearPaginacion(respuestaJSON["numPag"], filtro["pagina"]);
+        if(paginacion != ""){
+            document.querySelector("#result_panel").insertAdjacentElement("afterend", paginacion);
+        }
+        //Le añadimos los escuchadores
+        let elementosLi = document.querySelectorAll(".pagination li");
+        elementosLi.forEach(elemento => elemento.firstElementChild.addEventListener("click", filtrarPartidas));
          //Cargo los datos de las partidas
-         respuestaJSON["tuplas"].forEach(dato => {
-             lista.append(crearContenedorPartida(dato));
-         });
+        respuestaJSON["tuplas"].forEach(dato => {
+            lista.append(crearContenedorPartida(dato));
+        });
     }
     catch(error) {
          console.log(error);
     }
  }
+ 
 
  /**
   * Crea un contenedor para una partida con los datos que le pasamos
@@ -1283,14 +1422,14 @@ async function cargarPartidas(filtro = {}) {
      let juegoPartida = crearContenedor("span", {}, "Juego: " + datosPartida["nombre"]);
      //Género
      let generoPartida= crearContenedor("span", {}, "Genero: " + datosPartida["genero"]);
-     //Le damos formato al día
-     let fecha = new Date(datosPartida["fecha"]);
-     let dia = (fecha.getDate() > 9 ? fecha.getDate() : "0" + fecha.getDate());
-     let mes = fecha.getMonth() + 1 > 12 ? 1 : fecha.getMonth() + 1;
+     //Le damos formato al día y la hora
+     let fecha = new Fecha(datosPartida["fecha"]).getFecha();
+     console.log(typeof datosPartida["hora_inicio"]);
+     let hora_inicio = datosPartida["hora_inicio"].substring(0, datosPartida["hora_inicio"].length -3);
      //Día
-     let diaPartida = crearContenedor("span", {}, "Fecha: " + dia + "-" + (mes > 9 ?mes : "0" + mes) + "-" + fecha.getFullYear());
+     let diaPartida = crearContenedor("span", {}, "Fecha: " + fecha);
      //Hora
-     let horaPartida = crearContenedor("span", {}, "Hora de inicio: " + datosPartida["hora_inicio"]);
+     let horaPartida = crearContenedor("span", {}, "Hora de inicio: " + hora_inicio);
      //Creamos los botones y le añadimos a cada uno un data-id con el id de la partida
      let botonInfo = crearBoton("Información", {"type": "button", "class": "btn btn-lg btn-info", "data-id": datosPartida["id_partida"]});
      let botonReservar = crearBoton("¡Reservar!", {"type": "button", "class": "btn btn-lg btn-success", "data-id": datosPartida["id_partida"]});
@@ -1306,8 +1445,13 @@ async function cargarPartidas(filtro = {}) {
  /**
   * Carga las partidas con los filtros que le pusimos
   *
+  * @param {Event} Evento que lo dispara
+  * 
   */
- function filtarPartidas() {
+ function filtrarPartidas(e) {
+    e.preventDefault();
+    let limite = 7;
+    let pagina = (e.currentTarget.dataset.partida - 1) * limite ?? 0;
      //Cojo los valores de los input
      let generos = Array.from(document.querySelectorAll("option[selected]"));
      filtros = {};
@@ -1323,7 +1467,7 @@ async function cargarPartidas(filtro = {}) {
      if(fechaFin != "") {
         filtros["fechaFin"] = fechaFin;
      }
-     cargarPartidas(filtros);
+     cargarPartidas(filtros, pagina, limite);
  }
  
  /**
@@ -1333,6 +1477,7 @@ async function cargarPartidas(filtro = {}) {
   *
   */
 function crearPaginacion(numero, pagina) {
+    pagina = pagina / 7;
     //Comprobamos si existe ya un contenedor de paginación
     let contenedorPaginacion = document.querySelector(".pagination");
     //Comprobamos si no existe
@@ -1344,7 +1489,7 @@ function crearPaginacion(numero, pagina) {
         contenedorPaginacion.innerHTML = "";
     }
     //Comprobamos que sea mayor a 1
-    if(numero > 1) {
+    if(numero > 0) {
         //Creamos el ul
         let lista = document.createElement("ul");
         for (let i = 1; i <= numero + 1; i++){
@@ -1867,7 +2012,7 @@ function cogerFiltrosPartidasAdmin(e) {
     let fechaFin = document.getElementById("fechaFin");
     fechaFin.value != "" ? datosFiltro["fechaFin"] = fechaFin : "";
     //Cogemos el número del enlace clicado y le restamos uno (Ya que empieza en 0)
-    let pagina = e.currentTarget.dataset.partida - 1;
+    let pagina = (e.currentTarget.dataset.partida - 1) * 7;
     filtrarPartidasAdmin(datosFiltro, pagina);
 }
 
@@ -2300,7 +2445,7 @@ async function reservarPartida(e) {
             throw respuestaJSON["error"];
         }
         //Mostramos el mensaje y volvemos a cargar las partidas
-        alert(mensaje);
+        alert("Partida reservada con éxito, cuando se procese la reserva se te enviará un correo diciend fue aceptada o no");
         cargarPartidas();
     }
     catch(error){
@@ -2400,4 +2545,113 @@ async function mostrarResultado(fila, resultado) {
     fila.append(celda);
     //Esperamos 1 segundo y cargamos las reservas otra vez
     setTimeout(cargarReservasAdmin, 2000);
+}
+
+/**
+ * Crea el botony el menu de accesibilidad
+ *
+ * @return  {void}  No devuelve nada
+ */
+function crearBotonAccesibilidad () {
+    let boton = crearBoton("", {"type": "button", "id": "botonAccesiblidad"});
+    //Creamos el div con las opciones
+    let contenedorAcessibilidad = crearContenedor("div", {"id": "menuAccesibilidad"});
+    let cabeceraAccesiblidad = crearContenedor("h3", {}, "Modo monocromático");
+    let botonAccesibilidad = crearToggleSwitch();
+    contenedorAcessibilidad.append(cabeceraAccesiblidad, botonAccesibilidad);
+    document.querySelector("body").append(boton, contenedorAcessibilidad);
+    //Añadimos el escuchador
+    boton.addEventListener("click", ocultarMenuAccesibilidad);
+    //Activamos el evento para que oculte el menú
+    boton.dispatchEvent(new Event("click"));
+    //Activamos o no el modo monocromatico
+    let botonModoMonocromatico = document.getElementById("monocromatico");
+    localStorage.getItem("modoMonocromatico") == "activado" ? botonModoMonocromatico.checked = true : botonModoMonocromatico.checked = false;
+    botonModoMonocromatico.dispatchEvent(new Event("click"));
+}
+
+/**
+ * Crea la parte del botón toggle como tal
+ *
+ * @return  {DOMElement}  El elemento toggle
+ */
+function crearToggleSwitch () {
+    //creamos un label de tipo checked
+    let boton = crearElem("label", {"class": "switch"});
+    let inputCheckbox = crearElem("input" , {"type": "checkbox", "id": "monocromatico"});
+    let circuloToggle = crearElem("span", {"class": "slider"});
+    boton.append(inputCheckbox, circuloToggle);
+    //Añadimos el escuchador
+    inputCheckbox.addEventListener("click", cambiarModo);
+    //Comprobamos si tenemos una cookie con el modo
+
+    return boton;
+}
+
+/**
+ * Oculta y muestra el botón de accesibilidad
+ *
+ * @return  {void}  No devuelve nada
+ */
+function ocultarMenuAccesibilidad() {
+    let contenedorAcessibilidad = document.getElementById("menuAccesibilidad");
+    //Ocultamos el contenedor de opciones
+    $(contenedorAcessibilidad).animate({width: "toggle"});
+}
+
+/**
+ * Cambia el modo de monocromatico o estandar
+ *
+ * @return  {void}  None
+ */
+function cambiarModo() {
+    //Cogemos el botón de monocromatico
+    let botonCambio = document.getElementById("monocromatico");
+    if(botonCambio.checked) {
+        //Buscamos todos los elementos y le ponemosla clase monocromatico
+        let body = document.querySelector("body");
+        cambiarClaseMonocromaticoRecursivo(body);
+        //Guardamos en que modo está
+        localStorage.setItem("modoMonocromatico", "activado");
+    }
+    else {
+        //Buscamos todos los elementos y le ponemosla clase monocromatico
+        let body = document.querySelector("body");
+        retirarClaseMonocromaticoRecursivo(body);
+        localStorage.setItem("modoMonocromatico", "desactivado");
+    }
+}
+
+/**
+ * Cambia el modo a blanco y negro de manera recursiva
+ *
+ * @param   {DOMElement}  elemento  Elemento DOM
+ *
+ * @return  {void}            No devuelve nada
+ */
+function cambiarClaseMonocromaticoRecursivo(elemento) {
+    //Comprobamos si ya tiene la clase y se la ponemos si no la tiene
+    if(!elemento.classList.contains("monocromatico")) {
+        elemento.classList.add("monocromatico");
+    }
+    //Cogemos sus hijos y los pasamos
+    let hijos = Array.from(elemento.children);
+    hijos.forEach(hijo => cambiarClaseMonocromaticoRecursivo(hijo));
+}
+
+/**
+ * Elimina la clase monocromático de todos los elementos de manera recursiva
+ *
+ * @param   {DOMElement}  elemento  Elemento DOM
+ *
+ * @return  {void}            No devuelve nada
+ */
+function retirarClaseMonocromaticoRecursivo(elemento) {
+    //Comprobamos si ya tiene la clase y se la ponemos si no la tiene
+    if(elemento.classList.contains("monocromatico")) {
+        elemento.classList.remove("monocromatico");
+    }
+    //Cogemos sus hijos y los pasamos
+    let hijos = Array.from(elemento.children);
+    hijos.forEach(hijo => retirarClaseMonocromaticoRecursivo(hijo));
 }

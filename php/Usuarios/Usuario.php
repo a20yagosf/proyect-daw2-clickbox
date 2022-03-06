@@ -2,8 +2,12 @@
 
 namespace Usuarios;
 
+use DateInterval;
+use DateTime;
 use \Infraestructuras\Bd as bd;
+use Infraestructuras\Email;
 use \Traits\Formulario as formulario;
+use \ServiciosProductos\Suscripcion as suscription;
 
 class Usuario
 {
@@ -88,6 +92,7 @@ class Usuario
         $arrayDatos = $conBd->recuperDatosBD($sql1, $email); // "email" es el dato identificador
         return $arrayDatos;
     }
+    
     public function modificarDatos()
     {
     }
@@ -142,12 +147,90 @@ class Usuario
     public function cancelarPartida()
     {
     }
-    public function suscribirse()
-    {
+
+    /**
+     * Suscribe al usuario a esa suscripción
+     *
+     * @param   string  $duracion  Duración de la suscripcion (Es una string porque en el JSON se convierte)
+     *
+     * @return  boolean           Devuelve un error o true si todo fue bien
+     */
+    public function suscribirse($duracion) {
+        try {
+            //Instanciamos bd
+            $bd = new bd();
+            //Comprobamos si ya tiene una suscripción
+            $sentencia = "SELECT suscripcion, fecha_ini_suscripcion FROM usuarios WHERE email = ?;";
+            $pdoStatement = $bd->recuperDatosBD($sentencia, [$this->getEmail()]);
+            if(!$pdoStatement instanceof \PDOStatement){
+                throw new \PDOException($pdoStatement);
+            }
+            $datosSuscripcion = $pdoStatement->fetch();
+            //Comprobamos si tiene una suscripions
+            if($datosSuscripcion["suscripcion"] != "") {
+                //Si tiene una suscripción comprobamos que no esté caducada
+                $fechaIniSusc = new \DateTime($datosSuscripcion["fecha_ini_suscripcion"]);
+                $intervalSusc = new \DateInterval("P" . $datosSuscripcion["suscripcion"] . "M");
+                //Lo sumamos
+                $fechaIniSusc->add($intervalSusc);
+                if($fechaIniSusc->diff(new DateTime())->days > 0){
+                    throw new \Exception("Ya tienes una suscripción activa!!");
+                }
+            }
+            //Creamos la sentencia, por defecto se pondrá renovar a true y la fecha actual de la suscripcion
+            $fechaIniSusc = new DateTime();
+            //Añadimos la fecha de inicio de suscripción porque fue generada por nosotros con control, por lo que podemos confiar de ella
+            $sentencia = "UPDATE usuarios SET suscripcion = :suscripcion, renovar = 1, fecha_ini_suscripcion = NOW() WHERE email = :email;";
+            //Array con los datos que tenemos que pasarle
+            $datosAnhadir = ["suscripcion" => intval($duracion), "email" => $this->getEmail()];
+            $resultado = $bd->agregarModificarDatosBDNum($sentencia, $datosAnhadir);
+            //Comprobamos que no diera un error
+            if(is_string($resultado) && stripos($resultado, "error") !== false){
+                throw new \PDOException($resultado);
+            }
+            //Enviamos el correo
+            $email = new Email();
+            $correoEnviado = $email->enviarCorreos($this->getEmail(), "suscribirse", ["duracion" => intval($duracion), "fecha_ini_suscripcion" => $fechaIniSusc]);
+            if($correoEnviado !== true) {
+                throw new \Exception($correoEnviado);
+            }
+        }
+        catch (\PDOException $pdoError){
+            $devolver = "Error " . $pdoError->getMessage();
+        }
+        catch (\Exception $error){
+            $devolver = "Error " . $error->getMessage();
+        }
+        return $devolver ?? true;
     }
-    public function cerrarSesion()
-    {
+
+    /**
+     * Cancela la renovación de la suscripción
+     *
+     * @return  boolean  Devuelve true si se completó bien la operación
+     */
+    public function cancelarRenovacionSusc() {
+        //Instanciamos bd
+        $bd = new bd();
+        //Creamos la sentnecia
+        $sentencia = "UPDATE usuarios SET renovar = 0 WHERE email = ?;";
+        $resultado = $bd->agregarModificarDatosBD($sentencia, [$this->getEmail()]);
+        if(is_string($resultado) && stripos($resultado, "error") !== false){
+            throw new \PDOException($resultado);
+        }
+        return true;
     }
+
+    /**
+     * Cierra la sesión eliminando la variable de sesión de usuario
+     *
+     * @return  void  No devuelve nada
+     */
+    public function cerrarSesion(){
+        session_destroy($_SESSION["usuario"]);
+        session_unset($_SESSION["usuario"]);
+    }
+
     public function cargarCambios_perfil()
     {
     }
@@ -165,7 +248,7 @@ class Usuario
         $fecha2 = $filtro["fechaFin"] ?? "";
         $fechas = $this->comprobarFechas($fecha1, $fecha2, true);
         //Sentencia para contar el número de páginas es como la normal pero contando las tuplas sin limitar
-        $sentenciaNumPag = "SELECT COUNT(P.id_partida) as num_pag FROM partidas as P";
+        $sentenciaNumPag = "SELECT COUNT(P.id_partida) as num_pag FROM partidas as P WHERE P.id_partida NOT IN (SELECT partida FROM usuarios_partidas WHERE usuario = :usuario)";
         //Sentencia para pedir los datos
         $sentencia = "SELECT P.id_partida, PR.nombre, P.imagen_partida,  J.genero, P.fecha, P.hora_inicio FROM partidas as P INNER JOIN productos as PR ON P.id_partida NOT IN (SELECT partida FROM usuarios_partidas WHERE usuario = :usuario) AND P.juego_partida = PR.id_producto INNER JOIN juegos AS J ON PR.id_producto = J.juego";
         //Datos que pasaremos a la sentencia como parámetros a sustituir
@@ -173,24 +256,28 @@ class Usuario
         //Recorremos los filtros y vamos añadiendo
         if (!empty($filtro["genero"])) {
             //Como consigo el género como un string le voy concatenando los elementos (por si hay mas de uno)
-            $filtrado = " WHERE genero IN (";
+            $sentenciaNumPag .= " AND genero IN (";
+            $sentencia .= " AND genero IN (";
             foreach ($filtro["genero"] as $indice => $valor) {
-                $filtrado .= ":" . $indice . ", ";
+                $sentenciaNumPag .= ":" . $indice . ", ";
+                $sentencia .= ":" . $indice . ", ";
             }
             //Quito la última coma y espacio
-            $filtrado = mb_substr($filtrado, 0, -2);
-            $filtrado .= ")";
+            $sentenciaNumPag = mb_substr($sentencia, 0, -2);
+            $sentenciaNumPag .= ")";
+            $sentencia = mb_substr($sentencia, 0, -2);
+            $sentencia .= ")";
             $datosFiltrado["genero"] = $filtro["genero"];
         }
         //Compruebo cuantas fechas tengo
         if (count($fechas) == 2) {
-            $sentenciaNumPag .= isset($filtrado) ? $filtrado . " AND DATE(P.fecha) BETWEEN :fechaIni AND :fechaFin" : " WHERE DATE(P.fecha) BETWEEN :fechaIni AND :fechaFin";
-            $sentencia .= isset($filtrado) ? $filtrado . " AND DATE(P.fecha) BETWEEN :fechaIni AND :fechaFin" : " WHERE DATE(P.fecha) BETWEEN :fechaIni AND :fechaFin";
+            $sentenciaNumPag .= " AND (DATE(P.fecha) BETWEEN :fechaIni AND :fechaFin)";
+            $sentencia .= " AND (DATE(P.fecha) BETWEEN :fechaIni AND :fechaFin)";
             $datosFiltrado["fechaIni"] = $fechas[0];
             $datosFiltrado["fechaFin"] = $fechas[1];
         } else if (count($fechas) == 1) {
-            $sentenciaNumPag .= isset($filtrado) ? " AND (DATE(P.fecha) >= :fechaIni" : " WHERE DATE(P.fecha) >= :fechaIni)";
-            $sentencia .= isset($filtrado) ? " AND (DATE(P.fecha) >= :fechaIni" : " WHERE DATE(P.fecha) >= :fechaIni)";
+            $sentenciaNumPag .= " AND (DATE(P.fecha) >= :fechaIni)";
+            $sentencia .= " AND (DATE(P.fecha) >= :fechaIni)";
             $datosFiltrado["fechaIni"] = $fechas[0];
         }
         //Calculamos el número de páginas
@@ -321,7 +408,7 @@ class Usuario
         //Instanciamos bd
         $bd = new bd();
         //Creamos la sentencia
-        $sentencia = "SELECT id_producto, nombre  FROM productos WHERE nombre LIKE ? LIMIT 0, 5";
+        $sentencia = "SELECT PR.id_producto, PR.nombre  FROM productos AS PR INNER JOIN juegos AS J ON PR.id_producto = J.juego AND nombre LIKE ? LIMIT 0, 5";
         $datosAsignar = ["%" . $nombreJuego . "%"];
         //Pasamos el dato a un array para enviarselo a la función
         $pdoStatement = $bd->recuperDatosBD($sentencia, $datosAsignar);

@@ -102,6 +102,10 @@
                 input, select {
                     @include inputFormulario();
                 }
+
+                label[for='renovacion'], #renovacion {
+                    flex-basis: calc(100%/3);
+                }
         
                 span {
                     padding: 2%;

@@ -3,6 +3,7 @@ restringirAccesoNoAdmin();
 cargarScripts();
 
 window.onload = function () {
+    loginAutomatico();
     crearHeader();
     crearFooter();
     //Añadimos el js de Bootstrap al final de body, lo hacemos aquí ya que necesitamos que esté la página cargada
@@ -20,4 +21,5 @@ window.onload = function () {
         document.getElementById("eventoprueba").addEventListener("click", recogerDatos);
     //Creamos el mapa
     crearMapa();
+    crearBotonAccesibilidad();
 };
