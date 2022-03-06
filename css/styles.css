@@ -1735,6 +1735,8 @@ form#formulario_tienda div.center_submit button {
 }
 #perfilUsuario form h2 {
   text-align: center;
+  -webkit-padding-after: 6%;
+          padding-block-end: 6%;
 }
 #perfilUsuario form #infoTiempos {
   position: absolute;
@@ -1765,8 +1767,7 @@ form#formulario_tienda div.center_submit button {
 #perfilUsuario form #editarCuenta {
   position: absolute;
   inset-inline-end: 2%;
-  inset-block-start: 50%;
-  transform: translateY(-50%);
+  inset-block-start: 10%;
 }
 #perfilUsuario form #editarCuenta {
   flex-basis: 20%;
@@ -1787,6 +1788,17 @@ form#formulario_tienda div.center_submit button {
   align-items: center;
   padding: 2%;
   margin: 2%;
+}
+#perfilUsuario form fieldset > div #fotoPerfil {
+  flex-basis: 40%;
+  height: 20vh;
+  background-color: grey;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  margin: auto;
+  -webkit-margin-after: 2%;
+          margin-block-end: 2%;
 }
 #perfilUsuario form fieldset > div label, #perfilUsuario form fieldset > div input, #perfilUsuario form fieldset > div select {
   flex-basis: 48%;
@@ -1878,8 +1890,11 @@ h2, h3 {
     width: 100%;
   }
   #perfilUsuario form h2 {
-    -webkit-padding-after: 15%;
-            padding-block-end: 15%;
+    text-align: start;
+    -webkit-margin-start: 5%;
+            margin-inline-start: 5%;
+    -webkit-padding-after: 10%;
+            padding-block-end: 10%;
     -webkit-padding-before: 5%;
             padding-block-start: 5%;
   }
@@ -1887,7 +1902,12 @@ h2, h3 {
     inset-block-start: 70%;
   }
   #perfilUsuario form #editarCuenta {
-    inset-block-start: 30%;
+    inset-block-start: 10%;
+    transform: none;
+  }
+  #perfilUsuario form #infoTiempos {
+    position: relative;
+    inset-block-start: 0%;
   }
   #perfilUsuario form fieldset:first-of-type, #perfilUsuario form fieldset:nth-of-type(2) {
     flex-basis: 100%;
@@ -1903,6 +1923,10 @@ h2, h3 {
     flex-basis: 100%;
     padding: 2%;
     margin: 1%;
+  }
+  #perfilUsuario form fieldset div #fotoPerfil {
+    flex-basis: 80%;
+    height: 30vh;
   }
   #perfilUsuario form fieldset div label {
     flex-basis: 100%;
@@ -1923,6 +1947,11 @@ h2, h3 {
     text-align: start;
     -webkit-margin-after: 0%;
             margin-block-end: 0%;
+    -webkit-padding-after: 20%;
+            padding-block-end: 20%;
+  }
+  #perfilUsuario form fieldset div #fotoPerfil {
+    height: 25vh;
   }
 }
 @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px), (aspect-ratio: 1/1) {
@@ -1930,13 +1959,17 @@ h2, h3 {
     font-size: 1.3rem;
   }
   #perfilUsuario form h2 {
-    -webkit-padding-after: 5%;
-            padding-block-end: 5%;
+    -webkit-padding-after: 15%;
+            padding-block-end: 15%;
     -webkit-padding-before: 1%;
             padding-block-start: 1%;
   }
   #perfilUsuario form p {
     inset-block-start: 70%;
+  }
+  #perfilUsuario form #editarCuenta {
+    inset-block-start: 10%;
+    transform: none;
   }
   #perfilUsuario form fieldset div {
     height: 93%;
@@ -1953,6 +1986,9 @@ h2, h3 {
   }
   #perfilUsuario form fieldset div span {
     flex-basis: 33.3333333333%;
+  }
+  #perfilUsuario form fieldset div #fotoPerfil {
+    flex-basis: 100%;
   }
 }
 #panelAdmin {

@@ -25,6 +25,8 @@
         //Titulo Cuenta
         h2 {
             text-align: center;
+            //Padding bottom
+            padding-block-end: 6%;
         }
 
         //Contenedor con última modificación y ultimo inicio de sesión
@@ -57,8 +59,7 @@
             //Right
             inset-inline-end: 2%;
             //Top
-            inset-block-start: 50%;
-            transform: translateY(-50%);
+            inset-block-start: 10%;
         }
 
         //Botón editar
@@ -88,6 +89,19 @@
                 align-items: center;
                 padding: 2%;
                 margin: 2%;
+
+                //Contenedor para la foto de perfil
+                #fotoPerfil {
+                    flex-basis: 40%;
+                    height: 20vh;
+                    background-color: grey;
+                    border-radius: $borderRadius;
+                    background-size: cover;
+                    background-position: center;
+                    margin: auto;
+                    //Margin bottom
+                    margin-block-end: 2%;
+                }
         
                 label, input, select {
                     flex-basis: 48%;
@@ -193,8 +207,10 @@ h2,h3 {
 
             //Cabecera Cuenta
             h2 {
+                text-align: start;
+                margin-inline-start: 5%;
                 //Padding bottom
-                padding-block-end: 15%;
+                padding-block-end: 10%;
                 //Padding top
                 padding-block-start: 5%;
             }
@@ -208,7 +224,15 @@ h2,h3 {
             //Botón editar cuenta
             #editarCuenta {
                 //Top
-                inset-block-start: 30%;
+                inset-block-start: 10%;
+                transform: none;
+            }
+
+            //Contenedor con última modificación y Ultimo Inicio sesión
+            #infoTiempos {
+                position: relative;
+                //Top
+                inset-block-start: 0%;
             }
 
             fieldset:first-of-type, fieldset:nth-of-type(2) {
@@ -229,6 +253,12 @@ h2,h3 {
                         flex-basis: 100%;
                         padding: 2%;
                         margin: 1%;
+                    }
+
+                    //Contenedor para la imagen de perfil
+                    #fotoPerfil {
+                        flex-basis: 80%;
+                        height: 30vh;
                     }
 
                     label {
@@ -263,6 +293,14 @@ h2,h3 {
                     text-align: start;
                     //Margin bottom
                     margin-block-end: 0%;
+                    padding-block-end: 20%;
+                }
+
+                fieldset div {
+                    //Contenedor para la imagen de perfil
+                    #fotoPerfil {
+                        height: 25vh;
+                    }
                 }
             }
         }
@@ -277,7 +315,7 @@ h2,h3 {
             //Cabecera Cuenta
             h2 {
                 //Padding bottom
-                padding-block-end: 5%;
+                padding-block-end: 15%;
                 //Padding top
                 padding-block-start: 1%;
             }
@@ -286,6 +324,13 @@ h2,h3 {
             p {
                 //Top
                 inset-block-start: 70%;
+            }
+
+            //Botón editar perfil
+            #editarCuenta {
+                //Top
+                inset-block-start: 10%;
+                transform: none;
             }
     
             fieldset {
@@ -306,6 +351,11 @@ h2,h3 {
     
                     span {
                         flex-basis: calc(100%/3);
+                    }
+
+                    //Contenedor para la imagen de perfil
+                    #fotoPerfil {
+                        flex-basis: 100%;
                     }
                 }
             }
