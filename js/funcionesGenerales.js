@@ -1093,12 +1093,13 @@ async function desconectarPerfil(e) {
  */
 async function cargarDatosPerfil() {
     try{
+        let email = sessionStorage.getItem("email");
         // email está almacenado en sessionStorage
         const respuesta = await fetch("../php/perfil_usuario.php",{
             method: "POST", 
             headers: {"Content-type": "application/json;charset=UTF-8"},
             body: JSON.stringify({
-                "email":sessionStorage.getItem("email") 
+                "email": email
             })
         }); // Esto va a devolver un promise
         
@@ -1108,6 +1109,7 @@ async function cargarDatosPerfil() {
          * Añadiendo cuando sea necesario los atributos necesarios 
          * para su correcta selección 
         **/ 
+       document.getElementById("email").value = email;
         // Recuperamos el nombre
         document.getElementById("nombre").value = respuesta_json['nombre'];
 
@@ -1133,6 +1135,9 @@ async function cargarDatosPerfil() {
         // Modificamos el campo ult_modif y recuperamos la fecha_ult_modif del json enviado por php
         document.getElementById("ultModif").innerHTML = ultMod;
         document.getElementById("ultInicio").innerHTML = ultIni;
+
+        //Ponemos la imagen de perfil
+        document.getElementById("fotoPerfil").src = respuesta_json["imagen_perfil"];
 
         // Modificamos el campo rol y recuperamos el valor rol del json enviado por php
         if (respuesta_json['rol']==1) {

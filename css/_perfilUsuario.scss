@@ -60,10 +60,6 @@
             inset-inline-end: 2%;
             //Top
             inset-block-start: 10%;
-        }
-
-        //Botón editar
-        #editarCuenta {
             //Flex como hijo
             flex-basis: 20%;
         }
@@ -91,16 +87,25 @@
                 margin: 2%;
 
                 //Contenedor para la foto de perfil
-                #fotoPerfil {
+                #contenedorPerfil {
                     flex-basis: 40%;
                     height: 20vh;
-                    background-color: grey;
+                    position: relative;
+                    //background-color: grey;
                     border-radius: $borderRadius;
-                    background-size: cover;
-                    background-position: center;
                     margin: auto;
                     //Margin bottom
                     margin-block-end: 2%;
+
+                    img {
+                        @include contenedor(100%, 100%, transparent);
+                        position: absolute;
+                        //Top
+                        inset-block-start: 50%;
+                        //Left
+                        inset-inline-start: 50%;
+                        transform: translate(-50%, -50%);
+                    }
                 }
         
                 label, input, select {

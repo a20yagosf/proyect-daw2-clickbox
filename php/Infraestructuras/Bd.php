@@ -344,7 +344,7 @@ class Bd {
                 throw new \Exception($resultado);
             }
             //Añadimos al array la ruta del archivo para guardarla en la BD
-            $datosUsuario["imagenPerfil"] = ".." . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR . $datosUsuario["email"] . DIRECTORY_SEPARATOR . $fichero["name"];
+            $datosUsuario["imagenPerfil"] = ".." . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR . "usuarios" . DIRECTORY_SEPARATOR  . $datosUsuario["email"] . DIRECTORY_SEPARATOR . $fichero["name"];
             //Hasheamos la contraseña
             $datosUsuario["pwd"] = password_hash($datosUsuario["pwd"], PASSWORD_DEFAULT);
             //Convertimos todos los campos NO obligatorios que NO se rellenaron a null
