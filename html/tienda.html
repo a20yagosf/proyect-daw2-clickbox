@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../js/funcionesGenerales.js"></script>
+    <script src="../js/partidas.js"></script>
+  </head>
+
+  <body>
+    <main id="tienda-main">
+      <div class="title">NUESTROS PRODUCTOS Y ACCESORIOS</div>
+      <form action="" id="formulario_tienda">
+        <div class="filtros_busqueda">
+          <div class="filtro_traits">
+            <p>Filtrar por:</p>
+            <div id="lista_traits">
+              <label for="generos" id="form_generos">Géneros:</label>
+              <label for="min_jugadores" id="form_min_jugadores"
+                >Mínimo de jugadores:</label
+              >
+              <label for="max_jugadores" id="form_max_jugadores"
+                >Máximo de jugadores:</label
+              >
+              <!-- Las opciones deberían poder generarse desde php consultando los géneros disponibles actualmente-->
+              <select name="generos" id="generos" multiple>
+                <option value="aventuras">Aventuras</option>
+                <option value="fantasia">Fantasía</option>
+                <option value="misterio">Misterio</option>
+                <option value="versus">Versus</option>
+              </select>
+              <!-- Recordar que nº de jugadores es un varchar(4) en la bd-->
+              <!-- Nº jugadores será finalmente dos selects -->
+              <select name="min_jugadores" id="min_jugadores" multiple>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+              <select name="max_jugadores" id="max_jugadores" multiple>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="2">5</option>
+                <option value="3">6</option>
+                <option value="4">7</option>
+                <option value="2">8</option>
+              </select>
+            </div>
+          </div>
+          <div class="filtro_nombre">
+            <label for="nombre">Nombre:</label>
+            <input
+              type="text"
+              id="nombre"
+              name="nombre"
+              placeholder="Búsqueda..."
+            />
+          </div>
+          <div class="filtro_tipo">
+            <p>Mostrar artículos del tipo:</p>
+            <fieldset>
+              <div>
+                <input
+                  type="radio"
+                  id="juegos"
+                  name="articulos"
+                  value="juegos"
+                  checked
+                />
+                <label for="juegos">Juegos</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="accesorios"
+                  name="articulos"
+                  value="accesorios"
+                />
+                <label for="accesorios">Accesorios</label>
+              </div>
+            </fieldset>
+          </div>
+          <!-- Habría que incluir js si se quisiera trabajar mejor con el precio-->
+          <!-- Posible problema: No se puede deseleccionar una vez pulsado para filtrar-->
+          <div class="filtro_precio">
+            <!-- La idea inicial es que de base se ordenen los productos por novedades y no precio-->
+            <p>Ordenar por precio:</p>
+            <fieldset>
+              <div>
+                <input
+                  type="radio"
+                  id="ascendente"
+                  name="orden_precio"
+                  value="ascendente"
+                />
+                <label for="ascendente">Ascendente</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="descendente"
+                  name="orden_precio"
+                  value="descendente"
+                />
+                <label for="descendente">Descendente</label>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+        <div class="center_submit">
+          <button class="formulario_envio" type="submit">Filtrar</button>
+        </div>
+      </form>
+
+      <!-- Aquí van los artículos-->
+      <div id="contenido_tienda">
+        <div class="item">
+          <div class="item-imagen">
+            <img src="../img/calendario_prueba.JPG" />
+          </div>
+          <!-- La descripción se carga en más información -->
+          <div class="item-propiedades">
+            <div class="item-nombre">Calendario 2000</div>
+            <div class="item-generos">Aventuras</div>
+            <div class="item-jugadores">2-4 jug.</div>
+            <div class="item-precio">20$/unidad</div>
+            <div class="item-carrito">
+              <!-- Botón Comprar para añadir al carrito -->
+              <!-- A través de js añade el producto al carrito -->
+              <button>Comprar</button>
+            </div>
+          </div>
+        </div>
+        <!-- Más ejemplos que luego borrar de items-->
+        <div class="item">
+          <div class="item-imagen">
+            <img src="../img/calendario_prueba.JPG" />
+          </div>
+          <div class="item-propiedades">
+            <div class="item-nombre">Calendario 2000</div>
+            <div class="item-generos">Aventuras</div>
+            <div class="item-jugadores">2-4 jug.</div>
+            <div class="item-precio">20$/unidad</div>
+            <div class="item-carrito"><button>Comprar</button></div>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="item-imagen">
+            <img src="../img/calendario_prueba.JPG" />
+          </div>
+          <div class="item-propiedades">
+            <div class="item-nombre">Calendario 2000</div>
+            <div class="item-generos">Terror</div>
+            <div class="item-jugadores">2-4 jug.</div>
+            <div class="item-precio">20$/unidad</div>
+            <div class="item-carrito"><button disabled>Fuera de stock</button></div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-imagen">
+            <img src="../img/calendario_prueba.JPG" />
+          </div>
+          <div class="item-propiedades">
+            <div class="item-nombre">Calendario 2000</div>
+            <div class="item-generos">Aventuras</div>
+            <div class="item-jugadores">2-4 jug.</div>
+            <div class="item-precio">20$/unidad</div>
+            <div class="item-carrito"><button disabled>Fuera de stock</button></div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-imagen">
+            <img src="../img/calendario_prueba.JPG" />
+          </div>
+          <div class="item-propiedades">
+            <div class="item-nombre">Calendario 2000</div>
+            <div class="item-generos">Aventuras</div>
+            <div class="item-jugadores">2-4 jug.</div>
+            <div class="item-precio">20$/unidad</div>
+            <div class="item-carrito"><button disabled>Fuera de stock</button></div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-imagen">
+            <img src="../img/calendario_prueba.JPG" />
+          </div>
+          <div class="item-propiedades">
+            <div class="item-nombre">Calendario 2000</div>
+            <div class="item-generos">Aventuras</div>
+            <div class="item-jugadores">2-4 jug.</div>
+            <div class="item-precio">20$/unidad</div>
+            <div class="item-carrito"><button disabled>Fuera de stock</button></div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- Script para los select multiples, creado por https://github.com/admirhodzic/multiselect-dropdown-->
+    <script src="../js/multiselect-dropdown.js"></script>
+  </body>
+</html>

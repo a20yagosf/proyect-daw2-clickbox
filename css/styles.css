@@ -1119,6 +1119,218 @@ ul li.list-group-item .btn-info {
     flex-direction: column;
   }
 }
+main div.title {
+  color: #0291A5;
+  text-align: center;
+  font-size: 2rem;
+  margin: 2%;
+}
+
+form#formulario_tienda {
+  width: 100%;
+}
+form#formulario_tienda .filtros_busqueda {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+form#formulario_tienda .filtros_busqueda .filtro_traits {
+  grid-row: 1;
+  grid-column: 1;
+  border-radius: 25px;
+  border: 2px solid #FFB775;
+  padding: 2%;
+  margin: 1%;
+}
+form#formulario_tienda .filtros_busqueda .filtro_traits p {
+  font-size: 1.5rem;
+}
+form#formulario_tienda .filtros_busqueda .filtro_traits div#lista_traits {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+form#formulario_tienda .filtros_busqueda .filtro_traits div#lista_traits #form_generos {
+  grid-row: 1;
+  grid-column: 1;
+}
+form#formulario_tienda .filtros_busqueda .filtro_traits div#lista_traits #generos {
+  grid-row: 2;
+  grid-column: 1;
+}
+form#formulario_tienda .filtros_busqueda .filtro_traits div#lista_traits #form_jugadores {
+  grid-row: 1;
+  grid-column: 2;
+}
+form#formulario_tienda .filtros_busqueda .filtro_traits div#lista_traits #min_jugadores {
+  grid-row: 2;
+  grid-column: 2;
+}
+form#formulario_tienda .filtros_busqueda .filtro_traits div#lista_traits #max_jugadores {
+  grid-row: 3;
+  grid-column: 2;
+}
+form#formulario_tienda .filtros_busqueda .filtro_traits div#lista_traits .multiselect-dropdown {
+  width: 80% !important;
+  font-size: small;
+}
+form#formulario_tienda .filtros_busqueda .filtro_nombre {
+  grid-row: 1;
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  font-size: 1.5rem;
+  border-radius: 25px;
+  border: 2px solid #FFB775;
+  padding: 2%;
+  margin: 1%;
+}
+form#formulario_tienda .filtros_busqueda .filtro_nombre input {
+  margin-left: 20%;
+  margin-right: 20%;
+  font-size: 1.25rem;
+}
+form#formulario_tienda .filtros_busqueda .filtro_tipo {
+  grid-row: 2;
+  grid-column: 1;
+  display: flex;
+  flex-direction: column;
+  font-size: 1.5rem;
+  border-radius: 25px;
+  border: 2px solid #FFB775;
+  padding: 2%;
+  margin: 1%;
+}
+form#formulario_tienda .filtros_busqueda .filtro_tipo fieldset {
+  font-size: 1.25rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+form#formulario_tienda .filtros_busqueda .filtro_precio {
+  grid-row: 2;
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  font-size: 1.5rem;
+  border-radius: 25px;
+  border: 2px solid #FFB775;
+  padding: 2%;
+  margin: 1%;
+}
+form#formulario_tienda .filtros_busqueda .filtro_precio fieldset {
+  font-size: 1.25rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+form#formulario_tienda div.center_submit {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2%;
+}
+form#formulario_tienda div.center_submit button {
+  background-color: #0291A5;
+  border: none;
+  border-radius: 25px;
+  color: white;
+  padding: 2% 4%;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+#contenido_tienda {
+  width: 100%;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  display: grid;
+  justify-items: center;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-gap: 1%;
+  grid-auto-rows: minmax(5%, auto);
+}
+#contenido_tienda .item {
+  width: 80%;
+  margin-bottom: 10%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  border: 2px solid #0291A5;
+  padding: 10%;
+}
+#contenido_tienda .item .item-imagen {
+  display: flex;
+  justify-content: center;
+}
+#contenido_tienda .item .item-imagen img {
+  width: 80%;
+}
+#contenido_tienda .item .item-propiedades {
+  margin-top: 8%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+  row-gap: 10%;
+}
+#contenido_tienda .item .item-propiedades div {
+  margin: 1%;
+}
+#contenido_tienda .item .item-propiedades .item-nombre {
+  color: #0291A5;
+  grid-row: 1;
+  grid-column: 1/span 2;
+}
+#contenido_tienda .item .item-propiedades .item-generos {
+  color: #FFB775;
+  grid-row: 2/span 1;
+  grid-column: 1/span 2;
+}
+#contenido_tienda .item .item-propiedades .item-jugadores {
+  grid-row: 3;
+  grid-column: 1;
+}
+#contenido_tienda .item .item-propiedades .item-precio {
+  grid-row: 3;
+  grid-column: 2;
+}
+#contenido_tienda .item .item-propiedades .item-carrito {
+  grid-row: 4;
+  grid-column: 1/span 2;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+#contenido_tienda .item .item-propiedades .item-carrito button {
+  background-color: #0291A5;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  padding: 2% 4%;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+#contenido_tienda .item .item-propiedades .item-carrito button:disabled {
+  background-color: #bfbfbf;
+}
+
+@media screen and (max-width: 768px) {
+  div#contenido_tienda {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+@media screen and (max-width: 540px) {
+  div#contenido_tienda {
+    grid-template-columns: 1fr 1fr;
+  }
+}
 #suscribirse {
   width: 100%;
   height: 100%;
@@ -1614,12 +1826,16 @@ ul li.list-group-item .btn-info {
 #perfilUsuario form h2 {
   text-align: center;
 }
-#perfilUsuario form p {
+#perfilUsuario form #infoTiempos {
   position: absolute;
   inset-inline-start: 2%;
   inset-block-start: 50%;
   transform: translateY(-50%);
   color: #0291A5;
+}
+#perfilUsuario form #infoTiempos p {
+  -webkit-margin-after: 0.5%;
+          margin-block-end: 0.5%;
 }
 #perfilUsuario form button {
   display: block;
@@ -1654,7 +1870,7 @@ ul li.list-group-item .btn-info {
   padding: 2%;
   margin: 2%;
 }
-#perfilUsuario form fieldset div {
+#perfilUsuario form fieldset > div {
   height: 100%;
   display: flex;
   flex-wrap: wrap;
@@ -1662,19 +1878,22 @@ ul li.list-group-item .btn-info {
   padding: 2%;
   margin: 2%;
 }
-#perfilUsuario form fieldset div label, #perfilUsuario form fieldset div input, #perfilUsuario form fieldset div select {
+#perfilUsuario form fieldset > div label, #perfilUsuario form fieldset > div input, #perfilUsuario form fieldset > div select {
   flex-basis: 48%;
   padding: 2%;
   margin: 1%;
   transition: all 1s ease-in-out;
 }
-#perfilUsuario form fieldset div input[readonly], #perfilUsuario form fieldset div select[disabled] {
+#perfilUsuario form fieldset > div input[readonly], #perfilUsuario form fieldset > div select[disabled] {
   border: none;
   outline: none;
   background-color: transparent;
   text-align: center;
 }
-#perfilUsuario form fieldset div input, #perfilUsuario form fieldset div select {
+#perfilUsuario form fieldset > div #contenedorSuscripcion {
+  flex-basis: 100%;
+}
+#perfilUsuario form fieldset > div input, #perfilUsuario form fieldset > div select {
   margin: 2% 0%;
   padding: 1%;
   font-family: "Resolve";
@@ -1683,16 +1902,16 @@ ul li.list-group-item .btn-info {
   outline-color: #FFB775;
   transition: all 1s ease-in-out;
 }
-#perfilUsuario form fieldset div label[for=renovacion], #perfilUsuario form fieldset div #renovacion {
+#perfilUsuario form fieldset > div label[for=renovacion], #perfilUsuario form fieldset > div #renovacion {
   flex-basis: 33.3333333333%;
 }
-#perfilUsuario form fieldset div span {
+#perfilUsuario form fieldset > div span {
   padding: 2%;
   margin: 1%;
   flex-basis: 33.3333333333%;
   flex-grow: 2;
 }
-#perfilUsuario form fieldset div button {
+#perfilUsuario form fieldset > div button {
   flex-grow: 0;
 }
 #perfilUsuario form fieldset div:last-of-type {
@@ -2028,6 +2247,12 @@ h2, h3 {
   text-align: center;
 }
 #panelAdmin #contenedorElementos #listaElementos {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  text-align: center;
+}
+#panelAdmin #contenedorElementos #filtroUsuarios {
   width: 100%;
   height: 100%;
   background-color: transparent;

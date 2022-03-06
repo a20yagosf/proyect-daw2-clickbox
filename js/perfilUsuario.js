@@ -13,4 +13,8 @@ window.onload = function () {
     //Creamos el mapa
     crearMapa();
     crearBotonAccesibilidad();
+    //Cargamos los options del genero favorito
+    crearOptionGeneros(document.querySelector("select"));
+    // Cargamos los datos del usuario
+    cargarDatosPerfil();
 };
