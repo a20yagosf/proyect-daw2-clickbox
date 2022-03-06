@@ -44,28 +44,57 @@ class Administrador extends user{
      *
      * @return  bool                  Si se creo la partida con éxito
      */
-    public function crearPartida($datosPartida, $imagenPartida){
+    public function crearPartida($datosPartida, $imagenesPartida){
         //Primero validamos los datos que nos pasaron en datosPartida
         $this->validarCamposForm($datosPartida);
         //Instanciamos bd
         $bd = new bd();
-        //Movemos la imagen
-        $carpetaFichero = dirname(__FILE__, 3) . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR . "partidas";
-        $rutaImagen = $bd->gestionarFichero($imagenPartida, $carpetaFichero);
-        if(stripos($rutaImagen, "error") !== false) {
-            throw new \Exception("No se pudo mover el archivo");
+       try {
+            //Empezamos la transaccion
+            $pdo = $bd->iniciarTransaccionManual();
+            //Movemos la imagen
+            $carpetaFichero = dirname(__FILE__, 3) . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR . "partidas";
+            $rutaImagenes = $bd->gestionarFichero($imagenesPartida, $carpetaFichero);
+            if(is_string($rutaImagenes) && stripos($rutaImagenes, "error") !== false) {
+                throw new \Exception("No se pudo mover el archivo");
+            }
+            //Sentencia para crear la partida
+            $sentencia = "INSERT INTO partidas (plazas_min, plazas_totales,fecha, hora_inicio, duracion, director_partida, juego_partida) VALUES (:plazas_min, :plazas_totales,:fecha, :hora_inicio, :duracion, :director_partida, :juego_partida)";
+            $sentencia2 = "INSERT INTO partidas_imagenes (partida, imagen) VALUES";
+            //Guardamos la ruta relativa de cada una de las imágenes y añadimos las lineas de la sentencia
+            foreach($imagenesPartida["name"] as $indice => $nombreImagen){
+                $datosImagenPartida["imagen" . $indice] = ".." . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR . "partidas" . DIRECTORY_SEPARATOR . $nombreImagen;
+                $sentencia2 .= " (:partida, :imagen$indice),";
+            }
+            //Añadimos el indice de la partida
+            //Quitamos la última coma
+            $sentencia2 = substr($sentencia2, 0, -1);
+            //Añadimos a los datos del director
+            $datosPartida["director_partida"] = $this->getEmail();
+            //Realizamos la primera sentencia
+            $resultado = $bd->agregarModificarDatosBDNum($sentencia, $datosPartida, $pdo);
+            //Comprobamos que fuera un éxito
+            if(is_string($resultado) && stripos($resultado, "error") !== false){
+                throw new \Exception($resultado);
+            }
+            //Si no es un error $resultado el es indice de la inserción
+            $datosImagenPartida["partida"] = intval($resultado);
+            //Realizamos la segunda sentencia
+            $resultado = $bd->agregarModificarDatosBDNum($sentencia2, $datosImagenPartida, $pdo);
+            //Comprobamos que fuera un éxito
+            if(is_string($resultado) && stripos($resultado, "error") !== false){
+                throw new \Exception($resultado);
+            }
+            //Si fue un éxito hacemos commit
+            $pdo->commit();
+       }
+       catch (\PDOException $pdoError){
+            $pdo->rollBack();
+            return "Error " . $pdoError->getMessage();
         }
-        //Guardamos la ruta relativa
-        $rutaImagen = ".." . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR . "partidas" . DIRECTORY_SEPARATOR . $imagenPartida["name"];
-        //Sentencia para crear la partida
-        $sentencia = "INSERT INTO partidas (plazas_min, plazas_totales,fecha, hora_inicio, duracion, imagen_partida, director_partida, juego_partida) VALUES (:plazas_min, :plazas_totales,:fecha, :hora_inicio, :duracion, :imagen_partida, :director_partida, :juego_partida)";
-        //Añadimos a los datos del director
-        $datosPartida["imagen_partida"]  = $rutaImagen;
-        $datosPartida["director_partida"] = $this->getEmail();
-        $resultado = $bd->agregarModificarDatosBDNum($sentencia, $datosPartida);
-        //Comprobamos que fuera un éxito
-        if(is_string($resultado) && stripos($resultado, "error") !== false){
-            throw new \Exception($resultado);
+        catch(\Exception $error){
+            $pdo->rollBack();
+            return "Error " . $error->getMessage();
         }
         return true;
     }
@@ -156,8 +185,7 @@ class Administrador extends user{
             //Creamos la sentencia
             $sentencia2 = "DELETE FROM usuarios_partidas WHERE partida = :id_partida";
             $sentencia = "DELETE FROM partidas WHERE id_partida = :id_partida";
-            $sentencia3 = "DELETE FROM partidas_generos WHERE partida = :id_partida";
-            $sentencias = [$sentencia2, $sentencia, $sentencia3];
+            $sentencias = [$sentencia2, $sentencia];
             foreach($sentencias as $sentencia) {
                 $resultado = $bd->agregarModificarDatosBDNum($sentencia, $idPartida, $pdo);
                 //Comprobamos que no diera error

@@ -122,6 +122,42 @@ class Usuario
     }
 
     /**
+     * Crea el contendor de mas información de una partida
+     *
+     * @param   int  $idPartida  ID de la partida
+     *
+     * @return  void              No deuvelve nada
+     */
+    public function masInfoPartida($idPartida) {
+        //Instanciamos bd
+        $bd = new bd();
+        $idPartidaPasar = ["id_partida" => $idPartida];
+        //Creamos la sentencia
+        $sentencia = "SELECT P.fecha, P.hora_inicio, P.duracion, PR.nombre as juego, J.genero, P.plazas_totales as plazas, J.genero FROM partidas AS P INNER JOIN productos as PR ON P.juego_partida = PR.id_producto INNER JOIN juegos AS J ON PR.id_producto = J.juego WHERE id_partida = :id_partida";
+        //La ejecutamos
+        $pdoStatement = $bd->recuperarDatosBDNum($sentencia, $idPartidaPasar);
+        //Comprobamos que no diera error
+        if(!$pdoStatement instanceof \PDOStatement){
+            throw new \PDOException($pdoStatement);
+        }
+        //Cogemos los datos, como las partidas son únicas sólo hacemos fetch
+        $datos["infoPartida"] = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
+        //Le añadimos el id
+        $datos["infoPartida"]["id_partida"] = $idPartida;
+        unset($pdoStatement);
+        //Cogemos las imágenes
+        $sentenciaImg = "SELECT imagen FROM partidas_imagenes WHERE partida = :id_partida LIMIT 0, 5";
+        $pdoStatement = $bd->recuperarDatosBDNum($sentenciaImg, $idPartidaPasar);
+        //Comprobamos que no diera error
+        if(!$pdoStatement instanceof \PDOStatement){
+            throw new \PDOException($pdoStatement);
+        }
+        //HAcemos fetch All ya que sabemos que como mucho serán 5
+        $datos["imagenes"] = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
+        return $datos;
+    }
+
+    /**
      * Reserva una partida para el usuario
      *
      * @param   int  $idPartida  ID de la partida
@@ -144,8 +180,7 @@ class Usuario
         }
     }
     
-    public function cancelarPartida()
-    {
+    public function cancelarPartida() {
     }
 
     /**
@@ -227,12 +262,11 @@ class Usuario
      * @return  void  No devuelve nada
      */
     public function cerrarSesion(){
-        session_destroy($_SESSION["usuario"]);
-        session_unset($_SESSION["usuario"]);
+        session_destroy();
+        session_unset();
     }
 
-    public function cargarCambios_perfil()
-    {
+    public function cargarCambios_perfil(){
     }
 
     /**
@@ -250,7 +284,7 @@ class Usuario
         //Sentencia para contar el número de páginas es como la normal pero contando las tuplas sin limitar
         $sentenciaNumPag = "SELECT COUNT(P.id_partida) as num_pag FROM partidas as P WHERE P.id_partida NOT IN (SELECT partida FROM usuarios_partidas WHERE usuario = :usuario)";
         //Sentencia para pedir los datos
-        $sentencia = "SELECT P.id_partida, PR.nombre, P.imagen_partida,  J.genero, P.fecha, P.hora_inicio FROM partidas as P INNER JOIN productos as PR ON P.id_partida NOT IN (SELECT partida FROM usuarios_partidas WHERE usuario = :usuario) AND P.juego_partida = PR.id_producto INNER JOIN juegos AS J ON PR.id_producto = J.juego";
+        $sentencia = "SELECT P.id_partida, PR.nombre, PR.imagen_producto as imagen_partida,  J.genero, P.fecha, P.hora_inicio FROM partidas as P INNER JOIN productos as PR ON P.id_partida NOT IN (SELECT partida FROM usuarios_partidas WHERE usuario = :usuario) AND P.juego_partida = PR.id_producto INNER JOIN juegos AS J ON PR.id_producto = J.juego";
         //Datos que pasaremos a la sentencia como parámetros a sustituir
         $datosFiltrado = ["usuario" => $this->getEmail()];
         //Recorremos los filtros y vamos añadiendo

@@ -1109,6 +1109,86 @@ ul li.list-group-item .btn-info {
   background-color: #ddd;
 }
 
+#masInfoPartida {
+  width: 60%;
+  height: auto;
+  background-color: #f3f3f3;
+  margin: auto;
+  padding: 1%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  position: fixed;
+  inset-inline-start: 50%;
+  inset-block-start: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+}
+#masInfoPartida h1 {
+  color: #026a79;
+  flex-basis: 100%;
+  text-align: center;
+  -webkit-margin-after: 2%;
+          margin-block-end: 2%;
+}
+#masInfoPartida p {
+  flex-basis: 40%;
+  text-align: center;
+}
+#masInfoPartida > button:last-of-type {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 2rem;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  position: absolute;
+  inset-block-start: 2%;
+  inset-inline-end: 2%;
+  border-radius: 100%;
+  padding: 0.3% 1.2%;
+}
+#masInfoPartida > button:last-of-type:hover {
+  background-color: #03bdd7;
+}
+#masInfoPartida #imagenesPartida {
+  position: relative;
+  width: 100%;
+}
+#masInfoPartida #imagenesPartida .carousel-indicators button {
+  width: 15px;
+  height: 15px;
+  background-clip: unset;
+  border-radius: 100%;
+  border: 3px solid #F3F3F3;
+  background-color: #0291A5;
+}
+#masInfoPartida #imagenesPartida .carousel-control-prev-icon, #masInfoPartida #imagenesPartida .carousel-control-next-icon {
+  width: 4rem;
+  height: 4rem;
+  background-size: 70%;
+  background-position: 35%;
+  background-color: #0291A5;
+  border: 5px solid #F3F3F3;
+  border-radius: 100%;
+}
+#masInfoPartida #imagenesPartida .carousel-control-next-icon {
+  background-position: 60%;
+}
+#masInfoPartida #imagenesPartida h2 {
+  text-align: center;
+}
+#masInfoPartida #imagenesPartida img {
+  display: block;
+  margin: 1% auto;
+  margin-bottom: 5%;
+  width: 350px;
+  border-radius: 10px;
+}
+
 @media (max-width: 1100px) {
   #form_partidas {
     flex-direction: column !important;

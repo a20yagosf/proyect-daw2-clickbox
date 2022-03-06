@@ -75,24 +75,6 @@ CREATE TABLE IF NOT EXISTS accesorios (
 ) ENGINE = INNODB;
 
 -- ---------------------------------------------------
---				TABLA PRODUCTO_GENERO
--- ---------------------------------------------------
-DROP TABLE IF EXISTS productos_generos;
-CREATE TABLE IF NOT EXISTS productos_generos (
-	id_producto_genero INT UNSIGNED AUTO_INCREMENT NOT NULL,
-	producto INT UNSIGNED NOT NULL,
-	genero VARCHAR(150) NOT NULL,
-	-- KEYS Y CONSTRAINS 
-	PRIMARY KEY (id_producto_genero),
-	FOREIGN KEY (producto) REFERENCES productos (id_producto)
-		ON DELETE CASCADE
-		ON UPDATE CASCADE,
-	FOREIGN KEY (genero) REFERENCES generos (nombre_genero)
-		ON DELETE CASCADE
-		ON UPDATE CASCADE
-) ENGINE = INNODB, AUTO_INCREMENT = 1;
-
--- ---------------------------------------------------
 --				TABLA SUSCRIPCION
 -- ---------------------------------------------------
 DROP TABLE IF EXISTS suscripciones;
@@ -297,7 +279,6 @@ CREATE TABLE IF NOT EXISTS partidas (
    fecha DATE NOT NULL,
    hora_inicio TIME(0) NOT NULL,
    duracion SMALLINT NOT NULL,
-   imagen_partida VARCHAR(250) NOT NULL,
    -- RELACIONES 
    director_partida VARCHAR(150) NOT NULL,
    juego_partida INT UNSIGNED NOT NULL,
@@ -309,6 +290,21 @@ CREATE TABLE IF NOT EXISTS partidas (
 	FOREIGN KEY (juego_partida) REFERENCES juegos (juego)
 		ON DELETE RESTRICT
       ON UPDATE CASCADE
+) ENGINE = INNODB;
+
+-- ---------------------------------------------------
+--				TABLA partidas_imagenes
+-- ---------------------------------------------------
+DROP TABLE IF EXISTS partidas_imagenes;
+CREATE TABLE IF NOT EXISTS	partidas_imagenes (
+	id_imagen_partida INT UNSIGNED AUTO_INCREMENT NOT NULL,
+	partida INT UNSIGNED NOT NULL,
+	imagen VARCHAR(255) NOT NULL,
+	-- KEYS Y CONSTRAINS 
+	PRIMARY KEY (id_imagen_partida),
+	FOREIGN KEY (partida) REFERENCES partidas (id_partida)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE
 ) ENGINE = INNODB;
 
 -- ---------------------------------------------------
@@ -330,24 +326,6 @@ CREATE TABLE IF NOT EXISTS usuarios_partidas (
 		ON DELETE RESTRICT -- MIENTRAS HAYA PARTIDAS RESERVADAS NO SE PODRÁ BORRAR LA PARTIDA 
       ON UPDATE CASCADE
 ) ENGINE = INNODB;
-
--- ---------------------------------------------------
---				TABLA PARTIDA_GENEROS
--- ---------------------------------------------------
-DROP TABLE IF EXISTS partidas_generos;
-CREATE TABLE IF NOT EXISTS partidas_generos(
-	id_genero_partida INT UNSIGNED AUTO_INCREMENT NOT NULL,
-	partida INT UNSIGNED NOT NULL,
-	genero VARCHAR(150) NOT NULL,
-	-- KEYS Y CONSTRAINS
-	PRIMARY KEY (id_genero_partida),
-	FOREIGN KEY (partida) REFERENCES partidas (id_partida)
-		ON DELETE CASCADE
-		ON UPDATE CASCADE,
-	FOREIGN KEY (genero) REFERENCES generos (nombre_genero)
-		ON DELETE CASCADE
-		ON UPDATE CASCADE
-) ENGINE INNODB;
 
 -- ---------------------------------------------------
 --				TABLA HISTORICO_USUARIOS
@@ -388,6 +366,7 @@ GRANT SELECT ON a2da_clickbox.suscripciones TO 'a2da_estandar'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.carritos TO 'a2da_estandar'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.productos_carritos TO 'a2da_estandar'@'localhost';
 GRANT SELECT, INSERT, DELETE ON a2da_clickbox.usuarios_partidas TO 'a2da_estandar'@'localhost';
+GRANT SELECT ON a2da_clickbox.partidas_imagenes TO 'a2da_estandar'@'localhost';
 -- USUARIO ADMINISTRADOR
 GRANT SELECT, UPDATE ON a2da_clickbox.usuarios TO 'a2da_admin'@'localhost' IDENTIFIED BY 'abc123.';
 GRANT SELECT, INSERT ON a2da_clickbox.pedidos TO 'a2da_admin'@'localhost';
@@ -406,6 +385,7 @@ GRANT SELECT ON a2da_clickbox.accesorios TO 'a2da_admin'@'localhost';
 GRANT SELECT ON a2da_clickbox.roles TO 'a2da_admin'@'localhost';
 GRANT SELECT, INSERT ON a2da_clickbox.tematicas TO 'a2da_admin'@'localhost';
 GRANT SELECT, INSERT ON a2da_clickbox.generos TO 'a2da_admin'@'localhost';
+GRANT SELECT, INSERT ON a2da_clickbox.partidas_imagenes TO 'a2da_admin'@'localhost';
 
 -- DISPARADORES
 DELIMITER $$

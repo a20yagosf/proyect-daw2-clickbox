@@ -14,6 +14,11 @@ try {
         $usuario->reservarPartida($filtros["partidaReservar"], $usuario->getEmail());
         $datosPartidas = ["exito" => "reservado con éxito"];
     }
+    else if(isset($filtros["masInfoPartida"])) {
+        //Cargamos los datos de las partidas
+        $datos = $usuario->masInfoPartida($filtros["masInfoPartida"]);
+        $datosPartidas = $datos;
+    }
     //Filtrar las partidas
     else {
         $datosPartidas = $usuario->filtarPartidas($filtros);

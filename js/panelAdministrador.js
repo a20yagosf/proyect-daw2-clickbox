@@ -17,8 +17,9 @@ window.onload = function () {
     //cargarPartidasAdmin();
     //Cargamos los usuarios
     //cargarUsuariosAdmin(); //todavía no implementado
-        // una pequeña prueba para usar currentTarget
-        document.getElementById("eventoprueba").addEventListener("click", recogerDatos);
+    // una pequeña prueba para usar currentTarget
+    document.getElementById("eventoprueba").addEventListener("click", recogerDatos);
+   //cargarPartidasAdmin();
     //Creamos el mapa
     crearMapa();
     crearBotonAccesibilidad();

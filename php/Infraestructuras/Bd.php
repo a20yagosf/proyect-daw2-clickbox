@@ -433,28 +433,53 @@ class Bd {
      * @return  mixed            Si la operación salió bien (boolean) o hubo algún error (string con el error)
      */
     public function gestionarFichero($fichero, $carpetaFichero){
-        //Carpeta donde guardaremos el fichero
         try {
-            //Comprobamos que no hubiese errores en la subida
-            if($fichero["error"] != 0){
-                throw new \RuntimeException ("Hubo un error en la subida del fichero");
+            if(is_array($fichero["name"])){
+                //Comprobamos si existe la carpeta en el disco duro
+                if(!is_dir($carpetaFichero)) {
+                    //Si no existe la creamos
+                    if(!mkdir($carpetaFichero, 777)) {
+                            throw new \RuntimeException("No se pudo crear la carpeta donde guarda la imagen");
+                    }
+                }
+                for($i = 0; $i < count($fichero["name"]); $i++) {
+                    //Comprobamos que no hubiese errores en la subida
+                    if($fichero["error"][$i] != 0){
+                        throw new \RuntimeException ("Hubo un error en la subida del fichero");
+                    }
+                    $nuevaRutaArchivo = $carpetaFichero . DIRECTORY_SEPARATOR . $fichero["name"][$i];
+                    //Movemos el archivo a la carpeta creada
+                    $resultadoSentencia = move_uploaded_file($fichero["tmp_name"][$i], $nuevaRutaArchivo);
+                    //Si no se pudo mover lanzamos una excepción
+                    if(!$resultadoSentencia){
+                        throw new \RuntimeException("No se puede realizar el cambio de localización del archivo");
+                    }
+                    //Guardamos en $resultado la ruta del archivo
+                    $resultado[] = $nuevaRutaArchivo;
+                }
             }
-            //Comprobamos si existe la carpeta en el disco duro
-            if(!is_dir($carpetaFichero)) {
-                //Si no existe la creamos
-               if(!mkdir($carpetaFichero, 777)) {
-                    throw new \RuntimeException("No se pudo crear la carpeta donde guarda la imagen de usuario");
-               }
+            else {
+                //Comprobamos que no hubiese errores en la subida
+                if($fichero["error"] != 0){
+                    throw new \RuntimeException ("Hubo un error en la subida del fichero");
+                }
+                //Comprobamos si existe la carpeta en el disco duro
+                if(!is_dir($carpetaFichero)) {
+                     //Si no existe la creamos
+                if(!mkdir($carpetaFichero, 777)) {
+                        throw new \RuntimeException("No se pudo crear la carpeta donde guarda la imagen");
+                }
+                }
+                $nuevaRutaArchivo = $carpetaFichero . DIRECTORY_SEPARATOR . $fichero["name"];
+                //Movemos el archivo a la carpeta creada
+                $resultado = move_uploaded_file($fichero["tmp_name"], $nuevaRutaArchivo);
+                //Si no se pudo mover lanzamos una excepción
+                if(!$resultado){
+                    throw new \RuntimeException("No se puede realizar el cambio de localización del archivo");
+                }
+                //Guardamos en $resultado la ruta del archivo
+                $resultado = $nuevaRutaArchivo;
             }
-            $nuevaRutaArchivo = $carpetaFichero . DIRECTORY_SEPARATOR . $fichero["name"];
-            //Movemos el archivo a la carpeta creada
-            $resultado = move_uploaded_file($fichero["tmp_name"], $nuevaRutaArchivo);
-            //Si no se pudo mover lanzamos una excepción
-            if(!$resultado){
-                throw new \RuntimeException("No se puede realizar el cambio de localización del archivo");
-            }
-            //Guardamos en $resultado la ruta del archivo
-            $resultado = $nuevaRutaArchivo;
         }
         catch(\RuntimeException $error){
             $resultado =  "Error " . $error->getCode() . ": " . $error->getMessage();

@@ -1441,6 +1441,7 @@ async function cargarPartidas(filtro = {}, pagina = 0, limite = 7) {
      let botonInfo = crearBoton("Información", {"type": "button", "class": "btn btn-lg btn-info", "data-id": datosPartida["id_partida"]});
      let botonReservar = crearBoton("¡Reservar!", {"type": "button", "class": "btn btn-lg btn-success", "data-id": datosPartida["id_partida"]});
      //Añadimos los escuchadores
+     botonInfo.addEventListener("click", conseguirInfoPartida);
      botonReservar.addEventListener("click", reservarPartida);
      //Añadimos todo al contenedor de información
      contenedorInfo.append(juegoPartida, generoPartida, diaPartida, horaPartida, botonInfo, botonReservar);
@@ -1571,11 +1572,12 @@ async function crearPartida(e) {
         let duracion = document.getElementById("duracion").value;
         let plazas_min = document.getElementById("plazas_min").value;
         let plazas_totales = document.getElementById("plazas_totales").value;
-        let imagen = document.getElementById("imagen_partida").files[0];
+        let imagenes = Array.from(document.getElementById("imagen_partida").files);
         let datosPartida = {"juego_partida": juego, "fecha": fecha, "hora_inicio": hora_inicio, "duracion": duracion, "plazas_min": plazas_min, "plazas_totales": plazas_totales};
         //Mensaje que enviaremos
         const mensajeJSON = new FormData();
-        mensajeJSON.append("imagenPartida", imagen);
+        //Recorremos las imagenes y las voy añadiendo en el array
+        imagenes.forEach(imagen => mensajeJSON.append("imagenesPartida[]", imagen));
         mensajeJSON.append("datosPartida", JSON.stringify(datosPartida));
         //Lanzamos la petición
         const respuesta = await fetch("../php/panelAdministrador.php", {
@@ -1832,7 +1834,7 @@ function modoCrearPartidasAdmin() {
     let labelPlazasTotales = crearElem("label", {"for": "plazas_totales"}, "Plazas totales");
     let inputPlazasTotales = crearElem("input", {"type": "number", "name": "plazas_totales", "id": "plazas_totales"});
     let labelImagenPartida =  crearElem("label", {"for": "imagen_partida"}, "Imagen partida");
-    let inputImagenPartida = crearElem("input", {"type": "file", "name": "imagen_partida", "id": "imagen_partida"});
+    let inputImagenPartida = crearElem("input", {"type": "file", "name": "imagenes_partida[]", "id": "imagen_partida", "multiple": "multiple"});
     let resultado = crearElem("p", {"id": "resultadoOperacion"});
     let botonSubmit = crearElem("input", {"type": "submit", "value": "Crear partida"});
     //Añadimos el escuchador
@@ -2452,8 +2454,8 @@ async function reservarPartida(e) {
             throw respuestaJSON["error"];
         }
         //Mostramos el mensaje y volvemos a cargar las partidas
-        alert("Partida reservada con éxito, cuando se procese la reserva se te enviará un correo diciend fue aceptada o no");
-        cargarPartidas();
+        alert("¡Partida reservada con éxito!, cuando se procese la reserva se te enviará un correo diciendo si fue aceptada o no");
+        location.reload();
     }
     catch(error){
         alert(error);
@@ -2661,4 +2663,182 @@ function retirarClaseMonocromaticoRecursivo(elemento) {
     //Cogemos sus hijos y los pasamos
     let hijos = Array.from(elemento.children);
     hijos.forEach(hijo => retirarClaseMonocromaticoRecursivo(hijo));
+}
+
+/**
+ * Crea el contenedor con mas info de partidas
+ *
+ * @param   {Array}  datos  Array tipo {clave: valor} con los datos por una parte infoPartida y por otra imagenes
+ *
+ * @return  {void}         No devuelve nada
+ */
+function crearMasInfoPartida(datos) {
+    //Creamos el contenedor
+    let contenedorMasInfo = crearContenedor("div", {"id": "masInfoPartida"});
+    //Creamos el encabezado
+    let idPartida = datos["infoPartida"]["id_partida"];
+    let encabezado = crearElem("h1", {}, "Partida" + idPartida);
+    contenedorMasInfo.append(encabezado);
+    //Eliminamos el id del array de datos
+    delete datos["infoPartida"]["id_partida"];
+    //Ponemos bien en formato la fecha y la hora
+    datos["infoPartida"]["fecha"] = new Fecha(datos["infoPartida"]["fecha"]).getFecha();
+    datos["infoPartida"]["hora inicio"] = datos["infoPartida"]["fecha"].substring(0, datos["infoPartida"]["fecha"].length - 3);
+    //Eliminamos la hora de inicio para que tenga el nuevo indice
+    delete datos["infoPartida"]["hora_inicio"];
+    //Recorremos los datos y vamos creando p
+    Object.entries(datos["infoPartida"]).forEach(dato => {
+        let indiceMayuscula = dato[0].charAt(0).toUpperCase() + dato[0].substring(1);
+        let parrafo = crearElem("p", {}, indiceMayuscula +": " + dato[1]);
+        contenedorMasInfo.append(parrafo);
+    });
+    //Creamos el carrusel
+    //Creamos imagenes con cada uno de los datos
+    let imagenes = [];
+    Array.from(datos["imagenes"]).forEach(imagen => {
+        let contenedorImagen = crearImg({"src": imagen["imagen"], "alt": "Foto partidas organizadas"});
+        imagenes.push(contenedorImagen);
+    });
+    let carrusel = crearCarrusel("imagenesPartida", "Cajas anteriores", imagenes, "partida");
+    //Creamos el botón para reservar
+    let botonReservar = crearBoton("¡Reservar!", {"class": "btn btn-lg btn-success", "type": "button", "data-id": idPartida});
+    //Le añadimos el escuchador
+    botonReservar.addEventListener("click", reservarPartida);
+    //Creamos el botón de cierre
+    let botonCierre = crearBoton("X");
+    //Le añadimos el escuchador
+    botonCierre.addEventListener("click", cerrarVentanaFlotante);
+    //Añadimos todo al contenedor
+    contenedorMasInfo.append(carrusel, botonReservar, botonCierre);
+    //Lo ocultamos y lo mostramos
+    contenedorMasInfo.style.display = "none";
+    //Lo añadimos al body
+    document.querySelector("body").append(contenedorMasInfo);
+    $(contenedorMasInfo).toggle(1000);
+}
+
+/**
+ * Cierra la ventana flotante
+ *
+ * @param   {Event}  e  Evento que se disparó
+ *
+ * @return  {void}     No devuelve nada
+ */
+async function cerrarVentanaFlotante(e) {
+    let padre = e.currentTarget.parentElement;
+    $(padre).toggle(1000);
+    //Eliminamos al padre despues del tiempo que tarda en cerrarse
+    setTimeout(() => padre.remove(), 1000);
+}
+
+/**
+ * Consigue la información de la partida
+ *
+ * @param   {Event}  e  Evento que se dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+async function conseguirInfoPartida(e) {
+    try {
+        //Cogemos el id del botón
+        let idPartida = e.currentTarget.dataset.id;
+        //iniciamos la peticion
+        const respuesta = await fetch("../php/partidas.php", {
+            method: "POST",
+            headers: {"Content-type": "application/json"},
+            body: JSON.stringify({"masInfoPartida": idPartida})
+        });
+        //Traducimos la respuesta
+        const respuestaJSON = await respuesta.json();
+        //Comprobamos que no diera error
+        if(Object.hasOwn(respuestaJSON, "error")){
+            throw respuestaJSON["error"];
+        }
+        //Creamos el contenedor
+        crearMasInfoPartida(respuestaJSON);
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+
+/**
+ * Crea el carrusel según las opciones
+ *
+ * @param   {string}  idCarrusel          Id del carrusel
+ * @param   {string}  titulo              Titulo que tendrá
+ * @param   {array}  contenidoElementos  Array con lo que tendrá dentro el elemento item
+ * @param   {string}  tipoCarrusel        Tipo carrusel (partidas, suscripciones, etc..)
+ *
+ * @return  {DOMElement}                      Carrusel
+ */
+function crearCarrusel(idCarrusel, titulo, contenidoElementos, tipoCarrusel) {
+    //Creamos el contenedor
+    let contenedorCarrusel = crearContenedor("div", {"id": idCarrusel, "class": "carousel slide", "data-bs-ride": "carousel"});
+    //Creamos el encabezado
+    let encabezado = crearElem("h2", {}, titulo);
+    //Creamos los indicadores
+    let ariaLabelIndicadores = [...Array(contenidoElementos.length).keys()].map(indice => tipoCarrusel + indice);
+    let indicadores = crearIndicadoresCarrusel(idCarrusel, ariaLabelIndicadores);
+    let contenedorInterior = crearInteriorCarrusel(contenidoElementos);
+    //Creamos los botones para poder moverlo
+    //Prev
+    let botonPrev = crearElem("button", {"class": "carousel-control-prev", "type": "button", "data-bs-target": "#" + idCarrusel, "data-bs-slide": "prev"});
+    let iconoPrev = crearElem("span", {"class": "carousel-control-prev-icon", "aria-hidden": true});
+    let lectorPrev = crearElem("span", {"class": "visually-hidden"}, "Anterior");
+    botonPrev.append(iconoPrev, lectorPrev);
+    //Siguiente
+    let botonSiguiente = crearElem("button", {"class": "carousel-control-next", "type": "button", "data-bs-target": "#" + idCarrusel, "data-bs-slide": "next"});
+    let iconoSiguiente = crearElem("span", {"class": "carousel-control-next-icon", "aria-hidden": true});
+    let lectorSiguiente = crearElem("span", {"class": "visually-hidden"}, "Siguiente");
+    botonSiguiente.append(iconoSiguiente, lectorSiguiente);
+    //Añadimos todo
+    contenedorCarrusel.append(encabezado, indicadores, contenedorInterior, botonPrev, botonSiguiente);
+    return contenedorCarrusel;
+}
+
+/**
+ * Crea los indicadores del carrusel
+ *
+ * @param   {string}  id      id del elemento
+ * @param   {array[string]}  labels  Labels que mostrarán los indicadores
+ *
+ * @return  {DOMElement}          Contenedor de los indicadores
+ */
+function crearIndicadoresCarrusel(id, labels) {
+    //Creamos su contenedor
+    let indicadores = crearContenedor("div", {"class": "carousel-indicators"});
+    //Creamos cada uno de los botones
+    for(let i = 0; i < labels.length; i++){
+        let boton = crearElem("button", {"type": "button", "data-bs-target": "#" + id, "data-bs-slide-to": i, "aria-label": labels[i]});
+        indicadores.append(boton);
+    }
+    //Cogemos al primer elemento y le añadimos que es el activo
+    indicadores.firstElementChild.setAttribute("class", "active");
+    indicadores.firstElementChild.setAttribute("aria-current", true);
+    return indicadores;
+}
+
+/**
+ * Crea el interior del carrusel
+ *
+ * @param   {array[DomElement]}  contenidoElemento  Todo lo que tendrá el carrusel
+ *
+ * @return  {DOMElement}                     Contenedor con el interiore del carrusel
+ */
+function crearInteriorCarrusel(contenidoElemento) {
+    let contenedorInterior = crearContenedor("div", {"class": "carousel-inner"});
+    //Creamos cada uno de los elementos
+    contenidoElemento.forEach(elemento => {
+        //Creamos su contenedor
+        let contenedor = crearContenedor("div", {"class": "carousel-item"});
+        //Creamos la tarjeta
+        let tarjeta = crearContenedor("div", {"class": "tarjeta"});
+        //Aañdimos todo
+        Array.isArray(elemento) ? contenedor.append(tarjeta, ...elemento)  : contenedor.append(tarjeta, elemento);
+        contenedorInterior.append(contenedor);
+    });
+    //Ponemos el primer elemento como activo
+    contenedorInterior.firstElementChild.classList.add("active");
+    return contenedorInterior;
 }
