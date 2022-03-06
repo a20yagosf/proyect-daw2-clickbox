@@ -140,6 +140,100 @@ ul li.list-group-item {
   background-color: #ddd;
 }
 
+//Contenedor que aparece con mas informacion
+#masInfoPartida {
+  @include contenedor(60%, auto, $fondoLogin);
+  margin: auto;
+  padding: 1%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  position: fixed;
+  //Left
+  inset-inline-start: 50%;
+  //Top
+  inset-block-start: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+
+  //Cabecera
+  h1 {
+    color: $colorPrincipalOscuro;
+    flex-basis: 100%;
+    text-align: center;
+    //Bottom
+    margin-block-end: 2%;
+  }
+
+  //Cada parrafo con la información
+  p {
+    flex-basis: 40%;
+    text-align: center;
+  }
+
+    //Botón cierre
+  & > button:last-of-type {
+    @include boton($colorPrincipal, 2rem);
+    position: absolute;
+    //Top
+    inset-block-start: 2%;
+    //Right
+    inset-inline-end: 2%;
+    border-radius: 100%;
+    padding: 0.3% 1.2%;
+  }
+
+    //Carousel de imágenes para mas información de la partida
+  #imagenesPartida {
+    position: relative;
+    width: 100%;
+
+    //Indicadores del caorusel
+    .carousel-indicators button {
+      //Tamaños
+      width: 15px;
+      height: 15px;
+      //Le quitamos que lo oculte para que muestre el botón como tal
+      background-clip: unset;
+      //Lo redondeamos, le poneos todos los bordes y le quitamos el fondo
+      border-radius: 100%;
+      border: 3px solid $colorLetra;
+      background-color: $colorPrincipal;
+    }
+
+    //Botones de antes y despues del carousel
+    .carousel-control-prev-icon, .carousel-control-next-icon {
+        //Tamaño y posicionamiento
+        width: 4rem;
+        height: 4rem;
+        background-size: 70%;
+        background-position: 35%;
+        background-color: $colorPrincipal;
+        //Bordes para el botón
+        border: 5px solid $colorLetra;
+        border-radius: 100%;
+    }
+
+    //Para posicionar apropiadamente la flecha en el span
+    .carousel-control-next-icon {
+      background-position: 60%;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    img {
+      display: block;
+      margin: 1% auto;
+      //Margin bottom
+      margin-bottom: 5%;
+      width: 350px;
+      border-radius: $borderRadius;
+    }
+  }
+}
+
 // Para adaptar el formulario a las versiones portátiles
 // vamos a cambiar la disposición de algunos elementos
 

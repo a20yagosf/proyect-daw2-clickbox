@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Script con todas las funciones -->
+    <script src="../js/funcionesGenerales.js"></script>
+    <!-- Que se ejecutará en esta página -->
+    <script src="../js/masInfo.js"></script>
+</head>
+<body>
+    <div id="masInfoPartida">
+        <h1>Partida ID</h1>
+        <p>Juego</p>
+        <p>Genero</p>
+        <p>Fecha</p>
+        <p>Hora inicio</p>
+        <p>Plazas</p>
+        <p>Duración</p>
+        <div id="imagenesPartida" class="carousel slide" data-bs-ride="carousel">
+            <h2>Cajas anteriores</h2>
+            <!-- Indicadores de abajo -->
+            <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#imagenesPartida" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Caja 1"></button>
+                    <button type="button" data-bs-target="#imagenesPartida" data-bs-slide-to="1" aria-label="Caja 2"></button>
+                    <button type="button" data-bs-target="#imagenesPartida" data-bs-slide-to="2" aria-label="Caja 3"></button>
+            </div>
+            <!-- Interior carousel -->
+            <div class="carousel-inner">
+                    <!-- Tarjetas -->
+                    <div class="carousel-item active">
+                        <div class="tarjeta">
+                            <img src="../img/Recuadro.png" alt=""/>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="tarjeta">
+                            <img src="../img/Recuadro.png" alt=""/>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="tarjeta">
+                            <img src="../img/Recuadro.png" alt=""/>
+                        </div>
+                    </div>
+            </div>
+            <!-- Botones -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#imagenesPartida" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#imagenesPartida" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
+        </div>
+        <button>X</button>
+    </div>
+</body>
+</html>

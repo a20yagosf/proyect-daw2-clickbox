@@ -30,8 +30,8 @@ try {
         $datosPartida["duracion"] = intval($datosPartida["duracion"]);
         $datosPartida["juego_partida"] = intval($datosPartida["juego_partida"]);
         //Cogemos la imagen
-        $imagenPartida = $_FILES["imagenPartida"];
-        $resultado = $admin->crearPartida($datosPartida, $imagenPartida);
+        $imagenesPartida = $_FILES["imagenesPartida"];
+        $resultado = $admin->crearPartida($datosPartida, $imagenesPartida);
         if($resultado){
             $devolver = ["exito" => "Se creó la partida con éxito"];
         }
