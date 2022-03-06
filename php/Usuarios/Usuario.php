@@ -227,8 +227,8 @@ class Usuario
      * @return  void  No devuelve nada
      */
     public function cerrarSesion(){
-        session_destroy($_SESSION["usuario"]);
-        session_unset($_SESSION["usuario"]);
+        session_destroy();
+        session_unset();
     }
 
     public function cargarCambios_perfil()
@@ -304,7 +304,7 @@ class Usuario
     }
 
     /**
-     * Calcula el número de páginas que tendrá el resultado
+     * Calcula el número de tuplas que tendrá el resultado
      *
      * @param   string  $sentencia  Sentencia a ejecutar
      * @param   array  $datos      Datos a pasar
