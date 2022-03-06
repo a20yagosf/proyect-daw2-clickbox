@@ -27,8 +27,8 @@
             text-align: center;
         }
 
-        //Párrafo última modificación
-        p {
+        //Contenedor con última modificación y ultimo inicio de sesión
+        #infoTiempos {
             //Posicionamiento
             position: absolute;
             //Left
@@ -38,6 +38,11 @@
             transform: translateY(-50%);
             //Estilo
             color: $colorPrincipal;
+
+            p {
+                //Margin bottom
+                margin-block-end: 0.5%;
+            }
         }
 
         //Todos lo botones
@@ -76,7 +81,7 @@
             margin: 2%;
 
             //Contenedor de cada una de las secciones (Sin incluir el título, sólo los input, label y select)
-            div {
+            & > div {
                 height: 100%;
                 display: flex;
                 flex-wrap: wrap;
@@ -97,6 +102,10 @@
                     outline: none;
                     background-color: transparent;
                     text-align: center;
+                }
+
+                #contenedorSuscripcion {
+                    flex-basis: 100%;
                 }
         
                 input, select {

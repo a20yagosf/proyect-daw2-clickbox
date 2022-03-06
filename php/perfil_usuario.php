@@ -12,7 +12,7 @@ $bd = new bd();
 
 try {
     //Creamos una sentencia que nos devuelva los datos de un usuario del que sabemos su email
-    $sentencia = "SELECT nombre, apellidos, telefono, direccion, genero_favorito, fecha_ult_modif, rol, suscripcion, renovar FROM usuarios WHERE email = ?";
+    $sentencia = "SELECT nombre, apellidos, telefono, direccion, genero_favorito, fecha_ult_modif, fecha_ult_acceso, rol, suscripcion, renovar FROM usuarios WHERE email = ?";
     //Devolvemos lo que nos devuelve (Error o los datos del usuario)
     $resultado = $bd->recuperDatosBD($sentencia, [$contenido_js_en_php["email"]]); //le pasamos el email y la sentencia
     if (!$resultado instanceof PDOStatement) {

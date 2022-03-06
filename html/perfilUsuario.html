@@ -16,7 +16,10 @@
             <div>
                 <h2>Cuenta</h2>
                 <button type="button" id="editarCuenta">Editar perfil</button>
-                <p>Última modificación: <span id="ultModif"></span></p>
+                <div id="infoTiempos">
+                    <p>Última modificación: <span id="ultModif"></span></p>
+                    <p>Último inicio de sesión: <span id="ultInicio"></span></p>
+                </div>
             </div>
             <fieldset>
                 <h3>Datos cuenta</h3>
@@ -48,10 +51,11 @@
             <fieldset>
                 <h3>Suscripción</h3>
                 <div>
-                    <label for="suscripcion">Tipo suscripción:</label>
-                    <input readonly="readonly" type="text" name="suscripcion" id="suscripcion"/>
+                    <div id="contenedorSuscripcion">
+                        <label for="suscripcion">Tipo suscripción:</label>
+                        <input readonly="readonly" type="text" name="suscripcion" id="suscripcion"/>
+                    </div>
                     <span id="renovacion">Renovación: </span>
-                    <span>Fecha renovación</span>
                     <button type="button" id="cancelarRenovacion">Cancelar renovación</button>
                 </div>
             </fieldset>

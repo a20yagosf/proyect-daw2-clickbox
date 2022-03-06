@@ -3,7 +3,8 @@
  */
 class Fecha {
     constructor(fecha) {
-        this.fecha = this.formatearFecha(new Date(fecha));
+        this.fecha = new Date(fecha);
+        this.formatearFecha();
     }
 
     getFecha() {
@@ -14,10 +15,31 @@ class Fecha {
      * Formatea la fecha le pasan
      * @param {Date}  Fecha a formatear
      */
-    formatearFecha(fecha) {
-        let dia = fecha.getDate() < 9 ? "0" + fecha.getDate() : fecha.getDate();
-        let mes = fecha.getMonth() + 1 > 12 ?  1 :  fecha.getMonth() + 1 ;
-        return dia + "-" + (mes < 9 ? "0" + mes : mes) + "-" + fecha.getFullYear();
+    formatearFecha() {
+        let dia = this.fecha.getDate() < 9 ? "0" + this.fecha.getDate() : this.fecha.getDate();
+        let mes = this.fecha.getMonth() + 1 > 12 ?  1 :  this.fecha.getMonth() + 1 ;
+        return dia + "-" + (mes < 9 ? "0" + mes : mes) + "-" + this.fecha.getFullYear();
+    }
+
+    /**
+     * Devuelve la diferencia de fechas en Semanas, dias y horas, si es menos de una hora devuelve hoy
+     *
+     * @return  {string}  Cadena con la diferencia de la fecha con este momento
+     */
+    fechaDesdeHoyAnhos() {
+        //Constantes para pasar desde milisegundos a las otras unidades
+        const horas = 1000 * 60 * 60;
+        const dias = horas * 24;
+        const semana = dias * 7;
+        let diferenciaMiliSegundos = Math.abs(Date.now() - this.fecha.getTime());
+        let difSemana = Math.floor(diferenciaMiliSegundos/semana);
+        let tiempo = difSemana > 0 ? "Hace " + difSemana + (difSemana > 1 ? " semanas " : " semana ") : "Hace ";
+        let difDias = Math.floor(diferenciaMiliSegundos%semana/dias);
+        tiempo += difDias > 0 ? difDias + (difDias > 1 ?  " días" : " día") : "";
+        let difHoras = Math.floor((diferenciaMiliSegundos%semana)%difDias/dias);
+        tiempo += difHoras > 0 ? difHoras + (difHoras > 1 ?  " horas" : " hora") : "";
+        //Comprobamos que no quedara vacío (que haga menos  de 1 hora)
+        return tiempo == "Hace " ? "Hoy" : tiempo;
     }
 }
 
@@ -728,10 +750,11 @@ function editarPerfil() {
     //Compruebo si está ya editando o no
     if(botonEditar.textContent == "Editar perfil") {
         //Buscamos todos los input con readonly y le quito este atributo
-        let inputsFormulario = document.querySelectorAll("input[readonly]");
+        let inputsFormulario = document.querySelectorAll("input[readonly]:not(input[id='suscripcion'])");
         inputsFormulario.forEach(input => input.removeAttribute("readonly"));
         //Le quitamos también el disabled al select
-        document.querySelector("select[disabled]").removeAttribute("disabled");
+        let select = document.querySelector("select[disabled='disabled']");
+        select.removeAttribute("disabled");
         //Pone como visible el input para guardar los cambios
         document.querySelector("input[type='submit']").style.display = "block";
         //Cambiamos el texto de Editar perfil a cancelar
@@ -1028,82 +1051,77 @@ async function desconectarPerfil(e) {
  */
 async function cargarDatosPerfil() {
     try{
-    // email está almacenado en sessionStorage
-    const respuesta = await fetch("../php/perfil_usuario.php",{
-        method: "POST", 
-        headers: {"Content-type": "application/json;charset=UTF-8"},
-        body: JSON.stringify({
-            "email":sessionStorage.getItem("email") 
-        })
-    }); // Esto va a devolver un promise
-    
-    const respuesta_json = await respuesta.json(); // Coge la respuesta y la convierte a objeto de js
-    
-    /** Con este objeto en js vamos a modificar el DOM
-     * Añadiendo cuando sea necesario los atributos necesarios 
-     * para su correcta selección 
-    **/ 
-    // Modificamos la variable nombre y le quitamos el atributo readonly
-    document.getElementById("nombre").removeAttribute("readonly");
-    // Recuperamos el nombre
-    document.getElementById("nombre").value = respuesta_json['nombre'];
+        // email está almacenado en sessionStorage
+        const respuesta = await fetch("../php/perfil_usuario.php",{
+            method: "POST", 
+            headers: {"Content-type": "application/json;charset=UTF-8"},
+            body: JSON.stringify({
+                "email":sessionStorage.getItem("email") 
+            })
+        }); // Esto va a devolver un promise
+        
+        const respuesta_json = await respuesta.json(); // Coge la respuesta y la convierte a objeto de js
+        
+        /** Con este objeto en js vamos a modificar el DOM
+         * Añadiendo cuando sea necesario los atributos necesarios 
+         * para su correcta selección 
+        **/ 
+        // Recuperamos el nombre
+        document.getElementById("nombre").value = respuesta_json['nombre'];
 
-    // Modificamos la variable genero y le quitamos el atributo readonly
-    document.getElementById("genero_favorito").removeAttribute("disabled");
-    // Ahora tenemos que seleccionar (con el atributo selected) la option que nos pasa el objeto
-    document.querySelector(`option[value="${respuesta_json['genero_favorito']}"]`).setAttribute("selected","selected");
-    
-    // Modificamos la variable apellidos y le quitamos el atributo readonly
-    document.getElementById("apellidos").removeAttribute("readonly");
-    // Recuperamos los apellidos
-    document.getElementById("apellidos").value = respuesta_json['apellidos'];
+        // Ahora tenemos que seleccionar (con el atributo selected) la option que nos pasa el objeto
+        //Comprobamos que no estea vacío
+        if(respuesta_json['genero_favorito'] != ""){
+            let optionSeleccionado = document.querySelector(`option[value="${respuesta_json['genero_favorito']}"]`);
+            optionSeleccionado.setAttribute("selected","selected");
+            optionSeleccionado.parentElement.setAttribute("disabled", "disabled");
+        }
+        // Recuperamos los apellidos
+        document.getElementById("apellidos").value = respuesta_json['apellidos'];
 
-    // Modificamos la variable telefono y le quitamos el atributo readonly
-    document.getElementById("telefono").removeAttribute("readonly");
-    // Recuperamos el telefono
-    document.getElementById("telefono").value = respuesta_json['telefono'];
+        // Recuperamos el telefono
+        document.getElementById("telefono").value = respuesta_json['telefono'];
 
+        // Recuperamos la direccion
+        document.getElementById("direccion").value = respuesta_json['direccion'];
 
-    // Modificamos la variable direccion y le quitamos el atributo readonly
-    document.getElementById("direccion").removeAttribute("readonly");
-    // Recuperamos la direccion
-    document.getElementById("direccion").value = respuesta_json['direccion'];
+        //Formateamos la ultima modificacion y el ultimo inicio
+        let ultMod = new Fecha(respuesta_json['fecha_ult_modif']).fechaDesdeHoyAnhos();
+        let ultIni = new Fecha(respuesta_json['fecha_ult_acceso']).fechaDesdeHoyAnhos();
+        // Modificamos el campo ult_modif y recuperamos la fecha_ult_modif del json enviado por php
+        document.getElementById("ultModif").innerHTML = ultMod;
+        document.getElementById("ultInicio").innerHTML = ultIni;
 
-    // Modificamos el campo ult_modif y recuperamos la fecha_ult_modif del json enviado por php
-    document.getElementById("ultModif").innerHTML = respuesta_json['fecha_ult_modif'];
+        // Modificamos el campo rol y recuperamos el valor rol del json enviado por php
+        if (respuesta_json['rol']==1) {
+            document.getElementById("rol").value = "Administrador";
+        }else if(respuesta_json['rol']==2){
+            document.getElementById("rol").value = "Usuario";
+        }
+        
+        // suscripcion y renovar pueden devolver null, así que: [cuando valor = null en php pasa a json y lo decodeamos OBTENEMOS ]
+        if(!respuesta_json['suscripcion'] == null){
+            document.getElementById("suscripcion").value = respuesta_json['suscripcion'];
+        }
+        else{
+            document.getElementById("suscripcion").value = "Sin suscripción";
+        }
 
-    // Modificamos el campo rol y recuperamos el valor rol del json enviado por php
-    if (respuesta_json['rol']==1) {
-        document.getElementById("rol").value = "Administrador";
-    }else if(respuesta_json['rol']==2){
-        document.getElementById("rol").value = "Usuario";
+        if(!respuesta_json['renovar'] == null){
+            let fechaRenovar = new Fecha(respuesta_json['renovar']).getFecha();
+            document.getElementById("renovacion").innerHTML += fechaRenovar;
+        }
+
+        // Modificamos el campo email recuperando del localStorage su valor
+        document.getElementById("email").value = sessionStorage.getItem("email"); 
+
+        //LE asignamos el escuchador al boton
+        let botonSubmit = document.querySelector("form").lastElementChild;
+        botonSubmit.addEventListener("click");
     }
-     
-    // suscripcion y renovar pueden devolver null, así que: [cuando valor = null en php pasa a json y lo decodeamos OBTENEMOS ]
-    if(!respuesta_json['suscripcion'] == null){
-        document.getElementById("suscripcion").value = respuesta_json['suscripcion'];
+    catch(error){
+        console.log(error); // Mensaje para mostrar el error   
     }
-    else{
-        document.getElementById("suscripcion").value = "Sin suscripción";
-    }
-
-    if(!respuesta_json['renovar'] == null){
-        document.getElementById("renovacion").innerHTML += respuesta_json['renovar'];
-    }
-    else{
-        document.getElementById("renovacion").innerHTML += "Sin suscripción";
-    }
-
-    // Modificamos el campo email recuperando del localStorage su valor
-    document.getElementById("email").value = sessionStorage.getItem("email");
-
-
-    
-    
-}
-catch(error){
-    console.log(error); // Mensaje para mostrar el error   
-}
 }
 
 async function cargarSuscripciones() {
