@@ -96,10 +96,13 @@
                     margin: auto;
                     //Margin bottom
                     margin-block-end: 2%;
+                    overflow: hidden;
+                    border: 1px solid $colorPrincipal;
 
                     img {
                         @include contenedor(100%, 100%, transparent);
                         position: absolute;
+                        border-radius: $borderRadius;
                         //Top
                         inset-block-start: 50%;
                         //Left

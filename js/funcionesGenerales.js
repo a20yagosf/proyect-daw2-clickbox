@@ -1115,7 +1115,7 @@ async function cargarDatosPerfil() {
 
         // Ahora tenemos que seleccionar (con el atributo selected) la option que nos pasa el objeto
         //Comprobamos que no estea vacío
-        if(respuesta_json['genero_favorito'] != ""){
+        if(respuesta_json['genero_favorito'] != undefined){
             let optionSeleccionado = document.querySelector(`option[value="${respuesta_json['genero_favorito']}"]`);
             optionSeleccionado.setAttribute("selected","selected");
             optionSeleccionado.parentElement.setAttribute("disabled", "disabled");
