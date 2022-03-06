@@ -16,15 +16,15 @@
         <div>
           <a href="#">Opciones de creación</a>
           <ul id="opcionesPanelAdmin">
-            <li><a href="#">Cajas sorpresa</a></li>
-            <li><a href="#" class="listaActivo">Partidas</a></li>
-            <li><a href="#">Productos</a></li>
-            <li><a href="#">Usuarios</a></li>
+            <li id="pestCaja"><a href="#">Cajas sorpresa</a></li>
+            <li id="pestPartidas"><a href="#" class="listaActivo">Partidas</a></li>
+            <li id="pestProductos"><a href="#">Productos</a></li>
+            <li id="pestUsuarios"><a href="#">Usuarios</a></li>
           </ul>
         </div>
         <!-- Comentar esto porque se carga todo desde JS-->
 
-        <!-- <form id="formPanelAdmin">
+        <!--<form id="formPanelAdmin">
                 <h2>Cajas sorpresa</h2>
                 <label for="fecha">Fecha lanzamiento:</label>
                 <input type="date" name="fecha" id="fecha"/>
@@ -44,127 +44,7 @@
                 </select>
                 <input type="submit" value="Crear caja"/>
                 <button type="button">Cancelar</button>
-            </form> -->
-        <div id="formPanelAdmin">
-          <div id="contenedorElementos">
-            <table id="filtroUsuarios">
-              <thead>
-                <h2>Filtro de usuarios</h2>
-                <tr>
-                  <th>Email del usuario</th>
-                  <th>Rol</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><input type="text" name="email" id="filtro-email" placeholder="Buscar por..."/></td>
-                  <td>
-                    <select name="rol" id="filtro-rol">
-                      <option value="estandar">Estándar</option>
-                      <option value="admin">Administrador</option>
-                    </select>
-                  </td>
-                  <td>
-                    <button onclick="filtrarUsuarios()">Filtrar</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
-            <table id="listaElementos">
-              <thead>
-                <h2>Usuarios y roles</h2>
-                <tr>
-                  <th>Email</th>
-                  <th>Rol</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>cambio@gmail.com</td>
-                  <td>
-                    <select name="nuevo_rol" id="cambio@gmail.com">
-                      <option value="1">Administrador</option>
-                      <option value="2" selected>Estándar</option>
-                    </select>
-                  </td>
-                  <td><button id="eventoprueba">Guardar</button></td> <!-- Al generar por js debería ser un addEventListener()-->
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!--<div id="contenedorElementos">
-                <form id="filtradoPartida" action="">
-                    <label for="fechaCaja">Fecha</label>
-                    <input type="date" name="fechaCaja" id="fechaCaja"/>
-                    <label for="min_jug">Mínimo de jugadores</label>
-                    <input type="number" name="num_jug" id="minjug"/>
-                    <label for="max_jug">Máximo de jugadores</label>
-                    <input type="number" name="num_jug" id="max_jug"/>
-                    <label for="genero">Género</label>
-                    <select name="genero" id="genero">
-                        <option value="">No seleccionado</option>
-                    </select>
-                    <label for="tematica">Temática</label>
-                    <select name="tematica" id="tematica">
-                        <option value="">No seleccionado</option>
-                    </select>
-                </form>
-                <button>Crear cajas sorpresa</button>
-                <table id="listaElementos">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Fecha</th>
-                            <th>Nº jugadores</th>
-                            <th>Género</th>
-                            <th>Temática</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>ID</td>
-                            <td>Fecha</td>
-                            <td>Número de jugadores</td>
-                            <td>Género</td>
-                            <td>Temática</td>
-                            <td><button>Editar</button></td>
-                            <td><button>Eliminar</button></td>
-                        </tr>
-                        <tr>
-                            <td>ID</td>
-                            <td>Fecha</td>
-                            <td>Número de jugadores</td>
-                            <td>Género</td>
-                            <td>Temática</td>
-                            <td><button>Editar</button></td>
-                            <td><button>Eliminar</button></td>
-                        </tr>
-                    </tbody>
-                </table> 
-                <form action="" id="formPanelAdmin">
-                    <label for="juego_partida">Juego</label>
-                    <select name="juego" id="juego"></select>
-                    <label for="fecha">Fecha</label>
-                    <input type="date" name="fecha" id="fecha"/>
-                    <label for="hora_inicio">Hora de inicio</label>
-                    <input type="time" name="hora_inicio" id="hora_inicio"/>
-                    <label for="duracion">Duración (min)</label>
-                    <input type="number" name="duracion" id="duracion" min="30" max="180"/>
-                    <label for="plazas_min">Plazas mínimas</label>
-                    <input type="number" name="plazas_min" id="plazas_min" min="2" max="4"/>
-                    <label for="plazas_totales">Plazas totales</label>
-                    <input type="number" name="plazas_totales" id="plazas_totales" min="3" max="8"/>
-                    <label for="imagen_partida">Image de la partida</label>
-                    <input type="file" name="imagen_partida" id="imagen_partida"/>
-                    <p id="resultadoOperacion"></p>
-                    <input type="submit" value="Crear partida"/>
-                    <button type="button">Cancelar</button>
-                </form>
-        </div> -->
+            </form>-->
       </div>
     </main>
   </body>

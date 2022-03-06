@@ -19,8 +19,67 @@ class Administrador extends user{
     public function CargarCambiosPerfilTodos(){
         
     }
-    public function CambiarRol($usuario, $rolActual){
-        
+
+    /**
+     * Cambia el rol del usuario
+     *
+     * @param   string  $usuario    Email del usuario
+     * @param   int  $rolActual  Rol actual
+     *
+     * @return  mixed            String con el error o 0
+     */
+    public function cambiarRol($usuario, $rolActual){
+        //Instanciamos BD
+        $bd = new bd();
+        //Creamos una sentencia que cambie el rol del usuario elegido por el rol seleccionado
+        $sentencia = "UPDATE usuarios SET rol = :rol WHERE email = :email";
+        $datosUsuario["rol"] = intval($rolActual);
+        $datosUsuario["email"] = $usuario;
+        // Ahora intentamos hacer el cambio
+        $resultado = $bd->agregarModificarDatosBDNum($sentencia, $datosUsuario);
+        return $resultado;
+    }
+
+    /**
+     * Carga los usuairos y las páginas que necesitará mostrar
+     *
+     * @param   array  $filtroUsuario  Array asociativo con los datos a filtrar , como mínimo tendrá página y filtro
+     *
+     * @return  array                  Array con los datos conseguidos
+     */
+    public function cargarUsuarios($filtroUsuario) {
+        //Instanciamos bd
+        $bd = new bd();
+        //Creamos la sentencia
+        $sentenciaNumPag = "SELECT COUNT(email) as num_pag FROM usuarios";
+        $sentencia = "SELECT email, rol FROM usuarios";
+        $datosFiltrado = [];
+        //Comprobamos los filtros que puede tener
+        if(isset($filtroUsuario["email"])){
+            $sentenciaNumPag .= " WHERE email LIKE :email";
+            $sentencia .= " WHERE email LIKE :email";
+            $datosFiltrado["email"] = "%" . $filtroUsuario["email"] . "%";
+        }
+        if(!empty($filtroUsuario["rol"])) {
+            $sentenciaNumPag .= isset(($filtroUsuario["email"])) ? " AND rol = :rol" : " WHERE rol = :rol";
+            $sentencia .= isset(($filtroUsuario["email"])) ? " AND rol = :rol" : " WHERE rol = :rol";
+            $datosFiltrado["rol"] = intval($filtroUsuario["rol"]);
+        }
+        //Calculamos el número de la página
+        $numPag = $this->calcularNumPag($sentenciaNumPag, $datosFiltrado, 7);
+        //LE ponemos el limite
+        $sentencia .= " LIMIT :pagina, :limite";
+        $datosFiltrado["pagina"] = intval($filtroUsuario["pagina"]);
+        $datosFiltrado["limite"] = intval($filtroUsuario["limite"]);
+        //Calculamos los usuarios
+        $pdoStatement = $bd->recuperarDatosBDNum($sentencia, $datosFiltrado);
+        //Comprobamos que no diera error
+        if(!$pdoStatement instanceof \PDOStatement){
+            throw new \PDOException($pdoStatement);
+        }
+        //Cogemos todos los datos porque tiene le límite (sólo devolvera limite tuplas)
+        $datosUsuarios = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
+        return ["numPag" => $numPag, "datosUsuarios" => $datosUsuarios];
     }
 
     // PRODUCTOS
@@ -351,7 +410,7 @@ class Administrador extends user{
                 $datosFiltrado["fechaIni"] = $fechas[0];
             }
             //Calculamos el número de páginas
-            $numPag = $this->calcularNumPag($sentenciaNumPag, $datosFiltrado);
+            $numPag = $this->calcularNumPag($sentenciaNumPag, $datosFiltrado,  intval($datosPartida["limite"]));
             //Añadimos el límite para la sentencia que recupera los datos
             $sentencia .= " LIMIT :pagina, :limite ;";
             //Convertimos los elementos a int ya que como viene de  JS viene como cadena
@@ -366,9 +425,6 @@ class Administrador extends user{
             }
             //Cogemos los valores con fetchAll ya que los tenemos limitados, como mucho devuelve 7 tuplas
             $tuplas = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
-            if(!is_nan(intval($numPag))){
-                $numPag = floor($numPag / $datosFiltrado["limite"]);
-            }
             $respuesta = ["numPag" => $numPag, "reservas" => $tuplas];
         }
         catch(\PDOException $pdoError) {
@@ -422,7 +478,7 @@ class Administrador extends user{
                 $datosFiltrado["fechaIni"] = $fechas[0];
             }
             //Calculamos el número de páginas
-            $numPag = $this->calcularNumPag($sentenciaNumPag, $datosFiltrado);
+            $numPag = $this->calcularNumPag($sentenciaNumPag, $datosFiltrado,  intval($datosPartida["limite"]));
             //Añadimos el límite para la sentencia que recupera los datos
             $sentencia .= " LIMIT :pagina, :limite ;";
             //Convertimos los elementos a int ya que como viene de  JS viene como cadena
@@ -437,9 +493,6 @@ class Administrador extends user{
             }
             //Cogemos los valores con fetchAll ya que los tenemos limitados, como mucho devuelve 7 tuplas
             $tuplas = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
-            if(!is_nan(intval($numPag))){
-                $numPag = floor($numPag / $datosFiltrado["limite"]);
-            }
             $respuesta = ["numPag" => $numPag, "partidas" => $tuplas];
         }
         catch(\PDOException $pdoError) {

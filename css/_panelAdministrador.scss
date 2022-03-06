@@ -164,12 +164,42 @@
     #contenedorElementos {
         @include contenedor(90%, auto, $colorLetra);
         margin: auto;
+        //Margin bottom
+        margin-block-end: 6%;
         padding: 2%;
         //Estilo
         font-size: 1.2em;
         border-radius: 0px 0px $borderRadius $borderRadius;
         border: 1px solid $colorPrincipal;
         position: relative;
+
+         //Div de los botones
+        & > div {
+            //Margin top
+            margin-block-end: 1%;
+            //Flex como padre
+            display: flex;
+            justify-content: center;
+
+            button {
+                margin: 0;
+                padding: 1%;
+            }
+
+            //Le ponemos a los botones el radio para que parezcan uno sólo
+            button:first-of-type {
+                border-radius: $borderRadius 0px 0px $borderRadius;
+            }
+
+            button:nth-of-type(2){
+                border-radius: 0px $borderRadius $borderRadius 0px;
+            }
+
+            //Clase para poner un fondo gris al elemento y un poco de sombra para que se diferencia bin
+            .noActivo {
+                @include botonNoActivo();
+            }
+        }
 
 
         form {

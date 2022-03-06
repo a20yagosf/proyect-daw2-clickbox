@@ -92,6 +92,11 @@ class Email {
                 $cuerpoCorreo = $this->crearCorreoSuscripción($datos);
                 $asunto = "Suscripción a ClickBox";
                 break;
+
+            case "nuevaReserva":
+                $datos["fecha"] = date_format(new DateTime($datos["fecha"]), "d-m-Y");
+                $cuerpoCorreo = $this->crearCorreoNuevaReserva($datos);
+                $asunto = "Nuevas reservas para procesar para la partida del día " . $datos["fecha"];
                 
         }
         return $this->enviarCorreoMultiple($correos, $cuerpoCorreo, $asunto);
@@ -221,6 +226,28 @@ class Email {
         //Cerramos todo
         $mensaje .= '</div></body></html>';
         return $mensaje;
+    }
+
+    private function crearCorreoNuevaReserva($datospartida) {
+         //Cabecera
+         $mensaje = '<!DOCTYPE html><html lang="es"><head><meta charset=UTF-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Clickbox</title></head>';
+         //Div contenedor de todo con sus estilos
+         $mensaje .= '<body style="background-size: cover; margin: 0px;">';
+         //Div que conteien toda la información y el div que conteien el logo, titulo y texto
+         $mensaje .= '<div style="box-sizing: border-box; background-color: white; width: 50%; padding: 3%; position: relative; inset-inline-start: 50%; transform: translate(-50%); border-inline-start: 2px solid #026a79; border-inline-end: 2px solid #026a79;"><div  style="margin-block-end: 5%;">';
+         //Logo
+         $mensaje .= '<img src="cid:logo" alt="Logo ClickBox" style="width: 300px; display: block; margin: auto;"/>';
+         //Titulo
+         $mensaje .= '<h1 style="font-family: PoetsenOne; text-align: center; margin-block-end: 4%; color: #026a79; flex-basis: 100%;"> Nueva reserva para procesar para la partida del día ' . $datospartida["fecha"] . '</h1>';
+         //Mensaje
+         $mensaje .= ' <p style="font-family: Resolve; text-align: justify flex-basis: 100%;">Tienes nuevas reservas para procesar para la partida del cual eres director</p>';
+         //Enlace a la página
+         $mensaje .= '<a href="http://clickbox.a2.daw2d.iesteis.gal/" style="display:block; width: max-content; padding: 1.5%; text-decoration: none; margin: auto; background-color: #026a79; color: white; border-radius: 10px; margin-block-end: 2%;">Desactivar suscripción</a></div>';
+         //Texto información sobre correo autogenerado
+         $mensaje .= '<p style="text-align: justify;">Este mensaje ha sido enviada desde una cuenta de sólo envío. Por favor no responda a este mensaje. Si tiene alguna duda o pregunta correspondiente a esta reserva póngase en contacto con nosotros <a href="clickbox.a2.daw2d.iesteis.gal">aquí</a></p>';
+         //Cerramos todo
+         $mensaje .= '</div></body></html>';
+         return $mensaje;
     }
 
     /**

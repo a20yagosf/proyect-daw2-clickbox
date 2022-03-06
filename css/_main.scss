@@ -9,6 +9,8 @@
 }
 
 body {
+    overflow-x: hidden;
+    
     .monocromatico {
         filter: grayscale(1);
     }
@@ -747,21 +749,6 @@ main {
 }
 
 //Botones de accesibilidad
-#botonAccesiblidad {
-    @include boton($colorPrincipal, 1em);
-    padding: 2%;
-    background-image: url("../img/iconos/accesibilidad.svg");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: 50%;
-    position: fixed;
-    //Right
-    inset-inline-end: 1%;
-    //Top
-    inset-block-start: 50%;
-    z-index: 6;
-}
-
 #botonAccesiblidad + div {
     width: max-content;
     padding: 1%;
@@ -829,5 +816,45 @@ main {
         background-color: white;
         transition: all 0.4s ease-in-out;
         border-radius: $borderRadius;
+    }
+}
+
+//Boton accesibilidad
+#botonAccesiblidad {
+    @include boton($colorPrincipal, 1em);
+    padding: 2%;
+    background-image: url("../img/iconos/accesibilidad.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    position: fixed;
+    //Right
+    inset-inline-end: 1%;
+    //Top
+    inset-block-start: 50%;
+    z-index: 6;
+
+    //Adaptación para móviles mediante aspect ratio
+    @media screen and (max-aspect-ratio:  195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+        //Boton accesibilidad
+        & {
+            padding: 7%;
+        }
+
+        & + div {
+            //Left
+            inset-inline-end: 15%;
+        }
+    }
+    //Adaptación para tablets mediante aspect ratio
+    @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px), (aspect-ratio: 1/1)  {
+        & {
+            padding: 4%;
+        }
+
+        & + div {
+            //Right
+            inset-inline-end: 9%;
+        }
     }
 }

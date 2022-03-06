@@ -332,7 +332,9 @@ CREATE TABLE IF NOT EXISTS usuarios_partidas (
 -- ---------------------------------------------------
 DROP TABLE IF EXISTS historico_usuarios;
 CREATE TABLE IF NOT EXISTS historico_usuarios (
+	fecha DATE NOT NULL,
 	email VARCHAR(150) NOT NULL,
+	rol INT UNSIGNED NOT NULL,
 	-- LA CONSTRASEÑA COMO TAL NO LA GUARDAMOS PORQUE ESTÁ CIFRADA Y NO APORTA NADA LAS CONTRASEÑAS ANTIGUAS
 	-- PWD VARCHAR(255) NOT NULL,
     nombre VARCHAR(25) NOT NULL,
@@ -367,6 +369,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.carritos TO 'a2da_estandar
 GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.productos_carritos TO 'a2da_estandar'@'localhost';
 GRANT SELECT, INSERT, DELETE ON a2da_clickbox.usuarios_partidas TO 'a2da_estandar'@'localhost';
 GRANT SELECT ON a2da_clickbox.partidas_imagenes TO 'a2da_estandar'@'localhost';
+GRANT SELECT ON a2da_clickbox.historico_usuarios TO 'a2da_estandar'@'localhost';
 -- USUARIO ADMINISTRADOR
 GRANT SELECT, UPDATE ON a2da_clickbox.usuarios TO 'a2da_admin'@'localhost' IDENTIFIED BY 'abc123.';
 GRANT SELECT, INSERT ON a2da_clickbox.pedidos TO 'a2da_admin'@'localhost';
@@ -379,13 +382,13 @@ GRANT SELECT, INSERT, UPDATE ON a2da_clickbox.usuarios_partidas TO 'a2da_admin'@
 GRANT SELECT, INSERT, UPDATE ON a2da_clickbox.productos TO 'a2da_admin'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.partidas TO 'a2da_admin'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.usuarios_partidas TO 'a2da_admin'@'localhost';
-GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.partidas_generos TO 'a2da_admin'@'localhost';
 GRANT SELECT ON a2da_clickbox.juegos TO 'a2da_admin'@'localhost';
 GRANT SELECT ON a2da_clickbox.accesorios TO 'a2da_admin'@'localhost';
 GRANT SELECT ON a2da_clickbox.roles TO 'a2da_admin'@'localhost';
 GRANT SELECT, INSERT ON a2da_clickbox.tematicas TO 'a2da_admin'@'localhost';
 GRANT SELECT, INSERT ON a2da_clickbox.generos TO 'a2da_admin'@'localhost';
 GRANT SELECT, INSERT ON a2da_clickbox.partidas_imagenes TO 'a2da_admin'@'localhost';
+GRANT SELECT ON a2da_clickbox.historico_usuarios TO 'a2da_admin'@'localhost';
 
 -- DISPARADORES
 DELIMITER $$
@@ -421,10 +424,22 @@ FOR EACH ROW
 		IF OLD.fecha_ult_acceso = NEW.fecha_ult_acceso
 			-- SI LA MODIFICACIÓN FUE DE OTRO ELEMENTO ENTONCES ANTES DE QUE ACTUALICE VOLCAMOS LOS DATOS EN LA TABLA DEL HISTORICO DE USUARIO
 			THEN  INSERT INTO historico_usuarios
-						(email, nombre, apellidos, telefono, direccion, genero_favorito, fecha_ult_modif, suscripcion, renovar)
+						(email, rol, nombre, apellidos, telefono, direccion, genero_favorito, fecha_ult_modif, suscripcion, renovar)
 						VALUES
-						(old.email, old.nombre, old.apellidos, old.telefono, old.direccion, old.genero_favorito, old.fecha_ult_modif, old.suscripcion, old.renovar);
+						(new.email, new.rol, new.nombre, new.apellidos, new.telefono, new.direccion, new.genero_favorito, new.fecha_ult_modif, new.suscripcion, new.renovar);
 		END IF;
+	END$$
+
+-- DISPARADOR QUE AÑADE UNA FILA AL HISTORICO CON LOS DATOS ANTIGUOS CUANDO TE REGISTRAS
+DROP TRIGGER IF EXISTS historico_usuarios_insert$$
+CREATE TRIGGER IF NOT EXISTS historico_usuarios_insert BEFORE INSERT ON usuarios
+FOR EACH ROW
+	BEGIN
+			-- SI LA MODIFICACIÓN FUE DE OTRO ELEMENTO ENTONCES ANTES DE QUE ACTUALICE VOLCAMOS LOS DATOS EN LA TABLA DEL HISTORICO DE USUARIO
+			INSERT INTO historico_usuarios
+				(email, rol, nombre, apellidos, telefono, direccion, genero_favorito, fecha_ult_modif, suscripcion, renovar)
+					VALUES
+				(new.email, new.rol, new.nombre, new.apellidos, new.telefono, new.direccion, new.genero_favorito, new.fecha_ult_modif, new.suscripcion, new.renovar);
 	END$$
 	
 -- PROCEDIMIENTOS

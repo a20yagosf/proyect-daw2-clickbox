@@ -277,6 +277,9 @@ nav button:last-of-type:hover {
   font-family: "Resolve";
 }
 
+body {
+  overflow-x: hidden;
+}
 body .monocromatico {
   filter: grayscale(1);
 }
@@ -903,30 +906,6 @@ main {
   background-color: #03bdd7;
 }
 
-#botonAccesiblidad {
-  display: block;
-  background-color: #0291A5;
-  border: none;
-  padding: 2% 3%;
-  font-size: 1em;
-  border-radius: 10px;
-  color: white;
-  cursor: pointer;
-  transition: all 0.5s linear;
-  padding: 2%;
-  background-image: url("../img/iconos/accesibilidad.svg");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: 50%;
-  position: fixed;
-  inset-inline-end: 1%;
-  inset-block-start: 50%;
-  z-index: 6;
-}
-#botonAccesiblidad:hover {
-  background-color: #03bdd7;
-}
-
 #botonAccesiblidad + div {
   width: -webkit-max-content;
   width: -moz-max-content;
@@ -987,6 +966,46 @@ main {
   background-color: white;
   transition: all 0.4s ease-in-out;
   border-radius: 10px;
+}
+
+#botonAccesiblidad {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1em;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  padding: 2%;
+  background-image: url("../img/iconos/accesibilidad.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: 50%;
+  position: fixed;
+  inset-inline-end: 1%;
+  inset-block-start: 50%;
+  z-index: 6;
+}
+#botonAccesiblidad:hover {
+  background-color: #03bdd7;
+}
+@media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+  #botonAccesiblidad {
+    padding: 7%;
+  }
+  #botonAccesiblidad + div {
+    inset-inline-end: 15%;
+  }
+}
+@media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px), (aspect-ratio: 1/1) {
+  #botonAccesiblidad {
+    padding: 4%;
+  }
+  #botonAccesiblidad + div {
+    inset-inline-end: 9%;
+  }
 }
 
 #info_partidas, #filtro, #result_panel, .pagination {
@@ -1934,11 +1953,13 @@ form#formulario_tienda div.center_submit button {
 #perfilUsuario form button:hover {
   background-color: #03bdd7;
 }
-#perfilUsuario form #editarCuenta {
+#perfilUsuario form #botones {
   position: absolute;
   inset-inline-end: 2%;
   inset-block-start: 10%;
-  flex-basis: 20%;
+  width: 20%;
+  display: flex;
+  justify-content: space-between;
 }
 #perfilUsuario form h3 {
   width: 100%;
@@ -2063,6 +2084,94 @@ h2, h3 {
   color: #026a79;
 }
 
+#contenedorHistorial {
+  width: 80%;
+  height: auto;
+  background-color: white;
+  padding: 2%;
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+  font-size: 1.1em;
+}
+#contenedorHistorial form {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  align-items: center;
+}
+#contenedorHistorial form button {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.2em;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  padding: 0.5% 1%;
+}
+#contenedorHistorial form button:hover {
+  background-color: #03bdd7;
+}
+#contenedorHistorial #listaElementos {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  text-align: center;
+  margin: 3% 0%;
+}
+#contenedorHistorial thead {
+  -webkit-border-after: 1px solid #0291A5;
+          border-block-end: 1px solid #0291A5;
+}
+#contenedorHistorial thead th {
+  color: #0291A5;
+  -webkit-padding-after: 1%;
+          padding-block-end: 1%;
+}
+#contenedorHistorial thead th button {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.3rem;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  padding: 0.5%;
+  margin: auto;
+}
+#contenedorHistorial thead th button:hover {
+  background-color: #03bdd7;
+}
+#contenedorHistorial tbody td {
+  padding: 0.3% 0%;
+}
+#contenedorHistorial tbody tr:not(tr:last-of-type) {
+  -webkit-border-after: 1px solid silver;
+          border-block-end: 1px solid silver;
+}
+#contenedorHistorial tbody button {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1em;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  margin: auto;
+}
+#contenedorHistorial tbody button:hover {
+  background-color: #03bdd7;
+}
+
 @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
   #perfilUsuario {
     padding: 2% 0%;
@@ -2082,9 +2191,10 @@ h2, h3 {
   #perfilUsuario form p {
     inset-block-start: 70%;
   }
-  #perfilUsuario form #editarCuenta {
+  #perfilUsuario form #botones {
     inset-block-start: 10%;
     transform: none;
+    width: 65%;
   }
   #perfilUsuario form #infoTiempos {
     position: relative;
@@ -2105,7 +2215,7 @@ h2, h3 {
     padding: 2%;
     margin: 1%;
   }
-  #perfilUsuario form fieldset div #fotoPerfil {
+  #perfilUsuario form fieldset div #contenedorPerfil {
     flex-basis: 80%;
     height: 30vh;
   }
@@ -2131,7 +2241,7 @@ h2, h3 {
     -webkit-padding-after: 20%;
             padding-block-end: 20%;
   }
-  #perfilUsuario form fieldset div #fotoPerfil {
+  #perfilUsuario form fieldset div #contenedorPerfil {
     height: 25vh;
   }
 }
@@ -2148,9 +2258,10 @@ h2, h3 {
   #perfilUsuario form p {
     inset-block-start: 70%;
   }
-  #perfilUsuario form #editarCuenta {
+  #perfilUsuario form #botones {
     inset-block-start: 10%;
     transform: none;
+    width: 35%;
   }
   #perfilUsuario form fieldset div {
     height: 93%;
@@ -2168,7 +2279,7 @@ h2, h3 {
   #perfilUsuario form fieldset div span {
     flex-basis: 33.3333333333%;
   }
-  #perfilUsuario form fieldset div #fotoPerfil {
+  #perfilUsuario form fieldset div #contenedorPerfil {
     flex-basis: 100%;
   }
 }
@@ -2354,11 +2465,37 @@ h2, h3 {
   height: auto;
   background-color: #F3F3F3;
   margin: auto;
+  -webkit-margin-after: 6%;
+          margin-block-end: 6%;
   padding: 2%;
   font-size: 1.2em;
   border-radius: 0px 0px 10px 10px;
   border: 1px solid #0291A5;
   position: relative;
+}
+#panelAdmin #contenedorElementos > div {
+  -webkit-margin-after: 1%;
+          margin-block-end: 1%;
+  display: flex;
+  justify-content: center;
+}
+#panelAdmin #contenedorElementos > div button {
+  margin: 0;
+  padding: 1%;
+}
+#panelAdmin #contenedorElementos > div button:first-of-type {
+  border-radius: 10px 0px 0px 10px;
+}
+#panelAdmin #contenedorElementos > div button:nth-of-type(2) {
+  border-radius: 0px 10px 10px 0px;
+}
+#panelAdmin #contenedorElementos > div .noActivo {
+  background-color: #bfbfbf;
+  box-shadow: inset 0px 0px 10px 0px rgba(0, 0, 0, 0.438);
+  transition: all 0.5s ease-in-out;
+}
+#panelAdmin #contenedorElementos > div .noActivo:hover {
+  background-color: #8c8c8c;
 }
 #panelAdmin #contenedorElementos form {
   -webkit-margin-after: 3%;

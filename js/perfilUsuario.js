@@ -10,6 +10,7 @@ window.onload = function () {
     //Añadimos el escuchador al botón de editar perfil
     document.getElementById("editarCuenta").addEventListener("click", editarPerfil);
     document.getElementById("cancelarRenovacion").addEventListener("click", cancelarRenovacionSusc);
+    document.getElementById("historial").addEventListener("click", mostrarHistorial);
     //Creamos el mapa
     crearMapa();
     crearBotonAccesibilidad();

@@ -18,9 +18,14 @@ window.onload = function () {
     //Cargamos los usuarios
     //cargarUsuariosAdmin(); //todavía no implementado
     // una pequeña prueba para usar currentTarget
-    document.getElementById("eventoprueba").addEventListener("click", recogerDatos);
+    //document.getElementById("eventoprueba").addEventListener("click", recogerDatos);
    //cargarPartidasAdmin();
     //Creamos el mapa
     crearMapa();
+    //Cargamos el modo para usuarios
+    cargarModoUsuariosAdmin();
     crearBotonAccesibilidad();
+    //Añadimos los escuchadores
+    document.getElementById("pestPartidas").addEventListener("click", cargarPartidasAdmin);
+    document.getElementById("pestUsuarios").addEventListener("click", cargarModoUsuariosAdmin);
 };

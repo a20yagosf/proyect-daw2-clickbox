@@ -54,14 +54,15 @@
         }
 
         //Botón para editar el perfil
-        #editarCuenta {
+        #botones {
             position: absolute;
             //Right
             inset-inline-end: 2%;
             //Top
             inset-block-start: 10%;
-            //Flex como hijo
-            flex-basis: 20%;
+            width: 20%;
+            display: flex;
+            justify-content: space-between;
         }
 
         //Titulo de cada div
@@ -208,6 +209,72 @@ h2,h3 {
     color: $colorPrincipalOscuro;
 }
 
+//Contendor flotante con el historial
+#contenedorHistorial {
+    @include contenedor(80%, auto, white);
+    padding: 2%;
+    position: absolute;
+    //Top
+    inset-block-start: 50%;
+    //Left
+    inset-inline-start: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: $borderRadius;
+    font-size: 1.1em;
+
+    form {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        align-items: center;
+
+        button {
+            @include boton($colorPrincipal, 1.2em);
+            padding: 0.5% 1%;
+        }
+    }
+
+    #listaElementos {
+        @include contenedor(100%, 100%, transparent);
+        text-align: center;
+        margin: 3% 0%;
+    }
+
+    thead {
+        //Border bottom
+        border-block-end: 1px solid $colorPrincipal;
+
+        th {
+            color: $colorPrincipal;
+            //Margin bottom
+            padding-block-end: 1%;
+
+            //Botón para crear partidas
+            button {
+                @include boton($colorPrincipal, 1.3rem);
+                padding: 0.5%;
+                margin: auto;
+            }
+        }
+    }
+
+    tbody {
+        td {
+            padding: 0.3% 0%;
+        }
+
+        tr:not(tr:last-of-type) {
+            //borer bottom
+            border-block-end: 1px solid oscurecerColor($colorLetra);
+        }
+
+        button {
+            @include boton($colorPrincipal, 1em);
+            margin: auto;
+        }
+    }
+}
+
 //Adaptación para móviles mediante aspect ratio
 @media screen and (max-aspect-ratio:  195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
     #perfilUsuario {
@@ -234,10 +301,11 @@ h2,h3 {
             }
 
             //Botón editar cuenta
-            #editarCuenta {
+            #botones {
                 //Top
                 inset-block-start: 10%;
                 transform: none;
+                width: 65%;
             }
 
             //Contenedor con última modificación y Ultimo Inicio sesión
@@ -268,7 +336,7 @@ h2,h3 {
                     }
 
                     //Contenedor para la imagen de perfil
-                    #fotoPerfil {
+                    #contenedorPerfil {
                         flex-basis: 80%;
                         height: 30vh;
                     }
@@ -310,7 +378,7 @@ h2,h3 {
 
                 fieldset div {
                     //Contenedor para la imagen de perfil
-                    #fotoPerfil {
+                    #contenedorPerfil {
                         height: 25vh;
                     }
                 }
@@ -339,10 +407,11 @@ h2,h3 {
             }
 
             //Botón editar perfil
-            #editarCuenta {
+            #botones {
                 //Top
                 inset-block-start: 10%;
                 transform: none;
+                width: 35%;
             }
     
             fieldset {
@@ -366,7 +435,7 @@ h2,h3 {
                     }
 
                     //Contenedor para la imagen de perfil
-                    #fotoPerfil {
+                    #contenedorPerfil {
                         flex-basis: 100%;
                     }
                 }

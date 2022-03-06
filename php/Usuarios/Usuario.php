@@ -170,14 +170,27 @@ class Usuario
         $this->validarCamposForm($datosReserva);
         //Instanciamos la BD
         $bd = new bd();
+        //Cogemos la información del director de partida para enviarle un mail avisándolo de que hay nuevas reservas
+        $sentencia = "SELECT director_partida, fecha FROM partidas WHERE id_partida = :id_partida";
+        $resultadoDirector = $bd->recuperarDatosBDNum($sentencia, ["id_partida" => $idPartida]);
+        //Comprobamos que no diera error
+        if(!$resultadoDirector instanceof \PDOStatement) {
+            throw new \PDOException($resultadoDirector);
+        }
+        //Cogemos al director
+        $infoPartida = $resultadoDirector->fetch(\PDO::FETCH_ASSOC);
         //Creamos al sentencia
         $sentencia = "INSERT INTO usuarios_partidas (usuario, partida, momento_reserva, reservada) VALUES (:usuario, :partida, NOW(), 0);";
         //Convertimos el id a int porque viene como string
         $datosReserva["partida"] = intval($datosReserva["partida"]);
         $resultado = $bd->agregarModificarDatosBDNum($sentencia, $datosReserva);
+        //Comprobamos que no diera error
         if(is_string($resultado) && stripos($resultado, "error") !== false) {
             throw new \PDOException($resultado);
         }
+        //Si no dió error enviamos un mail a todos los administradores
+        $email = new Email();
+        $email->enviarCorreos($infoPartida["director_partida"], "nuevaReserva", $infoPartida);
     }
     
     public function cancelarPartida() {
@@ -266,7 +279,63 @@ class Usuario
         session_unset();
     }
 
-    public function cargarCambios_perfil(){
+    /**
+     * Cargar los datos del perfil
+     *
+     * @return  [type]  [return description]
+     */
+    public function cargarPerfil(){
+        //Instanciamos BD
+        $bd = new bd();
+        //Creamos una sentencia que nos devuelva los datos de un usuario del que sabemos su email
+        $sentencia = "SELECT nombre, apellidos, telefono, direccion, genero_favorito, fecha_ult_modif, fecha_ult_acceso, rol, suscripcion, renovar, imagen_perfil FROM usuarios WHERE email = ?";
+        //Devolvemos lo que nos devuelve (Error o los datos del usuario)
+        $resultado = $bd->recuperDatosBD($sentencia, [$this->getEmail()]); //le pasamos el email y la sentencia
+        if (!$resultado instanceof \PDOStatement) {
+            throw new \Exception($resultado);
+        }
+        $resultado = $resultado->fetch(\PDO::FETCH_ASSOC);
+        if ($resultado==false) {
+            throw new \Exception("No existe ese usuario");
+        }
+        return $resultado;
+    }
+
+    public function cargarHistorial($filtro, $propio = true) {
+        //Comprobamos que las fechas no sean null
+        $fecha1 = $filtro["fechaIni"] ?? "";
+        $fecha2 = $filtro["fechaFin"] ?? "";
+        $fechas = $this->comprobarFechas($fecha1, $fecha2, false);
+        $datosFiltrado["email"] = $this->getEmail();
+        //Instanciamos bd
+        $bd = new bd();
+        //Sentencia
+        $sentenciaNumPag = "SELECT count(*) as num_pag FROM historico_usuarios WHERE email = :email";
+        $sentencia = "SELECT fecha_ult_modif, CONCAT(email , '; ', rol, '; ', nombre, '; ', apellidos, '; ', IFNULL(telefono, ''), '; ', IFNULL(direccion, ''), '; ', IFNULL(genero_favorito, ''), '; ', IFNULL(suscripcion, ''), '; ', IFNULL(renovar, '')) AS datos FROM historico_usuarios WHERE email = :email";
+        //Comprobamos si cogemos las fechas
+        if(count($fechas) == 2){
+            $sentencia .= " AND fecha BETWEEN :fechaIni AND :fechaFin";
+            $datosFiltrado["fechaIni"] = $filtro["fechaIni"];
+            $datosFiltrado["fechaFin"] = $filtro["fechaFin"];
+        }
+        else if(count($fechas) == 1){
+            $sentencia .= " AND fecha >= :fechaIni";
+            $datosFiltrado["fechaIni"] = $filtro["fechaIni"];
+        }
+        //Calculamos el número de página
+        $numPag = $this->calcularNumPag($sentenciaNumPag, $datosFiltrado);
+        //Añadimos el limite
+        $sentencia .= " LIMIT :pagina, :limite;";
+        $datosFiltrado["pagina"] = intval($filtro["pagina"]);
+        $datosFiltrado["limite"] = intval($filtro["limite"]);
+        //Cogemos los datos
+        $pdoStatement = $bd->recuperarDatosBDNum($sentencia, $datosFiltrado);
+        if(!$pdoStatement instanceof \PDOStatement){
+            throw new \PDOException($pdoStatement);
+        }
+        //Cogemos todas las tuplas
+        $historial = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
+        return ["numPag" => $numPag, "historial" => $historial];
     }
 
     /**
@@ -282,7 +351,7 @@ class Usuario
         $fecha2 = $filtro["fechaFin"] ?? "";
         $fechas = $this->comprobarFechas($fecha1, $fecha2, true);
         //Sentencia para contar el número de páginas es como la normal pero contando las tuplas sin limitar
-        $sentenciaNumPag = "SELECT COUNT(P.id_partida) as num_pag FROM partidas as P WHERE P.id_partida NOT IN (SELECT partida FROM usuarios_partidas WHERE usuario = :usuario)";
+        $sentenciaNumPag = "SELECT COUNT(P.id_partida) as num_pag FROM partidas as P INNER JOIN productos as PR ON P.id_partida NOT IN (SELECT partida FROM usuarios_partidas WHERE usuario = :usuario) AND P.juego_partida = PR.id_producto INNER JOIN juegos AS J ON PR.id_producto = J.juego";
         //Sentencia para pedir los datos
         $sentencia = "SELECT P.id_partida, PR.nombre, PR.imagen_producto as imagen_partida,  J.genero, P.fecha, P.hora_inicio FROM partidas as P INNER JOIN productos as PR ON P.id_partida NOT IN (SELECT partida FROM usuarios_partidas WHERE usuario = :usuario) AND P.juego_partida = PR.id_producto INNER JOIN juegos AS J ON PR.id_producto = J.juego";
         //Datos que pasaremos a la sentencia como parámetros a sustituir
@@ -290,17 +359,8 @@ class Usuario
         //Recorremos los filtros y vamos añadiendo
         if (!empty($filtro["genero"])) {
             //Como consigo el género como un string le voy concatenando los elementos (por si hay mas de uno)
-            $sentenciaNumPag .= " AND genero IN (";
-            $sentencia .= " AND genero IN (";
-            foreach ($filtro["genero"] as $indice => $valor) {
-                $sentenciaNumPag .= ":" . $indice . ", ";
-                $sentencia .= ":" . $indice . ", ";
-            }
-            //Quito la última coma y espacio
-            $sentenciaNumPag = mb_substr($sentencia, 0, -2);
-            $sentenciaNumPag .= ")";
-            $sentencia = mb_substr($sentencia, 0, -2);
-            $sentencia .= ")";
+            $sentenciaNumPag .= " AND J.genero = :genero";
+            $sentencia .= " AND J.genero = :genero";
             $datosFiltrado["genero"] = $filtro["genero"];
         }
         //Compruebo cuantas fechas tengo
@@ -315,7 +375,7 @@ class Usuario
             $datosFiltrado["fechaIni"] = $fechas[0];
         }
         //Calculamos el número de páginas
-        $numPag = $this->calcularNumPag($sentenciaNumPag, $datosFiltrado);
+        $numPag = $this->calcularNumPag($sentenciaNumPag, $datosFiltrado,  intval($filtro["limite"]));
         //Añadimos el límite para la sentencia que recupera los datos
         $sentencia .= " LIMIT :pagina, :limite ;";
         //Los converitmos a int porque como vienen del JSON vienen como string
@@ -330,9 +390,6 @@ class Usuario
         }
         //Cogemos los valores con fetchAll ya que los tenemos limitados, como mucho devuelve 7 tuplas
         $tuplas = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
-        if (!is_nan(intval($numPag))) {
-            $numPag = floor($numPag / $filtro["limite"]);
-        }
         $respuesta = ["numPag" => $numPag, "tuplas" => $tuplas];
         return $respuesta;
     }
@@ -345,7 +402,7 @@ class Usuario
      *
      * @return  int                  Número de páginas que necesita
      */
-    function calcularNumPag($sentencia, $datos = []) {
+    function calcularNumPag($sentencia, $datos = [], $limite = 7) {
         try {
             //Instancio la BD
             $bd = new bd();
@@ -356,12 +413,14 @@ class Usuario
             }
             //Solo hacemos un fetch ya que sólo devolverá un número (el número de página a crear)
             $numPag = $pdoStatement->fetch(\PDO::FETCH_ASSOC)["num_pag"];
+            //Calculamos el número de página dividiendolo por el límite
+            $numPag = ceil(intval($numPag) / $limite);
         } catch (\PDOException $pdoError) {
             $numPag = "Error " . $pdoError->getCode() . " :" . $pdoError->getMessage();
         } catch (\Exception $error) {
             $numPag = "Error " . $error->getCode() . " :" . $error->getMessage();
         }
-        return $numPag;
+        return !is_nan($numPag) ? $numPag - 1 : 0;
     }
 
     /**

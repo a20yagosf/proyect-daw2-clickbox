@@ -1,5 +1,3 @@
-import cargarScripts from funcionesGenerales.js;
-
 //Carga los script
 cargarScripts();
 

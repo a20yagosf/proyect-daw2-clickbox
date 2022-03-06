@@ -18,7 +18,7 @@ class Fecha {
     formatearFecha() {
         let dia = this.fecha.getDate() < 9 ? "0" + this.fecha.getDate() : this.fecha.getDate();
         let mes = this.fecha.getMonth() + 1 > 12 ?  1 :  this.fecha.getMonth() + 1 ;
-        return dia + "-" + (mes < 9 ? "0" + mes : mes) + "-" + this.fecha.getFullYear();
+        this.fecha = dia + "-" + (mes < 9 ? "0" + mes : mes) + "-" + this.fecha.getFullYear();
     }
 
     /**
@@ -31,13 +31,14 @@ class Fecha {
         const horas = 1000 * 60 * 60;
         const dias = horas * 24;
         const semana = dias * 7;
-        let diferenciaMiliSegundos = Math.abs(Date.now() - this.fecha.getTime());
+        let diferenciaMiliSegundos = Math.abs(Date.now() - new Date(this.fecha).getTime());
         let difSemana = Math.floor(diferenciaMiliSegundos/semana);
         let tiempo = difSemana > 0 ? "Hace " + difSemana + (difSemana > 1 ? " semanas " : " semana ") : "Hace ";
         let difDias = Math.floor(diferenciaMiliSegundos%semana/dias);
         tiempo += difDias > 0 ? difDias + (difDias > 1 ?  " días" : " día") : "";
         let difHoras = Math.floor((diferenciaMiliSegundos%semana)%difDias/dias);
         tiempo += difHoras > 0 ? difHoras + (difHoras > 1 ?  " horas" : " hora") : "";
+        difSemana > 7 ? tiempo = this.fecha : "";
         //Comprobamos que no quedara vacío (que haga menos  de 1 hora)
         return tiempo == "Hace " ? "Hoy" : tiempo;
     }
@@ -1104,7 +1105,13 @@ async function cargarDatosPerfil() {
         }); // Esto va a devolver un promise
         
         const respuesta_json = await respuesta.json(); // Coge la respuesta y la convierte a objeto de js
-        
+        //Comprobamos que no diera error
+        if(Object.hasOwn(respuesta_json, "error")){
+            throw respuesta_json["error"];
+        }
+        else if(Object.hasOwn(respuesta_json, "noUser")){
+            location.replace("../html/index.html");
+        }
         /** Con este objeto en js vamos a modificar el DOM
          * Añadiendo cuando sea necesario los atributos necesarios 
          * para su correcta selección 
@@ -1389,13 +1396,16 @@ async function cargarPartidas(filtro = {}, pagina = 0, limite = 7) {
         //Limpiamos la lista
         lista.innerHTML = "";
          //Cargo cada uno de los li
-        paginacion = crearPaginacion(respuestaJSON["numPag"], filtro["pagina"]);
+        pagina = filtro["pagina"] != 0 ? filtro["pagina"]/7 : 0;
+        paginacion = crearPaginacion(respuestaJSON["numPag"], pagina);
         if(paginacion != ""){
             document.querySelector("#result_panel").insertAdjacentElement("afterend", paginacion);
         }
         //Le añadimos los escuchadores
         let elementosLi = document.querySelectorAll(".pagination li");
-        elementosLi.forEach(elemento => elemento.firstElementChild.addEventListener("click", filtrarPartidas));
+        if(elementosLi != null){
+            elementosLi.forEach(elemento => elemento.firstElementChild.addEventListener("click", filtrarPartidas));
+        }
          //Cargo los datos de las partidas
         respuestaJSON["tuplas"].forEach(dato => {
             lista.append(crearContenedorPartida(dato));
@@ -1431,7 +1441,6 @@ async function cargarPartidas(filtro = {}, pagina = 0, limite = 7) {
      let generoPartida= crearContenedor("span", {}, "Genero: " + datosPartida["genero"]);
      //Le damos formato al día y la hora
      let fecha = new Fecha(datosPartida["fecha"]).getFecha();
-     console.log(typeof datosPartida["hora_inicio"]);
      let hora_inicio = datosPartida["hora_inicio"].substring(0, datosPartida["hora_inicio"].length -3);
      //Día
      let diaPartida = crearContenedor("span", {}, "Fecha: " + fecha);
@@ -1459,12 +1468,12 @@ async function cargarPartidas(filtro = {}, pagina = 0, limite = 7) {
  function filtrarPartidas(e) {
     e.preventDefault();
     let limite = 7;
-    let pagina = (e.currentTarget.dataset.partida - 1) * limite ?? 0;
+    let pagina = e.currentTarget.dataset.partida != null ? (e.currentTarget.dataset.partida - 1) * limite : 0;
      //Cojo los valores de los input
-     let generos = Array.from(document.querySelectorAll("option[selected]"));
+     let genero = document.querySelector("select").value;
      filtros = {};
-     if(generos.length > 0){
-        filtros["genero"] = generos.map(generoActual => generoActual.value).filter(elemento => elemento != "");
+     if(genero != ""){
+        filtros["genero"] = genero;
         //Quitamos el valor vacío
      }
      let fechaIni = document.getElementById("fechaIni").value;
@@ -1485,7 +1494,6 @@ async function cargarPartidas(filtro = {}, pagina = 0, limite = 7) {
   *
   */
 function crearPaginacion(numero, pagina) {
-    pagina = pagina / 7;
     //Comprobamos si existe ya un contenedor de paginación
     let contenedorPaginacion = document.querySelector(".pagination");
     //Comprobamos si no existe
@@ -1739,6 +1747,12 @@ function cargarPartidasAdmin() {
     contenedor.append(contenedorBotones, formFiltrado, tabla);
     //Añadimos todo al cuerpo
     contenedorAdmin.append(contenedor);
+    //Ponemos partidas como marcado
+    let lista = document.getElementById("opcionesPanelAdmin");
+    let elementosActivo = Array.from(lista.querySelectorAll("a[class='listaActivo']"));
+    //Creamos la paginacion
+    elementosActivo.forEach(elemento => elemento.classList.remove("listaActivo"));
+    document.getElementById("pestPartidas").firstElementChild.classList.add("listaActivo");
     filtrarPartidasAdmin();
 }
 
@@ -1847,7 +1861,15 @@ function modoCrearPartidasAdmin() {
     contenedorAdmin.append(formulario);
 }
 
+/**
+ * Filtra los usuarios por nombre o rol
+ *
+ * @param   {[type]}  e  [e description]
+ *
+ * @return  {[type]}     [return description]
+ */
 async function recogerDatos(e){
+    e.preventDefault();
     //Seleccionamos el td con el correo del usuario
     let emailUsuario = e.currentTarget.parentElement.parentElement.firstElementChild.textContent;
     //Ahora que sabemos el email podemos usarlo para seleccionar el id de igual valor, que será el select con la opción que queremos que tenga
@@ -1935,10 +1957,13 @@ async function filtrarPartidasAdmin(filtros = {}, pagina = 0) {
              cuerpoTabla.append(fila);
          });
          //Creamos la paginación
-         contenedor.append(crearPaginacion(respuestaJSON["numPag"], filtros["pagina"]));
+         pagina = filtros["pagina"] != 0 ? filtros["pagina"]/7 : 0;
+         contenedor.append(crearPaginacion(respuestaJSON["numPag"], pagina));
          //Le añadimos el escuchador a cada uno de ellos
-         let listaLi = document.querySelectorAll("li");
-         listaLi.forEach(elementoLi => elementoLi.firstElementChild.addEventListener("click", cogerFiltrosPartidasAdmin));
+         let listaLi = Array.from(document.querySelectorAll(".pagination li"));
+         if(listaLi != null){
+            listaLi.forEach(elementoLi => elementoLi.firstElementChild.addEventListener("click", cogerFiltrosPartidasAdmin));
+         }
      }
      catch (error){
          console.log(error);
@@ -2041,13 +2066,24 @@ function crearFilaTabla(tipoCelda, textoElementos, atributosElementos = {}) {
     if(!Array.isArray(textoElementos)){
         textoElementos = Object.values(textoElementos);
     }
-    textoElementos.forEach(elemento => {
-        let celda = document.createElement(tipoCelda);
-        celda.textContent = elemento;
-        Object.entries(atributosElementos).forEach(atributo => celda.setAttribute(atributo[0], atributo[1]));
-        //Lo añadimos a la fila
-        fila.append(celda);
-    });
+    if(typeof textoElementos[0] == "string"){
+        textoElementos.forEach(elemento => {
+            let celda = document.createElement(tipoCelda);
+            celda.textContent = elemento;
+            Object.entries(atributosElementos).forEach(atributo => celda.setAttribute(atributo[0], atributo[1]));
+            //Lo añadimos a la fila
+            fila.append(celda);
+        });
+    }
+    else {
+        textoElementos.forEach(elemento => {
+            let celda = document.createElement(tipoCelda);
+            celda.append(elemento);
+            Object.entries(atributosElementos).forEach(atributo => celda.setAttribute(atributo[0], atributo[1]));
+            //Lo añadimos a la fila
+            fila.append(celda);
+        });
+    }
     return fila;
 }
 
@@ -2184,6 +2220,8 @@ async function modoEditarPartida(e) {
         //Quitamos el id del array de datos devueltos y lo eliminamos
         idPartida = respuestaJSON["juego_partida"];
         delete respuestaJSON["juego_partida"];
+        //Ponemos la hora de inicio para que no tenga los segundos
+        respuestaJSON["hora_inicio"] = respuestaJSON["hora_inicio"].substring(0, respuestaJSON["hora_inicio"].length - 3);
         //Asignamos el valor a cada uno de los input, dividimos en objeto en array de 0: id 1: valor y se lo asignamos
         Object.entries(respuestaJSON).forEach(input => document.getElementById(input[0]).value = input[1]);
         //Asignamos al input el atributo data-idPartida
@@ -2843,11 +2881,240 @@ function crearInteriorCarrusel(contenidoElemento) {
     return contenedorInterior;
 }
 
-function cargarModoPartidasAdmin() {
-
-}
-
+/**
+ * Carga el modo de los usuarios administradores para roles
+ *
+ * @return  {void}  No devuelve nada
+ */
 function cargarModoUsuariosAdmin() {
+    let panelAdmin = document.getElementById("panelAdmin");
+    //Comprobamos si tiene ya algo y entonces lo limpiamos y si no no
+    if(panelAdmin.firstElementChild.nextElementSibling != null){
+        panelAdmin.lastElementChild.remove();
+    }
     //Creamos el formulario
     let formulario = crearContenedor("form", {"id": "formPanelAdmin"});
+    //Creamos el contenedor que tiene todo
+    let contenedorElementos = crearContenedor("div", {"id": "contenedorElementos"});
+    //Contenedor de los botones
+    let contenedorBotones = document.createElement("div");
+    //Botones
+    let rol = crearBoton("Cambiar rol", {"data-nombre": "cambiarRol", "type": "button"});
+    let historial = crearBoton("Historial usuarios", {"data-nombre": "historial", "class": "noActivo", "type": "button"});
+    contenedorBotones.append(rol, historial);
+    //Creamos su cabecera
+    let cabecera = crearElem("h2", {}, "Filtro de usuarios");
+    //Creamos la tabla
+    let tabla = crearContenedor("table", {"id": "filtroUsuarios"});
+    //Creamos la fila de la cabecera
+    let cabeceraTabla = document.createElement("thead");
+    let filaCabecera = crearFilaTabla("th", ["Email del usuario", "Rol"]);
+    cabeceraTabla.append(filaCabecera);
+    //Creamos el cuerpo
+    let cuerpoTabla = document.createElement("tbody");
+    //Creamos cada una de las filas
+    //Input de las filas
+    let filtroEmail = crearElem("input", {"id": "filtro-email", "type": "text", "name": "email", "placeholder": "Buscar por..."});
+    let selectRol = crearElem("select", {"id": "filtro-rol", "name": "rol"});
+    //Opciones que tiene
+    let optionNull = crearElem("option", {"value": ""}, "No seleccionado");
+    let option1 = crearElem("option", {"value": 2}, "Estándar");
+    let option2 = crearElem("option", {"value": 1}, "Administrador");
+    selectRol.append(optionNull, option1, option2);
+    //Botón para filtar
+    let botonFiltrar = crearBoton("Filtrar", {"id": "filtrarUsuariosAdmin", "type": "button"});
+    //Le añadimos el escuchador
+    botonFiltrar.addEventListener("click", cogerFiltrosUsuariosAdmin);
+    //Creamos la fila
+    let filaCuerpo = crearFilaTabla("td", [filtroEmail, selectRol, botonFiltrar]);
+    cuerpoTabla.append(filaCuerpo);
+    //Añadimos todo a la tabla
+    tabla.append(cabeceraTabla, cuerpoTabla);
+    //Segunda cabecera
+    let cabeceraUsuarios = crearElem("h2", {}, "Usuarios y roles");
+    let tablaUsuarios = crearContenedor("table", {"id": "listaElementos"});
+    //Creamos la cabecera
+    let cabeceraTablaUsuarios = document.createElement("thead");
+    //Creamos su fila
+    let filaCabeceraUsuarios = crearFilaTabla("th", ["Email", "Rol", ""]);
+    cabeceraTablaUsuarios.append(filaCabeceraUsuarios);
+    //Creamos el cuerpo
+    let cuerpoUsuarios = document.createElement("tbody");
+    //Añadimos todo a la tabla
+    tablaUsuarios.append(cabeceraTablaUsuarios, cuerpoUsuarios)
+    //Añadimos todo al contenedor
+    contenedorElementos.append(contenedorBotones ,cabecera, tabla, cabeceraUsuarios, tablaUsuarios);
+    formulario.append(contenedorElementos);
+    //Lo añadimos al contenedor panel Admin
+    panelAdmin.append(formulario);
+    //Ponemos el modo visible en el usuario
+    let lista = document.getElementById("opcionesPanelAdmin");
+    let elementosActivo = Array.from(lista.querySelectorAll("a[class='listaActivo']"));
+    elementosActivo.forEach(elemento => elemento.classList.remove("listaActivo"));
+    //Se lo ponemos a usuarios
+    document.getElementById("pestUsuarios").firstElementChild.classList.add("listaActivo");
+    //Cargamos los usuarios
+    cargarUsuarios();
+}
+
+/**
+ * Carga los usuarios según el filtro
+ *
+ * @param   {Object}  filtro  Filtros a aplicar de tipo {clave: valor}
+ * @param   {int}  pagina  Página actual en la que nos encontramos
+ *
+ * @return  {void}          No devuelve nada
+ */
+async function cargarUsuarios(filtro = {}, pagina = 0) {
+    //Añadimos al filtro al página en la que nos encontramos
+    filtro["pagina"] = pagina;
+    filtro["limite"] = 7;
+    let tablaUsuarios = document.getElementById("listaElementos");
+    let cuerpoTabla = tablaUsuarios.querySelector("tbody");
+     //Limpiamos el contenedor
+     cuerpoTabla.innerHTML = "";
+    try {
+        //Iniciamos la petición
+        const respuesta = await fetch("../php/cambiarRol.php", {
+            method: "POST",
+            headers: {"Content-type": "application/json; charset = utf-8"},
+            body: JSON.stringify({"filtrarUsuarios": filtro})
+        });
+        //Traducimos la respuesta
+        const respuestaJSON = await respuesta.json();
+        //Comprobamos que no diera error
+        if(Object.hasOwn(respuestaJSON, "error")) {
+            throw respuestaJSON["error"];
+        }
+        //Recorremos el array
+        respuestaJSON["datosUsuarios"].forEach(fila => {
+            //Creamos el td con el email y el select con el option seleccionado
+            let email = crearContenedor("td", {}, fila["email"]);
+            let selectRol = crearContenedor("select", {"name": "nuevo_rol", "id": fila["email"]});
+            //Creamos sus option
+            let optionEstandar = crearElem("option", {"value": 2}, "Estándar");
+            let optionAdmin = crearElem("option", {"value": 1}, "Administrador");
+            optionAdmin.value == fila["rol"] ? optionAdmin.setAttribute("selected", "selected") : optionEstandar.setAttribute("selected", "selected");
+            //Añadimos todo
+            selectRol.append(optionEstandar, optionAdmin);
+            //Botón guardarCambio rol
+            let botonGuardar = crearBoton("Guardar");
+            //Le añadimos el evento
+            botonGuardar.addEventListener("click", recogerDatos);
+            //Creamos la fila
+            let filaTabla = crearFilaTabla("td", [email, selectRol, botonGuardar]);
+            cuerpoTabla.append(filaTabla);
+        });
+         //Creamos la paginación
+         let contenedor = document.getElementById("contenedorElementos");
+         let pagina = filtro["pagina"] != 0 ? filtro["pagina"]/7 : 0;
+         contenedor.append(crearPaginacion(respuestaJSON["numPag"], pagina));
+         //Le añadimos el escuchador a cada uno de ellos
+         let listaLi = Array.from(document.querySelectorAll(".pagination li"));
+         if(listaLi != null){
+            listaLi.forEach(elementoLi => elementoLi.firstElementChild.addEventListener("click", cogerFiltrosUsuariosAdmin));
+         }
+    } 
+    catch (error){
+        console.log(error);
+    }
+}
+
+/**
+ * Coge los filtros en la pestaña usuarios de admin para cambiar el rol
+ *
+ * @param   {Event}  e  Evento que lo dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+function cogerFiltrosUsuariosAdmin(e) {
+    e.preventDefault();
+    let filtros = {};
+    //Cogemos el email de usuario
+    let email = document.getElementById("filtro-email").value;
+    if(email != ""){
+        filtros["email"] = email;
+    }
+    let rol = document.getElementById("filtro-rol").value;
+    if(rol != ""){
+        filtros["rol"] = rol;
+    }
+    //Cargamos las partidas
+    cargarUsuarios(filtros);
+}
+
+/**
+ * Muestra una ventana flotante con el historial
+ *
+ * @return  {void}  No devuelve nada
+ */
+function mostrarHistorial() {
+    //Creamos el contenedor
+    let contenedorHistorial = crearContenedor("div", {"id": "contenedorHistorial"});
+    //Creamos el div de filtrado
+    let formFiltrado = crearContenedor("form", {"id": "formHistorial", "action": "../php/historial.php", "method": "POST"});
+    //Cada uno de los date
+    let labelfechaInicio = crearElem("label", {"for": "fechaIniHistorial"}, "Fecha inicio");
+    let fechaInicio = crearElem("input", {"type": "date", "name": "fechaIniHistorial", "id": "fechaIniHistorial"});
+    let labelfechaFin = crearElem("label", {"for": "fechaFinHistorial"},"Fecha fin");
+    let fechaFin = crearElem("input", {"type": "date", "name": "fechaFinHistorial", "id": "fechaFinHistorial"});
+    //Botón para filtrar
+    let botonFiltrado = crearElem("button", {"type": "button"}, "Filtrar");
+    formFiltrado.append(labelfechaInicio, fechaInicio, labelfechaFin, fechaFin, botonFiltrado);
+    //Creamos la tabla donde se mostrará
+    let tablaUsuarios = crearContenedor("table", {"id": "listaElementos"});
+    let cabeceraTablaUsuarios = document.createElement("thead");
+    //Creamos una fila
+    let filaCabecera = crearFilaTabla("th", ["Fecha modificación", "Datos"]);
+    cabeceraTablaUsuarios.append(filaCabecera);
+    let cuerpoTablaUsuarios = document.createElement("tbody");
+    tablaUsuarios.append(cabeceraTablaUsuarios, cuerpoTablaUsuarios);
+    //Añadimos todo al contenedor
+    contenedorHistorial.append(formFiltrado, tablaUsuarios);
+    contenedorHistorial.style.display = "none";
+    document.querySelector("body").append(contenedorHistorial);
+    $(contenedorHistorial).fadeIn(1000);
+    cargarHistorialUsuario();
+}
+
+/**
+ * Carga los datos del usuario en la ventana flotante
+ *
+ * @return  {void}  No devuelve nada
+ */
+async function cargarHistorialUsuario(filtro = {}, pagina = 0) {
+    filtro["pagina"] = pagina;
+    filtro["limite"] = 7;
+    let cuerpoTabla = document.querySelector("tbody");
+    try {
+        //Iniciamos la peticion
+        const respuesta = await fetch("../php/historial.php", {
+            method: "POST",
+            headers: {"Content-type": "application/json; charset=utf-8;"},
+            body: JSON.stringify({"usuario": filtro})
+        });
+        //Traducimos la respuesta
+        const respuestaJSON = await respuesta.json();
+        //Comprobamos que no diera error
+        if(Object.hasOwn(respuestaJSON, "error")){
+            throw respuestaJSON["error"];
+        }
+        //Cargamos cada fila
+        respuestaJSON["historial"].forEach(dato => {
+            let filaHistorial = crearFilaTabla("td", dato);
+            cuerpoTabla.append(filaHistorial);
+        });
+        //Creamos la paginación
+        let contenedor = document.getElementById("contenedorHistorial");
+        let pagina = filtro["pagina"] != 0 ? filtro["pagina"]/7 : 0;
+        contenedor.append(crearPaginacion(respuestaJSON["numPag"], pagina));
+        //Le añadimos el escuchador a cada uno de ellos
+        let listaLi = Array.from(document.querySelectorAll(".pagination li"));
+        if(listaLi != null){
+           listaLi.forEach(elementoLi => elementoLi.firstElementChild.addEventListener("click", cogerFiltrosUsuariosAdmin));
+        }
+    }
+    catch(error){
+        console.log(error);
+    }
 }
