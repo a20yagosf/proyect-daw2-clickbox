@@ -212,7 +212,7 @@ class Email {
         $mensaje .= ' <p style="font-family: Resolve; text-align: justify flex-basis: 100%;">Cada mes mientras dure la suscripción te enviaremos ha casa una caja con algún juego de mesa para que puedas descubrir juegos interesantes sin tener que dedicar tiempo a buscarlos. Ten en cuenta que la suscripciones se renuevan automaticamente, si no quieres recibir más cajas deberás cancelar la suscripción antes de la fecha de renovación</p>';
         $mensaje .= ' <p style="font-family: Resolve; text-align: justify flex-basis: 100%;">Tu fecha de renovación es el ' . $fechaRenovacion . '. Si quiere cancelar la suscripción pulse el siguiente enlace</p>';
         //Enlace a la página
-        $mensaje .= '<a href="http://clickbox.a2.daw2d.iesteis.gal/" style="display:block; width: max-content; padding: 1.5%; text-decoration: none; margin: auto; background-color: #026a79; color: white; border-radius: 10px; margin-block-end: 2%;">Desactivar suscripción</a></div>';
+        $mensaje .= '<a href="http://clickbox.a2.daw2d.iesteis.gal/html/perfilUsuario.html" style="display:block; width: max-content; padding: 1.5%; text-decoration: none; margin: auto; background-color: #026a79; color: white; border-radius: 10px; margin-block-end: 2%;">Desactivar suscripción</a></div>';
         //Texto información sobre correo autogenerado
         $mensaje .= '<p style="text-align: justify;">Este mensaje ha sido enviada desde una cuenta de sólo envío. Por favor no responda a este mensaje. Si tiene alguna duda o pregunta correspondiente a esta reserva póngase en contacto con nosotros <a href="clickbox.a2.daw2d.iesteis.gal">aquí</a></p>';
         //Cerramos todo

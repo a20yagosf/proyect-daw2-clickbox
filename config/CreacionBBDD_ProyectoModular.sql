@@ -346,7 +346,7 @@ CREATE TABLE IF NOT EXISTS historico_usuarios (
 	renovar BOOLEAN NULL
 )ENGINE MYISAM;
 
--- CREACIÓN DE LOS USUARIOS DE LA BD
+/*-- CREACIÓN DE LOS USUARIOS DE LA BD
 -- USUARIO PARA LA CONEXIÓN Y REGISTRO DE USUARIOS
 GRANT SELECT, INSERT ON a2da_clickbox.usuarios TO 'a2da_conexion'@'localhost' IDENTIFIED BY '123456';
 GRANT SELECT ON a2da_clickbox.generos TO 'a2da_conexion'@'localhost';
@@ -386,7 +386,7 @@ GRANT SELECT ON a2da_clickbox.roles TO 'a2da_admin'@'localhost';
 GRANT SELECT, INSERT ON a2da_clickbox.tematicas TO 'a2da_admin'@'localhost';
 GRANT SELECT, INSERT ON a2da_clickbox.generos TO 'a2da_admin'@'localhost';
 GRANT SELECT, INSERT ON a2da_clickbox.partidas_imagenes TO 'a2da_admin'@'localhost';
-GRANT SELECT ON a2da_clickbox.historico_usuarios TO 'a2da_admin'@'localhost';
+GRANT SELECT ON a2da_clickbox.historico_usuarios TO 'a2da_admin'@'localhost'; */
 
 -- DISPARADORES
 DELIMITER $$
@@ -491,4 +491,4 @@ CREATE EVENT IF NOT EXISTS actualizar_suscripciones
 		CALL actualizar_suscripciones()$$
 	
 -- Activamos el evento	
-SET GLOBAL event_scheduler=ON$$
+-- SET GLOBAL event_scheduler=ON$$

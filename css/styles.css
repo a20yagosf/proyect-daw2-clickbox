@@ -2190,6 +2190,15 @@ h2, h3 {
 #contenedorHistorial tbody button:hover {
   background-color: #03bdd7;
 }
+#contenedorHistorial #contenedorPerfil {
+  overflow: hidden;
+}
+#contenedorHistorial #contenedorPerfil img {
+  position: relative;
+  inset-block-start: 50%;
+  inset-block-start: 50%;
+  transform: translate(-50%, -50%);
+}
 
 @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
   #perfilUsuario {
@@ -2217,6 +2226,9 @@ h2, h3 {
   }
   #perfilUsuario form #infoTiempos {
     position: relative;
+    height: -webkit-max-content;
+    height: -moz-max-content;
+    height: max-content;
     inset-block-start: 0%;
   }
   #perfilUsuario form fieldset:first-of-type, #perfilUsuario form fieldset:nth-of-type(2) {

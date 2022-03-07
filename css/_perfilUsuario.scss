@@ -285,6 +285,19 @@ h2,h3 {
             margin: auto;
         }
     }
+
+    #contenedorPerfil {
+        overflow: hidden;
+
+        img {
+            position: relative;
+            //Top
+            inset-block-start: 50%;
+            //Left
+            inset-block-start: 50%;
+            transform: translate(-50%, -50%);
+        }
+    }
 }
 
 //Adaptación para móviles mediante aspect ratio
@@ -323,6 +336,7 @@ h2,h3 {
             //Contenedor con última modificación y Ultimo Inicio sesión
             #infoTiempos {
                 position: relative;
+                height: max-content;
                 //Top
                 inset-block-start: 0%;
             }
