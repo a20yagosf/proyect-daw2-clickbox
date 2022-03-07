@@ -1988,6 +1988,7 @@ form#formulario_tienda div.center_submit button {
           margin-block-end: 2%;
   overflow: hidden;
   border: 1px solid #0291A5;
+  overflow: hidden;
 }
 #perfilUsuario form fieldset > div #contenedorPerfil img {
   width: 100%;
@@ -2189,15 +2190,6 @@ h2, h3 {
 }
 #contenedorHistorial tbody button:hover {
   background-color: #03bdd7;
-}
-#contenedorHistorial #contenedorPerfil {
-  overflow: hidden;
-}
-#contenedorHistorial #contenedorPerfil img {
-  position: relative;
-  inset-block-start: 50%;
-  inset-block-start: 50%;
-  transform: translate(-50%, -50%);
 }
 
 @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {

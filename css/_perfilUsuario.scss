@@ -99,6 +99,7 @@
                     margin-block-end: 2%;
                     overflow: hidden;
                     border: 1px solid $colorPrincipal;
+                    overflow: hidden;
 
                     img {
                         @include contenedor(100%, 100%, transparent);
@@ -285,19 +286,7 @@ h2,h3 {
             margin: auto;
         }
     }
-
-    #contenedorPerfil {
-        overflow: hidden;
-
-        img {
-            position: relative;
-            //Top
-            inset-block-start: 50%;
-            //Left
-            inset-block-start: 50%;
-            transform: translate(-50%, -50%);
-        }
-    }
+    
 }
 
 //Adaptación para móviles mediante aspect ratio

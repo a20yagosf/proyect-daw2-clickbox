@@ -16,6 +16,8 @@ window.onload = function () {
     crearBotonAccesibilidad();
     //Cargamos los options del genero favorito
     crearOptionGeneros(document.querySelector("select"));
+    //Le añadimos el escuchador al boton del input
+    document.querySelector("input[type='submit']").addEventListener("click", recogerDatos);
     // Cargamos los datos del usuario
     cargarDatosPerfil();
 };
