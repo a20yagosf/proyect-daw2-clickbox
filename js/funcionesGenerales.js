@@ -768,11 +768,11 @@ function editarPerfil() {
     //Compruebo si está ya editando o no
     if(botonEditar.textContent == "Editar perfil") {
         //Buscamos todos los input con readonly y le quito este atributo
-        let inputsFormulario = document.querySelectorAll("input[readonly]:not(input[id='suscripcion'])");
+        let inputsFormulario = document.querySelectorAll("input[readonly]:not(input[id='suscripcion'], input[id='rol'], input[id='email'])");
         inputsFormulario.forEach(input => input.removeAttribute("readonly"));
         //Le quitamos también el disabled al select
         let select = document.querySelector("select[disabled='disabled']");
-        select.removeAttribute("disabled");
+        select != null ? select.removeAttribute("disabled") : "";
         //Pone como visible el input para guardar los cambios
         document.querySelector("input[type='submit']").style.display = "block";
         //Cambiamos el texto de Editar perfil a cancelar
@@ -1188,6 +1188,46 @@ async function cargarDatosPerfil() {
     }
     // Modificamos el campo email recuperando del localStorage su valor
     document.getElementById("email").value = sessionStorage.getItem("email");   
+}
+
+/**
+ * Guarda los datos en el perfil
+ *
+ * @return  {void}  No devuelve nada
+ */
+async function guardarCambiosPerfil(e) {
+    e.preventDefault();
+    try {
+        //Cogemos el género favorito
+        let datosPerfilUsuario = {"genero_favorito": document.querySelector("select").value};
+        //Cogemos todos los datos de los input
+        datosPerfilUsuario["nombre"] = document.getElementById("nombre").value;
+        datosPerfilUsuario["apellidos"] = document.getElementById("apellidos").value;
+        datosPerfilUsuario["telefono"] = document.getElementById("telefono").value;
+        datosPerfilUsuario["direccion"] = document.getElementById("direccion").value;
+        //Iniciamos la petición
+        const respuesta = await fetch("../php/perfil_usuario.php", {
+            method: "POST",
+            headers: {"Content-type": "application/json; charset= utf-8;"},
+            body: JSON.stringify({"guardaCambios": datosPerfilUsuario})
+        });
+        //Traducimos
+        const respuestaJSON = await respuesta.json();
+        //Comprobamos que no diera error
+        if(Object.hasOwn(respuestaJSON, "error")){
+            throw respuestaJSON["error"];
+        }
+        else if(Object.hasOwn(respuestaJSON, "noUser")) {
+            location.replace("../html/index.html");
+        }
+        alert("Datos guardados con éxito");
+        setTimeout(function () {
+            editarPerfil();
+        });
+    }
+    catch(error){
+        console.log(error);
+    }
 }
 
 /**

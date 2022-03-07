@@ -17,7 +17,7 @@ window.onload = function () {
     //Cargamos los options del genero favorito
     crearOptionGeneros(document.querySelector("select"));
     //Le añadimos el escuchador al boton del input
-    document.querySelector("input[type='submit']").addEventListener("click", recogerDatos);
+    document.querySelector("form").addEventListener("submit", guardarCambiosPerfil);
     // Cargamos los datos del usuario
     cargarDatosPerfil();
 };

@@ -12,6 +12,11 @@ try {
     if($_SESSION["usuario"]["email"] == null){
         $devolver = ["noUser" => "No es un usuario registrado"];
     }
+    else if(isset($contenido_js_en_php["guardaCambios"])) {
+        $user = new user($_SESSION["usuario"]["email"]);
+        $user->guardarPerfil($contenido_js_en_php["guardaCambios"]);
+        $devolver = ["exito" => "Guardado con éxito"];
+    }
     else {
         $user = new user($_SESSION["usuario"]["email"]);
         $resultado = $user->cargarPerfil();

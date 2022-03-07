@@ -36,7 +36,7 @@ class Administrador extends user{
                 $bd = new bd();
                 //Sentencia
                 $sentenciaNumPag = "SELECT count(*) as num_pag FROM historico_usuarios WHERE email = :email";
-                $sentencia = "SELECT fecha_ult_modif, CONCAT(email , '; ', rol, '; ', nombre, '; ', apellidos, '; ', IFNULL(telefono, ''), '; ', IFNULL(direccion, ''), '; ', IFNULL(genero_favorito, ''), '; ', IFNULL(suscripcion, ''), '; ', IFNULL(renovar, '')) AS datos FROM historico_usuarios WHERE email = :email";
+                $sentencia = "SELECT fecha_ult_modif, CONCAT('email:',email , '; ', 'rol:',rol, '; ', 'nombre:',nombre, '; ', 'apellidos:',apellidos, '; ', 'telefono:', IFNULL(telefono, ''), '; ', 'direccion:', IFNULL(direccion, ''), '; ', 'genero_favorito:', IFNULL(genero_favorito, ''), '; ', 'suscripcion:', IFNULL(suscripcion, ''), '; ', 'renovar:', IFNULL(renovar, '')) AS datos FROM historico_usuarios WHERE email = :email";
                 //Comprobamos si cogemos las fechas
                 if(count($fechas) == 2){
                     $sentenciaNumPag .= " AND (DATE(fecha_ult_modif) BETWEEN :fechaIni AND :fechaFin)";
@@ -56,7 +56,7 @@ class Administrador extends user{
                 $bd = new bd();
                 //Sentencia
                 $sentenciaNumPag = "SELECT count(*) as num_pag FROM historico_usuarios";
-                $sentencia = "SELECT fecha_ult_modif, CONCAT(email , '; ', rol, '; ', nombre, '; ', apellidos, '; ', IFNULL(telefono, ''), '; ', IFNULL(direccion, ''), '; ', IFNULL(genero_favorito, ''), '; ', IFNULL(suscripcion, ''), '; ', IFNULL(renovar, '')) AS datos FROM historico_usuarios";
+                $sentencia = "SELECT fecha_ult_modif, CONCAT('email:',email , '; ', 'rol:',rol, '; ', 'nombre:',nombre, '; ', 'apellidos:',apellidos, '; ', 'telefono:', IFNULL(telefono, ''), '; ', 'direccion:', IFNULL(direccion, ''), '; ', 'genero_favorito:', IFNULL(genero_favorito, ''), '; ', 'suscripcion:', IFNULL(suscripcion, ''), '; ', 'renovar:', IFNULL(renovar, '')) AS datos FROM historico_usuarios";
                 //Comprobamos si cogemos las fechas
                 if(count($fechas) == 2){
                     $sentenciaNumPag .= " WHERE DATE(fecha_ult_modif) BETWEEN :fechaIni AND :fechaFin";

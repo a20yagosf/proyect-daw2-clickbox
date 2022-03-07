@@ -301,6 +301,24 @@ class Usuario
         return $resultado;
     }
 
+    public function guardarPerfil($datos) {
+        try {
+            $this->comprobarCamposNoOblig($datos, ["telefono", "direccion", "genero_favorito"]);
+            //Instanciamos BD
+            $bd = new bd();
+            //Creamos la sentencia
+            $datos["email"] = $this->getEmail();
+            $sentencia = "UPDATE usuarios SET nombre = :nombre, apellidos = :apellidos, telefono = :telefono, direccion = :direccion, genero_favorito = :genero_favorito WHERE email = :email";
+            $bd->agregarModificarDatosBDNum($sentencia, $datos);
+        }
+        catch(\PDOException $pdoError){
+            throw $pdoError;
+        }
+        catch(\Exception $error) {
+            throw $error;
+        }
+    }
+
     /**
      * Carga el historial del usuario
      *
@@ -319,7 +337,7 @@ class Usuario
         $bd = new bd();
         //Sentencia
         $sentenciaNumPag = "SELECT count(*) as num_pag FROM historico_usuarios WHERE email = :email";
-        $sentencia = "SELECT fecha_ult_modif, CONCAT(email , '; ', rol, '; ', nombre, '; ', apellidos, '; ', IFNULL(telefono, ''), '; ', IFNULL(direccion, ''), '; ', IFNULL(genero_favorito, ''), '; ', IFNULL(suscripcion, ''), '; ', IFNULL(renovar, '')) AS datos FROM historico_usuarios WHERE email = :email";
+        $sentencia = "SELECT fecha_ult_modif, CONCAT('email:',email , '; ', 'rol:',rol, '; ', 'nombre:',nombre, '; ', 'apellidos:',apellidos, '; ', 'telefono:', IFNULL(telefono, ''), '; ', 'direccion:', IFNULL(direccion, ''), '; ', 'genero_favorito:', IFNULL(genero_favorito, ''), '; ', 'suscripcion:', IFNULL(suscripcion, ''), '; ', 'renovar:', IFNULL(renovar, '')) AS datos FROM historico_usuarios WHERE email = :email";
         //Comprobamos si cogemos las fechas
         if(count($fechas) == 2){
             $sentenciaNumPag .= " AND (DATE(fecha_ult_modif) BETWEEN :fechaIni AND :fechaFin)";
