@@ -100,7 +100,9 @@ function crearHeader() {
 
                 //Creamos los enlaces
                 enlacePerfil = crearEnlace( "../html/perfilUsuario.html", "Perfil de usuario");
+                enlacePerfil.addEventListener("click", irPerfilUsuario);
                 enlacePanelControl = crearEnlace( "../html/panelAdministrador.html", "Panel de Control");
+                enlacePanelControl.addEventListener("click", irPanelControlAdmin);
                 salirPerfil = crearEnlace("#", "Desconectarme");
                 //Añadimos el escuchador para desconectarnos
                 salirPerfil.addEventListener("click", desconectarPerfil);
@@ -132,6 +134,7 @@ function crearHeader() {
                 contenedorPerfil.setAttribute("id", "menuPerfilUser");
                 //Creamos los enlaces
                 enlacePerfil = crearEnlace( "../html/perfilUsuario.html", "Perfil de usuario");
+                enlacePerfil.addEventListener("click", irPerfilUsuario);
                 salirPerfil = crearEnlace("#", "Desconectarme");
                 //Añadimos el escuchador para desconectarnos
                 salirPerfil.addEventListener("click", desconectarPerfil);
@@ -192,8 +195,15 @@ function crearNav(redireccion, elementosNav, rol) {
    let logo = crearEnlace("index.html", crearImg({"src": "../img/logoClickBox.svg", "alt": "Logo ClickBox"}));
    //Creamos el botón hamburguesa
    let botonHamburguesa = crearBoton("", {"class" : "navbar-toggler", "type": "button", "data-bs-toggle": "collapse", "data-bs-target": "#listaNav", "aria-controls": "listaNav", "aria-expanded": "false", "aria-label": "Menú hamburguesa"});
-   //Creamos la lista
-   let lista = crearLista("ul", crearArrayElem("crearEnlace", 3, [redireccion, elementosNav]), {"id": "listaNav", "class": "collapse navbar-collapse"});
+   //Creamos cada uno de los enlaces
+   //crearArrayElem("crearEnlace", 3, [redireccion, elementosNav]), {"id": "listaNav", "class": "collapse navbar-collapse"}
+   let enlaceSuscripciones = crearEnlace("../html/suscripciones.html", "Suscripciones");
+   enlaceSuscripciones.addEventListener("click", irSuscripciones);
+   let enlacePartidas = crearEnlace("../html/partidas.html", "Partidas");
+   enlacePartidas.addEventListener("click", irPartidas);
+   let enlaceTienda = crearEnlace("#", "Tienda");
+    //Creamos la lista
+    let lista = crearLista("ul", [enlaceSuscripciones, enlacePartidas, enlaceTienda], {"id": "listaNav", "class": "collapse navbar-collapse"});
    //Añadimos todo al contenedor del nav y despues al nav
    contenedorNav.append(logo, botonHamburguesa, lista);
    navegador.append(contenedorNav);
@@ -1343,15 +1353,34 @@ async function cancelarRenovacionSusc() {
  * Lleva a la página de suscripciones
  *
  */
-function irSuscripciones() {
+function irSuscripciones(e) {
+    e.preventDefault();
     location.assign("../html/suscripciones.html");
+}
+
+/**
+ * Lleva a la página de perfil de usuario
+ *
+ */
+function irPerfilUsuario(e) {
+    e.preventDefault();
+    location.assign("../html/perfilUsuario.html");
+}
+
+/**
+ * Lleva a la página de panel de control
+ */
+function irPanelControlAdmin(e) {
+    e.preventDefault();
+    location.assign("../html/panelAdministrador.html");
 }
 
 /**
  * Lleva a la página de partidas
  *
  */
-function irPartidas() {
+function irPartidas(e) {
+    e.preventDefault();
     //Comprobamos el rol del usuario (Si no tiene rol es que no esta registrado y no puede acceder a partidas)
     if(sessionStorage["rol"] != null){
         location.assign("../html/partidas.html");
