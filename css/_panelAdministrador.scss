@@ -222,6 +222,10 @@
         #filtroUsuarios{
             @include contenedor(100%, 100%, transparent);
             text-align: center;
+
+            #filtrarUsuariosAdmin {
+                padding: 5%;
+            }
         }
 
 

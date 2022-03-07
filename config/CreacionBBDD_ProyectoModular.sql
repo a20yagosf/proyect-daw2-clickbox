@@ -332,7 +332,6 @@ CREATE TABLE IF NOT EXISTS usuarios_partidas (
 -- ---------------------------------------------------
 DROP TABLE IF EXISTS historico_usuarios;
 CREATE TABLE IF NOT EXISTS historico_usuarios (
-	fecha DATE NOT NULL,
 	email VARCHAR(150) NOT NULL,
 	rol INT UNSIGNED NOT NULL,
 	-- LA CONSTRASEÑA COMO TAL NO LA GUARDAMOS PORQUE ESTÁ CIFRADA Y NO APORTA NADA LAS CONTRASEÑAS ANTIGUAS
@@ -428,18 +427,6 @@ FOR EACH ROW
 						VALUES
 						(new.email, new.rol, new.nombre, new.apellidos, new.telefono, new.direccion, new.genero_favorito, new.fecha_ult_modif, new.suscripcion, new.renovar);
 		END IF;
-	END$$
-
--- DISPARADOR QUE AÑADE UNA FILA AL HISTORICO CON LOS DATOS ANTIGUOS CUANDO TE REGISTRAS
-DROP TRIGGER IF EXISTS historico_usuarios_insert$$
-CREATE TRIGGER IF NOT EXISTS historico_usuarios_insert BEFORE INSERT ON usuarios
-FOR EACH ROW
-	BEGIN
-			-- SI LA MODIFICACIÓN FUE DE OTRO ELEMENTO ENTONCES ANTES DE QUE ACTUALICE VOLCAMOS LOS DATOS EN LA TABLA DEL HISTORICO DE USUARIO
-			INSERT INTO historico_usuarios
-				(email, rol, nombre, apellidos, telefono, direccion, genero_favorito, fecha_ult_modif, suscripcion, renovar)
-					VALUES
-				(new.email, new.rol, new.nombre, new.apellidos, new.telefono, new.direccion, new.genero_favorito, new.fecha_ult_modif, new.suscripcion, new.renovar);
 	END$$
 	
 -- PROCEDIMIENTOS

@@ -2096,6 +2096,25 @@ h2, h3 {
   border-radius: 10px;
   font-size: 1.1em;
 }
+#contenedorHistorial > button {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 2rem;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  position: absolute;
+  inset-block-start: 2%;
+  inset-inline-end: 2%;
+  border-radius: 100%;
+  padding: 0.3% 1.2%;
+}
+#contenedorHistorial > button:hover {
+  background-color: #03bdd7;
+}
 #contenedorHistorial form {
   display: flex;
   justify-content: space-around;
@@ -2518,6 +2537,9 @@ h2, h3 {
   height: 100%;
   background-color: transparent;
   text-align: center;
+}
+#panelAdmin #contenedorElementos #filtroUsuarios #filtrarUsuariosAdmin {
+  padding: 5%;
 }
 #panelAdmin #contenedorElementos thead {
   -webkit-border-after: 1px solid #0291A5;

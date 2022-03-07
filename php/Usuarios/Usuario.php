@@ -301,6 +301,14 @@ class Usuario
         return $resultado;
     }
 
+    /**
+     * Carga el historial del usuario
+     *
+     * @param   array $filtro  Filtros que se le asignan
+     * @param   boolean $propio  Si es sólo nuestro perfil o no
+     *
+     * @return  array       Número de página y los datos del historial
+     */
     public function cargarHistorial($filtro, $propio = true) {
         //Comprobamos que las fechas no sean null
         $fecha1 = $filtro["fechaIni"] ?? "";
@@ -314,12 +322,14 @@ class Usuario
         $sentencia = "SELECT fecha_ult_modif, CONCAT(email , '; ', rol, '; ', nombre, '; ', apellidos, '; ', IFNULL(telefono, ''), '; ', IFNULL(direccion, ''), '; ', IFNULL(genero_favorito, ''), '; ', IFNULL(suscripcion, ''), '; ', IFNULL(renovar, '')) AS datos FROM historico_usuarios WHERE email = :email";
         //Comprobamos si cogemos las fechas
         if(count($fechas) == 2){
-            $sentencia .= " AND fecha BETWEEN :fechaIni AND :fechaFin";
+            $sentenciaNumPag .= " AND (DATE(fecha_ult_modif) BETWEEN :fechaIni AND :fechaFin)";
+            $sentencia .= " AND (DATE(fecha_ult_modif) BETWEEN :fechaIni AND :fechaFin)";
             $datosFiltrado["fechaIni"] = $filtro["fechaIni"];
             $datosFiltrado["fechaFin"] = $filtro["fechaFin"];
         }
         else if(count($fechas) == 1){
-            $sentencia .= " AND fecha >= :fechaIni";
+            $sentenciaNumPag .= " AND (DATE(fecha_ult_modif) >= :fechaIni)";
+            $sentencia .= " AND (DATE(fecha_ult_modif) >= :fechaIni)";
             $datosFiltrado["fechaIni"] = $filtro["fechaIni"];
         }
         //Calculamos el número de página
@@ -420,7 +430,7 @@ class Usuario
         } catch (\Exception $error) {
             $numPag = "Error " . $error->getCode() . " :" . $error->getMessage();
         }
-        return !is_nan($numPag) ? $numPag - 1 : 0;
+        return !is_string($numPag) && $numPag != 0 ? $numPag - 1 : 0;
     }
 
     /**

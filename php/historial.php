@@ -14,6 +14,18 @@ try {
         $user = new user($_SESSION["usuario"]["email"]);
         $devolver = $user->cargarHistorial($datosUsuario["usuario"]);
     }
+    else if(isset($datosUsuario["admin"])) {
+        //Comprobamos que sea administrador
+        if($_SESSION["usuario"]["rol"] != 1){
+            $devolver = ["noAdmin" => "No es un admin"];
+        }
+        else {
+            //Instanciamos el administrador
+            $admin = new admin($_SESSION["usuario"]["email"], $_SESSION["usuario"]["rol"]);
+            //Cargamos el historial
+            $devolver = $admin->cargarHistorial($datosUsuario["admin"], false);
+        }
+    }
 }
 catch (\PDOException $pdoError) {
     $devolver = ["error" => "Error " . $pdoError->getCode() . ": " . $pdoError->getMessage()];

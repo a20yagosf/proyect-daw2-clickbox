@@ -15,10 +15,76 @@ class Administrador extends user{
         $this->rol = $rol;
     }
 
-    // PERFILES
-    public function CargarCambiosPerfilTodos(){
-        
-    }
+       /**
+         * Carga el historial del usuario
+         *
+         * @param   array $filtro  Filtros que se le asignan
+         * @param   boolean $propio  Si es sólo nuestro perfil o no
+         *
+         * @return  array       Número de página y los datos del historial
+         */
+        public function cargarHistorial($filtro, $propio = true) {
+            //Comprobamos que las fechas no sean null
+            $fecha1 = $filtro["fechaIni"] ?? "";
+            $fecha2 = $filtro["fechaFin"] ?? "";
+            $fechas = $this->comprobarFechas($fecha1, $fecha2, false);
+            $datosFiltrado = [];
+            //Si es el propio
+            if($propio){
+                $datosFiltrado["email"] = $this->getEmail();
+                //Instanciamos bd
+                $bd = new bd();
+                //Sentencia
+                $sentenciaNumPag = "SELECT count(*) as num_pag FROM historico_usuarios WHERE email = :email";
+                $sentencia = "SELECT fecha_ult_modif, CONCAT(email , '; ', rol, '; ', nombre, '; ', apellidos, '; ', IFNULL(telefono, ''), '; ', IFNULL(direccion, ''), '; ', IFNULL(genero_favorito, ''), '; ', IFNULL(suscripcion, ''), '; ', IFNULL(renovar, '')) AS datos FROM historico_usuarios WHERE email = :email";
+                //Comprobamos si cogemos las fechas
+                if(count($fechas) == 2){
+                    $sentenciaNumPag .= " AND (DATE(fecha_ult_modif) BETWEEN :fechaIni AND :fechaFin)";
+                    $sentencia .= " AND (DATE(fecha_ult_modif) BETWEEN :fechaIni AND :fechaFin)";
+                    $datosFiltrado["fechaIni"] = $filtro["fechaIni"];
+                    $datosFiltrado["fechaFin"] = $filtro["fechaFin"];
+                }
+                else if(count($fechas) == 1){
+                    $sentenciaNumPag .= " AND (DATE(fecha_ult_modif) >= :fechaIni)";
+                    $sentencia .= " AND (DATE(fecha_ult_modif) >= :fechaIni)";
+                    $datosFiltrado["fechaIni"] = $filtro["fechaIni"];
+                }
+            }
+            //Si es el del otro
+            else {
+                //Instanciamos bd
+                $bd = new bd();
+                //Sentencia
+                $sentenciaNumPag = "SELECT count(*) as num_pag FROM historico_usuarios";
+                $sentencia = "SELECT fecha_ult_modif, CONCAT(email , '; ', rol, '; ', nombre, '; ', apellidos, '; ', IFNULL(telefono, ''), '; ', IFNULL(direccion, ''), '; ', IFNULL(genero_favorito, ''), '; ', IFNULL(suscripcion, ''), '; ', IFNULL(renovar, '')) AS datos FROM historico_usuarios";
+                //Comprobamos si cogemos las fechas
+                if(count($fechas) == 2){
+                    $sentenciaNumPag .= " WHERE DATE(fecha_ult_modif) BETWEEN :fechaIni AND :fechaFin";
+                    $sentencia .= " WHERE DATE(fecha_ult_modif) BETWEEN :fechaIni AND :fechaFin";
+                    $datosFiltrado["fechaIni"] = $filtro["fechaIni"];
+                    $datosFiltrado["fechaFin"] = $filtro["fechaFin"];
+                }
+                else if(count($fechas) == 1){
+                    $sentenciaNumPag .= " WHERE DATE(fecha_ult_modif) >= :fechaIni";
+                    $sentencia .= " WHERE DATE(fecha_ult_modif) >= :fechaIni";
+                    $datosFiltrado["fechaIni"] = $filtro["fechaIni"];
+                }
+            }
+            //Calculamos el número de página
+            $numPag = $this->calcularNumPag($sentenciaNumPag, $datosFiltrado);
+            //Añadimos el limite
+            $sentencia .= " LIMIT :pagina, :limite;";
+            $datosFiltrado["pagina"] = intval($filtro["pagina"]);
+            $datosFiltrado["limite"] = intval($filtro["limite"]);
+            //Cogemos los datos
+            $pdoStatement = $bd->recuperarDatosBDNum($sentencia, $datosFiltrado);
+            if(!$pdoStatement instanceof \PDOStatement){
+                throw new \PDOException($pdoStatement);
+            }
+            //Cogemos todas las tuplas
+            $historial = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
+            return ["numPag" => $numPag, "historial" => $historial];
+        }
 
     /**
      * Cambia el rol del usuario

@@ -222,6 +222,18 @@ h2,h3 {
     border-radius: $borderRadius;
     font-size: 1.1em;
 
+    //Botón para cerrar inicio sesión
+    & >  button {
+        @include boton($colorPrincipal, 2rem);
+        position: absolute;
+        //Top
+        inset-block-start: 2%;
+        //Right
+        inset-inline-end: 2%;
+        border-radius: 100%;
+        padding: 0.3% 1.2%;
+    }
+
     form {
         display: flex;
         justify-content: space-around;
