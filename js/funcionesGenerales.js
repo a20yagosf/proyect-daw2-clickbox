@@ -244,8 +244,15 @@ function crearFooter() {
     //Creamos la lista que contendrá las diferentes páginas recomendadas
     let imagenLogo = crearImg({"src": "../img/logoClickBoxFooter.svg", "alt": "Logo ClickBox"});
     //Enlaces de la lista
-    let enlacesLista =  crearArrayElem("crearEnlace", 5, [["#", "#", "#", "#", "#"], [imagenLogo, "Sobre nosotros", "Suscripciones", "Partidas", "Tienda"]]);
-    let lista = crearLista("ul", enlacesLista);
+    let enlaceLogo = crearEnlace("../html/index.html", imagenLogo);
+    enlaceLogo.addEventListener("click", irPrincipal);
+    let enlaceProteccion = crearEnlace("#", "Protección de datos");
+    let enlaceSuscripciones = crearEnlace("../html/suscripciones.html", "Suscripciones");
+    enlaceSuscripciones.addEventListener("click", irSuscripciones);
+    let enlacePartidas = crearEnlace("../html/partidas.html", "Partidas");
+    enlacePartidas.addEventListener("click", irPartidas);
+    let enlaceTienda = crearEnlace("#", "Tienda");
+    let lista = crearLista("ul", [enlaceLogo, enlaceProteccion, enlaceSuscripciones, enlacePartidas, enlaceTienda]);
     lista.setAttribute("id", "infoPag");
 
     //Conenedor de redes
@@ -1179,7 +1186,10 @@ async function cargarDatosPerfil() {
     catch(error){
         console.log(error);
     }
+    // Modificamos el campo email recuperando del localStorage su valor
+    document.getElementById("email").value = sessionStorage.getItem("email");   
 }
+
 /**
  * Carga los tipos de suscripciones
  *
@@ -1384,6 +1394,22 @@ function irPartidas(e) {
     //Comprobamos el rol del usuario (Si no tiene rol es que no esta registrado y no puede acceder a partidas)
     if(sessionStorage["rol"] != null){
         location.assign("../html/partidas.html");
+    }
+    else {
+        //Disparamos el evento para que aparezca el login
+        aparecerLogin();
+    }
+}
+
+/**
+ * Lleva a la página principal
+ *
+ */
+ function irPrincipal(e) {
+    e.preventDefault();
+    //Comprobamos el rol del usuario (Si no tiene rol es que no esta registrado y no puede acceder a partidas)
+    if(sessionStorage["rol"] != null){
+        location.assign("../html/index.html");
     }
     else {
         //Disparamos el evento para que aparezca el login

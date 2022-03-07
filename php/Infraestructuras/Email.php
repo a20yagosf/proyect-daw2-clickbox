@@ -120,8 +120,6 @@ class Email {
             $mensaje .= '<body style="background-size: cover; margin: 0px;">';
             //Div que conteien toda la información y el div que conteien el logo, titulo y texto
             $mensaje .= '<div style="box-sizing: border-box; background-color: white; width: 50%; padding: 3%; position: relative; inset-inline-start: 50%; transform: translate(-50%); border-inline-start: 2px solid #026a79; border-inline-end: 2px solid #026a79;"><div>';
-            //Logo
-            $mensaje .= '<img src="cid:logo" alt="Logo ClickBox" style="width: 300px; display: block; margin: auto;"/>';
             //Titulo
             $mensaje .= '<h1 style="font-family: PoetsenOne; text-align: center; margin-block-end: 4%; color: #026a79;">Reserva partida ' . $datosReserva["fecha"] . ': Aceptada</h1>';
             //Eliminamos la variable ya que ya no nos hace falta
@@ -151,8 +149,6 @@ class Email {
             $mensaje .= '<body style="background-size: cover; margin: 0px;">';
             //Div que conteien toda la información y el div que conteien el logo, titulo y texto
             $mensaje .= '<div style="box-sizing: border-box; background-color: white; width: 50%; padding: 3%; position: relative; inset-inline-start: 50%; transform: translate(-50%); border-inline-start: 2px solid #026a79; border-inline-end: 2px solid #026a79;"><div  style="margin-block-end: 5%;">';
-            //Logo
-            $mensaje .= '<img src="cid:logo" alt="Logo ClickBox" style="width: 300px; display: block; margin: auto;"/>';
             //Titulo
             $mensaje .= '<h1 style="font-family: PoetsenOne; text-align: center; margin-block-end: 4%; color: #026a79; flex-basis: 100%;">Reserva partida ' . $datosReserva["fecha"] . ': Rechazada</h1>';
             //Mensaje
@@ -181,8 +177,6 @@ class Email {
         $mensaje .= '<body style="background-size: cover; margin: 0px;">';
         //Div que conteien toda la información y el div que conteien el logo, titulo y texto
         $mensaje .= '<div style="box-sizing: border-box; background-color: white; width: 50%; padding: 3%; position: relative; inset-inline-start: 50%; transform: translate(-50%); border-inline-start: 2px solid #026a79; border-inline-end: 2px solid #026a79;"><div  style="margin-block-end: 5%;">';
-        //Logo
-        $mensaje .= '<img src="cid:logo" alt="Logo ClickBox" style="width: 300px; display: block; margin: auto;"/>';
         //Titulo
         $mensaje .= '<h1 style="font-family: PoetsenOne; text-align: center; margin-block-end: 4%; color: #026a79; flex-basis: 100%;">Partida ' . $datosPartida["fecha"] . ': Cancelada</h1>';
         //Mensaje
@@ -212,8 +206,6 @@ class Email {
         $mensaje .= '<body style="background-size: cover; margin: 0px;">';
         //Div que conteien toda la información y el div que conteien el logo, titulo y texto
         $mensaje .= '<div style="box-sizing: border-box; background-color: white; width: 50%; padding: 3%; position: relative; inset-inline-start: 50%; transform: translate(-50%); border-inline-start: 2px solid #026a79; border-inline-end: 2px solid #026a79;"><div  style="margin-block-end: 5%;">';
-        //Logo
-        $mensaje .= '<img src="cid:logo" alt="Logo ClickBox" style="width: 300px; display: block; margin: auto;"/>';
         //Titulo
         $mensaje .= '<h1 style="font-family: PoetsenOne; text-align: center; margin-block-end: 4%; color: #026a79; flex-basis: 100%;">Te has suscrito ' . $datosSuscripcion["duracion"] . (intval($datosSuscripcion["duracion"]) == 1 ? " mes" : " meses")  .' a ClickBox</h1>';
         //Mensaje
@@ -235,8 +227,6 @@ class Email {
          $mensaje .= '<body style="background-size: cover; margin: 0px;">';
          //Div que conteien toda la información y el div que conteien el logo, titulo y texto
          $mensaje .= '<div style="box-sizing: border-box; background-color: white; width: 50%; padding: 3%; position: relative; inset-inline-start: 50%; transform: translate(-50%); border-inline-start: 2px solid #026a79; border-inline-end: 2px solid #026a79;"><div  style="margin-block-end: 5%;">';
-         //Logo
-         $mensaje .= '<img src="cid:logo" alt="Logo ClickBox" style="width: 300px; display: block; margin: auto;"/>';
          //Titulo
          $mensaje .= '<h1 style="font-family: PoetsenOne; text-align: center; margin-block-end: 4%; color: #026a79; flex-basis: 100%;"> Nueva reserva para procesar para la partida del día ' . $datospartida["fecha"] . '</h1>';
          //Mensaje
@@ -267,9 +257,9 @@ class Email {
         $email->IsSMTP();
         $email->SMTPDebug = 0;  // cambiar a 1 o 2 para ver errores
         $email->SMTPAuth = true;
-        $email->SMTPSecure = "tls";
+        $email->SMTPSecure = "ssl";
         $email->Host = "a2-daw2d-iesteis-gal.correoseguro.dinaserver.com";
-        $email->Port = 587;
+        $email->Port = 465;
         $email->Username = $config[0];  //usuario de gmail
         $email->Password = $config[1]; //contraseña de gmail   
         $email->SetFrom('clickbox@a2.daw2d.iesteis.gal', 'ClickBox');

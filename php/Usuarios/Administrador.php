@@ -602,8 +602,8 @@ class Administrador extends user{
     //Directores partida
     public function buscarNombreDirectorPartida($datosDirector) {
         //Validamos el campo
-        $this->validarCamposForm($datosDirector);
-        //Instanciamos bd
+        $this->validarCamposForm($datosDirectr);
+        //Instanciamos bdo
         $bd = new bd();
         //Creamos la sentencia
         $sentencia = "SELECT email as nombre  FROM usuarios WHERE rol = 1 AND email LIKE ? LIMIT 0, 5";

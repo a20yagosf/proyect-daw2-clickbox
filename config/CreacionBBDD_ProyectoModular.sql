@@ -117,7 +117,6 @@ CREATE TABLE IF NOT EXISTS usuarios (
    imagen_perfil VARCHAR(255) NOT NULL,
    -- GENERO_FAVORITO  ENUM("Detectives","Estrategia","Guerra","Miedo","Puzzles","Cooperativos", "Individual","Competitivo") NULL,
    -- RELACIONES 
-   -- rol estandar es = 2
    rol INT UNSIGNED NOT NULL DEFAULT 2,
    genero_favorito VARCHAR(150) NULL,
    suscripcion TINYINT NULL,

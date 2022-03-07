@@ -405,7 +405,7 @@ class Usuario
     }
 
     /**
-     * Calcula el número de páginas que tendrá el resultado
+     * Calcula el número de tuplas que tendrá el resultado
      *
      * @param   string  $sentencia  Sentencia a ejecutar
      * @param   array  $datos      Datos a pasar
