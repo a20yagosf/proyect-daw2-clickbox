@@ -675,8 +675,6 @@ function crearAcordeonDatosCuenta() {
     let inputClaveRep = crearElem("input", {"type": "password", "name": "pwd2", "id": "pwd2"});
     let inputImagen = crearElem("input", {"type": "file", "name": "imagenPerfil", "id": "imagenPerfil"});
     let selectFavGen = crearElem("select", {"name": "genero_favorito", "id": "genero_favorito"});
-    //Creamos todos los option del select
-    crearOptionGeneros(selectFavGen);
     
     //Option por defecto
     let opcionDefault = document.createElement("option");
@@ -3165,9 +3163,9 @@ function mostrarHistorial() {
  *
  * @return  {void}  No devuelve nada
  */
-async function cargarHistorialUsuario(filtro = {}, pagina = 0) {
+async function cargarHistorialUsuario(filtro = {}, pagina = 0, limite = 7) {
     filtro["pagina"] = pagina;
-    filtro["limite"] = 7;
+    filtro["limite"] = limite;
     let cuerpoTabla = document.querySelector("tbody");
     //Limpiamos el contenedor
     cuerpoTabla.innerHTML = "";
@@ -3196,7 +3194,7 @@ async function cargarHistorialUsuario(filtro = {}, pagina = 0) {
         //Le añadimos el escuchador a cada uno de ellos
         let listaLi = Array.from(document.querySelectorAll(".pagination li"));
         if(listaLi != null){
-           listaLi.forEach(elementoLi => elementoLi.firstElementChild.addEventListener("click", cogerFiltrosUsuariosAdmin));
+           listaLi.forEach(elementoLi => elementoLi.firstElementChild.addEventListener("click", cogerFiltradoHistorial));
         }
     }
     catch(error){
@@ -3207,16 +3205,21 @@ async function cargarHistorialUsuario(filtro = {}, pagina = 0) {
 /**
  * Coge los datos del formulario y carga el historial con ese filtrado
  *
+ * @param {Event}   e que se dispara
+ * 
  * @return  {void}  No devuelve nada
  */
-function cogerFiltradoHistorial() {
+function cogerFiltradoHistorial(e) {
+    e.preventDefault();
     let filtro = {};
+    let limite = 7;
+    let pagina = e.currentTarget.dataset.partida != null ? (e.currentTarget.dataset.partida - 1) * limite : 0;
     //Cogemos los datos de las fechas 
     let fechaIni = document.getElementById("fechaIniHistorial").value;
     fechaIni != "" ? filtro["fechaIni"] = fechaIni : "";
     let fechaFin = document.getElementById("fechaFinHistorial").value;
     fechaFin != "" ? filtro["fechaFin"] = fechaFin : "";
-    cargarHistorialUsuario(filtro);
+    cargarHistorialUsuario(filtro, pagina, limite);
 }
 
 /**
@@ -3300,9 +3303,9 @@ function cargarModoHistorialAdmin() {
  *
  * @return  {void}          No devuelve nada
  */
-async function filtrarHistorialAdmin(filtro = {}, pagina = 0) {
+async function filtrarHistorialAdmin(filtro = {}, pagina = 0, limite = 7) {
     filtro["pagina"] = pagina;
-    filtro["limite"] = 7;
+    filtro["limite"] = limite;
     let cuerpoTabla = document.getElementById("listaElementos").querySelector("tbody");
     //Limpiamos el contenedor
     cuerpoTabla.innerHTML = "";
@@ -3331,7 +3334,7 @@ async function filtrarHistorialAdmin(filtro = {}, pagina = 0) {
         //Le añadimos el escuchador a cada uno de ellos
         let listaLi = Array.from(document.querySelectorAll(".pagination li"));
         if(listaLi != null){
-           listaLi.forEach(elementoLi => elementoLi.firstElementChild.addEventListener("click", cogerFiltrosUsuariosAdmin));
+           listaLi.forEach(elementoLi => elementoLi.firstElementChild.addEventListener("click", cogerFiltroHistorialAdmin));
         }
     }
     catch(error){
@@ -3342,14 +3345,19 @@ async function filtrarHistorialAdmin(filtro = {}, pagina = 0) {
 /**
  * Coge los filtros a aplicar y se los pasa a filtrarHistorialAdmin
  *
+ * @param {Event}   e que se dispara
+ * 
  * @return  {void}  No devuelve nada
  */
-function cogerFiltroHistorialAdmin() {
+function cogerFiltroHistorialAdmin(e) {
+    e.preventDefault();
     let filtro = {};
+    let limite = 7;
+    let pagina = e.currentTarget.dataset.partida != null ? (e.currentTarget.dataset.partida - 1) * limite : 0;
     //Cogemos los datos de las fechas 
     let fechaIni = document.getElementById("fechaIniHistorial").value;
     fechaIni != "" ? filtro["fechaIni"] = fechaIni : "";
     let fechaFin = document.getElementById("filtroFechaFinHistorial").value;
     fechaFin != "" ? filtro["fechaFin"] = fechaFin : "";
-    filtrarHistorialAdmin(filtro);
+    filtrarHistorialAdmin(filtro, pagina, limite);
 }
