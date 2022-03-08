@@ -492,3 +492,121 @@ CREATE EVENT IF NOT EXISTS actualizar_suscripciones
 	
 -- Activamos el evento	
 -- SET GLOBAL event_scheduler=ON$$
+DELIMITER ;
+-- Creamos los roles
+INSERT INTO roles 
+	(nombre_rol, descripcion) 
+		VALUES 
+	("a2da_admin", "USUARIOS CON PODER PARA AÑADIR Y/O MODIFICAR PRODUCTOS Y SERVICIOS"),
+	("a2da_estandar", "USUARIO REGISTRADO"),
+	("a2da_conexion", "USUARIO ANÓNIMO");
+	
+-- Creamos los tipos de géneros
+	INSERT INTO generos
+    (nombre_genero)
+        VALUES
+    ("Competitivo"),
+    ("Estrategia"),
+    ("Deck Building"),
+    ("Dungeon Crawler"),
+    ("Cooperativo"),
+    ("Tablero"),
+    ("Abstracto"),
+    ("Dados"),
+    ("Familiar"), 
+    ("Fantasía"),
+    ("Rol"),
+    ("Aventura"),
+    ("CIFI"),
+    ("Cartas"),
+    ("Lógica"),
+    ("Casual"),
+    ("Terror"),
+	("Gestión"),
+	("Educativo"),
+	("Artístico"),
+	("Contrarreloj"),
+	("Sin turnos"),
+	("Anime"),
+	("Asimétrico"),
+	("Losetas");
+-- Creamos tematicas
+
+-- Creamos unas suscripciones de base
+INSERT INTO suscripciones
+	(DURACION, PRECIO)
+	VALUES
+	(1, 20),
+	(3, 17),
+	(6, 14);
+
+INSERT INTO productos
+	(nombre, precio, stock, imagen_producto) 
+		VALUES 
+	("Catán", 40, 50, "../img/juegos/catan.jpg"),
+	("Bienvenido a la mazmorra", 15, 25, "../img/juegos/bienvenidoAlaMazmorra.jpg"),
+  ("Código Secreto", 19 , 100, "../img/juegos/codigoSecreto.png"),
+  ("Timeline", 12 , 80, "../img/juegos/timeline.jpg"),
+  ("Patchwork",  18 , 20, "../img/juegos/patchwork.jpg"),
+  ("Mondrian",25,50, "../img/imagenNoDisponible.jpg"),
+  ("Osopark", 27 , 50, "../img/juegos/Osopark.jpg"),
+  ("Torre de gatos", 18 , 50, "../img/juegos/Torredegatos.jpg"),
+  ("Demon Worker",28,50, "../img/juegos/DemonWorker.jpg"),
+  ("Vampiro: La Mascarada 5ª edición",40,50, "../img/juegos/Vampiro_LaMascarada.jpg"),
+  ("Maho Shojo",30,50, "../img/imagenNoDisponible.jpg"),
+  ("Luna Capital",35,50, "../img/imagenNoDisponible.jpg"),
+  ("Plata",10,50, "../img/imagenNoDisponible.jpg"),
+  ("Lapsus",14,50, "../img/imagenNoDisponible.jpg"),
+  ("The Game",14,50, "../img/imagenNoDisponible.jpg"),
+  ("Not Alone", 18,50, "../img/imagenNoDisponible.jpg"),
+  ("Space Opera",26,50, "../img/imagenNoDisponible.jpg"),
+  ("4 Seasons",14,50, "../img/juegos/4Seasons.jpg"),
+  ("Sword Art Online: Sword of fellows",27,50, "../img/juegos/SwordArtOnline_Swordoffellows.jpg"),
+  ("Axio",30,50,  "../img/juegos/Axio.jpg"),
+  ("Trapwords",10,50, "../img/imagenNoDisponible.jpg"),
+  ("One key",22,50, "../img/imagenNoDisponible.jpg"),
+  ("On the origin of species",18,50, "../img/juegos/Ontheoriginofspecies.jpg"),
+  ("Wingspan", 27,50, "../img/juegos/Wingspan.jpg"),
+  ("The Magnificient",50,50, "../img/imagenNoDisponible.jpg"),
+  ("Cat Café",15,50, "../img/juegos/Catcafe.jpg"),
+   ("Kitchen rush",46,50, "../img/juegos/Kitchenrush.jpg"),
+    -- accesorios
+  ("Dado de 20 caras", 1,200, "../accesorios/Dado20Caras.jpg"),
+  ("Fundas de cartas", 5,200, "../accesorios/FundaCartas.jpg");
+
+INSERT INTO juegos
+    (juego, num_jug, genero) 
+		VALUES
+    (1, "3-4", "Estrategia"),
+    (2,  "2-4", "Competitivo"),
+    (3,  "2-8", "Competitivo"),
+    (4, "2-8", "Cartas"),
+    (5, "2", "Estrategia"),
+    (6,  "2-4", "Abstracto"),
+    (7, "2-4", "Gestión"),
+    (8, "2-4", "Competitivo"),
+    (9, "3-4", "Competitivo"),
+    (10,  "2-8","Terror"),
+    (11, "3-6", "Anime"),
+    (12, "1-4", "Estrategia"),
+    (13, "2-6", "Competitivo"),
+    (14, "2-8", "Abstracto"),
+    (15, "1-5", "Abstracto"),
+    (16, "2-7", "Terror"),
+    (17, "2-4", "Estrategia"),
+    (18,"1-4", "Cartas"),
+    (19,"2","Anime"),
+    (20,"2-4", "Losetas"),
+    (21, "4-8", "Dungeon Crawler"),
+    (22,"2-6", "Cartas"),
+    (23, "2-4", "Estrategia"),
+    (24, "1-5", "Deck Building"),
+    (25,  "1-4", "Competitivo"),
+    (26,"2-4", "Competitivo"),
+    (27, "1-4", "Familiar");
+
+INSERT INTO accesorios
+    (accesorio) 
+		VALUES
+    (28),
+    (29);

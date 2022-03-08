@@ -17,6 +17,7 @@ try {
         $user->guardarPerfil($contenido_js_en_php["guardaCambios"]);
         $devolver = ["exito" => "Guardado con éxito"];
     }
+    //Carga de perfil
     else {
         $user = new user($_SESSION["usuario"]["email"]);
         $resultado = $user->cargarPerfil();
