@@ -514,5 +514,23 @@ class Bd {
         }
         return isset($resultado["pwd"]) ? $resultado["pwd"]: false;
     }
+
+    public function cargarGeneros() {
+        try {
+            $sentencia = "SELECT nombre_genero FROM generos LIMIT 0, 25;";
+            $resultado = $this->recuperDatosBD($sentencia, []);
+            if(!$resultado instanceof \PDOStatement){
+                throw new \PDOException($resultado);
+            }
+            $generos = $resultado->fetchAll(\PDO::FETCH_ASSOC);
+            return $generos;
+        }
+        catch(\PDOException $pdoError) {
+            return "Error " . $pdoError->getCode() . ": " . $pdoError->getMessage();
+        }
+        catch(\Exception $error) {
+            return "Error " . $error->getCode() . ": " . $error->getMessage();
+        }
+    }
 }
 

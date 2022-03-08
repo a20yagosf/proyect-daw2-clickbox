@@ -14,8 +14,6 @@ window.onload = function () {
     //Creamos el mapa
     crearMapa();
     crearBotonAccesibilidad();
-    //Cargamos los options del genero favorito
-    crearOptionGeneros(document.querySelector("select"));
     //Le añadimos el escuchador al boton del input
     document.querySelector("form").addEventListener("submit", guardarCambiosPerfil);
     // Cargamos los datos del usuario

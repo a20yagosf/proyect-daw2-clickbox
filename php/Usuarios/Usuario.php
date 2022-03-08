@@ -260,7 +260,17 @@ class Usuario
     public function cancelarRenovacionSusc() {
         //Instanciamos bd
         $bd = new bd();
+        //Comprobamos que no tenga una renovación
+        $sentencia = "SELECT renovar FROM usuarios WHERE email = ?;";
+        $pdoStatement = $bd->recuperDatosBD($sentencia, [$this->getEmail()]);
+        if(!$pdoStatement instanceof \PDOStatement) {
+            throw new \PDOException($pdoStatement);
+        }
+        $renovar = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
         //Creamos la sentnecia
+        if($renovar != 1){
+            return "No tienes activado para renovar la suscripcion";
+        }
         $sentencia = "UPDATE usuarios SET renovar = 0 WHERE email = ?;";
         $resultado = $bd->agregarModificarDatosBD($sentencia, [$this->getEmail()]);
         if(is_string($resultado) && stripos($resultado, "error") !== false){
@@ -288,7 +298,7 @@ class Usuario
         //Instanciamos BD
         $bd = new bd();
         //Creamos una sentencia que nos devuelva los datos de un usuario del que sabemos su email
-        $sentencia = "SELECT nombre, apellidos, telefono, direccion, genero_favorito, fecha_ult_modif, fecha_ult_acceso, rol, suscripcion, renovar, imagen_perfil FROM usuarios WHERE email = ?";
+        $sentencia = "SELECT nombre, apellidos, telefono, direccion, genero_favorito, fecha_ult_modif, fecha_ult_acceso, rol, suscripcion, renovar, imagen_perfil, DATE_ADD(fecha_ini_suscripcion, INTERVAL suscripcion MONTH) AS fecha_renovacion FROM usuarios WHERE email = ?";
         //Devolvemos lo que nos devuelve (Error o los datos del usuario)
         $resultado = $bd->recuperDatosBD($sentencia, [$this->getEmail()]); //le pasamos el email y la sentencia
         if (!$resultado instanceof \PDOStatement) {

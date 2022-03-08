@@ -79,6 +79,12 @@ nav button {
           margin-inline-start: 2%;
   text-transform: uppercase;
 }
+nav .navActive {
+  background-color: #ff9c42;
+}
+nav .navDesactivado {
+  opacity: 0.8;
+}
 nav #botonPerfilUsuario {
   padding: 0.2% 0.5%;
 }

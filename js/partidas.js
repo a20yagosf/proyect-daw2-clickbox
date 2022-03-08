@@ -13,6 +13,7 @@ window.onload = function () {
     cargarPartidas();
     //Añadimos el escuchador a filtro
     document.getElementById("filtro_fechas").nextElementSibling.addEventListener("click", filtrarPartidas);
+    document.getElementById("listaNav").children[1].setAttribute("class", "navActive");
     //Creamos el mapa
     crearMapa();
     crearBotonAccesibilidad();

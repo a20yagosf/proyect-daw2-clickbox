@@ -81,13 +81,7 @@ else {
     session_start();
     $usuario = new user($_SESSION["usuario"]["email"]);
     $resultado = $usuario->cancelarRenovacionSusc();
-    //Comprobamos que no diera error
-     if($resultado !== true){
-        $mensajeDevolver = ["error" => $resultado];
-    }
-    else {
-        $mensajeDevolver = ["exito" => "Renovación cancelada con exito"];
-    }
+    $mensajeDevolver = ["exito" => $resultado];
 }
 //Se lo devolvemos a js
 echo json_encode($mensajeDevolver);

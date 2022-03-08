@@ -54,6 +54,14 @@ nav {
         text-transform: uppercase;
     }
 
+    .navActive {
+        background-color: darken($colorSecundario, 10%);
+    }
+
+    .navDesactivado {
+        opacity: 0.8;
+    }
+
     //Boton cuando tienes iniciada sesión
     #botonPerfilUsuario {
         padding: 0.2% 0.5%;

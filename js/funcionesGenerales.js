@@ -204,6 +204,7 @@ function crearNav(redireccion, elementosNav, rol) {
    let enlaceTienda = crearEnlace("#", "Tienda");
     //Creamos la lista
     let lista = crearLista("ul", [enlaceSuscripciones, enlacePartidas, enlaceTienda], {"id": "listaNav", "class": "collapse navbar-collapse"});
+    lista.lastElementChild.setAttribute("class", "navDesactivado");
    //Añadimos todo al contenedor del nav y despues al nav
    contenedorNav.append(logo, botonHamburguesa, lista);
    navegador.append(contenedorNav);
@@ -675,6 +676,8 @@ function crearAcordeonDatosCuenta() {
     let inputClaveRep = crearElem("input", {"type": "password", "name": "pwd2", "id": "pwd2"});
     let inputImagen = crearElem("input", {"type": "file", "name": "imagenPerfil", "id": "imagenPerfil"});
     let selectFavGen = crearElem("select", {"name": "genero_favorito", "id": "genero_favorito"});
+    //Creamos todos los option del select
+    crearOptionGeneros(selectFavGen);
     
     //Option por defecto
     let opcionDefault = document.createElement("option");
@@ -682,9 +685,6 @@ function crearAcordeonDatosCuenta() {
     opcionDefault.setAttribute("selected", "selected");
     opcionDefault.textContent = "No especificado";
     selectFavGen.append(opcionDefault);
-
-    //Creamos todos los option del select
-    crearOptionGeneros(selectFavGen);
 
     //Array con todos los inputs
     let inputs = [inputEmail, inputClave, inputClaveRep, inputImagen, selectFavGen];
@@ -1069,7 +1069,7 @@ async function crearOptionGeneros(selectAnhadir){
             selectAnhadir.append(opcion);
         });
     }
-}
+} 
 
 /**
  * Despliega el menú del perfil
@@ -1110,6 +1110,8 @@ async function desconectarPerfil(e) {
  * @return  {void}  No devuelve nada
  */
 async function cargarDatosPerfil() {
+    //Cargamos los options del genero favorito
+    crearOptionGeneros(document.querySelector("select"));
     try{
         let email = sessionStorage.getItem("email");
         // email está almacenado en sessionStorage
@@ -1171,15 +1173,15 @@ async function cargarDatosPerfil() {
         }
         
         // suscripcion y renovar pueden devolver null, así que: [cuando valor = null en php pasa a json y lo decodeamos OBTENEMOS ]
-        if(!respuesta_json['suscripcion'] == null){
-            document.getElementById("suscripcion").value = respuesta_json['suscripcion'];
+        if(respuesta_json['suscripcion'] != undefined){
+            document.getElementById("suscripcion").value = respuesta_json['suscripcion'] + (respuesta_json['suscripcion'] == 1 ? " mes" : " meses");
         }
         else{
             document.getElementById("suscripcion").value = "Sin suscripción";
         }
 
-        if(!respuesta_json['renovar'] == null) {
-            let fechaRenovar = new Fecha(respuesta_json['renovar']).getFecha();
+        if(respuesta_json['renovar'] == 1) {
+            let fechaRenovar = new Fecha(respuesta_json['fecha_renovacion']).getFecha();
             document.getElementById("renovacion").innerHTML += fechaRenovar;
         }
     }
@@ -1390,7 +1392,8 @@ async function cancelarRenovacionSusc() {
                 throw respuestaJSON["error"];
             }
             else {
-                alert("Renovación cancelada con éxito");
+                alert(respuestaJSON["exito"]);
+                cargarDatosPerfil();
             }
         }
         catch(error){
