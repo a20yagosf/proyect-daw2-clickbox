@@ -638,7 +638,6 @@ function crearRegistro(formulario) {
     botonCancelar.setAttribute("class", "movil");
      //Añadimos el escuchador al botón
     botonCancelar.addEventListener("click", aparecerLogin);
-
     //Añadimos todo al formulario
     formulario.append(parrafoResult, botonRegistro, botonCancelar);
 }
@@ -683,9 +682,6 @@ function crearAcordeonDatosCuenta() {
     opcionDefault.textContent = "No especificado";
     selectFavGen.append(opcionDefault);
 
-    //Creamos todos los option del select
-    crearOptionGeneros(selectFavGen);
-
     //Array con todos los inputs
     let inputs = [inputEmail, inputClave, inputClaveRep, inputImagen, selectFavGen];
 
@@ -695,6 +691,8 @@ function crearAcordeonDatosCuenta() {
     }
     //Añadimos el boton y el div al acordeon
     acordeon1.append(botonAcordeon1, divAcordeon1);
+    //Creamos todos los option del select
+    crearOptionGeneros(selectFavGen);
     return acordeon1;
 }
 
@@ -1053,21 +1051,27 @@ async function limpiarTodosCamposForm(archivo) {
  *
  */
 async function crearOptionGeneros(selectAnhadir){
-    //Nos conectamos con el servidor para pedirle los géneros, como no envíamos datos y no devuelve datos comprometidos sólo especificamos el método
-    const respuestaJSON = await fetch("../php/registro.php", {
-        method: "GET",
-        headers: {"Content-type": "application/json; charset=utf-8"}
-    });
-    //Es importante poner la espera en la respuesta porque sino lo lee como undefined
-    let generos = await respuestaJSON.json();
-    if(Object.hasOwn(generos, "generos")){
-        //Formamos un option con cada género
-        generos["generos"].forEach(genero => {
-            let opcion = document.createElement("option");
-            opcion.setAttribute("value", genero);
-            opcion.textContent = genero;
-            selectAnhadir.append(opcion);
+    try {
+        //Nos conectamos con el servidor para pedirle los géneros, como no envíamos datos y no devuelve datos comprometidos sólo especificamos el método
+        const respuestaGeneros = await fetch("../php/registro.php", {
+            method: "POST",
+            headers: {"Content-type": "application/json;charset=UTF-8"},
+            body: JSON.stringify({"cargarGeneros": true})
         });
+        //Es importante poner la espera en la respuesta porque sino lo lee como undefined
+        const generos = await respuestaGeneros.json();
+        if(Object.hasOwn(generos, "generos")){
+            //Formamos un option con cada género
+            generos["generos"].forEach(genero => {
+                let opcion = document.createElement("option");
+                opcion.setAttribute("value", genero);
+                opcion.textContent = genero;
+                selectAnhadir.append(opcion);
+            });
+        }
+    }
+    catch(error){
+        console.log(error);
     }
 }
 
@@ -1179,7 +1183,7 @@ async function cargarDatosPerfil() {
         }
 
         if(!respuesta_json['renovar'] == null) {
-            let fechaRenovar = new Fecha(respuesta_json['renovar']).getFecha();
+            let fechaRenovar = new Fecha(respuesta_json['fecha_ini_suscripcion']).getFecha();
             document.getElementById("renovacion").innerHTML += fechaRenovar;
         }
     }
@@ -1708,43 +1712,6 @@ async function crearPartida(e) {
         resultado.textContent = $error;
         resultado.removeAttribute("class", "exito");
         resultado.setAttribute("class", "error");
-    }
- }
-
-/**
- * Carga las opciones de los diferentes juegos
- *
- * @param   {DOMElement}  select  Select al que añadirlo
- *
- */
-async function cargarOpcionesJuegos(select) {
-    try {
-        //Creamos la petición para pedir los juegos almacenados (su nombre)
-        const respuesta = await fetch("../php/panelAdministrador.php?juego=true", {
-            //Como no pasamos información confidencial lo hacemos por GET
-            method: "GET",
-        });
-        //Traducimos la respuesta
-        const respuestaJSON = await respuesta.json();
-        //Comprobamos que devolviera los juegos mirando que no tenga error
-        if(Object.hasOwn(respuestaJSON, "error")){
-            throw respuestaJSON["error"];
-        }
-        else if(Object.hasOwn(respuestaJSON, "noAdmin")) {
-            //Lo redirige a inicio ya que no es un administrador
-            location.replace("../html/index.html");
-        }
-        //Cargamos los juegos en el select
-        respuestaJSON["juegos"].forEach(juego => {
-            //Creamos el option
-            let opcion = document.createElement("option");
-            opcion.setAttribute("value", juego["id_producto"]);
-            opcion.textContent = juego["nombre"];
-            select.append(opcion);
-        });
-    }
-    catch(error){
-        console.log(error);
     }
  }
 
