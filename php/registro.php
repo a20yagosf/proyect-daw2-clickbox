@@ -3,9 +3,9 @@
 use \Infraestructuras\Bd as bd;
 
 require_once "autocarga.php";
-$datos = file_get_contents("php://input");
+$datos = json_decode(file_get_contents("php://input"), true);
 try {
-    if(!isset($datos)){
+    if(isset($datos["cargarGeneros"])){
         //Ejecutamos la sentencia para obtener los géneros
         $bd = new bd();
         $sentencia = "SELECT nombre_genero FROM generos LIMIT 0, 25;";
