@@ -5,18 +5,19 @@ use \Infraestructuras\Bd as bd;
 require_once "autocarga.php";
 $datos = json_decode(file_get_contents("php://input"), true);
 $devolver = ["prueba" => "Funciona"];
+//Instanciamos bd
+$bd = new bd();
 try {
     if(isset($datos["cargarGeneros"])){
         //Ejecutamos la sentencia para obtener los géneros
-        $bd = new bd();
-        $sentencia = "SELECT nombre_genero FROM generos LIMIT 0, 25;";
+        $sentencia = "SELECT nombre_genero as genero FROM generos LIMIT 0, 25;";
         $resultado = $bd->recuperDatosBD($sentencia);
         $devolver = ["error" => "No se pudo cargar los generos"];
         //Comprobamos si es un pdoStatement (Hay datos)
         if($resultado instanceof \PDOStatement) {
             //Array con todos los géneros
             $generos = $resultado->fetchAll(\PDO::FETCH_NUM);
-            $devolver = $generos;
+            $devolver = ["generos" => $generos];
         }
     }
     else {
@@ -26,8 +27,6 @@ try {
         $datosOblig = ["email", "pwd", "pwd2", "nombre", "apellidos", "fecha_nac"];
         //Cogemos el fichero de files
         $fichero = $_FILES["imagenPerfil"];
-        //Creamos el objeto BD
-        $bd = new bd();
         $resultado = $bd->registrarUsuario($datos, $datosOblig, $fichero);
         if(stripos($resultado, "error") === false) {
             $devolver = ["exito" => "Registro completado"];
@@ -45,4 +44,7 @@ catch(\Exception $error){
 }
 //Ponemos la cabecera
 header("Content-type: application/json");
-echo json_encode(utf8_encode($devolver));
+$bd->codificarArrayUtf8($devolver);
+$mensajeCod =  json_encode($devolver);
+echo $mensajeCod;
+//echo json_last_error_msg();

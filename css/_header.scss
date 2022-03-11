@@ -52,6 +52,14 @@ nav {
         margin-inline-end: 2%;
         margin-inline-start: 2%;
         text-transform: uppercase;
+
+        //Adaptación para móviles mediante aspect ratio
+        @media screen and (max-aspect-ratio:  195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+            &:last-of-type {
+                overflow: hidden;
+                width: calc(100%/2.5);
+            }
+        }
     }
 
     .navActive {

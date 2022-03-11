@@ -79,6 +79,12 @@ nav button {
           margin-inline-start: 2%;
   text-transform: uppercase;
 }
+@media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+  nav button:last-of-type {
+    overflow: hidden;
+    width: 40%;
+  }
+}
 nav .navActive {
   background-color: #ff9c42;
 }
@@ -421,7 +427,7 @@ main {
   border-radius: 10px 0px 0px 10px;
 }
 #suscripciones .contenidoTarjeta {
-  width: 100%;
+  flex-basis: 50%;
 }
 #suscripciones .contenidoTarjeta h2 {
   display: inline-block;
@@ -437,9 +443,11 @@ main {
 #suscripciones .contenidoTarjeta ul {
   width: 100%;
   height: 80%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  padding: 1%;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: 50% 50%;
+  grid-template-areas: ".." "..";
 }
 #suscripciones .contenidoTarjeta li {
   padding-left: 5%;
@@ -448,20 +456,23 @@ main {
   list-style: none;
 }
 #suscripciones .contenidoTarjeta img {
-  width: 40%;
-  position: absolute;
-  inset-inline-end: 15%;
-  inset-block-start: 50%;
-  transform: translateY(-50%);
+  display: block;
+  width: 150px;
+  height: 150px;
   border-radius: 10px;
+  margin: auto;
 }
 #suscripciones .contenidoTarjeta span {
   display: inline-block;
-  position: relative;
-  inset-block-start: 50%;
-  transform: translateY(-50%);
+  width: 100%;
+  -webkit-margin-after: 2%;
+          margin-block-end: 2%;
   font-size: 1.1em;
   color: #0291A5;
+  text-align: center;
+}
+#suscripciones .imagenCaja {
+  flex-basis: 50%;
 }
 #suscripciones:before {
   content: "";
@@ -518,17 +529,21 @@ main {
     -webkit-margin-before: 15%;
             margin-block-start: 15%;
   }
+  #suscripciones .imagenCaja {
+    order: 2;
+    border-radius: 0px 0px 10px 10px;
+    flex-basis: 100%;
+    height: 300px;
+  }
   #suscripciones:before, #suscripciones:after {
     width: 98%;
   }
   #suscripciones .tarjeta {
-    flex-direction: column;
+    flex-wrap: wrap;
     width: 70%;
   }
-  #suscripciones .tarjeta > img {
-    order: 2;
-    border-radius: 0px 0px 10px 10px;
-    width: 100%;
+  #suscripciones .contenidoTarjeta {
+    flex-basis: 100%;
   }
   #suscripciones .contenidoTarjeta h2 {
     margin: 0% auto;
@@ -559,16 +574,25 @@ main {
     -webkit-margin-before: 15%;
             margin-block-start: 15%;
   }
+  #suscripciones .imagenCaja {
+    order: 2;
+    border-radius: 0px 0px 10px 10px;
+    flex-basis: 100%;
+    height: 500px;
+  }
   #suscripciones:before, #suscripciones:after {
     width: 98%;
   }
   #suscripciones .tarjeta {
     width: 70%;
-    flex-direction: column;
+    flex-wrap: wrap;
   }
   #suscripciones .tarjeta > img {
     order: 2;
     border-radius: 0px 0px 10px 10px;
+  }
+  #suscripciones .contenidoTarjeta {
+    flex-basis: 100%;
   }
   #suscripciones .contenidoTarjeta h2 {
     margin: 0% auto;
@@ -1084,8 +1108,16 @@ ul li.list-group-item {
   padding: 5%;
   justify-content: space-between;
 }
-ul li.list-group-item div.image img {
-  width: 70%;
+ul li.list-group-item div.imagen {
+  position: relative;
+  flex-basis: 50%;
+}
+ul li.list-group-item div.imagen img {
+  width: 100%;
+  position: relative;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  transform: translate(-50%, -50%);
 }
 ul li.list-group-item div.info {
   width: 30%;
@@ -1099,6 +1131,7 @@ ul li.list-group-item div.info {
 }
 ul li.list-group-item .btn-info {
   color: white;
+  margin: 3% 0%;
 }
 
 .panel-primary {
@@ -1214,6 +1247,22 @@ ul li.list-group-item .btn-info {
   border-radius: 10px;
 }
 
+.masInfoTarjeta {
+  width: 350px;
+  height: 230px;
+  position: relative;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  overflow: hidden;
+  border-radius: 10px;
+}
+.masInfoTarjeta img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 @media (max-width: 1100px) {
   #form_partidas {
     flex-direction: column !important;
@@ -1222,6 +1271,32 @@ ul li.list-group-item .btn-info {
 @media (max-width: 750px) {
   #filtro_fechas {
     flex-direction: column;
+  }
+}
+@media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+  #masInfoPartida {
+    width: 100%;
+  }
+  #masInfoPartida button:not(button:last-of-type) {
+    margin: 3% 0%;
+  }
+
+  #form_partidas button {
+    width: 50% !important;
+  }
+
+  ul li.list-group-item {
+    flex-wrap: wrap;
+  }
+  ul li.list-group-item div.imagen {
+    flex-basis: 100%;
+  }
+  ul li.list-group-item div.info {
+    margin: 2% 0%;
+    flex-basis: 100%;
+  }
+  ul li.list-group-item div.info button {
+    margin: 2% 0%;
   }
 }
 main div.title {

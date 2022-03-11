@@ -2807,7 +2807,7 @@ function crearMasInfoPartida(datos) {
         let contenedorImagen = crearImg({"src": imagen["imagen"], "alt": "Foto partidas organizadas"});
         imagenes.push(contenedorImagen);
     });
-    let carrusel = crearCarrusel("imagenesPartida", "Cajas anteriores", imagenes, "partida");
+    let carrusel = crearCarrusel("imagenesPartida", "Cajas anteriores", imagenes, "partida", "masInfoTarjeta");
     //Creamos el botón para reservar
     let botonReservar = crearBoton("¡Reservar!", {"class": "btn btn-lg btn-success", "type": "button", "data-id": idPartida});
     //Le añadimos el escuchador
@@ -2880,7 +2880,7 @@ async function conseguirInfoPartida(e) {
  *
  * @return  {DOMElement}                      Carrusel
  */
-function crearCarrusel(idCarrusel, titulo, contenidoElementos, tipoCarrusel) {
+function crearCarrusel(idCarrusel, titulo, contenidoElementos, tipoCarrusel, classTarjeta = null) {
     //Creamos el contenedor
     let contenedorCarrusel = crearContenedor("div", {"id": idCarrusel, "class": "carousel slide", "data-bs-ride": "carousel"});
     //Creamos el encabezado
@@ -2888,7 +2888,7 @@ function crearCarrusel(idCarrusel, titulo, contenidoElementos, tipoCarrusel) {
     //Creamos los indicadores
     let ariaLabelIndicadores = [...Array(contenidoElementos.length).keys()].map(indice => tipoCarrusel + indice);
     let indicadores = crearIndicadoresCarrusel(idCarrusel, ariaLabelIndicadores);
-    let contenedorInterior = crearInteriorCarrusel(contenidoElementos);
+    let contenedorInterior = crearInteriorCarrusel(contenidoElementos, classTarjeta);
     //Creamos los botones para poder moverlo
     //Prev
     let botonPrev = crearElem("button", {"class": "carousel-control-prev", "type": "button", "data-bs-target": "#" + idCarrusel, "data-bs-slide": "prev"});
@@ -2934,7 +2934,7 @@ function crearIndicadoresCarrusel(id, labels) {
  *
  * @return  {DOMElement}                     Contenedor con el interiore del carrusel
  */
-function crearInteriorCarrusel(contenidoElemento) {
+function crearInteriorCarrusel(contenidoElemento, classTarjeta) {
     let contenedorInterior = crearContenedor("div", {"class": "carousel-inner"});
     //Creamos cada uno de los elementos
     contenidoElemento.forEach(elemento => {
@@ -2942,8 +2942,12 @@ function crearInteriorCarrusel(contenidoElemento) {
         let contenedor = crearContenedor("div", {"class": "carousel-item"});
         //Creamos la tarjeta
         let tarjeta = crearContenedor("div", {"class": "tarjeta"});
+        if(classTarjeta != null){
+            tarjeta.classList.add(classTarjeta);
+        }
         //Aañdimos todo
-        Array.isArray(elemento) ? contenedor.append(tarjeta, ...elemento)  : contenedor.append(tarjeta, elemento);
+        Array.isArray(elemento) ? tarjeta.append(...elemento)  : tarjeta.append(elemento);
+        contenedor.append(tarjeta);
         contenedorInterior.append(contenedor);
     });
     //Ponemos el primer elemento como activo

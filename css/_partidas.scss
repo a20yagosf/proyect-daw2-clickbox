@@ -1,15 +1,15 @@
 #info_partidas, #filtro, #result_panel, .pagination {
     padding: 3%;
-  }
+}
 
-  #filtro {
-    // Dado que los dropdowns vienen de un script externo modificaremos
-    // su tamaño sobreescribiendo el valor
-      .multiselect-dropdown {
-        width: 100% !important;
-        font-size: small;
-    }
+#filtro {
+  // Dado que los dropdowns vienen de un script externo modificaremos
+  // su tamaño sobreescribiendo el valor
+    .multiselect-dropdown {
+      width: 100% !important;
+      font-size: small;
   }
+}
 
 .list-group {
   max-height: 300px;
@@ -80,9 +80,18 @@ ul li.list-group-item {
   padding: 5%;
   justify-content: space-between;
 
-  div.image {
+  div.imagen {
+    position: relative;
+    flex-basis: 50%;
+
     img {
-      width: 70%;
+      width: 100%;
+      position: relative;
+      //Top
+      inset-block-start: 50%;
+      //Left
+      inset-inline-start: 50%;
+      transform: translate(-50%, -50%);
     }
   }
 
@@ -99,8 +108,10 @@ ul li.list-group-item {
 
   .btn-info {
     color: white;
+    margin: 3% 0%;
   }
 }
+
 // Como la base de la lista era muy pequeña para el tamaño de imagen le hemos dado unos límites más grandes
 .panel-primary {
   max-height: 1000px !important;
@@ -234,6 +245,25 @@ ul li.list-group-item {
   }
 }
 
+//Tarjeta del carrusel de mas Info
+.masInfoTarjeta {
+  width: 350px;
+  height: 230px;
+  position: relative;
+  //Left
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  overflow: hidden;
+  border-radius: $borderRadius;
+
+  img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
 // Para adaptar el formulario a las versiones portátiles
 // vamos a cambiar la disposición de algunos elementos
 
@@ -246,5 +276,41 @@ ul li.list-group-item {
 @media (max-width:750px)  {
   #filtro_fechas{
     flex-direction: column;
+  }
+}
+
+//Adaptación para móviles mediante aspect ratio
+@media screen and (max-aspect-ratio:  195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+  //#MasInfo
+  #masInfoPartida {
+      width: 100%;
+
+      button:not(button:last-of-type) {
+        margin: 3% 0%;
+      }
+  }
+
+  #form_partidas {
+    button {
+      width: 50% !important;
+    }
+  }
+
+  //Contenedor de cada una de las tarjetas
+  ul li.list-group-item {
+    flex-wrap: wrap;
+
+    div.imagen {
+      flex-basis: 100%;
+    }
+
+    div.info {
+      margin: 2% 0%;
+      flex-basis: 100%;
+
+      button {
+        margin: 2% 0%;
+      }
+    }
   }
 }

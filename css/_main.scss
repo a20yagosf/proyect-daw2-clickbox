@@ -188,7 +188,7 @@ main {
 
     //Contenedor del contenido de la caja
     .contenidoTarjeta {
-            width: 100%;
+            flex-basis: 50%;
 
             //Cabecera
             h2 {
@@ -208,10 +208,12 @@ main {
             ul {
                 width: 100%;
                 height: 80%;
+                padding: 1%;
                 //Flex
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
+                display: grid;
+                grid-template-columns: 50% 50%;
+                grid-template-rows: 50% 50%;
+                grid-template-areas: ".." "..";
             }
 
             li {
@@ -226,30 +228,30 @@ main {
             //Imagen de cada uno de los accesorios
             img {
                 //Posicionamiento y tamaño
+                display: block;
                 width: $sizeImgTarjeta;
-                position: absolute;
-                //Right
-                inset-inline-end: 15%;
-                //Top
-                inset-block-start: 50%;
-                //Centrado en el medio en Y
-                transform: translateY(-50%);
+                height: $sizeImgTarjeta;
                 border-radius: $borderRadius;
+                margin: auto;
             }
 
             //Texto de cada uno de los accesorios
             span {
                 //Posicionamiento en Y
                 display: inline-block;
-                position: relative;
-                //Top
-                inset-block-start: 50%;
-                transform: translateY(-50%);
+                width: 100%;
+                margin-block-end: 2%;
                 //Aspecto visual
                 font-size: 1.1em;
                 color: $colorPrincipal;
+                text-align: center;
             }
 
+    }
+
+    //Imagen caja
+    .imagenCaja {
+        flex-basis: 50%;
     }
 
     //Imagen que se muestra justo antes de suscripciones
@@ -276,6 +278,13 @@ main {
             padding-block-end: 15%;
             //margin bottom
             margin-block-start: 15%;
+
+            .imagenCaja {
+                order: 2;
+                border-radius: 0px 0px $borderRadius $borderRadius;
+                flex-basis: 100%;
+                height: $sizeCajaPequenho;
+            }
         }
 
         //Imagenes superior e inferior
@@ -284,17 +293,13 @@ main {
         }
 
         .tarjeta {
-            flex-direction: column;
+            flex-wrap: wrap;
             width: 70%;
-
-            & > img {
-                order: 2;
-                border-radius: 0px 0px $borderRadius $borderRadius;
-                width: 100%;
-            }
         }
 
         .contenidoTarjeta {         
+            flex-basis: 100%;
+
             h2 {
                 margin: 0% auto;
                 border-radius: $borderRadius $borderRadius 0px 0px;
@@ -331,6 +336,13 @@ main {
             padding-block-end: 7%;
             //Margin top
             margin-block-start: 15%;
+
+            .imagenCaja {
+                order: 2;
+                border-radius: 0px 0px $borderRadius $borderRadius;
+                flex-basis: 100%;
+                height: $sizeCaja;
+            }
         }
 
         //Imagenes superior e inferior
@@ -340,7 +352,7 @@ main {
 
         .tarjeta {
             width: 70%;
-            flex-direction: column;
+            flex-wrap: wrap;
 
             & > img {
                 order: 2;
@@ -348,7 +360,9 @@ main {
             }
         }
 
-        .contenidoTarjeta {         
+        .contenidoTarjeta {  
+            flex-basis: 100%;
+            
             h2 {
                 margin: 0% auto;
                 border-radius: $borderRadius $borderRadius 0px 0px;

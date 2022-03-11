@@ -47,7 +47,7 @@ class Bd {
         //Leo la configuración del archivo XML para conseguir la ip, base de datos, usuario y contraseña
         $config = $this->leerConfig();
         //Establezco la conexión con la base de datos
-        $pdo = new \PDO($config[0], $config[1], $config[2]);
+        $pdo = new \PDO($config[0] . ";charset=UTF8", $config[1], $config[2]);
         return $pdo;
     }
 
@@ -515,6 +515,11 @@ class Bd {
         return isset($resultado["pwd"]) ? $resultado["pwd"]: false;
     }
 
+    /**
+     * Carga los géneros desde la BD
+     *
+     * @return  mixed  Devuelve un string en caso de error o un array con los géneros
+     */
     public function cargarGeneros() {
         try {
             $sentencia = "SELECT nombre_genero FROM generos LIMIT 0, 25;";
@@ -532,5 +537,21 @@ class Bd {
             return "Error " . $error->getCode() . ": " . $error->getMessage();
         }
     }
-}
 
+    /**
+     * Codifica a utf8 el array o string
+     *
+     * @param   mixed  $array  Puede ser un array o una string
+     *
+     * @return  void          No devuelve nada
+     */
+    public function codificarArrayUtf8 (&$array) {
+        //Comprobamos si es un array
+        if(is_array($array)){
+            array_walk($array, [$this, "codificarArrayUtf8"]);
+        }
+        else if(is_string($array)){
+            $array = mb_convert_encoding($array, "UTF-8", "auto");
+        }
+    }
+}
