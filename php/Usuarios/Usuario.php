@@ -268,7 +268,7 @@ class Usuario
         }
         $renovar = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
         //Creamos la sentnecia
-        if($renovar != 1){
+        if($renovar ==0 || $renovar == null){
             return "No tienes activado para renovar la suscripcion";
         }
         $sentencia = "UPDATE usuarios SET renovar = 0 WHERE email = ?;";
@@ -276,7 +276,7 @@ class Usuario
         if(is_string($resultado) && stripos($resultado, "error") !== false){
             throw new \PDOException($resultado);
         }
-        return true;
+        return "Suscripción cancelada con éxito";
     }
 
     /**

@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS tematicas (
 	nombre_tematica VARCHAR(150) NOT NULL,
 	-- KEYS Y CONSTRAINS 
 	PRIMARY KEY (nombre_tematica)
-) ENGINE = INNODB;
+) ENGINE = INNODB, character set UTF8mb4 collate utf8mb4_bin;
 
 -- ---------------------------------------------------
 --				TABLA GENERO
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS generos (
 	nombre_genero VARCHAR(150) NOT NULL,
 	-- KEY Y CONSTRAINS 
 	PRIMARY KEY (nombre_genero)
-) ENGINE = INNODB;
+) ENGINE = INNODB, character set UTF8mb4 collate utf8mb4_bin;
 
 -- ---------------------------------------------------
 --				TABLA PRODUCTOS
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS productos (
    FOREIGN KEY (tematica) REFERENCES tematicas (nombre_tematica)
    	ON DELETE RESTRICT
    	ON UPDATE CASCADE
-) ENGINE = INNODB, AUTO_INCREMENT = 1; -- Se pone auto_increment para que empiece a 1 en vez de a 60
+) ENGINE = INNODB, AUTO_INCREMENT = 1, character set UTF8mb4 collate utf8mb4_bin; -- Se pone auto_increment para que empiece a 1 en vez de a 60
 
 -- ---------------------------------------------------
 --				TABLA JUEGO
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS juegos (
 	FOREIGN KEY (genero) REFERENCES generos (nombre_genero)
 		ON DELETE RESTRICT
 		ON UPDATE CASCADE
-) ENGINE = INNODB;
+) ENGINE = INNODB, character set UTF8mb4 collate utf8mb4_bin;
 
 -- ---------------------------------------------------
 --				TABLA ACCESORIO
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS accesorios (
 	FOREIGN KEY (accesorio) REFERENCES productos (id_producto)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
-) ENGINE = INNODB;
+) ENGINE = INNODB, character set UTF8mb4 collate utf8mb4_bin;
 
 -- ---------------------------------------------------
 --				TABLA SUSCRIPCION
@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS suscripciones (
 	
 	-- KEYS Y CONSTRAINS
 	PRIMARY KEY (duracion)
-) ENGINE INNODB;
+) ENGINE INNODB, character set UTF8mb4 collate utf8mb4_bin;
 
 -- ---------------------------------------------------
 --				TABLA ROlES
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS roles (
 	descripcion VARCHAR(150) NULL,
     -- KEYS Y CONSTRAINS 
    PRIMARY KEY (id_rol)
-)ENGINE = INNODB;
+)ENGINE = INNODB, character set UTF8mb4 collate utf8mb4_bin;
     
 
 -- ---------------------------------------------------
@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
    FOREIGN KEY (suscripcion) REFERENCES suscripciones (duracion)
    	ON DELETE SET NULL
    	ON UPDATE CASCADE
-) ENGINE = INNODB;
+) ENGINE = INNODB, character set UTF8mb4 collate utf8mb4_bin;
 
     
 -- ---------------------------------------------------
@@ -148,7 +148,7 @@ CREATE TABLE IF NOT EXISTS carritos (
 	FOREIGN KEY (usuario_carrito) REFERENCES usuarios (email)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
-) ENGINE = INNODB;
+) ENGINE = INNODB, character set UTF8mb4 collate utf8mb4_bin;
 
 -- ---------------------------------------------------
 --				TABLA PRODUCTO_CARRITO
@@ -167,7 +167,7 @@ CREATE TABLE IF NOT EXISTS productos_carritos (
 	FOREIGN KEY (producto) REFERENCES productos (id_producto)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
-) ENGINE = INNODB;
+) ENGINE = INNODB, character set UTF8mb4 collate utf8mb4_bin;
 
 -- ---------------------------------------------------
 --				TABLA CAJAS_SORPRESA
@@ -189,7 +189,7 @@ CREATE TABLE IF NOT EXISTS cajas_sorpresa (
    FOREIGN KEY (genero) REFERENCES generos (nombre_genero)
    	ON DELETE RESTRICT
    	ON UPDATE CASCADE
-) ENGINE = INNODB;
+) ENGINE = INNODB, character set UTF8mb4 collate utf8mb4_bin;
 
 -- ---------------------------------------------------
 --				TABLA CAJAS_SORPRESA_PRODUCTO
@@ -208,7 +208,7 @@ CREATE TABLE IF NOT EXISTS cajas_sorpresa_producto (
    FOREIGN KEY (producto) REFERENCES productos (id_producto)
    	ON DELETE RESTRICT
    	ON UPDATE CASCADE
-) ENGINE = INNODB;
+) ENGINE = INNODB, character set UTF8mb4 collate utf8mb4_bin;
 
 -- ---------------------------------------------------
 --				TABLA CAJAS_SORPRESA_USUARIO
@@ -225,7 +225,7 @@ CREATE TABLE IF NOT EXISTS cajas_sorpresa_usuarios (
 	FOREIGN KEY (usuario) REFERENCES usuarios (email)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
-) ENGINE INNODB;
+) ENGINE INNODB, character set UTF8mb4 collate utf8mb4_bin;
 
 
 -- ---------------------------------------------------
@@ -246,7 +246,7 @@ CREATE TABLE IF NOT EXISTS pedidos(
    FOREIGN KEY (usuario_pedido) REFERENCES usuarios (email)
 		ON DELETE RESTRICT
       ON UPDATE CASCADE
-) ENGINE = INNODB;
+) ENGINE = INNODB, character set UTF8mb4 collate utf8mb4_bin;
 
 -- ---------------------------------------------------
 --				TABLA PEDIDO_PRODUCTO
@@ -265,7 +265,7 @@ CREATE TABLE IF NOT EXISTS pedidos_productos (
 	FOREIGN KEY (producto) REFERENCES productos (id_producto)
 		ON DELETE CASCADE
       ON UPDATE CASCADE
-) ENGINE = INNODB;
+) ENGINE = INNODB, character set UTF8mb4 collate utf8mb4_bin;
 
 -- ---------------------------------------------------
 --				TABLA PARTIDAS
@@ -289,7 +289,7 @@ CREATE TABLE IF NOT EXISTS partidas (
 	FOREIGN KEY (juego_partida) REFERENCES juegos (juego)
 		ON DELETE RESTRICT
       ON UPDATE CASCADE
-) ENGINE = INNODB;
+) ENGINE = INNODB, character set UTF8mb4 collate utf8mb4_bin;
 
 -- ---------------------------------------------------
 --				TABLA partidas_imagenes
@@ -304,7 +304,7 @@ CREATE TABLE IF NOT EXISTS	partidas_imagenes (
 	FOREIGN KEY (partida) REFERENCES partidas (id_partida)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
-) ENGINE = INNODB;
+) ENGINE = INNODB, character set UTF8mb4 collate utf8mb4_bin;
 
 -- ---------------------------------------------------
 --				TABLA USUARIO_PARTIDA
@@ -324,7 +324,7 @@ CREATE TABLE IF NOT EXISTS usuarios_partidas (
 	FOREIGN KEY FK_PARTIDA_RESERVADA (partida) REFERENCES partidas (id_partida)
 		ON DELETE RESTRICT -- MIENTRAS HAYA PARTIDAS RESERVADAS NO SE PODRÁ BORRAR LA PARTIDA 
       ON UPDATE CASCADE
-) ENGINE = INNODB;
+) ENGINE = INNODB, character set UTF8mb4 collate utf8mb4_bin;
 
 -- ---------------------------------------------------
 --				TABLA HISTORICO_USUARIOS
@@ -344,7 +344,7 @@ CREATE TABLE IF NOT EXISTS historico_usuarios (
 	-- ÚLTIMO ACCESO NO SE GUARDA PORQUE SINO TENDRÍAMOS MUCHISIMAS ENTRADAS
 	suscripcion TINYINT NULL,
 	renovar BOOLEAN NULL
-)ENGINE MYISAM;
+)ENGINE MYISAM, character set UTF8mb4 collate utf8mb4_bin;
 
 /*-- CREACIÓN DE LOS USUARIOS DE LA BD
 -- USUARIO PARA LA CONEXIÓN Y REGISTRO DE USUARIOS

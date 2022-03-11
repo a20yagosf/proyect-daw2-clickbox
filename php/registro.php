@@ -4,19 +4,20 @@ use \Infraestructuras\Bd as bd;
 
 require_once "autocarga.php";
 $datos = json_decode(file_get_contents("php://input"), true);
+$devolver = ["prueba" => "Funciona"];
 try {
     if(isset($datos["cargarGeneros"])){
         //Ejecutamos la sentencia para obtener los géneros
         $bd = new bd();
         $sentencia = "SELECT nombre_genero FROM generos LIMIT 0, 25;";
         $resultado = $bd->recuperDatosBD($sentencia);
+        $devolver = ["error" => "No se pudo cargar los generos"];
         //Comprobamos si es un pdoStatement (Hay datos)
         if($resultado instanceof \PDOStatement) {
             //Array con todos los géneros
             $generos = $resultado->fetchAll(\PDO::FETCH_NUM);
+            $devolver = $generos;
         }
-        //Devolvemos el array de géneros o el error
-        $devolver = ["generos" => $generos];
     }
     else {
         //Cogemos los datos del POST que corresponden con todos los datos menos el fichero
@@ -42,5 +43,6 @@ catch(\PDOException $pdoError){
 catch(\Exception $error){
     $devolver = ["error" => $error];
 }
-echo json_encode($devolver);
-
+//Ponemos la cabecera
+header("Content-type: application/json");
+echo json_encode(utf8_encode($devolver));
