@@ -202,6 +202,8 @@ function crearNav(redireccion, elementosNav, rol) {
    let enlacePartidas = crearEnlace("../html/partidas.html", "Partidas");
    enlacePartidas.addEventListener("click", irPartidas);
    let enlaceTienda = crearEnlace("#", "Tienda");
+   // Añadimos el tooltip a Tienda, que está en construcción
+   crearTooltipDesarrollo(enlaceTienda);
     //Creamos la lista
     let lista = crearLista("ul", [enlaceSuscripciones, enlacePartidas, enlaceTienda], {"id": "listaNav", "class": "collapse navbar-collapse"});
     lista.lastElementChild.setAttribute("class", "navDesactivado");
@@ -253,6 +255,8 @@ function crearFooter() {
     let enlacePartidas = crearEnlace("../html/partidas.html", "Partidas");
     enlacePartidas.addEventListener("click", irPartidas);
     let enlaceTienda = crearEnlace("#", "Tienda");
+    // Añadimos el tooltip a Tienda, que está en construcción
+    crearTooltipDesarrollo(enlaceTienda);
     let lista = crearLista("ul", [enlaceLogo, enlaceProteccion, enlaceSuscripciones, enlacePartidas, enlaceTienda]);
     lista.setAttribute("id", "infoPag");
 
@@ -2402,7 +2406,7 @@ async function eliminarPartida(idPartida) {
         if(Object.hasOwn(respuestaJSON, "error")) {
             throw respuestaJSON["error"];
         }
-        //Recargamos las partidar
+        //Recargamos las partidas
         cargarPartidasAdmin();
     }
     catch(error) {
@@ -3364,4 +3368,20 @@ function cogerFiltroHistorialAdmin(e) {
     let fechaFin = document.getElementById("filtroFechaFinHistorial").value;
     fechaFin != "" ? filtro["fechaFin"] = fechaFin : "";
     filtrarHistorialAdmin(filtro, pagina, limite);
+}
+
+/**
+ * Se le pasa un enlace creado para uso DOM y lo prototipa para que tenga un tooltip de Bootstrap
+ * "En desarrollo", para aquellas partes de la página sin funcionalidades terminadas
+ *
+ * @param   {string}  enlace  Un enlace al que queramos añadir el tooltip
+ *
+ * @return  {string}          devuelve el mismo enlace pero con las adiciones necesarias para mostrar el tooltip
+ */
+function crearTooltipDesarrollo(enlace){
+    // Necesitamos añadir al enlace dos atributos
+    enlace.setAttribute("data-bs-toggle","tooltip");
+    enlace.setAttribute("title","En desarrollo");
+    // Devolvemos el enlace con los cambios
+    return enlace;
 }

@@ -2951,4 +2951,8 @@ footer a:hover {
   height: 150px;
   border-radius: 10px;
   z-index: 2;
+}
+
+#cookie-bar {
+  background: #0291A5 !important;
 }/*# sourceMappingURL=styles.css.map */
