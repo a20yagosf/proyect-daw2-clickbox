@@ -252,6 +252,11 @@ main {
     //Imagen caja
     .imagenCaja {
         flex-basis: 50%;
+        height: $altoSuscriptImg;
+        background-color: white;
+        background-position: center;
+        background-size: contain;
+        background-repeat: no-repeat;
     }
 
     //Imagen que se muestra justo antes de suscripciones
@@ -577,6 +582,14 @@ main {
         font-size: 2.5rem;
     }
 
+    //Cada uno de los contenedor de la imagen
+    .imagenTienda {
+        @include contenedor($sizeImgTienda, $sizeImgTienda, white);
+        background-size: cover;
+        background-position: center;
+        border-radius: $borderRadius;
+    }
+
     //Adaptación a movil
     @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
         &:before {
@@ -609,6 +622,7 @@ main {
                 }
             }
 
+            
         }
     }
 
@@ -837,6 +851,8 @@ main {
 #botonAccesiblidad {
     @include boton($colorPrincipal, 1em);
     padding: 2%;
+    width: $sizeBotonAccesibilidad;
+    height: $sizeBotonAccesibilidad;
     background-image: url("../img/iconos/accesibilidad.svg");
     background-size: contain;
     background-repeat: no-repeat;
@@ -856,8 +872,9 @@ main {
         }
 
         & + div {
-            //Left
-            inset-inline-end: 15%;
+            //Right
+            inset-inline-end: 85px;
+            transform: translateY(-2%);
         }
     }
     //Adaptación para tablets mediante aspect ratio
@@ -868,7 +885,46 @@ main {
 
         & + div {
             //Right
-            inset-inline-end: 9%;
+            inset-inline-end: 85px;
+            transform: translateY(-5%);
+        }
+    }
+}
+
+//Ventana de carga
+#ventanaCarga {
+    @include contenedor(100%, 100%, $colorLetra);
+    position: absolute;
+    //Top
+    inset-block-start: 0%;
+    //Left
+    inset-inline-start: 0%;
+    z-index: 20;
+
+    svg {
+        width: 500px;
+        height: 300px;
+        position: relative;
+        //Top
+        inset-block-start: 50%;
+        //Left
+        inset-inline-start: 50%;
+        transform: translate(-50%,-50%);
+
+        text {
+            font-family: "PoetsenOne";
+            font-size: 2em;
+            fill: $colorPrincipal;
+        }
+    
+        image, rect {
+            width: 500px;
+            height: 229px;
+        }
+    
+        rect {
+            fill: $colorPrincipal;
+            transform: rotate(180deg) translate(-500px, -229px);
         }
     }
 }

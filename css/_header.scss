@@ -35,6 +35,13 @@ header {
          //Animación de las letras
         animation: movimientoAlerta 40s linear 0s forwards infinite;
     }
+
+    #textoUltimasNov {
+        color: $colorLetra;
+        position: relative;
+         //Animación de las letras
+        animation: movimientoAlerta 40s linear 0s forwards infinite;
+    }
 }
 
 //Nav donde se encuentran los botones para movernos por las páginas

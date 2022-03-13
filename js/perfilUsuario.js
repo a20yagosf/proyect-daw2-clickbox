@@ -2,6 +2,9 @@
 cargarScripts();
 
 window.onload = function () {
+    let ventanaCarga = document.getElementById("ventanaCarga");
+    ventanaCarga.style.display = "block";
+    ventanaCarga.style.top = window.scrollY + "px";
     loginAutomatico();
     crearHeader();
     crearFooter();
@@ -18,4 +21,6 @@ window.onload = function () {
     document.querySelector("form").addEventListener("submit", guardarCambiosPerfil);
     // Cargamos los datos del usuario
     cargarDatosPerfil();
+    //Eliminamos la pantalla de carga
+    ventanaCarga.style.display = "none";
 };

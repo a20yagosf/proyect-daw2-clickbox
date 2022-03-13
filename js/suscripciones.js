@@ -3,6 +3,9 @@
 cargarScripts();
 
 window.onload = function () {
+    let ventanaCarga = document.getElementById("ventanaCarga");
+    ventanaCarga.style.display = "block";
+    ventanaCarga.style.top = window.scrollY + "px";
     loginAutomatico();
     //Creamos el header
     crearHeader();
@@ -14,4 +17,6 @@ window.onload = function () {
     //Creamos el mapa
     crearMapa();
     crearBotonAccesibilidad();
+    //Eliminamos la pantalla de carga
+    ventanaCarga.style.display = "none";
 };

@@ -175,18 +175,15 @@ CREATE TABLE IF NOT EXISTS productos_carritos (
 DROP TABLE IF EXISTS cajas_sorpresa;
 CREATE TABLE IF NOT EXISTS cajas_sorpresa (
 	id_caja INT UNSIGNED AUTO_INCREMENT NOT NULL,
-   num_jug VARCHAR(4) NOT NULL,
    fecha DATE NOT NULL,
+   img_caja VARCHAR(255) NULL,
+   unidades SMALLINT UNSIGNED NOT NULL,
    -- RELACIONES
    tematica VARCHAR(150) NULL,
-   genero VARCHAR(150) NOT NULL,
    -- KEY Y CONSTRAINS 
    PRIMARY KEY (id_caja),
    UNIQUE INDEX AK_FECHA (fecha), -- PUEDE SER QUE CONSUMA DEMASIADOS RECURSOS AUNQUE AGILICE LA BÚSQUEDA (??) 
    FOREIGN KEY (tematica) REFERENCES tematicas (nombre_tematica)
-   	ON DELETE RESTRICT
-   	ON UPDATE CASCADE,
-   FOREIGN KEY (genero) REFERENCES generos (nombre_genero)
    	ON DELETE RESTRICT
    	ON UPDATE CASCADE
 ) ENGINE = INNODB, character set UTF8mb4 collate utf8mb4_bin;
@@ -200,7 +197,6 @@ CREATE TABLE IF NOT EXISTS cajas_sorpresa_producto (
 	caja_sorpresa INT UNSIGNED NOT NULL,
    producto INT UNSIGNED NOT NULL,
    -- KEY Y CONSTRAINS 
-   unidades SMALLINT UNSIGNED NOT NULL,
    PRIMARY KEY (id_caja_sorpresa_producto),
    FOREIGN KEY (caja_sorpresa) REFERENCES cajas_sorpresa (id_caja)
    	ON DELETE CASCADE
@@ -346,12 +342,15 @@ CREATE TABLE IF NOT EXISTS historico_usuarios (
 	renovar BOOLEAN NULL
 )ENGINE MYISAM, character set UTF8mb4 collate utf8mb4_bin;
 
-/*-- CREACIÓN DE LOS USUARIOS DE LA BD
+-- CREACIÓN DE LOS USUARIOS DE LA BD
 -- USUARIO PARA LA CONEXIÓN Y REGISTRO DE USUARIOS
 GRANT SELECT, INSERT ON a2da_clickbox.usuarios TO 'a2da_conexion'@'localhost' IDENTIFIED BY '123456';
 GRANT SELECT ON a2da_clickbox.generos TO 'a2da_conexion'@'localhost';
 GRANT SELECT ON a2da_clickbox.roles TO 'a2da_conexion'@'localhost';
 GRANT SELECT ON a2da_clickbox.suscripciones TO 'a2da_conexion'@'localhost';
+GRANT SELECT ON a2da_clickbox.cajas_sorpresa TO 'a2da_conexion'@'localhost';
+GRANT SELECT ON a2da_clickbox.cajas_sorpresa_producto TO 'a2da_conexion'@'localhost';
+GRANT SELECT ON a2da_clickbox.productos TO 'a2da_conexion'@'localhost';
 -- USUARIO ESTÁNDAR PARA LOS USUARIOS REGISTRADOS
 GRANT SELECT, UPDATE ON a2da_clickbox.usuarios TO 'a2da_estandar'@'localhost' IDENTIFIED BY 'renaido';
 GRANT SELECT, INSERT ON a2da_clickbox.pedidos TO 'a2da_estandar'@'localhost';
@@ -368,6 +367,8 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.productos_carritos TO 'a2d
 GRANT SELECT, INSERT, DELETE ON a2da_clickbox.usuarios_partidas TO 'a2da_estandar'@'localhost';
 GRANT SELECT ON a2da_clickbox.partidas_imagenes TO 'a2da_estandar'@'localhost';
 GRANT SELECT ON a2da_clickbox.historico_usuarios TO 'a2da_estandar'@'localhost';
+GRANT SELECT ON a2da_clickbox.cajas_sorpresa TO 'a2da_conexion'@'localhost';
+GRANT SELECT ON a2da_clickbox.cajas_sorpresa_producto TO 'a2da_conexion'@'localhost';
 -- USUARIO ADMINISTRADOR
 GRANT SELECT, UPDATE ON a2da_clickbox.usuarios TO 'a2da_admin'@'localhost' IDENTIFIED BY 'abc123.';
 GRANT SELECT, INSERT ON a2da_clickbox.pedidos TO 'a2da_admin'@'localhost';
@@ -386,7 +387,7 @@ GRANT SELECT ON a2da_clickbox.roles TO 'a2da_admin'@'localhost';
 GRANT SELECT, INSERT ON a2da_clickbox.tematicas TO 'a2da_admin'@'localhost';
 GRANT SELECT, INSERT ON a2da_clickbox.generos TO 'a2da_admin'@'localhost';
 GRANT SELECT, INSERT ON a2da_clickbox.partidas_imagenes TO 'a2da_admin'@'localhost';
-GRANT SELECT ON a2da_clickbox.historico_usuarios TO 'a2da_admin'@'localhost'; */
+GRANT SELECT ON a2da_clickbox.historico_usuarios TO 'a2da_admin'@'localhost';
 
 -- DISPARADORES
 DELIMITER $$
@@ -545,34 +546,39 @@ INSERT INTO productos
 		VALUES 
 	("Catán", 40, 50, "../img/juegos/catan.jpg"),
 	("Bienvenido a la mazmorra", 15, 25, "../img/juegos/bienvenidoAlaMazmorra.jpg"),
-  ("Código Secreto", 19 , 100, "../img/juegos/codigoSecreto.png"),
-  ("Timeline", 12 , 80, "../img/juegos/timeline.jpg"),
-  ("Patchwork",  18 , 20, "../img/juegos/patchwork.jpg"),
-  ("Mondrian",25,50, "../img/imagenNoDisponible.jpg"),
-  ("Osopark", 27 , 50, "../img/juegos/Osopark.jpg"),
-  ("Torre de gatos", 18 , 50, "../img/juegos/Torredegatos.jpg"),
-  ("Demon Worker",28,50, "../img/juegos/DemonWorker.jpg"),
-  ("Vampiro: La Mascarada 5ª edición",40,50, "../img/juegos/Vampiro_LaMascarada.jpg"),
-  ("Maho Shojo",30,50, "../img/imagenNoDisponible.jpg"),
-  ("Luna Capital",35,50, "../img/imagenNoDisponible.jpg"),
-  ("Plata",10,50, "../img/imagenNoDisponible.jpg"),
-  ("Lapsus",14,50, "../img/imagenNoDisponible.jpg"),
-  ("The Game",14,50, "../img/imagenNoDisponible.jpg"),
-  ("Not Alone", 18,50, "../img/imagenNoDisponible.jpg"),
-  ("Space Opera",26,50, "../img/imagenNoDisponible.jpg"),
-  ("4 Seasons",14,50, "../img/juegos/4Seasons.jpg"),
-  ("Sword Art Online: Sword of fellows",27,50, "../img/juegos/SwordArtOnline_Swordoffellows.jpg"),
-  ("Axio",30,50,  "../img/juegos/Axio.jpg"),
-  ("Trapwords",10,50, "../img/imagenNoDisponible.jpg"),
-  ("One key",22,50, "../img/imagenNoDisponible.jpg"),
-  ("On the origin of species",18,50, "../img/juegos/Ontheoriginofspecies.jpg"),
-  ("Wingspan", 27,50, "../img/juegos/Wingspan.jpg"),
-  ("The Magnificient",50,50, "../img/imagenNoDisponible.jpg"),
-  ("Cat Café",15,50, "../img/juegos/Catcafe.jpg"),
-   ("Kitchen rush",46,50, "../img/juegos/Kitchenrush.jpg"),
-    -- accesorios
-  ("Dado de 20 caras", 1,200, "../accesorios/Dado20Caras.jpg"),
-  ("Fundas de cartas", 5,200, "../accesorios/FundaCartas.jpg");
+	("Código Secreto", 19 , 100, "../img/juegos/codigoSecreto.png"),
+	("Timeline", 12 , 80, "../img/juegos/timeline.jpg"),
+	("Patchwork",  18 , 20, "../img/juegos/patchwork.jpg"),
+	("Mondrian",25,50, "../img/imagenNoDisponible.jpg"),
+	("Osopark", 27 , 50, "../img/juegos/Osopark.jpg"),
+	("Torre de gatos", 18 , 50, "../img/juegos/Torredegatos.jpg"),
+	("Demon Worker",28,50, "../img/juegos/DemonWorker.jpg"),
+	("Vampiro: La Mascarada 5ª edición",40,50, "../img/juegos/Vampiro_LaMascarada.jpg"),
+	("Maho Shojo",30,50, "../img/imagenNoDisponible.jpg"),
+	("Luna Capital",35,50, "../img/imagenNoDisponible.jpg"),
+	("Plata",10,50, "../img/imagenNoDisponible.jpg"),
+	("Lapsus",14,50, "../img/imagenNoDisponible.jpg"),
+	("The Game",14,50, "../img/imagenNoDisponible.jpg"),
+	("Not Alone", 18,50, "../img/imagenNoDisponible.jpg"),
+	("Space Opera",26,50, "../img/imagenNoDisponible.jpg"),
+	("4 Seasons",14,50, "../img/juegos/4Seasons.jpg"),
+	("Sword Art Online: Sword of fellows",27,50, "../img/juegos/SwordArtOnline_Swordoffellows.jpg"),
+	("Axio",30,50,  "../img/juegos/Axio.jpg"),
+	("Trapwords",10,50, "../img/imagenNoDisponible.jpg"),
+	("One key",22,50, "../img/imagenNoDisponible.jpg"),
+	("On the origin of species",18,50, "../img/juegos/Ontheoriginofspecies.jpg"),
+	("Wingspan", 27,50, "../img/juegos/Wingspan.jpg"),
+	("The Magnificient",50,50, "../img/imagenNoDisponible.jpg"),
+	("Cat Café",15,50, "../img/juegos/Catcafe.jpg"),
+	("Kitchen rush",46,50, "../img/juegos/Kitchenrush.jpg"),
+		-- accesorios
+	("Dado de 20 caras", 1,200, "../img/accesorios/Dado20Caras.jpg"),
+	("Fundas de cartas", 5,200, "../img/accesorios/FundaCartas.jpg"),
+	("Set oceano de dados", 50,70, "../img/accesorios/dadosSetAzul.jpg"),
+	("Bolsa Wingspan", 20,30, "../img/accesorios/BolsaWingspan.jpg"),
+	("Bolsa dragon", 9,60, "../img/accesorios/bolsaDragon.jpg"),
+	("Libreta Demon Workers", 15,75, "../img/accesorios/LibretaDomWorkers.jpg"),
+	("Taza 4 Seasons", 25,45, "../img/accesorios/Taza4Seasons.jpg");
 
 INSERT INTO juegos
     (juego, num_jug, genero) 
@@ -609,4 +615,29 @@ INSERT INTO accesorios
     (accesorio) 
 		VALUES
     (28),
-    (29);
+    (29),
+	(30),
+  	(31),
+  	(32),
+  	(33),
+	(34);
+
+	INSERT INTO cajas_sorpresa
+	(fecha, img_caja, unidades)
+	VALUES
+	("2021-12-23", "../img/cajasSorpresa/20211223.jpg", 30),
+	("2022-01-12", "../img/cajasSorpresa/20220112.jpg", 45),
+	("2022-02-01", "../img/cajasSorpresa/20220201.jpg", 60);
+
+	INSERT INTO cajas_sorpresa_producto
+	(caja_sorpresa, producto)
+	VALUES
+	(1, 9),
+	(1, 29),
+	(1, 33),
+	(2, 24),
+	(2, 32),
+	(2, 30),
+	(2, 31),
+	(3, 18),
+	(3, 34);
