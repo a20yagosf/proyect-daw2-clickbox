@@ -18,15 +18,17 @@ window.onload = async function () {
     document.getElementById("panelAdmin").querySelector("a").addEventListener("click", ocultarMostrarOpcionesCreacion);
     //Creamos el mapa
     crearMapa();
-    //Seleccionamos los class development y los prototipamos
-    asignarTooltips();
-    //Activamos los tooltips, en este caso los atributos son estáticos
-    activarTooltips();
     //Cargamos el modo para usuarios
-    await cargarModoUsuariosAdmin();
+    cargarModoUsuariosAdmin();
+    //Cargamos los usuarios
+    await cargarUsuarios();
     crearBotonAccesibilidad();
     //Añadimos los escuchadores
     document.getElementById("pestPartidas").addEventListener("click", cargarPartidasAdmin);
     document.getElementById("pestUsuarios").addEventListener("click", cargarModoUsuariosAdmin);
+    //Seleccionamos los class development y los prototipamos
+    asignarTooltips();
+    //Activamos los tooltips, en este caso los atributos son estáticos
+    activarTooltips();
     activarScroll();
 };
