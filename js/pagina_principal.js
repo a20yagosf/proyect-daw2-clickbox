@@ -27,6 +27,10 @@ window.onload = async function () {
     //crearVentanaCarga();
     //Creamos el mapa
     crearMapa();
+    //Seleccionamos los class development y los prototipamos
+    asignarTooltips();
+    //Activamos los tooltips
+    activarTooltips();
     //Eliminamos la pantalla de carga
     ventanaCarga.style.display = "none";
     //Activamos el scroll
