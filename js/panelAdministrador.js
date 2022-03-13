@@ -20,6 +20,8 @@ window.onload = function () {
     document.getElementById("panelAdmin").querySelector("a").addEventListener("click", ocultarMostrarOpcionesCreacion);
     //Creamos el mapa
     crearMapa();
+    //Activamos los tooltips, en este caso los atributos son estáticos
+    activarTooltips();
     //Cargamos el modo para usuarios
     cargarModoUsuariosAdmin();
     crearBotonAccesibilidad();

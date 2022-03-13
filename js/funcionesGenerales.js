@@ -264,8 +264,8 @@ function crearNav(redireccion, elementosNav, rol) {
    let enlacePartidas = crearEnlace("../html/partidas.html", "Partidas");
    enlacePartidas.addEventListener("click", irPartidas);
    let enlaceTienda = crearEnlace("#", "Tienda");
-   // Añadimos el tooltip a Tienda, que está en construcción
-   crearTooltipDesarrollo(enlaceTienda);
+   // La Tienda estará en desarrollo
+   enlaceTienda.classList.add('development');
     //Creamos la lista
     let lista = crearLista("ul", [enlaceSuscripciones, enlacePartidas, enlaceTienda], {"id": "listaNav", "class": "collapse navbar-collapse"});
     lista.lastElementChild.setAttribute("class", "navDesactivado");
@@ -296,8 +296,8 @@ function crearFooter() {
     let enlacePartidas = crearEnlace("../html/partidas.html", "Partidas");
     enlacePartidas.addEventListener("click", irPartidas);
     let enlaceTienda = crearEnlace("#", "Tienda");
-    // Añadimos el tooltip a Tienda, que está en construcción
-    crearTooltipDesarrollo(enlaceTienda);
+    // La Tienda estará en desarrollo
+    enlaceTienda.classList.add('development');
     let lista = crearLista("ul", [enlaceLogo, enlaceProteccion, enlaceSuscripciones, enlacePartidas, enlaceTienda]);
     lista.setAttribute("id", "infoPag");
 
@@ -3412,19 +3412,30 @@ function cogerFiltroHistorialAdmin(e) {
 }
 
 /**
- * Se le pasa un enlace creado para uso DOM y lo prototipa para que tenga un tooltip de Bootstrap
- * "En desarrollo", para aquellas partes de la página sin funcionalidades terminadas
+ * Selecciona aquellos elementos con la clase development y los prepara
+ * para funcionar como tooltips
  *
- * @param   {string}  enlace  Un enlace al que queramos añadir el tooltip
- *
- * @return  {string}          devuelve el mismo enlace pero con las adiciones necesarias para mostrar el tooltip
+ * @return  {[void]}  No devuelve nada
  */
-function crearTooltipDesarrollo(enlace){
-    // Necesitamos añadir al enlace dos atributos
-    enlace.setAttribute("data-bs-toggle","tooltip");
-    enlace.setAttribute("title","En desarrollo");
-    // Devolvemos el enlace con los cambios
-    return enlace;
+function asignarTooltips(){
+    $( ".development" ).each(function() {
+        // Aquellos elementos de la clase development van a tener los atributos para el tooltip
+        $(this).attr("data-toggle","tooltip");
+        $(this).attr("data-placement","top");
+        $(this).attr("title","En desarrollo");
+    });
+}
+
+/**
+ * Activa los tooltips
+ *
+ * @return  {[void]}  No devuelve nada
+ */
+function activarTooltips(){
+    $(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
 }
 
 /* Carga las 3 últimas cajas sorpresa (sin contar la de ese mes)
@@ -3567,6 +3578,8 @@ async function cargarProductosMain() {
             tarjeta.append(contenedorID, imagen, contenedorDesc);
             //Creamos el botón
             let botonComprar = crearBoton("Comprar", {"type": "button", "class": "botonDesac"});
+            // Añadimos a los botones la clase development
+            botonComprar.classList.add('development');
             contenedorElementoTienda.append(tarjeta, botonComprar);
             tienda.append(contenedorElementoTienda);
         });
