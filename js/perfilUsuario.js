@@ -1,10 +1,8 @@
 //Carga los script
 cargarScripts();
 
-window.onload = function () {
-    let ventanaCarga = document.getElementById("ventanaCarga");
-    ventanaCarga.style.display = "block";
-    ventanaCarga.style.top = window.scrollY + "px";
+window.onload = async function () {
+    desactivarScroll();
     loginAutomatico();
     crearHeader();
     crearFooter();
@@ -25,7 +23,6 @@ window.onload = function () {
     //Le añadimos el escuchador al boton del input
     document.querySelector("form").addEventListener("submit", guardarCambiosPerfil);
     // Cargamos los datos del usuario
-    cargarDatosPerfil();
-    //Eliminamos la pantalla de carga
-    ventanaCarga.style.display = "none";
+    await cargarDatosPerfil();
+    activarScroll();
 };

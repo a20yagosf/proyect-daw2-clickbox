@@ -3,10 +3,6 @@ cargarScripts();
 
 
 window.onload = async function () {
-    let ventanaCarga = document.getElementById("ventanaCarga");
-    ventanaCarga.style.display = "block";
-    ventanaCarga.style.top = window.scrollY + "px";
-    document.querySelector("body").addEventListener("scroll", desactivarScroll);
     desactivarScroll();
     loginAutomatico();
     //Creamos el header
@@ -23,7 +19,7 @@ window.onload = async function () {
     botonesPartidas.forEach(boton => boton.addEventListener("click", irPartidas));
     crearBotonAccesibilidad();
     await cargarUltimasCajas();
-    await cargarProductosMain();
+    cargarProductosMain();
     //crearVentanaCarga();
     //Creamos el mapa
     crearMapa();
@@ -31,8 +27,6 @@ window.onload = async function () {
     asignarTooltips();
     //Activamos los tooltips
     activarTooltips();
-    //Eliminamos la pantalla de carga
-    ventanaCarga.style.display = "none";
     //Activamos el scroll
     activarScroll();
 };

@@ -2,10 +2,8 @@
 //Carga los script
 cargarScripts();
 
-window.onload = function () {
-    let ventanaCarga = document.getElementById("ventanaCarga");
-    ventanaCarga.style.display = "block";
-    ventanaCarga.style.top = window.scrollY + "px";
+window.onload = async function () {
+    desactivarScroll();
     loginAutomatico();
     //Creamos el header
     crearHeader();
@@ -17,11 +15,10 @@ window.onload = function () {
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl)
     });
-    cargarTiposSuscripciones();
+    await cargarTiposSuscripciones();
     document.getElementById("listaNav").firstElementChild.setAttribute("class", "navActive");
     //Creamos el mapa
     crearMapa();
     crearBotonAccesibilidad();
-    //Eliminamos la pantalla de carga
-    ventanaCarga.style.display = "none";
+    activarScroll();
 };

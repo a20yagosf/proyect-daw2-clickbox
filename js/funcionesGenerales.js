@@ -3642,6 +3642,10 @@ function asignarAtributos(elemento, atributos) {
  * @return  {void}  No devuelve nada
  */
 function desactivarScroll() {
+    //Creamos la pantalla de carga
+    let ventanaCarga = document.getElementById("ventanaCarga");
+    ventanaCarga.style.display = "block";
+    ventanaCarga.style.top = window.scrollY + "px";
     // Para navegadores modernos de  Chrome que requieren { passive: false } al añadir un evento
     let supportsPassive = false;
     try {
@@ -3664,6 +3668,8 @@ function desactivarScroll() {
  * @return  {void}  No devuelve nada
  */
 function activarScroll() {
+    //Eliminamos la pantalla de carga
+    ventanaCarga.style.display = "none";
     // Para navegadores modernos de  Chrome que requieren { passive: false } al añadir un evento
     let supportsPassive = false;
     try {

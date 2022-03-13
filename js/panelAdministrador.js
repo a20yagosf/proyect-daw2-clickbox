@@ -2,10 +2,8 @@
 restringirAccesoNoAdmin();
 cargarScripts();
 
-window.onload = function () {
-    let ventanaCarga = document.getElementById("ventanaCarga");
-    ventanaCarga.style.display = "block";
-    ventanaCarga.style.top = window.scrollY + "px";
+window.onload = async function () {
+    desactivarScroll();
     loginAutomatico();
     crearHeader();
     crearFooter();
@@ -23,11 +21,10 @@ window.onload = function () {
     //Activamos los tooltips, en este caso los atributos son estáticos
     activarTooltips();
     //Cargamos el modo para usuarios
-    cargarModoUsuariosAdmin();
+    await cargarModoUsuariosAdmin();
     crearBotonAccesibilidad();
     //Añadimos los escuchadores
     document.getElementById("pestPartidas").addEventListener("click", cargarPartidasAdmin);
     document.getElementById("pestUsuarios").addEventListener("click", cargarModoUsuariosAdmin);
-    //Eliminamos la pantalla de carga
-    ventanaCarga.style.display = "none";
+    activarScroll();
 };

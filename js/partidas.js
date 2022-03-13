@@ -1,10 +1,8 @@
 //Carga los script
 cargarScripts();
 
-window.onload = function () {
-    let ventanaCarga = document.getElementById("ventanaCarga");
-    ventanaCarga.style.display = "block";
-    ventanaCarga.style.top = window.scrollY + "px";
+window.onload = async function () {
+    desactivarScroll();
     loginAutomatico();
     //Creamos el header
     crearHeader();
@@ -18,7 +16,7 @@ window.onload = function () {
     });
     //Cargamos los géneros
     crearOptionGeneros(document.getElementById("generos"));
-    cargarPartidas();
+    await cargarPartidas();
     //Añadimos el escuchador a filtro
     document.getElementById("filtro_fechas").nextElementSibling.addEventListener("click", filtrarPartidas);
     document.getElementById("listaNav").children[1].setAttribute("class", "navActive");
@@ -27,4 +25,6 @@ window.onload = function () {
     crearBotonAccesibilidad();
     //Eliminamos la pantalla de carga
     ventanaCarga.style.display = "none";
+    //Activamos el scroll
+    activarScroll();
 };

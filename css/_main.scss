@@ -21,6 +21,17 @@ body {
     background-color: $botonDesac !important;
 }
 
+.ventanaDesc {
+    color:  oscurecerColor($ventanaDesac) !important;
+    background-color: $ventanaDesac !important;
+    border-radius: $borderRadius $borderRadius 0px 0px !important;
+
+    &:hover {
+        color: oscurecerColor($ventanaDesac);
+        border: none !important;
+    }
+}
+
 
 a {
     text-decoration: none;

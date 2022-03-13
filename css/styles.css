@@ -316,6 +316,16 @@ body .monocromatico {
   background-color: #7e9296 !important;
 }
 
+.ventanaDesc {
+  color: #adb1be !important;
+  background-color: #e6e7eb !important;
+  border-radius: 10px 10px 0px 0px !important;
+}
+.ventanaDesc:hover {
+  color: #adb1be;
+  border: none !important;
+}
+
 a {
   text-decoration: none;
 }
