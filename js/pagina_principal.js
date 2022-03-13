@@ -1,10 +1,13 @@
 //Carga los script
 cargarScripts();
 
-window.onload = function () {
+
+window.onload = async function () {
     let ventanaCarga = document.getElementById("ventanaCarga");
     ventanaCarga.style.display = "block";
     ventanaCarga.style.top = window.scrollY + "px";
+    document.querySelector("body").addEventListener("scroll", desactivarScroll);
+    desactivarScroll();
     loginAutomatico();
     //Creamos el header
     crearHeader();
@@ -19,11 +22,13 @@ window.onload = function () {
     let botonesPartidas = Array.from(document.getElementById("partidas").querySelectorAll("button"));
     botonesPartidas.forEach(boton => boton.addEventListener("click", irPartidas));
     crearBotonAccesibilidad();
-    cargarUltimasCajas();
-    cargarProductosMain();
+    await cargarUltimasCajas();
+    await cargarProductosMain();
     //crearVentanaCarga();
     //Creamos el mapa
     crearMapa();
     //Eliminamos la pantalla de carga
     ventanaCarga.style.display = "none";
+    //Activamos el scroll
+    activarScroll();
 };

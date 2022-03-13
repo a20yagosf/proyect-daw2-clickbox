@@ -1,0 +1,31 @@
+#error404 {
+    position: absolute;
+    //Top
+    inset-block-start: 50%;
+    //Left
+    inset-inline-start: 50%;
+    transform: translate(-50%, -50%);
+
+    img {
+        width: $sizeLogoError;
+        display: block;
+        margin: auto
+    }
+
+    //Texto
+    h2 {
+        margin: 3% 0%;
+    }
+
+    & > div {
+        display: flex;
+        justify-content: center;
+    }
+
+    button {
+        @include boton($colorPrincipal, 1.5em);
+        margin: 0% 3%;
+        padding: 0.5% 1%;
+        display: inline-block;
+    }
+}

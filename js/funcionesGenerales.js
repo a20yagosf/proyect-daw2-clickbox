@@ -1,3 +1,4 @@
+
 /**
  * Clase fecha con la fecha correcta
  */
@@ -3620,4 +3621,73 @@ function crearVentanaCarga() {
  */
 function asignarAtributos(elemento, atributos) {
     Object.entries(atributos).forEach(atributo => elemento.setAttribute(atributo[0], atributo[1]));
+}
+
+/**
+ * Desactiva el scroll temporalmente
+ *
+ * @return  {void}  No devuelve nada
+ */
+function desactivarScroll() {
+    // Para navegadores modernos de  Chrome que requieren { passive: false } al añadir un evento
+    let supportsPassive = false;
+    try {
+    window.addEventListener("test", null, Object.defineProperty({}, 'passive', {
+        get: function () { supportsPassive = true; } 
+    }));
+    } catch(e) {}
+    let wheelOpt = supportsPassive ? { passive: false } : false;
+    let wheelEvent = 'onwheel' in document.createElement('div') ? 'wheel' : 'mousewheel';
+    document.querySelector("body").style.overflow = "hidden";
+    window.addEventListener('DOMMouseScroll', desactivarScrollRaton, false); // older FF
+    window.addEventListener(wheelEvent, desactivarScrollRaton, wheelOpt); // modern desktop
+    window.addEventListener('touchmove', desactivarScrollRaton, wheelOpt); // mobile
+    window.addEventListener('keydown', desactivarScrollTeclas, false);
+}
+
+/**
+ * Vuelve a activar el scroll
+ *
+ * @return  {void}  No devuelve nada
+ */
+function activarScroll() {
+    // Para navegadores modernos de  Chrome que requieren { passive: false } al añadir un evento
+    let supportsPassive = false;
+    try {
+    window.addEventListener("test", null, Object.defineProperty({}, 'passive', {
+        get: function () { supportsPassive = true; } 
+    }));
+    } catch(e) {}
+    let wheelOpt = supportsPassive ? { passive: false } : false;
+    let wheelEvent = 'onwheel' in document.createElement('div') ? 'wheel' : 'mousewheel';
+    document.querySelector("body").style.overflowY = "auto";
+    window.removeEventListener('DOMMouseScroll', desactivarScrollRaton, false); // older FF
+    window.removeEventListener(wheelEvent, desactivarScrollRaton, wheelOpt); // modern desktop
+    window.removeEventListener('touchmove', desactivarScrollRaton, wheelOpt); // mobile
+    window.removeEventListener('keydown', desactivarScrollTeclas, false);
+}
+
+/**
+ * Desactiva el scroll con las teclas
+ *
+ * @return  {mixed}  No devuelve nada o falso
+ */
+function desactivarScrollTeclas() {
+    let teclas = {37: 1, 38: 1, 39: 1, 40: 1};
+    //Comprovamos si es alguna de flecha arriba, fecha abajo o inicio final.
+    if (keys[e.keyCode]) {
+        preventDefault(e);
+        return false;
+    }
+}
+
+/**
+ * Desactiva el scroll con la rueda del ratón
+ *
+ * @param   {Evento}  e  Evento que se dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+function desactivarScrollRaton(e) {
+    e.preventDefault();
 }

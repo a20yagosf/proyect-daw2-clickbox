@@ -3024,4 +3024,40 @@ footer a:hover {
 
 #cookie-bar {
   background: #0291A5 !important;
+}
+
+#error404 {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  transform: translate(-50%, -50%);
+}
+#error404 img {
+  width: 350px;
+  display: block;
+  margin: auto;
+}
+#error404 h2 {
+  margin: 3% 0%;
+}
+#error404 > div {
+  display: flex;
+  justify-content: center;
+}
+#error404 button {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.5em;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  margin: 0% 3%;
+  padding: 0.5% 1%;
+  display: inline-block;
+}
+#error404 button:hover {
+  background-color: #03bdd7;
 }/*# sourceMappingURL=styles.css.map */
