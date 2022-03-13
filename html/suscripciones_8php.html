@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.3"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>My Project: Referencia del Archivo proyecto/php/suscripciones.php</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">My Project
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generado por Doxygen 1.9.3 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search",'Buscar','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Buscar');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_3691865aa9c145bde46674229059c327.html">proyecto</a></li><li class="navelem"><a class="el" href="dir_2261e96c95e3ab63b1b1bc7cd42fab0e.html">php</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="summary">
+<a href="#var-members">Variables</a>  </div>
+  <div class="headertitle"><div class="title">Referencia del Archivo suscripciones.php</div></div>
+</div><!--header-->
+<div class="contents">
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a5b18cb9f927883776857329cf974f78f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="suscripciones_8php.html#a5b18cb9f927883776857329cf974f78f">$duracionSus</a> = (array) json_decode(file_get_contents(&quot;php://input&quot;))</td></tr>
+<tr class="separator:a5b18cb9f927883776857329cf974f78f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4814e4f0a4f2a9deb616ca76aa19128e"><td class="memItemLeft" align="right" valign="top">if(empty($duracionSus)) else if(isset( $duracionSus[&quot;duracion&quot;])) else if(isset($duracionSus[&quot;suscribirse&quot;]))&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="suscripciones_8php.html#a4814e4f0a4f2a9deb616ca76aa19128e">else</a></td></tr>
+<tr class="separator:a4814e4f0a4f2a9deb616ca76aa19128e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a559c8003f481610caf373b85cc607fb6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="suscripciones_8php.html#a559c8003f481610caf373b85cc607fb6">$usuario</a> = new user($_SESSION[&quot;usuario&quot;][&quot;email&quot;])</td></tr>
+<tr class="separator:a559c8003f481610caf373b85cc607fb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a06face0ef35c41554d8f4fe115363f58"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="suscripciones_8php.html#a06face0ef35c41554d8f4fe115363f58">$resultado</a> = $usuario-&gt;cancelarRenovacionSusc()</td></tr>
+<tr class="separator:a06face0ef35c41554d8f4fe115363f58"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa55c850123ce9b88de427cb2eb9e6095"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="suscripciones_8php.html#aa55c850123ce9b88de427cb2eb9e6095">$mensajeDevolver</a> = [&quot;exito&quot; =&gt; $resultado]</td></tr>
+<tr class="separator:aa55c850123ce9b88de427cb2eb9e6095"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Documentación de las variables</h2>
+<a id="a5b18cb9f927883776857329cf974f78f" name="a5b18cb9f927883776857329cf974f78f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b18cb9f927883776857329cf974f78f">&#9670;&nbsp;</a></span>$duracionSus</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">$duracionSus = (array) json_decode(file_get_contents(&quot;php://input&quot;))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa55c850123ce9b88de427cb2eb9e6095" name="aa55c850123ce9b88de427cb2eb9e6095"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa55c850123ce9b88de427cb2eb9e6095">&#9670;&nbsp;</a></span>$mensajeDevolver</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">$mensajeDevolver = [&quot;exito&quot; =&gt; $resultado]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a06face0ef35c41554d8f4fe115363f58" name="a06face0ef35c41554d8f4fe115363f58"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a06face0ef35c41554d8f4fe115363f58">&#9670;&nbsp;</a></span>$resultado</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">$resultado = $usuario-&gt;cancelarRenovacionSusc()</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a559c8003f481610caf373b85cc607fb6" name="a559c8003f481610caf373b85cc607fb6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a559c8003f481610caf373b85cc607fb6">&#9670;&nbsp;</a></span>$usuario</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">$usuario = new user($_SESSION[&quot;usuario&quot;][&quot;email&quot;])</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4814e4f0a4f2a9deb616ca76aa19128e" name="a4814e4f0a4f2a9deb616ca76aa19128e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4814e4f0a4f2a9deb616ca76aa19128e">&#9670;&nbsp;</a></span>else</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">if(empty( $duracionSus)) else if(isset($duracionSus[&quot;duracion&quot;])) else if (isset( $duracionSus[&quot;suscribirse&quot;])) else</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Valor inicial:</b><div class="fragment"><div class="line">{</div>
+<div class="line">    </div>
+<div class="line">    session_start()</div>
+</div><!-- fragment -->
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Generado el Domingo, 13 de Marzo de 2022 20:14:24 para My Project por&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
+</small></address>
+</body>
+</html>
