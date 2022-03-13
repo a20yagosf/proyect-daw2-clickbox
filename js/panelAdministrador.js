@@ -18,6 +18,8 @@ window.onload = async function () {
     document.getElementById("panelAdmin").querySelector("a").addEventListener("click", ocultarMostrarOpcionesCreacion);
     //Creamos el mapa
     crearMapa();
+    //Seleccionamos los class development y los prototipamos
+    asignarTooltips();
     //Activamos los tooltips, en este caso los atributos son estáticos
     activarTooltips();
     //Cargamos el modo para usuarios
