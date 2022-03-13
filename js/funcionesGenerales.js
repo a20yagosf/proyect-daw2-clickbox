@@ -42,6 +42,65 @@ class Fecha {
         //Comprobamos que no quedara vacío (que haga menos  de 1 hora)
         return tiempo == "Hace " ? "Hoy" : tiempo;
     }
+
+    /**
+     * Devuelve la fecha en formato mes año
+     */
+    formatearFechaMesAnho() {
+        let mes = this.fecha.substring(3,5);
+        let anho = this.fecha.substring(6);
+        let fecha = "";
+        switch(parseInt(mes)){
+            case 1:
+                fecha = "Enero " + anho;
+                break;
+
+            case 2:
+                fecha = "Febrero " + anho;
+                break;
+
+            case 3:
+                fecha = "Marzo " + anho;
+                break;
+
+            case 4:
+                fecha = "Abril " + anho;
+                break;
+
+            case 5:
+                fecha = "Mayo " + anho;
+                break;
+            
+            case 6:
+                fecha = "Junio " + anho;
+                break;
+
+            case 7:
+                fecha = "Julio " + anho;
+                break;
+
+            case 8:
+                fecha = "Agosto " + anho;
+                break;
+
+            case 9:
+                fecha = "Septiembre " + anho;
+                break;
+
+            case 10:
+                fecha = "Octubre " + anho;
+                break;
+
+            case 11:
+                fecha = "Noviembre " + anho;
+                break;
+
+            case 12:
+                fecha = "Diciembre " + anho;
+                break;
+        }
+        return fecha;
+    }
 }
 
 /**
@@ -74,8 +133,11 @@ class Fecha {
  *
  */
 function crearHeader() {
-    //Creamos la alerta
-    let alerta = crearAlert(["#"], ["Últimas novedades BD"]);
+    //Creamos el div que contendrá la alerta
+    let contenedorAlerta = document.createElement("div", {"id": "textoUltimasNov"});
+    //Le añadimos el id
+    contenedorAlerta.setAttribute("id", "alerta");
+    cargarAlertaUltProducto(contenedorAlerta);
     //Creamos el elemento header
     let cabecera = document.createElement("header");
     //Creamos el nav
@@ -121,7 +183,7 @@ function crearHeader() {
                cuerpo = document.querySelector("body");
                 //Los añadimos el que queremos de último primero para que se coloquen en el orden correcto ya que los ponemos de primer hijo
                 cuerpo.insertBefore(cabecera, cuerpo.firstChild);
-                cuerpo.insertBefore(alerta, cuerpo.firstChild);
+                cuerpo.insertBefore(contenedorAlerta, cuerpo.firstChild);
                 break;
 
             //Estandar
@@ -153,7 +215,7 @@ function crearHeader() {
                cuerpo = document.querySelector("body");
                 //Los añadimos el que queremos de último primero para que se coloquen en el orden correcto ya que los ponemos de primer hijo
                 cuerpo.insertBefore(cabecera, cuerpo.firstChild);
-                cuerpo.insertBefore(alerta, cuerpo.firstChild);
+                cuerpo.insertBefore(contenedorAlerta, cuerpo.firstChild);
                 break;
         }
     }
@@ -170,7 +232,7 @@ function crearHeader() {
         cuerpo = document.querySelector("body");
         //Los añadimos el que queremos de último primero para que se coloquen en el orden correcto ya que los ponemos de primer hijo
         cuerpo.insertBefore(cabecera, cuerpo.firstChild);
-        cuerpo.insertBefore(alerta, cuerpo.firstChild);
+        cuerpo.insertBefore(contenedorAlerta, cuerpo.firstChild);
     }
 }
 
@@ -210,27 +272,6 @@ function crearNav(redireccion, elementosNav, rol) {
    navegador.append(contenedorNav);
    //Creamos el enlace
     return navegador;
-}
-
-/**
- * Crea una alerta con tantos span como le pasemos enlaces y textos
- *
- * @param   {array}  enlaces  Enlaces que tiene que redirigir cada enlace
- * @param   {string}  textos   Textos de cada enlace
- *
- * @return  {DOMElement}           Div con la alerta
- */
-function crearAlert(enlaces, textos) {
-    //Creamos el div que contendrá la alerta
-    let contenedor = document.createElement("div");
-    //Le añadimos el id
-    contenedor.setAttribute("id", "alerta");
-    //Creamos todos los enlaces necesarios
-    for(let i =0; i < enlaces.length; i++){
-        //Añadimos cada uno de los enlaces
-        contenedor.append(crearEnlace(enlaces[i], textos[i]));
-    }
-    return contenedor;
 }
 
 /**
@@ -3364,4 +3405,194 @@ function cogerFiltroHistorialAdmin(e) {
     let fechaFin = document.getElementById("filtroFechaFinHistorial").value;
     fechaFin != "" ? filtro["fechaFin"] = fechaFin : "";
     filtrarHistorialAdmin(filtro, pagina, limite);
+}
+
+/**
+ * Carga las 3 últimas cajas sorpresa (sin contar la de ese mes)
+ *
+ * @return  {void}  No devuelve nada
+ */
+async function cargarUltimasCajas() {
+    try {
+        //Interiore del carrusel
+        let intCarrusel = document.getElementsByClassName("carousel-inner")[0];
+        let elementoCarrusel = Array.from(intCarrusel.children);
+        //Creamos la petición
+        const respuesta = await fetch("../php/cajaSorpresa.php", {
+            method: "POST",
+            headers: {"Content-type": "application/json;charset=utf-8;"},
+            body: JSON.stringify({"cajasSorpresa": 3})
+        });
+        //Traducimos la respuesta
+        const respuestaJSON =  await respuesta.json();
+        //Comprobamos que no diera un error
+        if(Object.hasOwn(respuestaJSON, "error")){
+            throw respuestaJSON["error"];
+        }
+        //Recorremos el array
+        respuestaJSON["cajas"].forEach(caja => {
+            let contenedorTarjeta = crearContenedor("div", {"class": "tarjeta"});
+            //Fecha, como todos los elementos tienen el mismo tipo de fecha para la caja cogemos el primer elemento
+            let fechaCaja = new Fecha(caja[0]["fecha"]).formatearFechaMesAnho();
+            //Creamos un div con la imagen
+            let contendorImgCaja = crearContenedor("div", {"class": "imagenCaja", "aria-label": "Caja " + fechaCaja});
+            //Le aplicamos la imagen como fondo, como todos los elementos tienen la misma imagen de caja cogemos el priemr elemento
+            contendorImgCaja.style.backgroundImage = `url(${caja[0]["img_caja"]})`;
+            //Creamos el div con la información
+            let contenedorInfo = crearContenedor("div", {"class": "contenidoTarjeta"});
+            //Creamos la cabecera
+            let cabeceraCaja = crearElem("h2", {}, fechaCaja);
+            //Creamos la lista de elementos
+            let lista = crearContenedor("ul");
+            //Recorremos cada uno de los objetos
+            Object.values(caja).forEach(elementoCaja => {
+                //Creamos un li
+                let elemento = document.createElement("li");
+                //Creamos el span con el nombre
+                let spanNombre = crearContenedor("span", {}, elementoCaja["nombre"]);
+                //Creamos la imagen
+                let imgProducto = crearContenedor("img", {"src": elementoCaja["imagen_producto"], "alt": elementoCaja["nombre"]});
+                elemento.append(spanNombre, imgProducto);
+                //Lo añadimos a la lista
+                lista.append(elemento);
+            });
+            //Añadimso todo
+            contenedorInfo.append(cabeceraCaja, lista);
+            contenedorTarjeta.append(contendorImgCaja, contenedorInfo);
+            //Lo añadimos al carrusel
+            elementoCarrusel[respuestaJSON["cajas"].indexOf(caja)].append(contenedorTarjeta);
+        });
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+
+/**
+ * Carga el último producto en el alert
+ *
+ * @return  {void}  No devuelve nada
+ */
+async function cargarAlertaUltProducto(contenedorAlerta) {
+    try {
+        //Iniciamos la petición
+        const respuesta = await fetch("../php/tienda.php", {
+            method: "POST",
+            headers: {"Content-type": "application/json;charset=utf-8;"},
+            body: JSON.stringify({"ultimoProducto": 4})
+        });
+        //Traducimos la respuesta
+        const respuestaJSON = await respuesta.json();
+        //Comprobamos que no diera error
+        if(Object.hasOwn(respuestaJSON, "error")){
+            throw respuestaJSON["error"];
+        }
+        //Creamos un div con últimas novedades
+        let enlaceTienda = crearContenedor("span", {"id": "textoUltimasNov"}, "Últimas novedades:");
+        contenedorAlerta.append(enlaceTienda);
+        Object.values(respuestaJSON["productos"]).forEach(producto => {
+            //Creamos un enlace
+            let enlaceTienda = crearContenedor("a", {"herf": "#"}, producto["nombre"] + " " + producto["precio"] + "€");
+            contenedorAlerta.append(enlaceTienda);
+        });
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+
+/**
+ * Carga los productos de la página principal
+ *
+ * @return  {void}  No devuelve nada
+ */
+async function cargarProductosMain() {
+    try {
+        //Iniciamos la petición
+        const respuesta = await fetch("../php/tienda.php", {
+            method: "POST",
+            headers: {"Content-type": "application/json;charset=utf-8;"},
+            body: JSON.stringify({"ultimoProducto": 3})
+        });
+        //Traducimos la respuesta
+        const respuestaJSON = await respuesta.json();
+        //Comprobamos que no diera error
+        if(Object.hasOwn(respuestaJSON, "error")){
+            throw respuestaJSON["error"];
+        }
+        //Cogemos el contenedor de tienda
+        let tienda = document.getElementById("tienda");
+        //Limpiamos la tienda
+        tienda.innerHTML = "";
+        //Creamos cada uno de los elemntos de la tienda
+        Object.values(respuestaJSON["productos"]).forEach(producto => {
+            //Creamos el contenedor principal
+            let contenedorElementoTienda = crearContenedor("div", {"class": "elementoTienda"});
+            //Creamos la tarjeta
+            let tarjeta = document.createElement("div");
+            //Creamos el contendor el id
+            let contenedorID = crearContenedor("div", {"class": "id"});
+            let id = crearContenedor("div", {}, producto["id_producto"]);
+            let triangulo = document.createElement("span");
+            contenedorID.append(id, triangulo);
+            //Creamos la imagne
+            let imagen = crearContenedor("div", {"class": "imagenTienda", "aria-label": producto["nombre"]});
+            //Le añadimos la imagen
+            imagen.style.backgroundImage = `url(${producto["imagen_producto"]})`;
+            //Contenedor con el nombre y el precio
+            let contenedorDesc = crearContenedor("div", {"class": "descripcionCorta"});
+            let parrafo = crearContenedor("p", {}, producto["nombre"] + " " + producto["precio"] + "€");
+            //Añadimos todo
+            contenedorDesc.append(parrafo);
+            tarjeta.append(contenedorID, imagen, contenedorDesc);
+            //Creamos el botón
+            let botonComprar = crearBoton("Comprar");
+            contenedorElementoTienda.append(tarjeta, botonComprar);
+            tienda.append(contenedorElementoTienda);
+        });
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+
+function crearVentanaCarga() {
+    let svgNamespace = "http://www.w3.org/2000/svg";
+    let ventanaCarga = crearContenedor("div", {"id": "ventanaCarga"});
+    //Creamos el svg
+    let svg = crearContenedor("svg");
+    //Creamos la máscara
+    let definicion = document.createElementNS(svgNamespace, "defs");
+    let mascara = document.createElementNS(svgNamespace, "mask");
+    mascara.setAttribute("id", "maskLogo");
+    let titulo = document.createElementNS(svgNamespace, "title");
+    titulo.textContent = "Clip del logo de la página";
+    let desc = document.createElementNS(svgNamespace, "desc");
+    let imagen = document.createElementNS(svgNamespace, "image");
+    let atributosImagen = {"x": 0, "y": 0, "href": "../img/mascaraLogo.svg", "preserveAspectRatio": "xMidYMax meet"};
+    asignarAtributos(imagen, atributosImagen);
+    //Añadimo todo a la definicion
+    mascara.append(titulo, desc, imagen);
+    definicion.append(mascara);
+    //Creamos el rectángulo
+    let rectangulo = document.createElementNS(svgNamespace, "rect");
+    let atributosRect = {"x": 0, "y": 0,"mask": "url(#maskLogo)"};
+    asignarAtributos(rectangulo, atributosRect);
+    //Creamos el texto
+    let texto = crearContenedor("text", {"x": "30%", "y": 280}, "Cargando");
+    svg.append(definicion, rectangulo, texto);
+    ventanaCarga.append(svg);
+    document.querySelector("body").append(ventanaCarga);
+}
+
+/**
+ * Asigna los atributos al elemento
+ *
+ * @param   {DOMElement}  elemento   Elemento del DOM
+ * @param   {Object}  atributos  Atributos de tipio {clave: valor}
+ *
+ * @return  {void}             No devuelve nada
+ */
+function asignarAtributos(elemento, atributos) {
+    Object.entries(atributos).forEach(atributo => elemento.setAttribute(atributo[0], atributo[1]));
 }

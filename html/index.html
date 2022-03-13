@@ -25,8 +25,8 @@
             <div class="carousel-inner">
                     <!-- Tarjetas -->
                     <div class="carousel-item active">
-                        <div class="tarjeta">
-                            <div class="imagenCaja" src="../img/imagenNoDisponible.jpg" alt=""></div>
+                        <!--<div class="tarjeta">
+                            <div class="imagenCaja" aria-label=""></div>
                             <div class="contenidoTarjeta">
                                 <h2>Enero 2022</h2>
                                 <ul>
@@ -36,10 +36,10 @@
                                     <li><span>Accesorio 3</span><img src="../img/Recuadro.png" alt=""/></li>
                                 </ul>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
                     <div class="carousel-item">
-                        <div class="tarjeta">
+                        <!--<div class="tarjeta">
                             <div class="imagenCaja" src="../img/imagenNoDisponible.jpg" alt=""></div>
                             <div class="contenidoTarjeta">
                                 <h2>Enero 2022</h2>
@@ -50,11 +50,11 @@
                                     <li><span>Accesorio 3</span><img src="../img/Recuadro.png" alt=""/></li>
                                 </ul>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
                     <div class="carousel-item">
-                        <div class="tarjeta">
-                            <div class="imagenCaja" src="../img/imagenNoDisponible.jpg" alt=""></div>
+                        <!-- <div class="tarjeta">
+                           <div class="imagenCaja" src="../img/imagenNoDisponible.jpg" alt=""></div>
                             <div class="contenidoTarjeta">
                                 <h2>Enero 2022</h2>
                                 <ul>
@@ -64,7 +64,7 @@
                                     <li><span>Accesorio 3</span><img src="../img/Recuadro.png" alt=""/></li>
                                 </ul>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
             </div>
             <!-- Botones -->
@@ -123,5 +123,21 @@
             </div>
         </div>
     </main>
+    <div id="ventanaCarga">
+        <svg>
+            <defs>
+                <mask id="maskLogo">
+                    <title>Clip del logo de la página</title>
+                    <desc>El logo de Clickbox para usar como máscara</desc>
+                    <image x="0" y="0"   width="500" height="229" href="../img/mascaraLogo.svg" preserveAspectRatio="xMidYMax meet"></image>
+                </mask>
+            </defs>
+            <rect x="0" y="0" width="500" height="229" fill="red" mask="url(#maskLogo)" style="transform: rotate(180deg) translate(-500px, -229px)">
+                <animate attributeType="XML" attributeName="height" from="0" to="229" dur="3s" begin="1s" repeatCount="indefinite"></animate>
+            </rect>
+            <text x="30%" y="280">Cargando
+            </text>
+        </svg>
+    </div>
 </body>
 </html>

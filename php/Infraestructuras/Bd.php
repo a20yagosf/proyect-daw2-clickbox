@@ -5,6 +5,7 @@ namespace Infraestructuras;
 
 use DateTime;
 use DateTimeZone;
+use PDOException;
 use \Traits\Formulario as formulario;
 
 /**
@@ -553,5 +554,77 @@ class Bd {
         else if(is_string($array)){
             $array = mb_convert_encoding($array, "UTF-8", "auto");
         }
+    }
+
+    /**
+     * Carga las $numCajas cajas sorpresa
+     *
+     * @param   [type]  $numCajas  [$numCajas description]
+     *
+     * @return  [type]             [return description]
+     */
+    public function cargarCajasSorpresa($numCajas) {
+        try {
+            //Sentencia para coger los id de las 3 últimas cajas
+            $sentenciaCajas = "SELECT id_caja FROM cajas_sorpresa WHERE fecha < (NOW() - INTERVAL DAYOFMONTH(NOW()) - 1 DAY) LIMIT 0, :numCajas;";
+            //La prepraramos ya que la ejecutaremos varias veces
+            $pdoStatement = $this->recuperarDatosBDNum($sentenciaCajas, ["numCajas" => $numCajas]);
+            //Array donde guardaremos los datos de las cajas
+            $datosCajas = [];
+            //Comprobamos que no diera error
+            if(!$pdoStatement instanceof \PDOStatement) {
+                throw new PDOException($pdoStatement);
+            }
+            //Cargamos los tres resultados (como mucho)
+            $cajas = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
+            //Recorremos cada una de las cajas para añadirlo a la sentencia
+            foreach($cajas as $id){
+                //Sentencia que ejecutaremos
+                $sentencia = "SELECT CS.img_caja, CS.fecha, P.nombre, P.imagen_producto FROM cajas_sorpresa AS CS INNER JOIN cajas_sorpresa_producto as CP ON CS.id_caja = :id_caja AND CS.id_caja = CP.caja_sorpresa INNER JOIN productos as P ON CP.producto = P.id_producto LIMIT 0, 4;";
+                //Como vamos a ejecutarla con frecuencia preparamos la sentencia
+                $pdoStatement = $this->recuperDatosBD($sentencia, $id);
+                //Comprobamos que no diera error
+                if(!$pdoStatement instanceof \PDOStatement) {
+                    throw new PDOException($pdoStatement);
+                }
+                //Cogemos los datos, como están limitados hacemos fetch all
+                $datosCajas[] = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
+            }
+            return $datosCajas;
+        }
+        catch(\PDOException $pdoError) {
+           throw $pdoError;
+        }
+        catch(\Exception $error) {
+            throw $error;
+        }
+    }
+
+    /**
+     * Carga los últimos productos para el alert
+     *
+     * @param   int  $numProd  Número de productos
+     *
+     * @return  array            Array con la información de los productos
+     */
+    public function ultimoProducto($numProd) {
+        try {
+            //Creamos la sentencia
+            $sentencia = "SELECT id_producto, imagen_producto, nombre, precio FROM productos ORDER BY id_producto DESC LIMIT 0, :numProduc";
+            //La prepraramos ya que la ejecutaremos varias veces
+            $pdoStatement = $this->recuperarDatosBDNum($sentencia, ["numProduc" => intval($numProd)]);
+            //Comprobamos que no diera error
+            if(!$pdoStatement instanceof \PDOStatement) {
+                throw new PDOException($pdoStatement);
+            }
+            //Devolvemos el fetch ya que sólo devolverá 1
+            return $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
+        }
+        catch(\PDOException $pdoError) {
+            throw $pdoError;
+         }
+         catch(\Exception $error) {
+             throw $error;
+         }
     }
 }

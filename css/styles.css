@@ -53,6 +53,7 @@ header > nav {
   color: #F3F3F3;
   text-decoration: none;
   transition: all 0.5s ease-in-out;
+  cursor: pointer;
   margin: 0% 1%;
   position: relative;
   -webkit-animation: movimientoAlerta 40s linear 0s forwards infinite;
@@ -60,6 +61,12 @@ header > nav {
 }
 #alerta a:hover {
   color: #FFB775;
+}
+#alerta #textoUltimasNov {
+  color: #F3F3F3;
+  position: relative;
+  -webkit-animation: movimientoAlerta 40s linear 0s forwards infinite;
+          animation: movimientoAlerta 40s linear 0s forwards infinite;
 }
 
 nav {
@@ -223,6 +230,7 @@ nav li a {
   color: #F3F3F3;
   text-decoration: none;
   transition: all 0.5s ease-in-out;
+  cursor: pointer;
 }
 nav li a:hover {
   color: #026a79;
@@ -272,6 +280,7 @@ nav button:last-of-type:hover {
   color: #0291A5;
   text-decoration: none;
   transition: all 0.5s ease-in-out;
+  cursor: pointer;
   -webkit-padding-end: 1%;
           padding-inline-end: 1%;
 }
@@ -473,6 +482,11 @@ main {
 }
 #suscripciones .imagenCaja {
   flex-basis: 50%;
+  height: 500px;
+  background-color: white;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 #suscripciones:before {
   content: "";
@@ -769,6 +783,14 @@ main {
   flex-basis: 100%;
   font-size: 2.5rem;
 }
+#tienda .imagenTienda {
+  width: 350px;
+  height: 350px;
+  background-color: white;
+  background-size: cover;
+  background-position: center;
+  border-radius: 10px;
+}
 @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
   #tienda:before {
     width: 98%;
@@ -1009,6 +1031,8 @@ main {
   cursor: pointer;
   transition: all 0.5s linear;
   padding: 2%;
+  width: 80px;
+  height: 80px;
   background-image: url("../img/iconos/accesibilidad.svg");
   background-size: contain;
   background-repeat: no-repeat;
@@ -1026,7 +1050,8 @@ main {
     padding: 7%;
   }
   #botonAccesiblidad + div {
-    inset-inline-end: 15%;
+    inset-inline-end: 85px;
+    transform: translateY(-2%);
   }
 }
 @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px), (aspect-ratio: 1/1) {
@@ -1034,8 +1059,40 @@ main {
     padding: 4%;
   }
   #botonAccesiblidad + div {
-    inset-inline-end: 9%;
+    inset-inline-end: 85px;
+    transform: translateY(-5%);
   }
+}
+
+#ventanaCarga {
+  width: 100%;
+  height: 100%;
+  background-color: #F3F3F3;
+  position: absolute;
+  inset-block-start: 0%;
+  inset-inline-start: 0%;
+  z-index: 20;
+}
+#ventanaCarga svg {
+  width: 500px;
+  height: 300px;
+  position: relative;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  transform: translate(-50%, -50%);
+}
+#ventanaCarga svg text {
+  font-family: "PoetsenOne";
+  font-size: 2em;
+  fill: #0291A5;
+}
+#ventanaCarga svg image, #ventanaCarga svg rect {
+  width: 500px;
+  height: 229px;
+}
+#ventanaCarga svg rect {
+  fill: #0291A5;
+  transform: rotate(180deg) translate(-500px, -229px);
 }
 
 #info_partidas, #filtro, #result_panel, .pagination {
@@ -2861,6 +2918,7 @@ footer a {
   color: #F3F3F3;
   text-decoration: none;
   transition: all 0.5s ease-in-out;
+  cursor: pointer;
   font-size: 1.1em;
 }
 footer a:hover {

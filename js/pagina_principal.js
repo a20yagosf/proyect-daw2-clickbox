@@ -2,6 +2,8 @@
 cargarScripts();
 
 window.onload = function () {
+    let ventanaCarga = document.getElementById("ventanaCarga");
+    ventanaCarga.style.display = "block";
     loginAutomatico();
     //Creamos el header
     crearHeader();
@@ -16,6 +18,11 @@ window.onload = function () {
     let botonesPartidas = Array.from(document.getElementById("partidas").querySelectorAll("button"));
     botonesPartidas.forEach(boton => boton.addEventListener("click", irPartidas));
     crearBotonAccesibilidad();
+    cargarUltimasCajas();
+    cargarProductosMain();
+    //crearVentanaCarga();
     //Creamos el mapa
     crearMapa();
+    //Eliminamos la pantalla de carga
+    ventanaCarga.style.display = "none";
 };
