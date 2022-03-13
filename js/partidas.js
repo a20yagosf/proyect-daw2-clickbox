@@ -22,6 +22,10 @@ window.onload = async function () {
     document.getElementById("listaNav").children[1].setAttribute("class", "navActive");
     //Creamos el mapa
     crearMapa();
+    //Seleccionamos los class development y los prototipamos
+    asignarTooltips();
+    //Activamos los tooltips, en este caso los atributos son estáticos
+    activarTooltips();
     crearBotonAccesibilidad();
     //Eliminamos la pantalla de carga
     ventanaCarga.style.display = "none";
