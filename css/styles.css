@@ -97,6 +97,13 @@ nav .navActive {
 }
 nav .navDesactivado {
   opacity: 0.8;
+  background-color: #e9b98c;
+}
+nav .navDesactivado:hover {
+  background: #e9b98c;
+}
+nav .navDesactivado a:hover {
+  color: #F3F3F3;
 }
 nav #botonPerfilUsuario {
   padding: 0.2% 0.5%;
@@ -303,6 +310,10 @@ body {
 }
 body .monocromatico {
   filter: grayscale(1);
+}
+
+.botonDesac {
+  background-color: #7e9296 !important;
 }
 
 a {

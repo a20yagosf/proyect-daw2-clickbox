@@ -16,6 +16,12 @@ body {
     }
 }
 
+//Botones desactivados
+.botonDesac {
+    background-color: $botonDesac !important;
+}
+
+
 a {
     text-decoration: none;
 }

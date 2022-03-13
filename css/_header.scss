@@ -75,6 +75,15 @@ nav {
 
     .navDesactivado {
         opacity: 0.8;
+        background-color: $colorSecundarioDesac;
+
+        &:hover {
+            background: $colorSecundarioDesac;
+        }
+
+        a:hover {
+            color: $colorLetra;
+        }
     }
 
     //Boton cuando tienes iniciada sesión

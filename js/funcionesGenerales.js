@@ -3542,7 +3542,8 @@ async function cargarProductosMain() {
         //Cogemos el contenedor de tienda
         let tienda = document.getElementById("tienda");
         //Limpiamos la tienda
-        tienda.innerHTML = "";
+        let elementosTienda = Array.from(tienda.querySelectorAll(".elementoTienda"));
+        elementosTienda.forEach(elemento => elemento.remove());
         //Creamos cada uno de los elemntos de la tienda
         Object.values(respuestaJSON["productos"]).forEach(producto => {
             //Creamos el contenedor principal
@@ -3565,7 +3566,7 @@ async function cargarProductosMain() {
             contenedorDesc.append(parrafo);
             tarjeta.append(contenedorID, imagen, contenedorDesc);
             //Creamos el botón
-            let botonComprar = crearBoton("Comprar");
+            let botonComprar = crearBoton("Comprar", {"type": "button", "class": "botonDesac"});
             contenedorElementoTienda.append(tarjeta, botonComprar);
             tienda.append(contenedorElementoTienda);
         });
@@ -3575,6 +3576,11 @@ async function cargarProductosMain() {
     }
 }
 
+/**
+ * Crea la ventana de carga (Ahora mismo no funciona)
+ *
+ * @return  {void}  No devuelve nada
+ */
 function crearVentanaCarga() {
     let svgNamespace = "http://www.w3.org/2000/svg";
     let ventanaCarga = crearContenedor("div", {"id": "ventanaCarga"});
