@@ -874,7 +874,7 @@ main {
     inset-block-start: 50%;
     z-index: 6;
 
-    //Adaptación para móviles mediante aspect ratio
+    //Adaptación para móviles mediante aspect ratio móvil
     @media screen and (max-aspect-ratio:  195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
         //Boton accesibilidad
         & {
