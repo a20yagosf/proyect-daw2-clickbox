@@ -601,11 +601,13 @@ main {
 
     //Cada uno de los contenedor de la imagen
     .imagenTienda {
-        @include contenedor($sizeImgTienda, $sizeImgTienda, white);
+        @include contenedor(100%, $sizeImgTienda, white);
         background-size: cover;
         background-position: center;
         border-radius: $borderRadius;
     }
+
+
 
     //Adaptación a movil
     @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
@@ -616,7 +618,6 @@ main {
         //Contenedor tienda
         .elementoTienda {
             //Tamaños y posicionamiento
-            width: 70%;
             padding: 4%;
             //margin top
             margin-block-start: 5%;
@@ -643,18 +644,10 @@ main {
         }
     }
 
-    //Adaptación para móvil plegable
-    @media screen and (max-width: 300px) {
-        .elementoTienda {
-            width: 100%;
-        }
-    }
-
     //Adaptación para tablets mediante aspect ratio
     @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px) {
         //Contenedor tienda
         .elementoTienda {
-            width: 40%;
             padding: 2.5%;
             margin: 2%;
             //Margin top
@@ -682,7 +675,7 @@ main {
 
 //Cada uno de los elementos que contiene los artículos de la tienda
 .elementoTienda {
-    width: $sizeTienda;
+    width: $sizeImgTienda;
 
     & > div {
         //Tamaños y posicionamienot

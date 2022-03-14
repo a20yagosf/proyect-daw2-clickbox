@@ -805,7 +805,7 @@ main {
   font-size: 2.5rem;
 }
 #tienda .imagenTienda {
-  width: 350px;
+  width: 100%;
   height: 350px;
   background-color: white;
   background-size: cover;
@@ -817,7 +817,6 @@ main {
     width: 98%;
   }
   #tienda .elementoTienda {
-    width: 70%;
     padding: 4%;
     -webkit-margin-before: 5%;
             margin-block-start: 5%;
@@ -837,14 +836,8 @@ main {
             border-inline-start: 1.1em solid transparent;
   }
 }
-@media screen and (max-width: 300px) {
-  #tienda .elementoTienda {
-    width: 100%;
-  }
-}
 @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px) {
   #tienda .elementoTienda {
-    width: 40%;
     padding: 2.5%;
     margin: 2%;
     -webkit-margin-before: 5%;
@@ -867,7 +860,7 @@ main {
 }
 
 .elementoTienda {
-  width: 20%;
+  width: 350px;
 }
 .elementoTienda > div {
   width: 100%;
