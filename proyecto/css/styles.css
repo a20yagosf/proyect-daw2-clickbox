@@ -1392,6 +1392,7 @@ form#formulario_tienda .filtros_busqueda {
 form#formulario_tienda .filtros_busqueda .filtro_traits {
   grid-row: 1;
   grid-column: 1;
+  background-color: white;
   border-radius: 25px;
   border: 2px solid #FFB775;
   padding: 2%;
@@ -1434,6 +1435,7 @@ form#formulario_tienda .filtros_busqueda .filtro_nombre {
   grid-column: 2;
   display: flex;
   flex-direction: column;
+  background-color: white;
   font-size: 1.5rem;
   border-radius: 25px;
   border: 2px solid #FFB775;
@@ -1450,6 +1452,7 @@ form#formulario_tienda .filtros_busqueda .filtro_tipo {
   grid-column: 1;
   display: flex;
   flex-direction: column;
+  background-color: white;
   font-size: 1.5rem;
   border-radius: 25px;
   border: 2px solid #FFB775;
@@ -1467,6 +1470,7 @@ form#formulario_tienda .filtros_busqueda .filtro_precio {
   grid-column: 2;
   display: flex;
   flex-direction: column;
+  background-color: white;
   font-size: 1.5rem;
   border-radius: 25px;
   border: 2px solid #FFB775;
@@ -1514,6 +1518,7 @@ form#formulario_tienda div.center_submit button {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-color: white;
   border-radius: 10px;
   border: 2px solid #0291A5;
   padding: 10%;
