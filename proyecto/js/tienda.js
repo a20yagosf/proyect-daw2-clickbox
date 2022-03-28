@@ -16,9 +16,13 @@ window.onload = async function (){
     });
     //Cargamos los géneros disponibles en el filtro
     crearOptionGeneros(document.getElementById("generos"));
-    await cargarProductos();    //necesita crearse aún
+
+    //Cargamos los productos
+    //await cargarProductos();    //necesita crearse aún
+
     //Añadimos el escuchador del filtro al botón del formulario
-    document.getElementsByClassName("formulario_envio")[0].addEventListener("click", filtrarProductos);
+    //document.getElementsByClassName("formulario_envio")[0].addEventListener("click", filtrarProductos);
+    
     //Seleccionamos como activo el enlace del nav de tienda (es el último)
     document.getElementById("listaNav").children[2].setAttribute("class", "navActive");
     //Creamos el mapa
