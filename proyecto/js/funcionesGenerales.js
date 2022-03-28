@@ -170,10 +170,29 @@ function crearHeader() {
     let contenedorPerfil;
     let enlacePerfil;
     let salirPerfil;
+    //Carrito
+    let iconoCarrito;
+    let botonCarrito
+    let atributosIcono;
+    let recorridoIcono;
+    let cantidadProd;
     //Creamos el botón del usuario
     switch (parseInt(sessionStorage.getItem("rol"))) {
       //Admin
       case 1:
+        //Creamos el carrito para comprar
+        iconoCarrito = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        atributosIcono = {"width": "35", "height": "35", "fill" : "currentColor", "class" : "bi bi-cart4", "viewBox" : "0 0 16 16"};
+        cantidadProd = crearContenedor("span", {},"2");
+        cantidadProd.setAttribute("class", "badge rounded-pill");
+        Object.entries(atributosIcono).forEach(atributo => iconoCarrito.setAttribute(atributo[0], atributo[1]));
+        recorridoIcono = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        recorridoIcono.setAttribute("d", "M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l.5 2H5V5H3.14zM6 5v2h2V5H6zm3 0v2h2V5H9zm3 0v2h1.36l.5-2H12zm1.11 3H12v2h.61l.5-2zM11 8H9v2h2V8zM8 8H6v2h2V8zM5 8H3.89l.5 2H5V8zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z");
+        iconoCarrito.append(recorridoIcono);
+        botonCarrito = crearEnlace("../html/carrito.html", iconoCarrito);
+        botonCarrito.aparecerLogin(cantidadProd);
+        botonCarrito.setAttribute("id", "iconoCarrito");
+        botonCarrito.addEventListener("click", irCarrito);
         //Creamos el botón del usuario
         //Botón para iniciar sesión
         let botonPanelControl = crearBoton(sessionStorage["email"], {
@@ -182,7 +201,6 @@ function crearHeader() {
         //Creamos el div  con el cotenido
         contenedorPerfil = document.createElement("div");
         contenedorPerfil.setAttribute("id", "menuPerfilUser");
-
         //Creamos los enlaces
         enlacePerfil = crearEnlace(
           "../html/perfilUsuario.html",
@@ -205,7 +223,7 @@ function crearHeader() {
         //Añadimos el escuchador al botón del header
         botonPanelControl.addEventListener("click", desplegarMenuPerfil);
         //Añadimos el botón al contenedor fluid el botón de Inicio de sesión
-        navegador.firstChild.append(botonPanelControl, contenedorPerfil);
+        navegador.firstChild.append(botonCarrito, botonPanelControl, contenedorPerfil);
         //Añadimos al header
         cabecera.append(navegador);
         //Añadimos al body al inicio de todo
@@ -217,6 +235,19 @@ function crearHeader() {
 
       //Estandar
       default:
+        //Creamos el carrito para comprar
+        iconoCarrito = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        atributosIcono = {"width": "35", "height": "35", "fill" : "currentColor", "class" : "bi bi-cart4", "viewBox" : "0 0 16 16"};
+        cantidadProd = crearContenedor("span", {}, "2");
+        cantidadProd.setAttribute("class", "badge rounded-pill");
+        Object.entries(atributosIcono).forEach(atributo => iconoCarrito.setAttribute(atributo[0], atributo[1]));
+        recorridoIcono = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        recorridoIcono.setAttribute("d", "M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l.5 2H5V5H3.14zM6 5v2h2V5H6zm3 0v2h2V5H9zm3 0v2h1.36l.5-2H12zm1.11 3H12v2h.61l.5-2zM11 8H9v2h2V8zM8 8H6v2h2V8zM5 8H3.89l.5 2H5V8zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z");
+        iconoCarrito.append(recorridoIcono);
+        botonCarrito = crearEnlace("../html/carrito.html", iconoCarrito);
+        botonCarrito.append(cantidadProd);
+        botonCarrito.setAttribute("id", "iconoCarrito");
+        botonCarrito.addEventListener("click", irCarrito);
         //Creamos el botón del usuario
         //Botón para iniciar sesión
         let botonPerfil = crearBoton(sessionStorage["email"], {
@@ -242,7 +273,7 @@ function crearHeader() {
         //Añadimos el escuchador al botón del header
         botonPerfil.addEventListener("click", desplegarMenuPerfil);
         //Añadimos el botón al contenedor fluid el botón de Inicio de sesión
-        navegador.firstChild.append(botonPerfil, contenedorPerfil);
+        navegador.firstChild.append(botonCarrito, botonPerfil, contenedorPerfil);
         //Añadimos al header
         cabecera.append(navegador);
         //Añadimos al body al inicio de todo
@@ -1796,6 +1827,21 @@ function irPrincipal(e) {
   //Comprobamos el rol del usuario (Si no tiene rol es que no esta registrado y no puede acceder a partidas)
   if (sessionStorage["rol"] != null) {
     location.assign("../html/index.html");
+  } else {
+    //Disparamos el evento para que aparezca el login
+    aparecerLogin();
+  }
+}
+
+/**
+ * Lleva a la página principal
+ *
+ */
+function irCarrito(e) {
+  e.preventDefault();
+  //Comprobamos el rol del usuario (Si no tiene rol es que no esta registrado y no puede acceder a partidas)
+  if (sessionStorage["rol"] != null) {
+    location.assign("../html/carrito.html");
   } else {
     //Disparamos el evento para que aparezca el login
     aparecerLogin();

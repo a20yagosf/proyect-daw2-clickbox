@@ -1,0 +1,87 @@
+//Main
+#carritoCuerpo {
+    padding: 2% 0%
+}
+
+//Div contenedor del carrito
+#carrito {
+    @include contenedor(80%, auto, white);
+    border: 1px solid $colorPrincipal;
+    border-radius: $borderRadius;
+    margin: auto;
+
+    header {
+        background-color: $colorPrincipal;
+        border-radius: $borderRadius $borderRadius 0px 0px;
+        text-align: center;
+        color: $colorLetra;
+        position: relative;
+
+        button {
+            @include boton(aclararColor($colorPrincipal), 1.2em);
+            position: absolute;
+            padding: 0% 1%;
+            //Top
+            inset-block-start: 50%;
+            //Right
+            inset-inline-end: 5%;
+            transform: translateY(-50%);
+        }
+    }
+
+    .productoCarrito {
+        padding: 1%;
+
+        //Grid como padre
+        display: grid;
+        grid-template-columns: 20% 50% 20%;
+        grid-template-rows: 50% 50%;
+        grid-template-areas: "img titulo titulo"
+                                          "img botones precio";
+        column-gap: 2%;
+
+        .imgCarrito {
+            @include contenedor(100%, $sizeProdCarrito, orange);
+
+            //Grid como hijo
+            grid-area: img;
+        }
+
+        //CantidadProd
+        input[type="number"] {
+            padding: 0.5% 0%;
+            padding-inline-start: 2%;
+        }
+
+        .botonesCarrito {
+            //Grid como hijo
+            grid-area: botones;
+
+            button {
+                @include boton($colorPrincipal, 1.2em);
+                display: inline-block;
+                padding: 0% 0.5%;
+                margin: 0% 2%;
+            }
+        }
+
+        p {
+            text-align: end;
+            font-size: 1.5em;
+
+            //Grid como hijo
+            grid-area: precio;
+        }
+    }
+
+   & > div {
+        //Total
+        & > p {
+            margin: 1%;
+            padding: 2% 5%;
+            text-align: end;
+            font-size: 1.5em;
+            border-top: 1px solid $colorPrincipal;
+        }
+   }
+}

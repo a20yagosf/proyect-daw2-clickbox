@@ -266,6 +266,16 @@ nav {
 
 }
 
+//Enlace que contiene el icono del carrito
+#iconoCarrito {
+    color: $colorLetra;
+    margin: 0% 1%;
+
+    span.badge {
+        background-color: $colorPrincipal;
+    }
+}
+
 //Página para saber donde te encuentras
 #localizacionPag {
     display: inline-block;
