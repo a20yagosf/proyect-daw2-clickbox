@@ -1374,7 +1374,10 @@ main div.title {
   color: #0291A5;
   text-align: center;
   font-size: 2rem;
-  margin: 2%;
+}
+
+.title {
+  padding: 5%;
 }
 
 form#formulario_tienda {
@@ -1497,7 +1500,7 @@ form#formulario_tienda div.center_submit button {
 #contenido_tienda {
   width: 100%;
   margin-top: 5%;
-  margin-bottom: 5%;
+  padding-bottom: 2%;
   display: grid;
   justify-items: center;
   grid-template-columns: 1fr 1fr 1fr 1fr;

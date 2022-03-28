@@ -2,7 +2,10 @@ main div.title {
   color: $colorPrincipal;
   text-align: center;
   font-size: 2rem;
-  margin: 2%;
+  
+}
+.title{
+  padding: 5%;
 }
 // La estructura de tienda se divide en dos partes, el formulario y el contenido con los items de la bd
 
@@ -144,7 +147,7 @@ form#formulario_tienda {
 #contenido_tienda {
   width: 100%;
   margin-top: 5%;
-  margin-bottom: 5%;
+  padding-bottom: 2%;
   display: grid;
   justify-items: center;
   grid-template-columns: 1fr 1fr 1fr 1fr;
