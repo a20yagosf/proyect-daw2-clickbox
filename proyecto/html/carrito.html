@@ -20,7 +20,7 @@
                 <h1>Cesta</h1>
                 <button>Vaciar Carrito</button>
             </header>
-            <div>
+            <div id="cuerpoCarrito">
                 <div class="productoCarrito">
                     <div class="imgCarrito"></div>
                     <h3>Nombre producto</h3>
@@ -35,12 +35,7 @@
                     <h3>Nombre producto</h3>
                     <form class="botonesCarrito" action="" method="POST">
                         <!-- Se actualiza automaticamente el carrito -->
-                        <select name="idProduct">
-                            <option value="1">Cant. 1</option>
-                            <option value="2">Cant. 2</option>
-                            <option value="3">Cant. 3</option>
-                            <option value="4">Cant. 4</option>
-                        </select>
+                        <input type="number" name="idProduct" id="" minlength="0" value="1">
                         <button>Eliminar</button>
                     </form>
                     <p>Precio: 10 €</p>

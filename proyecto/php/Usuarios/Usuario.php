@@ -86,16 +86,42 @@ class Usuario
                         renovar,
                         fecha_ini_suscripcion
                         where email = ?";
-        $email = $_SESSION['email'];
         //
         $conBd = new bd();
-        $arrayDatos = $conBd->recuperDatosBD($sql1, $email); // "email" es el dato identificador
+        $arrayDatos = $conBd->recuperDatosBD($sql1, $this->getEmail()); // "email" es el dato identificador
         return $arrayDatos;
     }
     
-    public function modificarDatos()
-    {
+    /**
+     * Devuelve en número de artículos que tiene el usuario en el carrito
+     *
+     * @return  [type]  [return description]
+     */
+    public function getNumArticulos() {
+        //Instanciamos BD
+        $bd = new BD();
+        $sentencia = "SELECT COUNT(*) as numArticulos FROM carrito WHERE email = ?";
+        $resultado = $bd->recuperDatosBD($sentencia, [$this->email]);
+        //Comprobamos si dio error
+        if(!$resultado instanceof \PDOStatement){
+            throw new \PDOException($resultado);
+        }
+        return $resultado->fetch(\PDO::FETCH_ASSOC);
     }
+
+    public function getCarrito($datos) {
+        //Instanciamos BD
+        $bd = new BD();
+        $sentenciaProc = "CALL cargar_carrito (:email,:pag,:limt);";
+        $params = ["email" => $this->getEmail(), "pag" => intval($datos["pagina"]), "limt" => intval($datos["limite"])];
+        $resultado = $bd->recuperarDatosBDNum($sentenciaProc, $params);
+        //Comprobamos si dio error
+        if(!$resultado instanceof \PDOStatement){
+            throw new \PDOException($resultado);
+        }
+        return $resultado->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     public function anadirCarrito()
     {
     }
@@ -311,6 +337,13 @@ class Usuario
         return $resultado;
     }
 
+    /**
+     * Guarda la nueva información del perfil de usuario
+     *
+     * @param   array  $datos  Array asociativo con los datos a guardar
+     *
+     * @return  void          No devuelve nada
+     */
     public function guardarPerfil($datos) {
         try {
             $this->comprobarCamposNoOblig($datos, ["telefono", "direccion", "genero_favorito"]);

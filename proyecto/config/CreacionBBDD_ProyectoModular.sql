@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS productos (
 	id_producto INT UNSIGNED AUTO_INCREMENT NOT NULL,
    nombre VARCHAR(125) NOT NULL,
    stock INT UNSIGNED NOT NULL,
-   precio FLOAT NOT NULL,
+   precio DECIMAL(6,2) NOT NULL,
    imagen_producto	VARCHAR(255) NOT NULL,
    -- RELACIONES 
    tematica VARCHAR(150) NULL,
@@ -367,8 +367,11 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.productos_carritos TO 'a2d
 GRANT SELECT, INSERT, DELETE ON a2da_clickbox.usuarios_partidas TO 'a2da_estandar'@'localhost';
 GRANT SELECT ON a2da_clickbox.partidas_imagenes TO 'a2da_estandar'@'localhost';
 GRANT SELECT ON a2da_clickbox.historico_usuarios TO 'a2da_estandar'@'localhost';
-GRANT SELECT ON a2da_clickbox.cajas_sorpresa TO 'a2da_conexion'@'localhost';
-GRANT SELECT ON a2da_clickbox.cajas_sorpresa_producto TO 'a2da_conexion'@'localhost';
+GRANT SELECT ON a2da_clickbox.cajas_sorpresa TO 'a2da_estandar'@'localhost';
+GRANT SELECT ON a2da_clickbox.cajas_sorpresa_producto TO 'a2da_estandar'@'localhost';
+GRANT ALL ON a2da_clickbox.carritos TO 'a2da_estandar'@'localhost';
+GRANT ALL ON a2da_clickbox.productos_carritos TO 'a2da_estandar'@'localhost';
+GRANT EXECUTE ON PROCEDURE a2da_clickbox.cargar_carrito TO 'a2da_estandar'@'localhost';
 -- USUARIO ADMINISTRADOR
 GRANT SELECT, UPDATE ON a2da_clickbox.usuarios TO 'a2da_admin'@'localhost' IDENTIFIED BY 'abc123.';
 GRANT SELECT, INSERT ON a2da_clickbox.pedidos TO 'a2da_admin'@'localhost';
@@ -388,6 +391,9 @@ GRANT SELECT, INSERT ON a2da_clickbox.tematicas TO 'a2da_admin'@'localhost';
 GRANT SELECT, INSERT ON a2da_clickbox.generos TO 'a2da_admin'@'localhost';
 GRANT SELECT, INSERT ON a2da_clickbox.partidas_imagenes TO 'a2da_admin'@'localhost';
 GRANT SELECT ON a2da_clickbox.historico_usuarios TO 'a2da_admin'@'localhost';
+GRANT ALL ON a2da_clickbox.carritos TO 'a2da_admin'@'localhost';
+GRANT ALL ON a2da_clickbox.productos_carritos TO 'a2da_admin'@'localhost';
+GRANT EXECUTE ON PROCEDURE a2da_clickbox.cargar_carrito TO 'a2da_admin'@'localhost';
 
 -- DISPARADORES
 DELIMITER $$
@@ -475,10 +481,6 @@ BEGIN
 						AND
 					DATE_ADD(fecha_ini_suscripcion, INTERVAL suscripcion MONTH) > NOW();
 END$$
-
--- PROCEDIMIENTO QUE VUELCA LA INFORMACIÓN EN HISTORICO_USUARIO Y DESPUES HACE LOS CAMPOS NECESARIOS
-DROP PROCEDURE IF EXISTS update_usuario$$
-CREATE PROCEDURE IF NOT EXISTS update_usuario ()
 		
 -- EVENTOS
 -- EVENTO QUE CADA DÍA ACTUALIZA LAS SUSCRIPCIONES SI YA SE PASARON DE FECHA (SI TIENE RENOVAR LE AÑADE EL TIEMPO Y SI NÓ LE BORRA LA SUSCRIPCIÓN)

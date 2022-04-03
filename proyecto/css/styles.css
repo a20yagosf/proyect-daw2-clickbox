@@ -118,6 +118,7 @@ nav #menuPerfilUser {
   position: absolute;
   inset-block-start: 100%;
   inset-inline-end: 2%;
+  z-index: 50;
 }
 nav #menuPerfilUser a {
   text-align: center;
@@ -2932,6 +2933,7 @@ h2, h3 {
   text-align: center;
   color: #F3F3F3;
   position: relative;
+  z-index: 2;
 }
 #carrito header button {
   display: block;

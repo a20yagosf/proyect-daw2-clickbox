@@ -1,3 +1,6 @@
+//Variables globales
+let numArticulos = 0;
+
 /**
  * Clase fecha con la fecha correcta
  */
@@ -183,14 +186,14 @@ function crearHeader() {
         //Creamos el carrito para comprar
         iconoCarrito = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         atributosIcono = {"width": "35", "height": "35", "fill" : "currentColor", "class" : "bi bi-cart4", "viewBox" : "0 0 16 16"};
-        cantidadProd = crearContenedor("span", {},"2");
+        cantidadProd = crearContenedor("span", {}, numArticulos);
         cantidadProd.setAttribute("class", "badge rounded-pill");
         Object.entries(atributosIcono).forEach(atributo => iconoCarrito.setAttribute(atributo[0], atributo[1]));
         recorridoIcono = document.createElementNS("http://www.w3.org/2000/svg", "path");
         recorridoIcono.setAttribute("d", "M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l.5 2H5V5H3.14zM6 5v2h2V5H6zm3 0v2h2V5H9zm3 0v2h1.36l.5-2H12zm1.11 3H12v2h.61l.5-2zM11 8H9v2h2V8zM8 8H6v2h2V8zM5 8H3.89l.5 2H5V8zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z");
         iconoCarrito.append(recorridoIcono);
         botonCarrito = crearEnlace("../html/carrito.html", iconoCarrito);
-        botonCarrito.aparecerLogin(cantidadProd);
+        botonCarrito.append(cantidadProd);
         botonCarrito.setAttribute("id", "iconoCarrito");
         botonCarrito.addEventListener("click", irCarrito);
         //Creamos el botón del usuario
@@ -1159,6 +1162,8 @@ async function procesarLogin(evento) {
     }
     //Guardamos tambien en localStorage el email
     localStorage.setItem("email", email);
+    //Cargamos el número de artículos del carrito
+    cargarNumArticulos();
     if (resultadoPeticion["exito"] == 1) {
       location.assign("../html/panelAdministrador.html");
     } else {
@@ -4627,4 +4632,65 @@ function desactivarScrollTeclas() {
  */
 function desactivarScrollRaton(e) {
   e.preventDefault();
+}
+
+async function cargarNumArticulos() {
+  try {
+    //Iniciamos la petición
+    const respuesta = await fetch("../php/carrito.php", {
+      method: "POST",
+      headers: {"Content-type": "application/json; charset=UTF-8"},
+      body: JSON.stringify({"numArticulos": true})
+    });
+    //Traducimos la respuesta
+    const respuestaJSON = respuesta.json();
+    //Comprobamos que no diera error
+    if(Object.hasOwn(respuestaJSON, "error")){
+      throw respuestaJSON["error"];
+    }
+    numArticulos = respuestaJSON["numArticulos"];
+  }
+  catch(error){
+    console.log(error);
+  }
+}
+
+/**
+ * Carga la información del carrito
+ *
+ * @param   {int}  pagina  Número de la página en la que se encuentra
+ * @param   {int}  limite  Número de artículos a mostrar
+ *
+ * @return  {void}          No devuelve nada
+ */
+async function cargarCarrito(pagina, limite) {
+  try {
+    //Cuerpo del carrito
+    let cuerpoCarrito = document.getElementById("cuerpoCarrito");
+    cuerpoCarrito.innerHTML = "";
+    //Iniciamos la petición
+    const respuesta = await fetch("../php/carrito.php", {
+      method: "POST",
+      headers: {"Content-type": "application/json; charset=UTF-8"},
+      body: JSON.stringify({"cargarCarrito": {"pagina": pagina, "limite": limite}})
+    });
+    //Traducimos la respuesta
+    const respuestaJSON = respuesta.json();
+    //Comprobamos que no diera que no tiene la sesión iniciada
+    if(Object.hasOwn(respuestaJSON, "noSesion")){
+      location.replace("../html/index.html");
+    }
+    //Comprobamos que no diera error
+    if(Object.hasOwn(respuestaJSON, "error")){
+      throw respuestaJSON["error"];
+    }
+    //Creamos cada uno de los artículos
+  }
+  catch(error){
+    console.log(error);
+  }
+}
+
+function crearProductoCarrito(nombre, unidades, precio) {
+  //Creamos el contenedor
 }

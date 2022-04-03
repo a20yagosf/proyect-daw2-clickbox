@@ -16,6 +16,7 @@
         text-align: center;
         color: $colorLetra;
         position: relative;
+        z-index: 2;
 
         button {
             @include boton(aclararColor($colorPrincipal), 1.2em);

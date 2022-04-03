@@ -379,7 +379,7 @@ class Bd {
             }
             else {
                 $dato = is_string($valor) ? \PDO::PARAM_STR : \PDO::PARAM_INT;
-                $pdoStatement->bindParam((":" . $indice),$valor,$dato);
+                $pdoStatement->bindParam((":" . $indice), $valor, $dato);
             }
             //Eliminamos las variables porque sino la segunda sentencia que añade se lía
             unset($indice);

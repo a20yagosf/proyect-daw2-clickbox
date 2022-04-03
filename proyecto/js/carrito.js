@@ -17,6 +17,8 @@ window.onload = async function () {
     asignarTooltips();
     //Activamos los tooltips
     activarTooltips();
+    //Cargamos el carrito
+    await cargarCarrito(0, 7);
     //Activamos el scroll
     activarScroll();
 };
