@@ -628,18 +628,16 @@ function cargarScripts() {
   cabeza.append(
     crearLink({
       rel: "stylesheet",
-      href: "https://unpkg.com/leaflet@1.7.1/dist/leaflet.css",
-      integrity:
-        "sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==",
+      href: "https://unpkg.com/leaflet@1.8.0/dist/leaflet.css",
+      integrity: "sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==",
       crossorigin: "",
     })
   );
   //JS Leflet.js
   cabeza.append(
     crearScript({
-      src: "https://unpkg.com/leaflet@1.7.1/dist/leaflet.js",
-      integrity:
-        "sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==",
+      src: "https://unpkg.com/leaflet@1.8.0/dist/leaflet.js",
+      integrity: "sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ==",
       crossorigin: "",
     })
   );
@@ -4675,7 +4673,7 @@ async function cargarCarrito(pagina, limite) {
       body: JSON.stringify({"cargarCarrito": {"pagina": pagina, "limite": limite}})
     });
     //Traducimos la respuesta
-    const respuestaJSON = respuesta.json();
+    const respuestaJSON = await respuesta.json();
     //Comprobamos que no diera que no tiene la sesión iniciada
     if(Object.hasOwn(respuestaJSON, "noSesion")){
       location.replace("../html/index.html");
@@ -4685,12 +4683,98 @@ async function cargarCarrito(pagina, limite) {
       throw respuestaJSON["error"];
     }
     //Creamos cada uno de los artículos
+   let productos = Object.values(respuestaJSON["carrito"]["productos"]);
+   if(productos.length > 0) {
+      productos.forEach(producto =>{
+        cuerpoCarrito.append(crearProductoCarrito(producto["nombre"], producto["id_producto"], producto["imagen_producto"], producto["unidades"], producto["precio"]));
+      });
+      //Creamos el total
+      let spanPrecio = crearContenedor("span", {}, "Total: " + respuestaJSON["carrito"]["total"] + " €");
+      let total = document.createElement("p");
+      total.append(spanPrecio);
+      cuerpoCarrito.append(total);
+   }
+   else {
+     let divNoProd = crearContenedor("div", {"class": "vacio"}, "El carrito está vacío");
+     cuerpoCarrito.append(divNoProd);
+     let botonVacio = cuerpoCarrito.previousElementSibling.lastElementChild;
+     botonVacio.setAttribute("disabled", "disabled");
+   }
   }
   catch(error){
     console.log(error);
   }
 }
 
-function crearProductoCarrito(nombre, unidades, precio) {
+function crearProductoCarrito(nombre, id, img, unidades, precio) {
   //Creamos el contenedor
+  let contenedorCarrito = crearContenedor("div", {"class": "productoCarrito"});
+  let contenedorImg      = crearContenedor("div", {"class": "imgCarrito"});
+  contenedorImg.style.backgroundImage = `url(${img})`;
+  let titulo                       = crearContenedor("h3", {}, nombre);
+  let formulario               = crearContenedor("form", {"class": "botonesCarrito", "action": "../php/carrito.php", "method": "POST"});
+  let cantidadProd          = crearContenedor("input", {"type": "number", "name": id, "minlength": 0, "value": unidades});
+  cantidadProd.addEventListener("change", actualizarProducto);
+  let botonEliminar         = crearContenedor("button", {"type": "button"}, "Eliminar");
+  botonEliminar.addEventListener("click", actualizarProducto);
+  formulario.append(cantidadProd, botonEliminar);
+  let parrafoPrecio          = crearContenedor("p", {}, "Precio: " + precio + " €");
+  contenedorCarrito.append(contenedorImg, titulo, formulario, parrafoPrecio);
+  return contenedorCarrito;
+}
+
+/**
+ * Guarda el producto en el carrito, si ya está en el carrito actualiza sus unidades (o lo elimina si son 0)
+ *
+ * @param   {int}  id_producto  ID del producto
+ * @param   {int}  unidades     Número de unidades
+ *
+ * @return  {bool}               No devuelve nada
+ */
+async function guardarProducto(id_producto, unidades, carrito = false) {
+  let datosPasar = {"id_producto": id_producto, "unidades": unidades, "carrito" : carrito};
+    try {
+      //Iniciamos la petición
+      const respuesta = await fetch("../php/carrito.php", {
+        method: "POST",
+        headers: {"Content-type": "application/json; charset=UTF-8"},
+        body: JSON.stringify({"guardarProducto": datosPasar})
+      });
+      //Traducimos la respuesta
+      const respuestaJSON = await respuesta.json();
+      //Comprobamos que no diera que no tiene la sesión iniciada
+      if(Object.hasOwn(respuestaJSON, "noSesion")){
+        location.replace("../html/index.html");
+      }
+      //Comprobamos que no diera error
+      if(Object.hasOwn(respuestaJSON, "error")){
+        throw respuestaJSON["error"];
+      }
+      return respuestaJSON["carrito"];
+    }
+    catch(error){
+      console.log(error);
+    }
+}
+
+async function actualizarProducto(e) {
+  let inputUnidades;
+  let unidades;
+  if(e.currentTarget.nodeName == "BUTTON"){
+    let botonEliminar = e.currentTarget;
+    inputUnidades = botonEliminar.previousElementSibling;
+    unidades = 0;
+  }
+  else {
+    inputUnidades = e.currentTarget;
+    unidades = inputUnidades.value;
+  }
+  let id_producto = inputUnidades.getAttribute("name");
+  let total = await guardarProducto(id_producto, unidades, true);
+  if(unidades <= 0){
+    cargarCarrito(0, 7);
+  }
+  else {
+    document.getElementById("cuerpoCarrito").lastElementChild.firstElementChild.textContent = "Total: " + total + "€";
+  }
 }

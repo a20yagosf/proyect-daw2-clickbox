@@ -27,6 +27,11 @@
             //Right
             inset-inline-end: 5%;
             transform: translateY(-50%);
+
+            &:disabled {
+                background-color: $botonDesac;
+                cursor: not-allowed;
+            }
         }
     }
 
@@ -42,7 +47,9 @@
         column-gap: 2%;
 
         .imgCarrito {
-            @include contenedor(100%, $sizeProdCarrito, orange);
+            @include contenedor(100%, $sizeProdCarrito, transparent);
+            background-position: center;
+            background-size: contain;
 
             //Grid como hijo
             grid-area: img;
@@ -84,5 +91,11 @@
             font-size: 1.5em;
             border-top: 1px solid $colorPrincipal;
         }
+   }
+
+   & .vacio {
+       padding: 100px;
+       font-size: 2em;
+       text-align: center;
    }
 }

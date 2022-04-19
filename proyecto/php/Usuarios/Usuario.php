@@ -109,6 +109,13 @@ class Usuario
         return $resultado->fetch(\PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Devuelve el carrito del usuairo usando un procedimiento almacenado
+     *
+     * @param   array  $datos  Array asociativo con el email, página y límite
+     *
+     * @return  mixed          Devuelve o nada o todos los ratos del carrito (Con el límite)
+     */
     public function getCarrito($datos) {
         //Instanciamos BD
         $bd = new BD();
@@ -119,17 +126,119 @@ class Usuario
         if(!$resultado instanceof \PDOStatement){
             throw new \PDOException($resultado);
         }
-        return $resultado->fetchAll(\PDO::FETCH_ASSOC);
+        $productos = $resultado->fetchAll(\PDO::FETCH_ASSOC);
+        if(count($productos) > 0){
+            $total = $this->getPrecioTotal(["idCarrito" => $productos[0]["id_carrito"]]);
+            $devolver = ["productos" =>$productos, "total" => $total];
+        }
+        else {
+            $devolver = ["productos" =>$productos];
+        }
+        return $devolver ;
     }
 
-    public function anadirCarrito()
-    {
+    public function guardarProducto($datos) {
+        try {
+            //Comprobamos si es un producto nuevo o ya lo tenemos en el carrito (mediante una variable que se pasa)
+            if($datos["carrito"]) {
+                $resultado = $datos["unidades"] > 0 ? $this->actualizarCarrito($datos) : $this->eliminarProducto($datos);
+            }
+            //Lo estamos añadiendo por primera vez
+            else {
+                $resultado = $this->anadirProducto($datos);
+            }
+        }
+        catch(\PDOException $pdoError) {
+            throw $pdoError;
+        }
+        catch(\Exception $error){
+            throw $error;
+        }
+        return $resultado;
     }
+
+    /**
+     * Actualiza las unidades del producto
+     *
+     * @param   array  $datos  Datos del producto
+     *
+     * @return  bool          Devuelve si se actualizó o no
+     */
+    public function actualizarCarrito($datos) {
+        try {
+            //Instanciamos BD
+            $bd = new BD();
+            $sentencia = "SELECT id_carrito FROM carritos WHERE usuario_carrito = ?;";
+            $id_carrito = $bd->recuperDatosBD($sentencia, [$this->email])->fetch(\PDO::FETCH_ASSOC);
+            $datos["idCarrito"] = $id_carrito;
+            if($datos["unidades"] > 0){
+                $sentenciaAct = "UPDATE productos_carritos SET unidades = :unidades  WHERE carrito = :carrito AND producto = :producto;";
+                $bd->agregarModificarDatosBDNum($sentenciaAct, ["unidades" => intval($datos["unidades"]), "carrito" => intval($id_carrito), "producto" => intval($datos["id_producto"])]);
+            }
+            else {
+                $this->eliminarProducto($datos);
+            }
+        }
+        catch(\PDOException $pdoError) {
+            throw $pdoError;
+        }
+        catch(\Exception $error){
+            throw $error;
+        }
+        return $this->getPrecioTotal($datos);
+    }
+
+    public function anadirProducto(){
+    }
+
+    /**
+     * Elimina el producto del carrito
+     *
+     * @param   array  $datos  Datos del producto
+     *
+     * @return  bool          Devuelve si se eliminó o no
+     */
+    public function eliminarProducto($datos) {
+        try {
+            //Instanciamos BD
+            $bd = new BD();
+            $sentenciaAct = "DELETE FROM productos_carritos  WHERE carrito = :carrito AND producto = :producto;";
+            $bd->agregarModificarDatosBDNum($sentenciaAct, ["carrito" => intval($datos["idCarrito"]), "producto" => intval($datos["id_producto"])]);
+        }
+        catch(\PDOException $pdoError) {
+            throw $pdoError;
+        }
+        catch(\Exception $error){
+            throw $error;
+        }
+    }
+
     public function eliminarCarrito()
     {
     }
+
     public function realizarPedido()
     {
+    }
+
+    public function getPrecioTotal($datos) {
+        try {
+            //Instanciamos BD
+            $bd = new BD();
+            $sentenciaAct = "SELECT SUM(PC.unidades * P.precio) AS total FROM productos_carritos as PC INNER JOIN productos AS P ON PC.producto = P.id_producto  WHERE carrito = :carrito;";
+            $pdoStatement = $bd->recuperarDatosBDNum($sentenciaAct, ["carrito" => intval($datos["idCarrito"])]);
+            $total = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
+        }
+        catch(\PDOException $pdoError) {
+            throw $pdoError;
+        }
+        catch(\Exception $error){
+            throw $error;
+        }
+        catch(\Error $err){
+            throw $err;
+        }
+        return $total["total"];
     }
 
     /**

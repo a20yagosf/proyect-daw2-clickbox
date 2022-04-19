@@ -481,6 +481,21 @@ BEGIN
 						AND
 					DATE_ADD(fecha_ini_suscripcion, INTERVAL suscripcion MONTH) > NOW();
 END$$
+
+-- PROCEDIMIENTO QUE Muestra el carrito con todos los productos de un usuario
+DROP PROCEDURE IF EXISTS cargar_carrito$$
+CREATE PROCEDURE IF NOT EXISTS cargar_carrito (IN usuario VARCHAR(150), IN pagina int, IN limite int)
+BEGIN
+		SELECT  C.id_carrito,
+				P.nombre,
+				P.id_producto,
+                P.imagen_producto,
+			    PC.unidades,
+			    P.precio
+			FROM carritos AS C INNER JOIN productos_carritos AS PC ON C.usuario_carrito = usuario AND C.id_carrito = PC.carrito
+				INNER JOIN productos AS P ON PC.producto = P.id_producto
+			LIMIT pagina, limite;
+END$$
 		
 -- EVENTOS
 -- EVENTO QUE CADA DÍA ACTUALIZA LAS SUSCRIPCIONES SI YA SE PASARON DE FECHA (SI TIENE RENOVAR LE AÑADE EL TIEMPO Y SI NÓ LE BORRA LA SUSCRIPCIÓN)

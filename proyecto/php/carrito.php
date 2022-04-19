@@ -20,9 +20,13 @@ try {
     if(isset($peticion["numArticulos"])) {
         $devolver = $usuario->getNumArticulos();
     }
-
+    //Cargar carrito
     else if(isset($peticion["cargarCarrito"])) {
-        $devolver = $usuario->getCarrito($peticion["cargarCarrito"]);
+        $devolver = ["carrito" => $usuario->getCarrito($peticion["cargarCarrito"])];
+    }
+    //GuardarProducto
+    else if(isset($peticion["guardarProducto"])) {
+        $devolver = ["carrito" => $usuario->actualizarCarrito($peticion["guardarProducto"])];
     }
 }
 catch(\PDOException $pdoError){
@@ -33,5 +37,8 @@ catch(\RuntimeException $rnError){
 }
 catch(\Exception $error){
     $devolver = ["error" => $error->getMessage()];
+}
+catch(\Error $err){
+    $devolver = ["error" => $err->getMessage()];
 }
 echo json_encode($devolver);
