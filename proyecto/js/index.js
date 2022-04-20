@@ -3,13 +3,22 @@ async function cargarPaginaPrincipal() {
     let usuario = (localStorage["email"] != "");
     //Si da verdadero vemos el rol
     let administrador = usuario ? (sessionStorage["rol"] == 1) : usuario;
+
+    //Hacemos una petición para cargar las últimas novedades
+    let ultimasNovedades = await cargarUltimasNovedades();
+
+    let datos = {"usuario" : usuario, "administrador" : administrador, "novedades": ultimasNovedades};
     //Cargamos la plantilla del header página principal
-    let plantilla = await fetch("../mustache/header.mustache");
+    let peticion = await fetch("../mustache/header.mustache", opcionesFetchMustache);
+    let plantilla = await peticion.text();
+    let resultadoMustache = Mustache.render(plantilla, datos);
+    document.querySelector("header").insertAdjacentHTML("beforeend", resultadoMustache);
 }
 
 
 window.onload = async function () {
     desactivarScroll();
+    await cargarPaginaPrincipal();
     /*loginAutomatico();
     //Creamos el header
     crearHeader();

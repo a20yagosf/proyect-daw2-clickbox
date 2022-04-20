@@ -1,6 +1,8 @@
 //Variables globales
 let numArticulos = 0;
 
+let opcionesFetchMustache = { method: "POST", headers: {"Content-type": "application/json;charset=utf-8;"}};
+
 /**
  * Clase fecha con la fecha correcta
  */
