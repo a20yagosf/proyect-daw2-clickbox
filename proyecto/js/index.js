@@ -1,6 +1,6 @@
 async function cargarPaginaPrincipal() {
     //Comprobamos si el usuario es anónimo o registrado viendo la variable local
-    let usuario = (localStorage["email"] != "");
+    let usuario = (localStorage["email"] != undefined);
     //Si da verdadero vemos el rol
     let administrador = usuario ? (sessionStorage["rol"] == 1) : usuario;
 
@@ -13,12 +13,27 @@ async function cargarPaginaPrincipal() {
     let plantilla = await peticion.text();
     let resultadoMustache = Mustache.render(plantilla, datos);
     document.querySelector("header").insertAdjacentHTML("beforeend", resultadoMustache);
+
+    //Añadimos los escuchadores para el menú 
+    if(usuario) {
+        let botonPerfil = document.getElementById("botonPerfilUsuario");
+        botonPerfil.addEventListener('click', ocultarMenu);
+        document.getElementById('menuPerfilUser').lastElementChild.addEventListener('click', desconectarPerfil);
+        //Activamos el evento para que oculte el menú
+        botonPerfil.dispatchEvent(new Event('click'));
+    }
+    else {
+        document.getElementById("inicioSesion").addEventListener('click', mostrarInisioSesion);
+    }
+    return usuario;
 }
 
 
 window.onload = async function () {
     desactivarScroll();
-    await cargarPaginaPrincipal();
+    let usuario = await cargarPaginaPrincipal();
+    //Hacemos un tiemOut para que no se mire como se oculta el botón
+    usuario ? setTimeout(activarScroll, 500) : activarScroll();
     /*loginAutomatico();
     //Creamos el header
     crearHeader();
@@ -37,5 +52,4 @@ window.onload = async function () {
     //Activamos los tooltips
     activarTooltips(); */
     //Activamos el scroll
-    activarScroll();
 };

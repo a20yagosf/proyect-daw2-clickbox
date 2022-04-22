@@ -4780,3 +4780,140 @@ async function actualizarProducto(e) {
     document.getElementById("cuerpoCarrito").lastElementChild.firstElementChild.textContent = "Total: " + total + "€";
   }
 }
+
+/**
+ * Hace una petición a PHP para que le devuelva de BD las últimas novedades y las devuelve como array
+ *
+ * @return  {mixed}  Array o no devuelve nada si hubo un error
+ */
+async function cargarUltimasNovedades () {
+  let numNovedades = 3;
+  try {
+    let peticion = await fetch('../php/tienda.php', {
+      method: "POST",
+      headers: {"Content-type": "application/json;charset=ut-8;"},
+      body: JSON.stringify({"ultimoProducto" : numNovedades})
+    });
+    let peticionJSON = await peticion.json();
+    if(Object.hasOwn(peticionJSON, "error")) {
+      throw peticionJSON["error"];
+    }
+    return peticionJSON;
+  }
+  catch(error){
+    console.log(error);
+  }
+}
+
+/**
+ * Oculta el menú del usuario
+ *
+ * @return  {void}     No devuelve nada
+ */
+function ocultarMenu() {
+  $('#menuPerfilUser').animate({height: 'toggle'}, 500);
+}
+
+/**
+ * Carga el inicio de sesión en el main
+ *
+ * @return  {void}  No devuelve nada
+ */
+async function mostrarInisioSesion() {
+  let peticion = await fetch('../mustache/login_registro.mustache', {
+    method: "POST",
+    headers: {"Content-type": "application/json;charset=ut-8;"}
+  });
+  let plantilla = await peticion.text();
+  let resultado = Mustache.render(plantilla, {});
+  let main = document.querySelector("main");
+  main.innerHTML = "";
+  main.insertAdjacentHTML("beforeend", resultado);
+
+  //Event listeners
+  let login = document.getElementById("login");
+  let contenedorBotones = login.querySelector("div");
+  let botones = Array.from(contenedorBotones.querySelectorAll("button"));
+  botones.forEach(boton => {
+    boton.addEventListener('click', mostrarRegistro);
+  });
+
+  //Validador de código
+  $("#login form").validate({
+    rules : {
+      "email" : {
+        required: true,
+        minlength: 2,
+        email: true
+      },
+      "pwd": {
+        required: true
+      }
+    },
+    messages: {
+      "email" : "Debe introducir un email válido. Ej: nombre@gmail.com",
+      "pwd": "Debe introducir una contraseña"
+    }
+  });
+
+  let registro = $("#registro");
+  registro.validate({
+    rules : {
+      "email" : {
+        required: true,
+        minlength: 2,
+        email: true
+      },
+      "pwd": {
+        required: true
+      }
+    },
+    messages: {
+      "email" : "Debe introducir un email válido. Ej: nombre@gmail.com",
+      "pwd": "Debe introducir una contraseña"
+    }
+  });
+
+  let botonesAcordeon = Array.from($("button", registro));
+  botonesAcordeon.forEach(boton => boton.addEventListener('click', mostrarOcultarAcordeon));
+}
+
+/**
+ * Pone en display block o none el formulario de registro o el login
+ *
+ * @param   {Event}  e  Evento que lo dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+function mostrarRegistro(e) {
+  let registro = document.getElementById("registro");
+  if(registro.style.display == "block")  {
+    document.querySelector("#login form").style.display = "flex";
+    registro.style.display = "none";
+    let botonLogin = e.currentTarget;
+    botonLogin.classList.remove("noActivo");
+    botonLogin.previousElementSibling.classList.add("noActivo");
+  }
+  else {
+    document.querySelector("#login form").style.display = "none";
+    registro.style.display = "block";
+    let botonRegistro = e.currentTarget;
+    botonRegistro.classList.remove("noActivo");
+    botonRegistro.nextElementSibling.classList.add("noActivo");
+  }
+}
+
+function mostrarOcultarAcordeon(e) {
+  let acordeon = e.currentTarget.nextElementSibling;
+  if(e.currentTarget.dataset.nombre = "registro") {
+
+  }
+  $acordeon.animate({height: 'toggle'}, 500);
+  //Centramos la ventana en el acordeon desplegado
+  if($(acordeon).is(":visible")) {
+    let offset = $(acordeon).offset();
+    let height = $(acordeon).outerHeight();
+    let centerY = offset.top + height / 2;
+    scrollTo(0, centerY);
+  }
+}

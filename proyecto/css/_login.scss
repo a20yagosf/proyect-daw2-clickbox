@@ -3,18 +3,9 @@
 
 #login {
     //Tamaño y posición
-    @include contenedor($widthLogin, $heighLogin, $fondoLogin);
-    padding: 1%;
+    @include contenedor($widthLogin, auto, transparent);
     border-radius: $borderRadius;
-    position: fixed;
-    //Top
-    inset-block-start: 10%;
-    //Left
-    inset-inline-start: 50%;
-    transform: translate(-50%, 0%);
-    z-index: 5;
-    overflow-y: auto;
-    overflow-x: hidden;
+    margin: 2% auto;
 
     //Botones
     button {
@@ -74,6 +65,7 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
+        transition: display 1s ease-in-out;
 
         //Todos menos el input de sumit
         input:not(input[type="submit"]){
@@ -182,6 +174,10 @@
         display: none;
         //Margin top
         margin-block-start: 2%;
+    }
+
+    form:nth-of-type(2) {
+        display: none;
     }
 
     //Adaptación para móviles mediante aspect ratio

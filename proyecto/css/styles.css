@@ -1770,18 +1770,11 @@ form#formulario_tienda div.center_submit button {
 }
 
 #login {
-  width: 80%;
-  height: 70%;
-  background-color: #f3f3f3;
-  padding: 1%;
+  width: 100%;
+  height: auto;
+  background-color: transparent;
   border-radius: 10px;
-  position: fixed;
-  inset-block-start: 10%;
-  inset-inline-start: 50%;
-  transform: translate(-50%, 0%);
-  z-index: 5;
-  overflow-y: auto;
-  overflow-x: hidden;
+  margin: 2% auto;
 }
 #login button {
   display: block;
@@ -1842,6 +1835,7 @@ form#formulario_tienda div.center_submit button {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  transition: display 1s ease-in-out;
 }
 #login form input:not(input[type=submit]) {
   margin: 2% 0%;
@@ -1944,6 +1938,9 @@ form#formulario_tienda div.center_submit button {
   display: none;
   -webkit-margin-before: 2%;
           margin-block-start: 2%;
+}
+#login form:nth-of-type(2) {
+  display: none;
 }
 @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
   #login {

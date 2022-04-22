@@ -1,0 +1,53 @@
+<div id="login">
+    <h2>Registrate o inicia sesión</h2>
+    <p>Por favor crea una cuenta para poder acceder a más funcionalidades de la web como suscribirte, reservar partidas y mucho más</p>
+    <p class="campoOblig">Los campos obligatorios están marcados con :</p>
+    <div>
+        <button class="noActivo" data-nombre="registro">Registrarse</button>
+        <button data-nombre="login">Iniciar sesión</button>
+    </div>
+    <form action="" method="POST" enctype="multipart/form-data">
+        <label for="email" class="campoOblig">Email</label>
+        <input type="email" name="email" placeholder="Correo electrónico" id="email">
+        <label for="pwd" class="campoOblig">Contraseña</label>
+        <input type="password" name="pwd" placeholder="Contraseña" id="pwd">
+        <p id="resultadoForm"></p>
+        <button type="submit">Iniciar sesión</button>
+        <button type="button" class="movil">Cancelar</button>
+    </form>
+    <form action="" method="POST" enctype="multipart/form-data" id="registro">
+        <div class="acordeon">
+            <button type="button">Datos cuenta</button>
+            <div>
+                <label for="email" class="campoOblig">Email</label>
+                <input type="text" name="email" id="email">
+                <label for="pwd" class="campoOblig">Contraseña</label>
+                <input type="password" name="pwd" id="pwd">
+                <label for="pwd2" class="campoOblig">Repetir contraseña</label>
+                <input type="password" name="pwd2" id="pwd2">
+                <label for="imagenPerfil" class="campoOblig">Imagen de perfil</label>
+                <input type="file" name="imagenPerfil" id="imagenPerfil">
+                <label for="genero_favorito">Género favorito</label>
+                <select name="genero_favorito" id="genero_favorito">
+                </select>
+                </div>
+            </div>
+            <div class="acordeon">
+                <button type="button">Datos personales</button>
+                <div style="display: none;">
+                    <label for="nombre" class="campoOblig">Nombre</label>
+                    <input type="text" name="nombre" id="nombre">
+                    <label for="apellidos" class="campoOblig">Apellidos</label>
+                    <input type="text" name="apellidos" id="apellidos">
+                    <label for="telf">Teléfono</label>
+                    <input type="telf" name="telf" id="telf">
+                    <label for="fecha_nac" class="campoOblig">Fecha de nacimiento</label>
+                    <input type="date" name="fecha_nac" id="fecha_nac">
+                    <label for="direccion">Dirección</label>
+                    <input type="text" name="direccion" id="direccion">
+                </div>
+            </div>
+            <p id="resultadoForm"></p>
+            <input type="submit" value="Registrarme">
+            <button type="button" class="movil">Cancelar</button></form>
+</div>

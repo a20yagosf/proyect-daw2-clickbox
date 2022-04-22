@@ -10,9 +10,9 @@ $bd = new bd();
 try {
     //Comprobamos si pide el último artículo
     if(isset($datosTienda["ultimoProducto"])){
-        //Cargamos las cajas
+        //Cargamos los últimos productos para el alert
         $devolver = $bd->ultimoProducto($datosTienda["ultimoProducto"]);
-        $devolver = ["productos" => $devolver];
+        $devolver = $devolver;
     }
 }
 catch(\PDOException $pdoError){
