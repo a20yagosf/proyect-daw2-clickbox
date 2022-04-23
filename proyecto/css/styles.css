@@ -335,6 +335,10 @@ body .monocromatico {
   border: none !important;
 }
 
+.select2 {
+  width: 100% !important;
+}
+
 a {
   text-decoration: none;
 }
@@ -1869,15 +1873,32 @@ form#formulario_tienda div.center_submit button {
 #login form input, #login form label {
   font-size: 1.1rem;
   flex-basis: 100%;
+  position: relative;
 }
 #login form p {
   -webkit-margin-after: 2%;
           margin-block-end: 2%;
   position: relative;
 }
+#login form:nth-of-type(1) label:not(label:nth-of-type(1)) {
+  -webkit-margin-before: 2%;
+          margin-block-start: 2%;
+}
+#login form:nth-of-type(1) input:not(input[type=submit]) {
+  margin: 0%;
+}
+#login form:nth-of-type(2) {
+  display: none;
+}
 #login .acordeon {
   border-radius: 10px;
   transition: all 2s ease-in-out;
+}
+#login .acordeon div div {
+  flex-basis: 50%;
+}
+#login .acordeon div div input, #login .acordeon div div select, #login .acordeon div div > label {
+  flex-basis: 100%;
 }
 #login .acordeon input:not(input[type=submit]) {
   margin: 1% auto;
@@ -1911,6 +1932,7 @@ form#formulario_tienda div.center_submit button {
   padding: 1%;
   -webkit-margin-before: 2%;
           margin-block-start: 2%;
+  width: 100%;
 }
 #login input[type=submit]:hover {
   background-color: #03bdd7;
@@ -1938,9 +1960,6 @@ form#formulario_tienda div.center_submit button {
   display: none;
   -webkit-margin-before: 2%;
           margin-block-start: 2%;
-}
-#login form:nth-of-type(2) {
-  display: none;
 }
 @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
   #login {
@@ -2027,18 +2046,31 @@ form#formulario_tienda div.center_submit button {
 .error, .exito {
   display: block;
   color: #ff8e75;
+  /*&::before {
+      content: "";
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      //Posicionamiento
+      position: relative;
+      inset-block-start: 50%;
+      transform: translateY(-50%);
+      //Margin right
+      margin-inline-end: 1%;
+      //Icono de alerta
+      background-image: url("../img/iconos/iconoError.svg");
+      background-repeat: no-repeat;
+      background-size: contain;
+  }*/
 }
-.error::before, .exito::before {
-  content: "";
-  display: inline-block;
-  width: 25px;
-  height: 25px;
-  position: relative;
-  inset-inline-start: -12.5px;
-  inset-block-start: 50%;
+
+label.error, label.exito {
   background-image: url("../img/iconos/iconoError.svg");
+  padding-left: 1.2em;
+  background-size: auto;
+  background-position: 0%;
   background-repeat: no-repeat;
-  background-size: contain;
+  margin-top: 0.5% !important;
 }
 
 .exito {

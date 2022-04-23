@@ -1,0 +1,43 @@
+<div id="suscripciones" class="carousel slide" data-bs-ride="carousel">
+    <h2>Cajas anteriores</h2>
+    <!-- Indicadores de abajo -->
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#suscripciones" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Caja 1"></button>
+         {{# elements}}
+            <button type="button" data-bs-target="#suscripciones" data-bs-slide-to="{{number}}" aria-label="Caja {{number + 1}}"></button>
+        {{/elements}}
+    </div>
+    <!-- Interior carousel -->
+    <div class="carousel-inner">
+            <!-- Tarjetas -->
+            {{# cajaSorpresa}}
+            <div class="carousel-item">
+                <div class="tarjeta">
+                    <div class="imagenCaja" aria-label="Caja {{fecha}}">
+                    </div>
+                    <div class="contenidoTarjeta">
+                        <h2>{{fecha}}</h2>
+                        <ul>
+                            {{#producto}}
+                                <li>
+                                    <span>{{nombre}}</span>
+                                    <img src="{{imagen_producto}}" alt="{{nombre}}">
+                                </li>
+                                {{/producto}}
+                           </ul>
+                    </div>
+                </div>
+            </div>
+            {{/cajaSorpresa}}
+    </div>
+    <!-- Botones -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#suscripciones" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#suscripciones" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+        </button>
+    <button>Suscribirse</button>
+</div>

@@ -25,15 +25,23 @@ async function cargarPaginaPrincipal() {
     else {
         document.getElementById("inicioSesion").addEventListener('click', mostrarInisioSesion);
     }
+    //Si es administrador cargamos el panel de control
+    if(administrador){
+
+    }
+    //Si es un usuario estandar o anónimo cargamos la página principal
+    else {
+        await cargarCuerpoPrincipal();
+    }
     return usuario;
 }
 
 
 window.onload = async function () {
-    desactivarScroll();
+    activarPantallaCarga();
     let usuario = await cargarPaginaPrincipal();
     //Hacemos un tiemOut para que no se mire como se oculta el botón
-    usuario ? setTimeout(activarScroll, 500) : activarScroll();
+    usuario ? setTimeout(activarScroll, 500) : desactivarPantallaCarga();
     /*loginAutomatico();
     //Creamos el header
     crearHeader();

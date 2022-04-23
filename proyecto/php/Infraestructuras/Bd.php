@@ -565,7 +565,7 @@ class Bd {
      */
     public function cargarCajasSorpresa($numCajas) {
         try {
-            //Sentencia para coger los id de las 3 últimas cajas
+            //Sentencia para coger los id de las numCajas últimas cajas
             $sentenciaCajas = "SELECT id_caja FROM cajas_sorpresa WHERE fecha < (NOW() - INTERVAL DAYOFMONTH(NOW()) - 1 DAY) LIMIT 0, :numCajas;";
             //La prepraramos ya que la ejecutaremos varias veces
             $pdoStatement = $this->recuperarDatosBDNum($sentenciaCajas, ["numCajas" => $numCajas]);
@@ -580,16 +580,17 @@ class Bd {
             //Recorremos cada una de las cajas para añadirlo a la sentencia
             foreach($cajas as $id){
                 //Sentencia que ejecutaremos
-                $sentencia = "SELECT CS.img_caja, CS.fecha, P.nombre, P.imagen_producto FROM cajas_sorpresa AS CS INNER JOIN cajas_sorpresa_producto as CP ON CS.id_caja = :id_caja AND CS.id_caja = CP.caja_sorpresa INNER JOIN productos as P ON CP.producto = P.id_producto LIMIT 0, 4;";
+                $sentencia = "SELECT CS.img_caja AS imagen_caja, CS.fecha, P.nombre, P.imagen_producto FROM cajas_sorpresa AS CS INNER JOIN cajas_sorpresa_producto as CP ON CS.id_caja = :id_caja AND CS.id_caja = CP.caja_sorpresa INNER JOIN productos as P ON CP.producto = P.id_producto LIMIT 0, 4;";
                 //Como vamos a ejecutarla con frecuencia preparamos la sentencia
                 $pdoStatement = $this->recuperDatosBD($sentencia, $id);
                 //Comprobamos que no diera error
                 if(!$pdoStatement instanceof \PDOStatement) {
                     throw new PDOException($pdoStatement);
                 }
-                //Cogemos los datos, como están limitados hacemos fetch all
-                $datosCajas[] = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
             }
+            // {"cajasSorpresa": {"caja": [{"fecha" : "X", "nombre": "Y", "imagen": "J"}, {"fecha" : "X", "nombre": "Y", "imagen": "J"}]}}
+            $datosCajas = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
+            $datosCajas[0] = ["producto" => $datosCajas[0]];
             return $datosCajas;
         }
         catch(\PDOException $pdoError) {
@@ -626,5 +627,21 @@ class Bd {
          catch(\Exception $error) {
              throw $error;
          }
+    }
+
+    /**
+     * Cambia las claves del array por la clave que se le pasa
+     *
+     * @param   Array  $array  Array a cambiar
+     * @param   string  $clave  Clave a ponerle
+     *
+     * @return  Array          Array con las claves
+     */
+    public function cambiarClavesArray($array, $clave) {
+        $arrayClaves = array_fill(0, count($array), $clave);
+        $arrayCambiado = array_combine(array_map(function($arrayValores) use ($arrayClaves) {
+            return $arrayClaves[$arrayValores];
+        }, array_keys($array)), array_values($array));
+        return $arrayCambiado;
     }
 }

@@ -12,7 +12,7 @@ try {
     if(isset($datosUsuario["cajasSorpresa"])){
         //Cargamos las cajas
         $devolver = $bd->cargarCajasSorpresa($datosUsuario["cajasSorpresa"]);
-        $devolver = ["cajas" => $devolver];
+        $devolver = ["cajaSorpresa" => $devolver];
     }
 }
 catch(\PDOException $pdoError){

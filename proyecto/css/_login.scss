@@ -110,6 +110,7 @@
          input, label {
             font-size: 1.1rem;
             flex-basis: 100%;
+            position: relative;
         }
 
          //Párrafo donde se muestra si se creó con éxito o se produjo algún error al registrarnos
@@ -119,10 +120,33 @@
         }
     }
 
+    form:nth-of-type(1) {
+        label:not(label:nth-of-type(1)) {
+            //Margin top
+            margin-block-start: 2%;
+        }
+
+        input:not(input[type="submit"]) {
+            margin: 0%;   
+        }
+    }
+
+    form:nth-of-type(2) {
+        display: none;
+    }
+
     .acordeon {
         //Estilo
         border-radius: $borderRadius;
         transition: all 2s ease-in-out;
+
+        div div {
+            flex-basis: 50%;
+
+            input, select, & > label {
+                flex-basis: 100%;
+            }
+        }
 
         input:not(input[type="submit"]){
             margin: 1% auto;
@@ -156,6 +180,7 @@
         @include boton($colorPrincipal, 1.1rem);
         padding: 1%;
         margin-block-start: 2%;
+        width: 100%
     }
 
     //Botón para cerrar inicio sesión
@@ -174,10 +199,6 @@
         display: none;
         //Margin top
         margin-block-start: 2%;
-    }
-
-    form:nth-of-type(2) {
-        display: none;
     }
 
     //Adaptación para móviles mediante aspect ratio
@@ -299,20 +320,31 @@
     display: block;
     color: $colorError;
 
-    &::before {
+    /*&::before {
         content: "";
         display: inline-block;
-        width: $sizeIconoInfo;
-        height: $sizeIconoInfo;
+        width: 1em;
+        height: 1em;
         //Posicionamiento
         position: relative;
-        inset-inline-start: math.div(-$sizeIconoInfo, 2);
         inset-block-start: 50%;
+        transform: translateY(-50%);
+        //Margin right
+        margin-inline-end: 1%;
         //Icono de alerta
         background-image: url("../img/iconos/iconoError.svg");
         background-repeat: no-repeat;
         background-size: contain;
-    }
+    }*/
+}
+
+label.error {
+    background-image: url("../img/iconos/iconoError.svg");
+    padding-left: 1.2em;
+    background-size: auto;
+    background-position: 0%;
+    background-repeat: no-repeat;
+    margin-top: 0.5% !important;
 }
 
 //Clase para poner un icono antes del párrafo para mostrar que fue un éxito
@@ -337,4 +369,3 @@
         transform: translate(0%, 15%);
     }
 }
-

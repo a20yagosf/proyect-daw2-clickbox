@@ -1335,26 +1335,6 @@ function comprobarCamposOblig(camposOblig) {
 }
 
 /**
- * Valida el email contra una expresión regular
- *
- * @param   {string}  email  Email del usuario
- *
- * @return  {boolean}         Si el email es válido o no
- */
-function validarEmail(email) {
-  /* Expresión regular que comprueba: que tenga Cualquier caracter de letra o número un . o - + cualquier letra o número @ letra o número acompañado o no
-   * 1.- Que empiece por cualquier caracter alfanumérico (^\w)
-   * 2.- Que tengo (o no) un punto o guión (o no) y seguido de algún caracter alfanumérico (([\.-]?\w+)*)
-   * 3.- Que vaya seguido de un @ seguido de algún caracter alfanumérico (@\w+)
-   * 4.- Que pueda ir acompañado de un punto o guion y algún caracter alfanumérico (([\.-]?\w+)*)
-   * 5.- Que termine en punto y de 2 a 3 caracteres alfanuméricos (\.\w{2,3})$
-   */
-  let regEmail = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})$/);
-  //Comprobamos si encuentra esa expresión si la encuentra devolvemos true sino false (Ponemos esto porque sino devuelve la expresión o un array vacio)
-  return email.match(regEmail) ? true : false;
-}
-
-/**
  * Comprueba que las contraseñas coincidan
  *
  * @param   {string}  clave1  Clave
@@ -1366,16 +1346,10 @@ function validarClaves(clave1, clave2) {
   return clave1 === clave2;
 }
 
-/**
- * Comprueba que una fecha sea válida
- *
- * @param   {string}  fecha  Fecha
- *
- * @return  {boolean}         True si es valida, False si no
- */
-function validarFecha(fecha) {
-  //Convertimos la fecha con Date.parse, si da Nan es que no es válida, sino es válida
-  return !isNaN(Date.parse(fecha));
+function validarTelefono(telefono, elemento) {
+  let regex = new RegExp(/^\d{3}((-|\s)?\d{3}){2}$/);
+  console.log(regex.test(telefono));
+  return regex.test(telefono);
 }
 
 /**
@@ -4550,7 +4524,7 @@ function asignarAtributos(elemento, atributos) {
  *
  * @return  {void}  No devuelve nada
  */
-function desactivarScroll() {
+function activarPantallaCarga() {
   //Creamos la pantalla de carga
   let ventanaCarga = document.getElementById("ventanaCarga");
   ventanaCarga.style.display = "block";
@@ -4583,7 +4557,7 @@ function desactivarScroll() {
  *
  * @return  {void}  No devuelve nada
  */
-function activarScroll() {
+function desactivarPantallaCarga() {
   //Eliminamos la pantalla de carga
   ventanaCarga.style.display = "none";
   // Para navegadores modernos de  Chrome que requieren { passive: false } al añadir un evento
@@ -4857,21 +4831,49 @@ async function mostrarInisioSesion() {
   });
 
   let registro = $("#registro");
+  jQuery.validator.addMethod("validarTelefono", validarTelefono);
   registro.validate({
     rules : {
       "email" : {
         required: true,
-        minlength: 2,
+        minlength: 3,
         email: true
       },
       "pwd": {
         required: true
+      },
+      "pwd2": {
+        required: true
+      },
+      "nombre": {
+        required: true,
+        minlength: 2
+      },
+      "apellidos": {
+        required: true
+      },
+      "telf": {
+        validarTelefono: true
+      },
+      "fecha_nac": {
+        date: true
       }
+
     },
     messages: {
       "email" : "Debe introducir un email válido. Ej: nombre@gmail.com",
-      "pwd": "Debe introducir una contraseña"
+      "pwd": "Debe introducir una contraseña",
+      "pwd2": "Debe repetir la contraseña",
+      "nombre": "Debe rellenar el nombre",
+      "apellidos": "Debe rellenar los apellidos",
+      "telf": "Debe introducir un teléfono válido",
+      "fecha_nac": "Debe introducir una fecha de nacimiento válida",
     }
+  });
+
+  $('select', registro).select2({
+    placeholder: 'Selecciona una opción',
+    allowClear: true,
   });
 
   let botonesAcordeon = Array.from($("button", registro));
@@ -4886,34 +4888,105 @@ async function mostrarInisioSesion() {
  * @return  {void}     No devuelve nada
  */
 function mostrarRegistro(e) {
-  let registro = document.getElementById("registro");
-  if(registro.style.display == "block")  {
+  let butonActivado = e.currentTarget;
+  if(butonActivado.dataset.nombre == "login")  {
     document.querySelector("#login form").style.display = "flex";
     registro.style.display = "none";
-    let botonLogin = e.currentTarget;
-    botonLogin.classList.remove("noActivo");
-    botonLogin.previousElementSibling.classList.add("noActivo");
+    butonActivado.classList.remove("noActivo");
+    butonActivado.previousElementSibling.classList.add("noActivo");
   }
   else {
+    let registro = document.getElementById("registro");
     document.querySelector("#login form").style.display = "none";
     registro.style.display = "block";
-    let botonRegistro = e.currentTarget;
-    botonRegistro.classList.remove("noActivo");
-    botonRegistro.nextElementSibling.classList.add("noActivo");
+    butonActivado.classList.remove("noActivo");
+    butonActivado.nextElementSibling.classList.add("noActivo");
   }
 }
 
+/**
+ * Oculta y muestra el acordeon
+ *
+ * @param   {Event}  e  Disparador del evento
+ *
+ * @return  {void}     No devuelve nada
+ */
 function mostrarOcultarAcordeon(e) {
   let acordeon = e.currentTarget.nextElementSibling;
-  if(e.currentTarget.dataset.nombre = "registro") {
-
-  }
-  $acordeon.animate({height: 'toggle'}, 500);
+  $(acordeon).animate({height: 'toggle'}, 500);
+  let visibilidadAcordeon = getStyle(acordeon, "display")
+  console.log(visibilidadAcordeon);
   //Centramos la ventana en el acordeon desplegado
-  if($(acordeon).is(":visible")) {
+  if(visibilidadAcordeon == "flex") {
     let offset = $(acordeon).offset();
     let height = $(acordeon).outerHeight();
     let centerY = offset.top + height / 2;
     scrollTo(0, centerY);
+    console.log("Center Y:" + centerY);
   }
+}
+
+/**
+ * Devuelve el estilo del elemento siempre desde la página de CSS
+ * Cogido de JSFiddle http://jsfiddle.net/R9F7R/
+ *
+ * @param   {NodeElement}  id    Elemento a comprobar
+ * @param   {string}  propiedad  Propiedad a comprobar su valor
+ *
+ * @return  {void}        No devuelve nada
+ */
+function getStyle(elemento, propiedad) {
+    return elemento.currentStyle ? elemento.currentStyle[propiedad] : window.getComputedStyle ? window.getComputedStyle(elemento, null).getPropertyValue(propiedad) : null;
+}
+
+/**
+ * Carga el cuerpo principal
+ *
+ * @return  {void}  No devuelve nada
+ */
+async function cargarCuerpoPrincipal() {
+  activarPantallaCarga();
+ //Limpiamos el main
+ let main = document.querySelector("main");
+ main.innerHTML = "";
+ await cagarCajasSorpresasAnteriores();
+ await cargarPartidasPrincipal();
+ await cargarTiendaPrincipal();
+ desactivarPantallaCarga();
+}
+
+async function cagarCajasSorpresasAnteriores () {
+  try {
+    //Petición PHP
+    let peticionPHP = await fetch('../php/cajaSorpresa.php', {
+      method: "POST",
+      headers: {"Content-type": "application/json;charset=utf-8;"},
+      body: JSON.stringify({"cajasSorpresa": 3})
+    });
+    let respuestaJSON = await peticionPHP.json();
+    //Comprobamos que no diera error
+    if(Object.hasOwn(respuestaJSON, "error")) {
+      throw respuestaJSON["error"];
+    }
+
+    //Petición Mustache
+    let peticion = await fetch('../mustache/cajasSorpresaAnteriores.mustache', opcionesFetchMustache);
+    let plantilla = await peticion.text(); 
+    let resultado = Mustache.render(plantilla, respuestaJSON);
+    document.querySelector("main").insertAdjacentHTML("beforeend", resultado);
+    let elementoActivoCarrusel = document.getElementById("suscripciones").querySelector(".carousel-item");
+    elementoActivoCarrusel.classList.add("active");
+    elementoActivoCarrusel.setAttribute();
+  }
+  catch(error){
+    console.log(error);
+  }
+}
+
+async function cargarPartidasPrincipal () {
+
+}
+
+async function cargarTiendaPrincipal () {
+
 }
