@@ -4812,6 +4812,9 @@ async function mostrarInisioSesion() {
     boton.addEventListener('click', mostrarRegistro);
   });
 
+  let botonesCancelar = Array.from(document.getElementsByClassName("cancelarLogin"));
+  botonesCancelar.forEach(boton => boton.addEventListener('click', irPaginaPrincipal));
+
   //Validador de código
   $("#login form").validate({
     rules : {
@@ -4942,6 +4945,7 @@ function getStyle(elemento, propiedad) {
 /**
  * Carga el cuerpo principal
  *
+ * 
  * @return  {void}  No devuelve nada
  */
 async function cargarCuerpoPrincipal() {
@@ -4955,6 +4959,36 @@ async function cargarCuerpoPrincipal() {
  desactivarPantallaCarga();
 }
 
+/**
+ * Formateadores para Mustache
+ *
+ * @var {[type]}
+ */
+Mustache.Formatters = {
+  "mes_anho": function (fecha) {
+    let fechaSeparada = fecha.split('-');
+    let mesNombre = devolverMesPorNumero(Number.parseInt(fechaSeparada[1]));
+    return mesNombre + " " + fechaSeparada[0];
+  }
+}
+
+/**
+ * Devuelve el nombre del mes
+ *
+ * @param   {int}  mes  Número del mes
+ *
+ * @return  {string}       Devuelve la cadena con el nombre del mes
+ */
+function devolverMesPorNumero (mes) {
+  let meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+  return meses[mes - 1];
+}
+
+/**
+ * Carga las cajas sorpresa anteriores
+ *
+ * @return  {void}  No devuelve nada
+ */
 async function cagarCajasSorpresasAnteriores () {
   try {
     //Petición PHP
@@ -4976,17 +5010,62 @@ async function cagarCajasSorpresasAnteriores () {
     document.querySelector("main").insertAdjacentHTML("beforeend", resultado);
     let elementoActivoCarrusel = document.getElementById("suscripciones").querySelector(".carousel-item");
     elementoActivoCarrusel.classList.add("active");
-    elementoActivoCarrusel.setAttribute();
   }
   catch(error){
     console.log(error);
   }
 }
 
+/**
+ * Carga el template de partida de la principal
+ *
+ * @return  {void}  No devuelve nada
+ */
 async function cargarPartidasPrincipal () {
-
+  try {
+    //Petición Mustache
+    let peticion = await fetch('../mustache/partidasPrincipal.mustache', opcionesFetchMustache);
+    let plantilla = await peticion.text(); 
+    let resultado = Mustache.render(plantilla, {});
+    document.querySelector("main").insertAdjacentHTML("beforeend", resultado);
+  }
+  catch(error){
+    console.log(error);
+  }
 }
 
+/**
+ * Carga los productos de la página principal
+ *
+ * @return  {void}  No devuelve nada
+ */
 async function cargarTiendaPrincipal () {
+  try {
+    //Petición PHP
+    let peticionPHP = await fetch('../php/tienda.php', {
+      method: "POST",
+      headers: {"Content-type": "application/json;charset=utf-8;"},
+      body: JSON.stringify({"ultimoProducto": 3})
+    });
+    let respuestaJSON = await peticionPHP.json();
+    //Comprobamos que no diera error
+    if(Object.hasOwn(respuestaJSON, "error")) {
+      throw respuestaJSON["error"];
+    }
+    datos = {"novedades": respuestaJSON};
 
+    //Petición Mustache
+    let peticion = await fetch('../mustache/tiendaPrincipal.mustache', opcionesFetchMustache);
+    let plantilla = await peticion.text(); 
+    let resultado = Mustache.render(plantilla, datos);
+    document.querySelector("main").insertAdjacentHTML("beforeend", resultado);
+  }
+  catch(error){
+    console.log(error);
+  }
+}
+
+async function irPaginaPrincipal(e){
+  e.preventDefault();
+  cargarCuerpoPrincipal();
 }

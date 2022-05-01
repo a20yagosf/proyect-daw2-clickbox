@@ -248,13 +248,25 @@ main {
             }
 
             //Imagen de cada uno de los accesorios
-            img {
+            .imagenProducto {
                 //Posicionamiento y tamaño
                 display: block;
                 width: $sizeImgTarjeta;
                 height: $sizeImgTarjeta;
                 border-radius: $borderRadius;
+                background-color: white;
                 margin: auto;
+                overflow: hidden;
+
+                img {
+                    height: 100%;
+                    position: relative;
+                    //Top
+                    inset-block-start: 50%;
+                    //Left
+                    inset-inline-start: 50%;
+                    transform: translate(-50%, -50%);
+                }
             }
 
             //Texto de cada uno de los accesorios
@@ -276,9 +288,17 @@ main {
         flex-basis: 50%;
         height: $altoSuscriptImg;
         background-color: white;
-        background-position: center;
-        background-size: contain;
-        background-repeat: no-repeat;
+        border-radius: $borderRadius 0px 0px $borderRadius;
+
+        img {
+            height: 100%;
+            position: relative;
+            //Top
+            inset-block-start: 50%;
+            //Left
+            inset-inline-start: 50%;
+            transform: translate(-50%, -50%);
+        }
     }
 
     //Imagen que se muestra justo antes de suscripciones
@@ -610,6 +630,15 @@ main {
         background-size: cover;
         background-position: center;
         border-radius: $borderRadius;
+
+        img {
+            height: 100%;
+            position: relative;
+            //Top
+            inset-block-start: 50%;
+            inset-inline-start: 50%;
+            transform: translate(-50%, -50%);
+        }    
     }
 
 
@@ -702,11 +731,13 @@ main {
         z-index: 4;
 
         //Cuadrado del id
-        div {
+        p {
             //Tamaños y posicionamiento
             @include contenedor ($sizeID, $sizeID, $colorPrincipal);
             //Padding top
             padding-block-start: 25%;
+            //Margin bottom
+            margin-block-end: 0%;
             text-align: center;
              //Estilo
             font-size: 1.3em;

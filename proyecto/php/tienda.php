@@ -12,6 +12,7 @@ try {
     if(isset($datosTienda["ultimoProducto"])){
         //Cargamos los últimos productos para el alert
         $devolver = $bd->ultimoProducto($datosTienda["ultimoProducto"]);
+        //$devolver = ["productos" =>$devolver];
         $devolver = $devolver;
     }
 }

@@ -72,6 +72,21 @@
             @include inputFormulario();
         }
 
+        //Boton de registrarme
+        & >.botonesForm {
+            background-color: transparent;
+            display: flex;
+            justify-content: space-between;
+
+            input[type="submit"], button:last-of-type {
+                @include boton($colorPrincipal, 1.1rem);
+                display: inline-block;
+                padding: 1%;
+                margin-block-start: 2%;
+                flex-basis:49%;
+            }
+        }
+
 
         //Contenedor que tanto el botón como las seccion
         div {
@@ -175,31 +190,6 @@
         margin-block-end: 2%;
     }
 
-    //Boton de registrarme
-    input[type="submit"] {
-        @include boton($colorPrincipal, 1.1rem);
-        padding: 1%;
-        margin-block-start: 2%;
-        width: 100%
-    }
-
-    //Botón para cerrar inicio sesión
-    & >  button {
-        @include boton($colorPrincipal, 2rem);
-        position: absolute;
-        //Top
-        inset-block-start: 2%;
-        //Right
-        inset-inline-end: 2%;
-        border-radius: 100%;
-        padding: 0.3% 1.2%;
-    }
-
-    .movil {
-        display: none;
-        //Margin top
-        margin-block-start: 2%;
-    }
 
     //Adaptación para móviles mediante aspect ratio
     @media screen and (max-aspect-ratio:  195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
@@ -262,10 +252,6 @@
             button {
                 font-size: 1.5rem;
             }
-        }
-
-        .movil {
-            display: block;
         }
     }
 

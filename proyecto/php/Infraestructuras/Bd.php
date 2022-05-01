@@ -577,6 +577,7 @@ class Bd {
             }
             //Cargamos los tres resultados (como mucho)
             $cajas = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
+            $contador = 0;
             //Recorremos cada una de las cajas para añadirlo a la sentencia
             foreach($cajas as $id){
                 //Sentencia que ejecutaremos
@@ -587,10 +588,19 @@ class Bd {
                 if(!$pdoStatement instanceof \PDOStatement) {
                     throw new PDOException($pdoStatement);
                 }
+                //Guardamos cada uno de los productos de las cajas
+                $productos = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
+                //Guardamos la fecha y la imagen de la caja fuera para que sea accesible en Mustache
+                $datosCajas["cajaSorpresa"][] = ["fecha" => $productos[0]["fecha"], "imagen_caja" => $productos[0]["imagen_caja"], "producto" => $productos];
+                $datosCajas["indicadores"][] = ["num" => $contador];
+                $contador++;
             }
             // {"cajasSorpresa": {"caja": [{"fecha" : "X", "nombre": "Y", "imagen": "J"}, {"fecha" : "X", "nombre": "Y", "imagen": "J"}]}}
-            $datosCajas = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
-            $datosCajas[0] = ["producto" => $datosCajas[0]];
+            //Ponemos el primer elemento como activo
+            if($cajas != false) {
+                $datosCajas["cajaSorpresa"][0]["activo"] =  true;
+                $datosCajas["indicadores"][0]["activo"] =  true;
+            }
             return $datosCajas;
         }
         catch(\PDOException $pdoError) {

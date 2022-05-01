@@ -1,34 +1,36 @@
 <div id="suscripciones" class="carousel slide" data-bs-ride="carousel">
     <h2>Cajas anteriores</h2>
-    <!-- Indicadores de abajo -->
-    <div class="carousel-indicators">
-        <button type="button" data-bs-target="#suscripciones" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Caja 1"></button>
-         {{# elements}}
-            <button type="button" data-bs-target="#suscripciones" data-bs-slide-to="{{number}}" aria-label="Caja {{number + 1}}"></button>
-        {{/elements}}
-    </div>
-    <!-- Interior carousel -->
+    {{! botones}}
+        <div class="carousel-indicators">
+            {{# indicadores}}
+                <button type="button" data-bs-target="#suscripciones" data-bs-slide-to="{{num}}" {{# activo}}class="active" aria-current="true"{{/activo}} aria-label="Caja {{num}}"></button>
+            {{/indicadores}}
+        </div>
+    {{! Interior Carrusel}}
     <div class="carousel-inner">
-            <!-- Tarjetas -->
-            {{# cajaSorpresa}}
-            <div class="carousel-item">
+        {{! Tarjetas}}
+        {{# cajaSorpresa}}
+            <div class="carousel-item {{# activo}}active{{/activo}}">
                 <div class="tarjeta">
-                    <div class="imagenCaja" aria-label="Caja {{fecha}}">
+                    <div class="imagenCaja">
+                        <img src="{{imagen_caja}}" alt="Caja {{fecha}}">
                     </div>
                     <div class="contenidoTarjeta">
-                        <h2>{{fecha}}</h2>
+                        <h2>{{fecha | mes_anho}}</h2>
                         <ul>
                             {{#producto}}
                                 <li>
                                     <span>{{nombre}}</span>
-                                    <img src="{{imagen_producto}}" alt="{{nombre}}">
+                                    <div class="imagenProducto">
+                                        <img src="{{imagen_producto}}" alt="{{nombre}}">
+                                    </div>
                                 </li>
-                                {{/producto}}
-                           </ul>
+                            {{/producto}}
+                        </ul>
                     </div>
                 </div>
-            </div>
-            {{/cajaSorpresa}}
+        </div>
+        {{/cajaSorpresa}}
     </div>
     <!-- Botones -->
     <button class="carousel-control-prev" type="button" data-bs-target="#suscripciones" data-bs-slide="prev">

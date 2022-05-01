@@ -1,0 +1,21 @@
+<div id="tienda">
+    <h2>Productos destacados</h2>
+    {{# novedades}}   
+        <div class="elementoTienda">
+            <div>
+                <div class="id">
+                    <p>{{id_producto}}</p>
+                    {{! triangulo}}
+                    <span></span>
+                </div>
+                <div class="imagenTienda">
+                    <img src="{{imagen_producto}}" alt="{{nombre}}">
+                </div>
+                <div class="descripcionCorta">
+                    <p>{{nombre}} {{precio}} €</p>
+                </div>
+            </div>
+            <button type="button" class="botonDesac development">Comprar</button>
+        </div>
+    {{/novedades}}
+</div>

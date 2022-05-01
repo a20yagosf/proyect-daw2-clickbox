@@ -19,6 +19,7 @@ async function cargarPaginaPrincipal() {
         let botonPerfil = document.getElementById("botonPerfilUsuario");
         botonPerfil.addEventListener('click', ocultarMenu);
         document.getElementById('menuPerfilUser').lastElementChild.addEventListener('click', desconectarPerfil);
+        document.getElementById('logoHeader').addEventListener("click", irPaginaPrincipal);
         //Activamos el evento para que oculte el menú
         botonPerfil.dispatchEvent(new Event('click'));
     }
@@ -31,7 +32,7 @@ async function cargarPaginaPrincipal() {
     }
     //Si es un usuario estandar o anónimo cargamos la página principal
     else {
-        await cargarCuerpoPrincipal();
+        cargarCuerpoPrincipal();
     }
     return usuario;
 }
