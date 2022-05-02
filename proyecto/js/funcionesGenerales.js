@@ -4931,7 +4931,7 @@ function mostrarOcultarAcordeon(e) {
 
 /**
  * Devuelve el estilo del elemento siempre desde la página de CSS
- * Cogido de JSFiddle http://jsfiddle.net/R9F7R/
+ * Código de JSFiddle http://jsfiddle.net/R9F7R/
  *
  * @param   {NodeElement}  id    Elemento a comprobar
  * @param   {string}  propiedad  Propiedad a comprobar su valor
