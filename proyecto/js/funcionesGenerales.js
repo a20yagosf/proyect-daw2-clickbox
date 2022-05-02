@@ -4964,13 +4964,13 @@ async function cargarCuerpoPrincipal() {
  *
  * @var {[type]}
  */
-Mustache.Formatters = {
+/*Mustache.Formatters = {
   "mes_anho": function (fecha) {
     let fechaSeparada = fecha.split('-');
     let mesNombre = devolverMesPorNumero(Number.parseInt(fechaSeparada[1]));
     return mesNombre + " " + fechaSeparada[0];
   }
-}
+}*/
 
 /**
  * Devuelve el nombre del mes

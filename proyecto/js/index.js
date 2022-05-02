@@ -14,6 +14,13 @@ async function cargarPaginaPrincipal() {
     let resultadoMustache = Mustache.render(plantilla, datos);
     document.querySelector("header").insertAdjacentHTML("beforeend", resultadoMustache);
 
+    //Cargamos la pantalla del footer
+    let peticionFooter     = await fetch("../mustache/footer.mustache", opcionesFetchMustache);
+    let plantillaFooter     = await peticionFooter.text();
+    let resultadoFooter   = Mustache.render(plantillaFooter, {});
+    document.querySelector("main").insertAdjacentHTML("afterend", resultadoFooter);
+    crearMapa();
+
     //Añadimos los escuchadores para el menú 
     if(usuario) {
         let botonPerfil = document.getElementById("botonPerfilUsuario");
