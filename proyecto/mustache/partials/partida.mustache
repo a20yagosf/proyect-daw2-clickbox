@@ -1,0 +1,15 @@
+{{# partidas}}
+    <li class="list-group-item">
+        <div class="imagen">
+            <img src="{{imagen_partida}}">
+        </div>
+        <div class="info">
+            <span>Juego: {{nombre_juego}}</span>
+            <span>Genero: {{genero}}</span>
+            <span>Fecha: {{fecha}}</span>
+            <span>Hora de inicio: {{hora_inicio}}</span>
+            <button type="button" class="btn btn-lg btn-info" data-id="{{id_partida}}">Información</button>
+            <button type="button" class="btn btn-lg btn-success" data-id="{{id_partida}}">¡Reservar!</button>
+        </div>
+    </li>
+{{/partidas}}

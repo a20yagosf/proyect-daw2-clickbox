@@ -1,0 +1,26 @@
+<table>
+  <thead>
+    <tr>
+      <th colspan="2">{{ duracion }} mes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Coste por mes</td>
+      <td>{{ precio }} €</td>
+    </tr>
+    <tr>
+      <td>Ahorras</td>
+      <td>{{ ahorro }}%</td>
+    </tr>
+    <tr>
+      <td>IVA</td>
+      <td>21 %</td>
+    </tr>
+    <tr>
+      <td>Total</td>
+      <td>{{ precio | calcularTotal: 21 : duracion }} €</td>
+    </tr>
+  </tbody>
+</table>
+<button>Suscribirse</button>

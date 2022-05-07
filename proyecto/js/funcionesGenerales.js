@@ -1136,23 +1136,14 @@ async function procesarLogin(evento) {
   //Párrafo donde mostraremos el mensaje
   let resultado = document.getElementById("resultadoForm");
   try {
-    //Comprobamos que todos los campos obligatorios estean cubiertos
-    let camposOblig = ["email", "pwd"];
-    if (!comprobarCamposOblig(camposOblig)) {
-      throw "Debe rellenar todos los campos obligatorios";
-    }
     //Elementos
     let email = document.getElementById("email").value;
     let pwd = document.getElementById("pwd").value;
-    //Comprobamos que el email sea válido
-    if (!validarEmail(email)) {
-      throw "El email no es válido";
-    }
     //Enviamos la petición al servidor
     const respuestaJSON = await fetch("../php/login.php", {
       method: "POST",
       headers: { "Content-type": "application/json; charset=utf-8" },
-      body: JSON.stringify({ email: email, pwd: pwd }),
+      body: JSON.stringify({ "email": email, "pwd": pwd }),
     });
     //Cogemos el mensaje y esperamos a que este listo
     const resultadoPeticion = await respuestaJSON.json();
@@ -1160,6 +1151,8 @@ async function procesarLogin(evento) {
     if (Object.hasOwn(resultadoPeticion, "error")) {
       throw resultadoPeticion["error"];
     }
+    sessionStorage.setItem("email", email);
+    sessionStorage.setItem("rol", resultadoPeticion["exito"]);
     //Guardamos tambien en localStorage el email
     localStorage.setItem("email", email);
     //Cargamos el número de artículos del carrito
@@ -1699,7 +1692,7 @@ async function cargarSuscripciones(e) {
 async function suscribirse() {
   //Comprobamos que estemos suscritos viendo la cookie de sesion
   if (sessionStorage["email"] == undefined) {
-    aparecerLogin();
+    mostrarInicioSesion();
   } else {
     try {
       //Cogemos la suscripción activa su id para saber el tipo de suscripción a la que nos estamos suscribiendo
@@ -4793,15 +4786,26 @@ function ocultarMenu() {
  *
  * @return  {void}  No devuelve nada
  */
-async function mostrarInisioSesion() {
+async function mostrarInicioSesion() {
+  activarPantallaCarga();
+
+  //Limpiamos el cuerpo
+  let main = document.querySelector("main");
+  main.innerHTML = "";
+  main.classList.contains("cuerpoMosaico") ? main.classList.remove("cuerpoMosaico") : "";
+
+  //Actualizamos el header con el activo
+  let header = document.querySelector("nav");
+  let elementosActivos = Array.from(header.getElementsByClassName("navActive"));
+  elementosActivos.forEach(elemento => elemento.classList.remove("navActive"));
+
+  //Cargamos la plantilla
   let peticion = await fetch('../mustache/login_registro.mustache', {
     method: "POST",
     headers: {"Content-type": "application/json;charset=ut-8;"}
   });
   let plantilla = await peticion.text();
   let resultado = Mustache.render(plantilla, {});
-  let main = document.querySelector("main");
-  main.innerHTML = "";
   main.insertAdjacentHTML("beforeend", resultado);
 
   //Event listeners
@@ -4816,7 +4820,8 @@ async function mostrarInisioSesion() {
   botonesCancelar.forEach(boton => boton.addEventListener('click', irPaginaPrincipal));
 
   //Validador de código
-  $("#login form").validate({
+  let formLogin = $("#login form");
+  formLogin.validate({
     rules : {
       "email" : {
         required: true,
@@ -4833,9 +4838,9 @@ async function mostrarInisioSesion() {
     }
   });
 
-  let registro = $("#registro");
+  let formRegistro = $("#registro");
   jQuery.validator.addMethod("validarTelefono", validarTelefono);
-  registro.validate({
+  formRegistro.validate({
     rules : {
       "email" : {
         required: true,
@@ -4879,8 +4884,13 @@ async function mostrarInisioSesion() {
     allowClear: true,
   });
 
-  let botonesAcordeon = Array.from($("button", registro));
+  //Evento de los formularios
+  formLogin.on('submit', procesarLogin);
+  formRegistro.on('submit', procesarRegistro);
+
+  let botonesAcordeon = Array.from($("button", formRegistro));
   botonesAcordeon.forEach(boton => boton.addEventListener('click', mostrarOcultarAcordeon));
+  desactivarPantallaCarga();
 }
 
 /**
@@ -4950,13 +4960,35 @@ function getStyle(elemento, propiedad) {
  */
 async function cargarCuerpoPrincipal() {
   activarPantallaCarga();
- //Limpiamos el main
- let main = document.querySelector("main");
- main.innerHTML = "";
- await cagarCajasSorpresasAnteriores();
- await cargarPartidasPrincipal();
- await cargarTiendaPrincipal();
- desactivarPantallaCarga();
+  //Limpiamos el main
+  let main = document.querySelector("main");
+  main.innerHTML = "";
+
+  //Actualizamos el header con el activo
+  let header = document.querySelector("nav");
+  let elementosActivos = Array.from(header.getElementsByClassName("navActive"));
+  elementosActivos.forEach(elemento => elemento.classList.remove("navActive"));
+
+  //Le quitamos el atributo de cuerpoMosaico si lo tiene
+  main.classList.contains("cuerpoMosaico") ? main.classList.remove("cuerpoMosaico") : "";
+  try {
+    let plantillaCajasSorpresa = await cagarCajasSorpresasAnteriores();
+    let plantillaPartidas = await cargarPartidasPrincipal();
+    let plantillaTienda = await cargarTiendaPrincipal();
+
+    let datos = {"cajas": plantillaCajasSorpresa["datos"], "partidas": plantillaPartidas["datos"], "tienda": plantillaTienda["datos"]};
+    let partials = {"cajasSorpresaAnteriores": plantillaCajasSorpresa["plantilla"], "partidasPrincipal": plantillaPartidas["plantilla"], "tiendaPrincipal": plantillaTienda["plantilla"]};
+
+    //Pagina principal
+    let peticionPrincipal = await fetch("../mustache/paginaPrincipal.mustache", opcionesFetchMustache);
+    let plantillaPrincipal = await peticionPrincipal.text();
+    let plantillaTotal = Mustache.render(plantillaPrincipal, datos, partials);
+    main.insertAdjacentHTML("beforeend", plantillaTotal);
+    desactivarPantallaCarga();
+  }
+  catch(error){
+    console.log(error);
+  }
 }
 
 /**
@@ -4969,6 +5001,11 @@ async function cargarCuerpoPrincipal() {
     let fechaSeparada = fecha.split('-');
     let mesNombre = devolverMesPorNumero(Number.parseInt(fechaSeparada[1]));
     return mesNombre + " " + fechaSeparada[0];
+  },
+  "calcularTotal": function (precio, iva, duracion) {
+    precio = parseInt(precio);
+    iva = parseInt(iva);
+    return ((precio * (iva/100)) + precio) * duracion;
   }
 }*/
 
@@ -5004,12 +5041,13 @@ async function cagarCajasSorpresasAnteriores () {
     }
 
     //Petición Mustache
-    let peticion = await fetch('../mustache/cajasSorpresaAnteriores.mustache', opcionesFetchMustache);
+    let peticion = await fetch('../mustache/partials/cajasSorpresaAnteriores.mustache', opcionesFetchMustache);
     let plantilla = await peticion.text(); 
     let resultado = Mustache.render(plantilla, respuestaJSON);
-    document.querySelector("main").insertAdjacentHTML("beforeend", resultado);
+    /*document.querySelector("main").insertAdjacentHTML("beforeend", resultado);
     let elementoActivoCarrusel = document.getElementById("suscripciones").querySelector(".carousel-item");
-    elementoActivoCarrusel.classList.add("active");
+    elementoActivoCarrusel.classList.add("active");*/
+    return {"datos": respuestaJSON, "plantilla": resultado};
   }
   catch(error){
     console.log(error);
@@ -5024,10 +5062,11 @@ async function cagarCajasSorpresasAnteriores () {
 async function cargarPartidasPrincipal () {
   try {
     //Petición Mustache
-    let peticion = await fetch('../mustache/partidasPrincipal.mustache', opcionesFetchMustache);
+    let peticion = await fetch('../mustache/partials/partidasPrincipal.mustache', opcionesFetchMustache);
     let plantilla = await peticion.text(); 
     let resultado = Mustache.render(plantilla, {});
-    document.querySelector("main").insertAdjacentHTML("beforeend", resultado);
+    //document.querySelector("main").insertAdjacentHTML("beforeend", resultado);
+    return {"datos": {}, "plantilla": resultado};
   }
   catch(error){
     console.log(error);
@@ -5055,17 +5094,258 @@ async function cargarTiendaPrincipal () {
     datos = {"novedades": respuestaJSON};
 
     //Petición Mustache
-    let peticion = await fetch('../mustache/tiendaPrincipal.mustache', opcionesFetchMustache);
+    let peticion = await fetch('../mustache/partials/tiendaPrincipal.mustache', opcionesFetchMustache);
     let plantilla = await peticion.text(); 
     let resultado = Mustache.render(plantilla, datos);
-    document.querySelector("main").insertAdjacentHTML("beforeend", resultado);
+    //document.querySelector("main").insertAdjacentHTML("beforeend", resultado);
+    return {"datos": datos, "plantilla": resultado};
   }
   catch(error){
     console.log(error);
   }
 }
 
+/**
+ * Carga la página principal
+ *
+ * @param   {Event}  e  Evento que lo dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
 async function irPaginaPrincipal(e){
   e.preventDefault();
   cargarCuerpoPrincipal();
 }
+
+/**
+ * Carga la página de suscripciones
+ *
+ * @param {Event} e Evento que se dispara
+ * 
+ * @return  {void}  No devuelve nada
+ */
+async function cargarPaginaSuscripciones(e) {
+  e.preventDefault();
+  activarPantallaCarga();
+
+  //Borramos el main
+  let mainPagina = document.querySelector("main");
+  mainPagina.innerHTML = "";
+
+  //Actualizamos el header con el activo
+  let header = document.querySelector("nav");
+  let elementosActivos = Array.from(header.getElementsByClassName("navActive"));
+  elementosActivos.forEach(elemento => elemento.classList.remove("navActive"));
+  let enlaceActivo = e.currentTarget;
+  let elementoListaActivo = enlaceActivo.parentElement;
+  elementoListaActivo.classList.add("navActive");
+
+  try {
+    //Petición PHP
+    let peticionPHP = await fetch('../php/suscripciones.php', {
+      method: "POST",
+      headers: {"Content-type": "application/json;charset=utf-8;"}
+    });
+    let respuestaJSON = await peticionPHP.json();
+    //Comprobamos que no diera error
+    if(Object.hasOwn(respuestaJSON, "error")) {
+      throw respuestaJSON["error"];
+    }
+
+    //Petición Mustache
+    let peticion = await fetch('../mustache/suscripciones.mustache', opcionesFetchMustache);
+    let plantilla = await peticion.text(); 
+    //Cargamos el parcial
+    let peticionPartial = await fetch('../mustache/partials/suscripcionesReciboActiva.mustache', opcionesFetchMustache);
+    let plantillaPartial = await peticionPartial.text();
+    let resultado = Mustache.render(plantilla, respuestaJSON, {"suscripcionesReciboActiva": plantillaPartial});
+    mainPagina.insertAdjacentHTML("beforeend", resultado);
+
+    //Le añadimos al cuerpo el aspecto de cuerpoMosaico
+    mainPagina.classList.contains("cuerpoMosaico") ? "" :  mainPagina.classList.add("cuerpoMosaico");
+    
+
+    //Añadimos los escuchadores
+    let contenedorSusc = document.getElementById("tiposSusc");
+    let botones = Array.from(contenedorSusc.getElementsByTagName("button"));
+    botones.forEach(boton => boton.addEventListener("click", cargarSuscripcionActiva));
+    let recibo = document.getElementById("recibo");
+    let botonSuscribirse = recibo.querySelector("button");
+    botonSuscribirse.addEventListener("click", suscribirse);
+    desactivarPantallaCarga();
+  }
+  catch(error){
+    console.log(error);
+  }
+}
+
+/**
+ * Carga la suscripción activa
+ *
+ * @param   {Event}  e  Evento que lo dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+async function cargarSuscripcionActiva(e) {
+  e.preventDefault();
+  let botonSuscActivo = e.currentTarget;
+  let suscripcionActiva = botonSuscActivo.dataset.id;
+  //Borramos el recibo
+  let recibo = document.getElementById("recibo");
+  recibo.innerHTML = "";
+  try {
+    //Petición PHP
+    let peticionPHP = await fetch('../php/suscripciones.php', {
+      method: "POST",
+      headers: {"Content-type": "application/json;charset=utf-8;"},
+      body: JSON.stringify({"duracion": suscripcionActiva})
+    });
+    let respuestaJSON = await peticionPHP.json();
+    //Comprobamos que no diera error
+    if(Object.hasOwn(respuestaJSON, "error")) {
+      throw respuestaJSON["error"];
+    }
+
+    //Petición Mustache
+    let peticion = await fetch('../mustache/partials/suscripcionesReciboActiva.mustache', opcionesFetchMustache);
+    let plantilla = await peticion.text(); 
+    let resultado = Mustache.render(plantilla, respuestaJSON);
+    recibo.insertAdjacentHTML("beforeend", resultado);
+
+    //Añadimos el escuchador al botón de suscripción
+    let botonSuscribirse = recibo.querySelector("button");
+    botonSuscribirse.addEventListener("click", suscribirse);
+
+    //Ponemos los botones como activos
+    let botonesActivos = Array.from(document.querySelectorAll("button.suscActiva"));
+    botonesActivos.forEach(boton => boton.classList.remove("suscActiva"));
+    botonSuscActivo.classList.add("suscActiva");
+  }
+  catch(error){
+    console.log(error);
+  }
+}
+
+/**
+ * Carga la página de partidas
+ *
+ * @param {Event} e Evento que se dispara
+ * 
+ * @return  {void}     No devuelve nada
+ */
+ async function cargarPaginaPartidas(e) {
+   e.preventDefault();
+  //Borramos el recibo
+  let mainCuerpo = document.querySelector("main");
+  mainCuerpo.innerHTML = "";
+  try {
+    //Cargamos la plantilla de partidas
+    let plantillaPartidas = await cargarPartidas(true);
+
+    //Petición Mustache
+    let peticion = await fetch('../mustache/paginaPartidas.mustache', opcionesFetchMustache);
+    let plantilla = await peticion.text(); 
+    let resultado = Mustache.render(plantilla, plantillaPartidas["datos"], {"partidas": plantillaPartidas["plantilla"]});
+    mainCuerpo.insertAdjacentHTML("beforeend", resultado);
+  }
+  catch(error){
+    console.log(error);
+  }
+}
+
+async function cargarPartidas(devolver, filtro = {}, pagina = 0, limite = 7) {
+  //Limpiamos el contenedor de las partidas
+  let lista = document.querySelector("ul[class='list-group']");
+  let paginacion = document.querySelector(".pagination");
+  //Buscamos si ya hay una paginación y si la hay la borramos
+  paginacion != null ? paginacion.remove() : "";
+  lista != null ? lista.innerHTML = "" : "";
+  //Le añadimos al filtro la página y el limite
+  filtro["pagina"] = pagina;
+  filtro["limite"] = limite;
+  try {
+    //Petición PHP
+    let peticionPHP = await fetch('../php/partidas.php', {
+      method: "POST",
+      headers: {"Content-type": "application/json;charset=utf-8;"},
+      body: JSON.stringify(filtro)
+    });
+    let respuestaJSON = await peticionPHP.json();
+    //Comprobamos que no diera error
+    if(Object.hasOwn(respuestaJSON, "error")) {
+      throw respuestaJSON["error"];
+    }
+
+    //Petición Mustache
+    let peticion = await fetch('../mustache/partials/partida.mustache', opcionesFetchMustache);
+    let plantilla = await peticion.text(); 
+    if(devolver){
+      return {"datos": respuestaJSON, "plantilla": plantilla};
+    }
+    else {
+      let resultado = Mustache.render(plantilla, respuestaJSON);
+      lista.insertAdjacentHTML("beforeend", resultado);
+    }
+  }
+  catch(error){
+    console.log(error);
+    return {"datos": {}, "plantilla": {}}
+  }
+}
+
+/**
+ * Carga las partidas según el filtro que se le pase
+ *
+ * @param   {Object}  filtro  Filtro de tipo {clave: valor}
+ *
+ */
+ /*async function cargarPartidas(filtro = {}, pagina = 0, limite = 7) {
+  //Limpiamos el contenedor de las partidas
+  let lista = document.querySelector("ul[class='list-group']");
+  let paginacion = document.querySelector(".pagination");
+  //Buscamos si ya hay una paginación y si la hay la borramos
+  if (paginacion != null) {
+    paginacion.remove();
+  }
+  lista.innerHTML = "";
+  //LE añado al filtro la página y el limite
+  filtro["pagina"] = pagina;
+  filtro["limite"] = limite;
+  try {
+    //Hacemos la petición
+    const respuesta = await fetch("../php/partidas.php", {
+      method: "POST",
+      headers: { "Content-type": "application/json; charset=utf-8" },
+      body: JSON.stringify(filtro),
+    });
+    //Convertimos la respues ta json
+    const respuestaJSON = await respuesta.json();
+    //Compruebo si dió error
+    if (Object.hasOwn(respuestaJSON, "error")) {
+      throw respuestaJSON["error"];
+    }
+    //Limpiamos la lista
+    lista.innerHTML = "";
+    //Cargo cada uno de los li
+    pagina = filtro["pagina"] != 0 ? filtro["pagina"] / 7 : 0;
+    paginacion = crearPaginacion(respuestaJSON["numPag"], pagina);
+    if (paginacion != "") {
+      document
+        .querySelector("#result_panel")
+        .insertAdjacentElement("afterend", paginacion);
+    }
+    //Le añadimos los escuchadores
+    let elementosLi = document.querySelectorAll(".pagination li");
+    if (elementosLi != null) {
+      elementosLi.forEach((elemento) =>
+        elemento.firstElementChild.addEventListener("click", filtrarPartidas)
+      );
+    }
+    //Cargo los datos de las partidas
+    respuestaJSON["tuplas"].forEach((dato) => {
+      lista.append(crearContenedorPartida(dato));
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}*/

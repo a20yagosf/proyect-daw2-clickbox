@@ -1218,6 +1218,8 @@ ul li.list-group-item {
 ul li.list-group-item div.imagen {
   position: relative;
   flex-basis: 50%;
+  height: 300px;
+  overflow: hidden;
 }
 ul li.list-group-item div.imagen img {
   width: 100%;
@@ -3070,6 +3072,10 @@ footer li:first-of-type {
 }
 footer img {
   width: 180px;
+  transition: all 0.5s ease-in-out;
+}
+footer img:hover {
+  filter: hue-rotate(-36deg) saturate(0%) brightness(130%);
 }
 footer a {
   color: #F3F3F3;

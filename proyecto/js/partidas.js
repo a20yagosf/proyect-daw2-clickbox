@@ -16,16 +16,16 @@ window.onload = async function () {
     });
     //Cargamos los géneros
     //crearOptionGeneros(document.getElementById("generos"));
-    //await cargarPartidas();
+    await cargarPartidas();
     //Añadimos el escuchador a filtro
     //document.getElementById("filtro_fechas").nextElementSibling.addEventListener("click", filtrarPartidas);
     //document.getElementById("listaNav").children[1].setAttribute("class", "navActive");
     //Creamos el mapa
     crearMapa();
     //Seleccionamos los class development y los prototipamos
-    asignarTooltips();
+    //asignarTooltips();
     //Activamos los tooltips, en este caso los atributos son estáticos
-    activarTooltips();
+    //activarTooltips();
     crearBotonAccesibilidad();
     //Activamos el scroll
     desactivarPantallaCarga();

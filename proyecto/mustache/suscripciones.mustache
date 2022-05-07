@@ -1,0 +1,18 @@
+<div id="suscribirse">
+  <div id="tiposSusc">
+    {{# suscripciones}}
+    <button
+      data-id="{{ duracion }}"
+      class="susc {{# activa}}suscActiva{{/activa}}"
+    >
+      <p>{{ duracion }}</p>
+      <p>Mes</p>
+    </button>
+    {{/suscripciones}}
+  </div>
+  <div id="recibo">
+    {{# suscripcionActiva}}
+      {{> suscripcionesReciboActiva}}
+    {{/suscripcionActiva}}
+  </div>
+</div>

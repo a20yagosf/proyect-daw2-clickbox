@@ -533,7 +533,7 @@ class Usuario
         //Sentencia para contar el número de páginas es como la normal pero contando las tuplas sin limitar
         $sentenciaNumPag = "SELECT COUNT(P.id_partida) as num_pag FROM partidas as P INNER JOIN productos as PR ON P.id_partida NOT IN (SELECT partida FROM usuarios_partidas WHERE usuario = :usuario) AND P.juego_partida = PR.id_producto INNER JOIN juegos AS J ON PR.id_producto = J.juego";
         //Sentencia para pedir los datos
-        $sentencia = "SELECT P.id_partida, PR.nombre, PR.imagen_producto as imagen_partida,  J.genero, P.fecha, P.hora_inicio FROM partidas as P INNER JOIN productos as PR ON P.id_partida NOT IN (SELECT partida FROM usuarios_partidas WHERE usuario = :usuario) AND P.juego_partida = PR.id_producto INNER JOIN juegos AS J ON PR.id_producto = J.juego";
+        $sentencia = "SELECT P.id_partida, PR.nombre as nombre_juego, PR.imagen_producto as imagen_partida,  J.genero, P.fecha, P.hora_inicio FROM partidas as P INNER JOIN productos as PR ON P.id_partida NOT IN (SELECT partida FROM usuarios_partidas WHERE usuario = :usuario) AND P.juego_partida = PR.id_producto INNER JOIN juegos AS J ON PR.id_producto = J.juego";
         //Datos que pasaremos a la sentencia como parámetros a sustituir
         $datosFiltrado = ["usuario" => $this->getEmail()];
         //Recorremos los filtros y vamos añadiendo
@@ -570,7 +570,16 @@ class Usuario
         }
         //Cogemos los valores con fetchAll ya que los tenemos limitados, como mucho devuelve 7 tuplas
         $tuplas = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
-        $respuesta = ["numPag" => $numPag, "tuplas" => $tuplas];
+        //Rellenamos la paginación
+        if($numPag > 0){
+            for($i = 1; $i <= ($numPag + 1); $i++){
+                $respuesta["paginacion"][] = ["numPag" => $i];
+            }
+            $paginaActual = $filtro["pagina"]/7;
+            $respuesta["paginacion"][$paginaActual]["activa"] = true;
+        }
+
+        $respuesta["partidas"] = $tuplas;
         return $respuesta;
     }
 

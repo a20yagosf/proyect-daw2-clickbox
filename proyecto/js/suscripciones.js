@@ -3,7 +3,7 @@
 cargarScripts();
 
 window.onload = async function () {
-    desactivarScroll();
+    activarPantallaCarga();
     loginAutomatico();
     //Creamos el header
     crearHeader();
@@ -24,5 +24,5 @@ window.onload = async function () {
     //Activamos los tooltips, en este caso los atributos son estáticos
     activarTooltips();
     crearBotonAccesibilidad();
-    activarScroll();
+    desactivarPantallaCarga();
 };

@@ -26,7 +26,7 @@ try {
         if(!is_array($datosPartidas)){
             throw new \Exception($datosPartidas);
         }
-        else if(count($datosPartidas["tuplas"]) == 0){
+        else if(count($datosPartidas["partidas"]) == 0){
             throw new \Exception("No hay ninguna partida");
         }
     }

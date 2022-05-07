@@ -7,28 +7,12 @@ use \Usuarios\Usuario as user;
 //Comprobamos si nos enviaron con post o get, como no enviamos datos en el GET vemos que en php://input nos devuelva almenos 1 parámetro
 //Cogemos los datos que nos enviaron en la petición por POST, como nos devuelve un StdClass lo convertimos en array
 $duracionSus = (array) json_decode(file_get_contents("php://input"));
-//Si no tiene datos es que es la petición del get y carga todas las suscripciones
+try {
+    //Si no tiene datos es que es la petición del get y carga todas las suscripciones
 if(empty($duracionSus)) {
-    //Hacemos la petición para que nos de la duración de las suscripciones
     $bd = new bd();
-    $sentencia = "SELECT duracion FROM suscripciones";
-    $resultado = $bd->recuperDatosBD($sentencia);
-    //Compruebo si es de tipo PDOStatement
-    if(!$resultado instanceof \PDOStatement) {
-        //Devuelvo el error
-        $mensajeDevolver = ["error" => $resultado];
-    }
-    else {
-        //Lo devolvemos como fetch all ya que lo devolverá de forma
-        $datos = $resultado->fetchAll(\PDO::FETCH_ASSOC);
-        //Compruebo que no sea false o vacio
-        if($datos == false || empty($datos)){
-            $mensajeDevolver = ["error" => "No hay datos en la tabla suscripciones"];
-        }
-        else {
-            $mensajeDevolver = $datos;
-        }
-    }
+    //Cargamos las suscripciones y la suscripción activa, si da error salta al catch
+    $mensajeDevolver = $bd->cargarSuscripciones();
 }
 //Cargar los datos de una suscripcion
 else if(isset($duracionSus["duracion"])) {
@@ -82,6 +66,13 @@ else {
     $usuario = new user($_SESSION["usuario"]["email"]);
     $resultado = $usuario->cancelarRenovacionSusc();
     $mensajeDevolver = ["exito" => $resultado];
+}
+}
+catch(\PDOException $pdoError){
+    $mensajeDevolver = ["error" => $pdoError->getMessage()];
+}
+catch(\Exception $error){
+    $mensajeDevolver = ["error" => $error->getMessage()];
 }
 //Se lo devolvemos a js
 echo json_encode($mensajeDevolver);

@@ -13,6 +13,9 @@ async function cargarPaginaPrincipal() {
     let plantilla = await peticion.text();
     let resultadoMustache = Mustache.render(plantilla, datos);
     document.querySelector("header").insertAdjacentHTML("beforeend", resultadoMustache);
+    //Añadimos los escuchadores para el header
+    document.getElementById("navSuscripciones").firstElementChild.addEventListener("click", cargarPaginaSuscripciones);
+    document.getElementById("navPartidas").firstElementChild.addEventListener("click", cargarPaginaPartidas);
 
     //Cargamos la pantalla del footer
     let peticionFooter     = await fetch("../mustache/footer.mustache", opcionesFetchMustache);
@@ -31,7 +34,7 @@ async function cargarPaginaPrincipal() {
         botonPerfil.dispatchEvent(new Event('click'));
     }
     else {
-        document.getElementById("inicioSesion").addEventListener('click', mostrarInisioSesion);
+        document.getElementById("inicioSesion").addEventListener('click', mostrarInicioSesion);
     }
     //Si es administrador cargamos el panel de control
     if(administrador){
@@ -49,7 +52,7 @@ window.onload = async function () {
     activarPantallaCarga();
     let usuario = await cargarPaginaPrincipal();
     //Hacemos un tiemOut para que no se mire como se oculta el botón
-    usuario ? setTimeout(activarScroll, 500) : desactivarPantallaCarga();
+    usuario ? setTimeout(desactivarPantallaCarga, 500) : desactivarPantallaCarga();
     /*loginAutomatico();
     //Creamos el header
     crearHeader();
