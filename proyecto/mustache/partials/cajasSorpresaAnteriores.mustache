@@ -16,7 +16,7 @@
                         <img src="{{imagen_caja}}" alt="Caja {{fecha}}">
                     </div>
                     <div class="contenidoTarjeta">
-                        <h2>{{fecha | mes_anho}}</h2>
+                        <h2>{{fecha | date_format: "M-Y"}}</h2>
                         <ul>
                             {{#producto}}
                                 <li>

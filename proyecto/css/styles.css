@@ -307,6 +307,10 @@ nav button:last-of-type:hover {
   color: #026a79;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 * {
   margin: 0px;
   padding: 0px;
@@ -1182,6 +1186,11 @@ ul.list-group {
   overflow-y: auto;
   font-size: 1.75rem !important;
 }
+ul.list-group .noPartidas {
+  margin: auto;
+  display: block;
+  padding: 5%;
+}
 
 #info_partidas h2 {
   text-align: center;
@@ -1200,11 +1209,21 @@ ul.list-group {
   background-color: white;
 }
 #form_partidas button {
-  width: 20% !important;
+  width: 15% !important;
   margin: 1vw;
   margin-top: 0 !important;
-  background-color: #0291A5 !important;
+  background-color: #0291A5;
   font-size: 1.75rem !important;
+  color: #F3F3F3;
+}
+#form_partidas button:hover {
+  background-color: #03bdd7;
+}
+#form_partidas button:last-of-type {
+  background-color: #FFB775;
+}
+#form_partidas button:last-of-type:hover {
+  background-color: #ffd2a8;
 }
 #form_partidas .form-control {
   font-size: 2rem;
@@ -1243,15 +1262,14 @@ ul li.list-group-item .btn-info {
   margin: 3% 0%;
 }
 
-.panel-primary {
-  max-height: 1000px !important;
-}
-
 .list-group {
   max-height: 800px !important;
   border: 1px solid rgba(0, 0, 0, 0.125);
 }
 
+.pagination {
+  padding-bottom: 1%;
+}
 .pagination li {
   list-style: none;
   display: inline-block;
@@ -1276,7 +1294,7 @@ ul li.list-group-item .btn-info {
   background-color: #ddd;
 }
 
-#masInfoPartida {
+.masInfoPartida {
   width: 60%;
   height: auto;
   background-color: #f3f3f3;
@@ -1291,18 +1309,21 @@ ul li.list-group-item .btn-info {
   transform: translate(-50%, -50%);
   z-index: 5;
 }
-#masInfoPartida h1 {
+.masInfoPartida h1 {
   color: #026a79;
   flex-basis: 100%;
   text-align: center;
   -webkit-margin-after: 2%;
           margin-block-end: 2%;
 }
-#masInfoPartida p {
+.masInfoPartida p {
   flex-basis: 40%;
   text-align: center;
 }
-#masInfoPartida > button:last-of-type {
+.masInfoPartida > button:not(button:last-of-type) {
+  margin: 3% 5%;
+}
+.masInfoPartida > button:last-of-type {
   display: block;
   background-color: #0291A5;
   border: none;
@@ -1318,14 +1339,14 @@ ul li.list-group-item .btn-info {
   border-radius: 100%;
   padding: 0.3% 1.2%;
 }
-#masInfoPartida > button:last-of-type:hover {
+.masInfoPartida > button:last-of-type:hover {
   background-color: #03bdd7;
 }
-#masInfoPartida #imagenesPartida {
+.masInfoPartida #imagenesPartida {
   position: relative;
   width: 100%;
 }
-#masInfoPartida #imagenesPartida .carousel-indicators button {
+.masInfoPartida #imagenesPartida .carousel-indicators button {
   width: 15px;
   height: 15px;
   background-clip: unset;
@@ -1333,7 +1354,10 @@ ul li.list-group-item .btn-info {
   border: 3px solid #F3F3F3;
   background-color: #0291A5;
 }
-#masInfoPartida #imagenesPartida .carousel-control-prev-icon, #masInfoPartida #imagenesPartida .carousel-control-next-icon {
+.masInfoPartida #imagenesPartida .carousel-inner {
+  margin-bottom: 5%;
+}
+.masInfoPartida #imagenesPartida .carousel-control-prev-icon, .masInfoPartida #imagenesPartida .carousel-control-next-icon {
   width: 4rem;
   height: 4rem;
   background-size: 70%;
@@ -1342,13 +1366,13 @@ ul li.list-group-item .btn-info {
   border: 5px solid #F3F3F3;
   border-radius: 100%;
 }
-#masInfoPartida #imagenesPartida .carousel-control-next-icon {
+.masInfoPartida #imagenesPartida .carousel-control-next-icon {
   background-position: 60%;
 }
-#masInfoPartida #imagenesPartida h2 {
+.masInfoPartida #imagenesPartida h2 {
   text-align: center;
 }
-#masInfoPartida #imagenesPartida img {
+.masInfoPartida #imagenesPartida img {
   display: block;
   margin: 1% auto;
   margin-bottom: 5%;
@@ -1383,10 +1407,10 @@ ul li.list-group-item .btn-info {
   }
 }
 @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
-  #masInfoPartida {
+  .masInfoPartida {
     width: 100%;
   }
-  #masInfoPartida button:not(button:last-of-type) {
+  .masInfoPartida button:not(button:last-of-type) {
     margin: 3% 0%;
   }
 

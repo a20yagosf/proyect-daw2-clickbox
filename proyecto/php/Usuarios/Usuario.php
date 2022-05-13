@@ -289,6 +289,16 @@ class Usuario
         }
         //HAcemos fetch All ya que sabemos que como mucho serán 5
         $datos["imagenes"] = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
+        $numImagenes = count($datos["imagenes"]);
+        if($numImagenes > 1){
+            for($i = 1; $i <= $numImagenes; $i++) {
+                $datos["indicadores"][] = ["num" => $i];
+            }
+            $datos["indicadores"][0] = ["activo" => true];
+        }
+        else if($numImagenes == 0) {
+            $datos["sinImagenes"] = true;
+        }
         return $datos;
     }
 

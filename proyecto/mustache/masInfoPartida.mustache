@@ -1,0 +1,59 @@
+<div class="masInfoPartida" hide>
+    {{#infoPartida}}
+    <h1>Partida {{id_partida}}</h1>
+    {{^sinImagenes}}
+    <div id="imagenesPartida" class="carousel slide" data-bs-ride="carousel">
+        {{# indicadores}}
+            <div class="carousel-indicators">
+            <button
+                type="button"
+                data-bs-target="#imagenesPartida"
+                data-bs-slide-to="{{num}}"
+                aria-label="partida0"
+                {{# activo}}class="active"{{/activo}}
+                aria-current="true"
+            ></button>
+            </div>
+        {{/indicadores}}
+        {{# imagenes}}
+            <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="tarjeta masInfoTarjeta">
+                    <img
+                        src="..\img\partidas\pexels-ann-poan-5797939.jpg"
+                        alt="Foto partidas organizadas"
+                    />
+                </div>
+            </div>
+            </div>
+        {{/imagenes}}
+        <button
+        class="carousel-control-prev"
+        type="button"
+        data-bs-target="#imagenesPartida"
+        data-bs-slide="prev" {{^indicadores}}hidden{{/indicadores}}
+        >
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span
+        ><span class="visually-hidden">Anterior</span></button
+        ><button
+        class="carousel-control-next"
+        type="button"
+        data-bs-target="#imagenesPartida"
+        data-bs-slide="next" {{^indicadores}}hidden{{/indicadores}}
+        >
+        <span class="carousel-control-next-icon" aria-hidden="true"></span
+        ><span class="visually-hidden">Siguiente</span>
+        </button>
+    </div>
+  {{/sinImagenes}}
+    <p>Fecha: {{fecha | date_format : "d-m-Y"}}</p>
+    <p>Duracion: {{duracion}} minutos</p>
+    <p>Juego: {{juego}}</p>
+    <p>Genero: {{genero}}</p>
+    <p>Plazas: {{plazas}}</p>
+    <p>Hora inicio: {{hora_inicio | date_format: 'H:i'}}</p>
+  {{/infoPartida}}
+  <button class="btn btn-lg btn-success" type="button" data-id="1">
+    ¡Reservar!</button
+  ><button type="button">X</button>
+</div>

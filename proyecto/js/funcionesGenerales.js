@@ -1375,36 +1375,6 @@ async function limpiarTodosCamposForm(archivo) {
 }
 
 /**
- * Crea cada una de las opciones de los géneros
- *
- * @param   {DOMElement}  selectAnhadir  Select donde irán las opciones
- *
- */
-async function crearOptionGeneros(selectAnhadir) {
-  try {
-    //Nos conectamos con el servidor para pedirle los géneros, como no envíamos datos y no devuelve datos comprometidos sólo especificamos el método
-    const respuestaGeneros = await fetch("../php/registro.php", {
-      method: "POST",
-      headers: { "Content-type": "application/json;charset=UTF-8" },
-      body: JSON.stringify({ cargarGeneros: true }),
-    });
-    //Es importante poner la espera en la respuesta porque sino lo lee como undefined
-    const generos = await respuestaGeneros.json();
-    if (Object.hasOwn(generos, "generos")) {
-      //Formamos un option con cada género
-      generos["generos"].forEach((genero) => {
-        let opcion = document.createElement("option");
-        opcion.setAttribute("value", genero);
-        opcion.textContent = genero;
-        selectAnhadir.append(opcion);
-      });
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-/**
  * Despliega el menú del perfil
  *
  * @param   {Event}  e  Evento que disparó al escuchador
@@ -1869,7 +1839,7 @@ async function cargarPartidas(filtro = {}, pagina = 0, limite = 7) {
       );
     }
     //Cargo los datos de las partidas
-    respuestaJSON["tuplas"].forEach((dato) => {
+    respuestaJSON["partidas"].forEach((dato) => {
       lista.append(crearContenedorPartida(dato));
     });
   } catch (error) {
@@ -3252,7 +3222,7 @@ async function reservarPartida(e) {
     alert(
       "¡Partida reservada con éxito!, cuando se procese la reserva se te enviará un correo diciendo si fue aceptada o no"
     );
-    location.reload();
+    cargarPartidas();
   } catch (error) {
     alert(error);
     //crearAlertResultado(error);
@@ -4996,18 +4966,107 @@ async function cargarCuerpoPrincipal() {
  *
  * @var {[type]}
  */
-/*Mustache.Formatters = {
-  "mes_anho": function (fecha) {
-    let fechaSeparada = fecha.split('-');
-    let mesNombre = devolverMesPorNumero(Number.parseInt(fechaSeparada[1]));
-    return mesNombre + " " + fechaSeparada[0];
+Mustache.Formatters = {
+  //Formatea la fecha según el formato pasado
+  "date_format": function (fecha, formato) {
+    let fechaDividida = formato.split(" ");
+    let fechaFormateada = "";
+    let fechaObjeto = new Date(fecha);
+    let anhoDividido;
+    let barraFecha = fechaDividida[0].search("/") != -1;
+    //comprobamos si tambien tiene horas
+    if(fechaDividida.length > 1) {
+      //Fecha
+      anhoDividido   = barraFecha ? fechaDividida[0].split("/") : fechaDividida[0].split("-");
+      let horasDivididas = fechaDividida[1].split(":");
+      anhoDividido.concat(horasDivididas);
+    }
+    //Si sólo tiene uno comprobamos si es sólo tiempo o sólo fecha
+    else {
+      if(fechaDividida[0].search(":") != -1){
+        fechaObjeto = new Date("2022-06-24 " + fecha);
+        anhoDividido = fechaDividida[0].split(":");
+      }
+      else {
+        anhoDividido = barraFecha ? fechaDividida[0].split("/") : fechaDividida[0].split("-");
+      }
+    }
+    //Recorremos las letras del formato
+    fechaFormateada = anhoDividido.reduce(function (fechaTotal, formatoActual) {
+      //Comprobamos si es el último elemento del formato
+      let ultimo = (formatoActual == formato[formato.length -1]);
+      //Según el formato vamos formado la fecha
+      switch(formatoActual){
+        case "d":
+          let dia = fechaObjeto.getDay();
+          fechaTotal += dia <= 9 ? "0" + dia : dia;
+          if(!ultimo) fechaTotal += barraFecha ? "/" : "-";
+          break;
+
+        case "D":
+          fechaTotal += fechaObjeto.toLocaleString("es-ES", {weekday: "long"});
+          if(!ultimo) fechaTotal += " ";
+          break;
+
+        case "m" :
+          let mes = fechaObjeto.getMonth() + 1
+          fechaTotal += mes <= 9 ? "0" + mes : mes;
+          if(!ultimo) fechaTotal += barraFecha ? "/" : "-";
+          break;
+
+          case "mm" :
+            fechaTotal += fechaObjeto.toLocaleString("es-ES", {month: "long"});
+            if(!ultimo) fechaTotal += " ";
+          break;
+
+        case "M":
+          let mesLetra = fechaObjeto.toLocaleString("es-ES", {month: "long"});
+          mesLetra = mesLetra.substring(0,1).toUpperCase() + mesLetra.substring(1);
+          fechaTotal += mesLetra;
+          if(!ultimo) fechaTotal += " ";
+          break;
+
+        case "y":
+          fechaTotal += fechaObjeto.toLocaleString("es-ES", {year: "2-digit"});
+          if(!ultimo) fechaTotal += barraFecha ? "/" : "-";
+          break;
+
+        case "Y"  :
+          fechaTotal += fechaObjeto.getFullYear();
+          let primero = formatoActual == fechaFormateada[0];
+          primero ? fechaTotal += barraFecha ? "/" : "-" : " ";
+          break;
+
+        case "h":
+        case "H":
+          fechaTotal += fechaObjeto.getHours();
+          if(!ultimo) fechaTotal += ":";
+          break;
+
+        case "i"  :
+        case "I":
+          fechaTotal += fechaObjeto.getMinutes();
+          if(!ultimo) fechaTotal += ":";
+          break;
+
+        case "s":
+        case "S"    :
+          fechaTotal += fecha.getSeconds();
+          if(!ultimo) fechaTotal += ":";
+          break;
+      }
+      return fechaTotal;
+    }, "");
+    //Hacemos trim por si tiene algún espacio de mas
+    return fechaFormateada.trim();
   },
+  //Calcula el total teniendo en cuenta el precio, iva y la duración de la suscripción
   "calcularTotal": function (precio, iva, duracion) {
     precio = parseInt(precio);
     iva = parseInt(iva);
     return ((precio * (iva/100)) + precio) * duracion;
   }
-}*/
+}
 
 /**
  * Devuelve el nombre del mes
@@ -5239,20 +5298,58 @@ async function cargarSuscripcionActiva(e) {
   let mainCuerpo = document.querySelector("main");
   mainCuerpo.innerHTML = "";
   try {
-    //Cargamos la plantilla de partidas
-    let plantillaPartidas = await cargarPartidas(true);
+    if(sessionStorage["email"]){
+      //Cargamos la plantilla de partidas
+      let plantillaPartidas = await cargarPartidas(true);
 
-    //Petición Mustache
-    let peticion = await fetch('../mustache/paginaPartidas.mustache', opcionesFetchMustache);
-    let plantilla = await peticion.text(); 
-    let resultado = Mustache.render(plantilla, plantillaPartidas["datos"], {"partidas": plantillaPartidas["plantilla"]});
-    mainCuerpo.insertAdjacentHTML("beforeend", resultado);
+      //Cargamos las opciones de los géneros
+      let generos = await cargarGeneros();
+
+      //Petición Mustache
+      const peticion = await fetch('../mustache/paginaPartidas.mustache', opcionesFetchMustache);
+      const plantilla = await peticion.text(); 
+
+      plantillaPartidas["datos"]["generos"] = generos["datos"]["generos"];
+
+      let resultado = Mustache.render(plantilla, plantillaPartidas["datos"], {"partidas": plantillaPartidas["plantilla"], "generos": generos["plantilla"]});
+      mainCuerpo.insertAdjacentHTML("beforeend", resultado);
+
+      //Añadimos los escuchadores
+      let filtro = document.getElementById("filtro");
+      let botonFiltro = filtro.querySelector("button");
+      botonFiltro.addEventListener("click", filtrarPartidas);
+
+      paginacion = document.querySelector(".pagination");
+      if(paginacion) {
+        let enlacesPaginacion = Array.from(paginacion.querySelector("a"));
+        enlacesPaginacion.forEach(enlace => enlace.addEventListener("click", filtrarPartidas));
+      }
+
+      let botonesMasInfo = Array.from(mainCuerpo.querySelectorAll(".masInfo"));
+      botonesMasInfo.forEach(boton => boton.addEventListener("click", masInfoPartida));
+      let botonesReserva = Array.from(mainCuerpo.querySelectorAll(".reservarPartida"));
+      botonesReserva.forEach(boton => boton.addEventListener("click", reservarPartida));
+
+      let botonLimpiarFiltro = botonFiltro.nextElementSibling;
+      botonLimpiarFiltro.addEventListener("click", limpiarFiltro);
+    }
+    else {
+      mostrarInicioSesion();
+    }
   }
   catch(error){
     console.log(error);
   }
 }
 
+/**
+ * Carga las partidas
+ * @param {bool} devolver Si devuelve la plantilla o carga su información
+ * @param {Object} filtro Objeto con los filtros
+ * @param {int} pagina Página que carga
+ * @param {int} limite Número de partidas por página
+ * @returns 
+ */
 async function cargarPartidas(devolver, filtro = {}, pagina = 0, limite = 7) {
   //Limpiamos el contenedor de las partidas
   let lista = document.querySelector("ul[class='list-group']");
@@ -5279,12 +5376,26 @@ async function cargarPartidas(devolver, filtro = {}, pagina = 0, limite = 7) {
     //Petición Mustache
     let peticion = await fetch('../mustache/partials/partida.mustache', opcionesFetchMustache);
     let plantilla = await peticion.text(); 
+
     if(devolver){
       return {"datos": respuestaJSON, "plantilla": plantilla};
     }
     else {
       let resultado = Mustache.render(plantilla, respuestaJSON);
       lista.insertAdjacentHTML("beforeend", resultado);
+
+      //Añadimos los escuchadores
+      paginacion = document.querySelector(".pagination");
+      if(paginacion) {
+        let enlacesPaginacion = Array.from(paginacion.querySelector("a"));
+        enlacesPaginacion.forEach(enlace => enlace.addEventListener("click", filtrarPartidas));
+      }
+      let botonesMasInfo = Array.from(lista.querySelectorAll(".masInfo"));
+      botonesMasInfo.forEach(boton => boton.addEventListener("click", masInfoPartida));
+      let botonesReserva = Array.from(lista.querySelectorAll(".reservarPartida"));
+      botonesReserva.forEach(boton => boton.addEventListener("click", reservarPartida));
+
+      
     }
   }
   catch(error){
@@ -5294,58 +5405,122 @@ async function cargarPartidas(devolver, filtro = {}, pagina = 0, limite = 7) {
 }
 
 /**
- * Carga las partidas según el filtro que se le pase
+ * Filtra las partidas
  *
- * @param   {Object}  filtro  Filtro de tipo {clave: valor}
+ * @param   {Evento}  e  Evento que lo dispara
  *
+ * @return  {void}     No devuelve nada
  */
- /*async function cargarPartidas(filtro = {}, pagina = 0, limite = 7) {
-  //Limpiamos el contenedor de las partidas
-  let lista = document.querySelector("ul[class='list-group']");
-  let paginacion = document.querySelector(".pagination");
-  //Buscamos si ya hay una paginación y si la hay la borramos
-  if (paginacion != null) {
-    paginacion.remove();
-  }
-  lista.innerHTML = "";
-  //LE añado al filtro la página y el limite
-  filtro["pagina"] = pagina;
-  filtro["limite"] = limite;
+async function filtrarPartidas(e) {
+  e.preventDefault();
+  let pagina = (e.currentTarget.nodeName == "BUTTON") ? 0 : e.currentTarget.textContent;
+  //Cogemos todos los filtros
+  let filtro = document.getElementById("filtro");
+  let genero = filtro.querySelector("select[name='generos'").value;
+  let fechaIni = filtro.querySelector("input[name='fechaIni'").value;
+  let fechaFin = filtro.querySelector("input[name='fechaFin'").value;
+  await cargarPartidas(false, {"genero": genero, "fechaIni": fechaIni, "fechaFin": fechaFin}, pagina);
+}
+
+/**
+ * Carga todos los géneros
+ *
+ * @return  {Object}  Obejto con datos y plantilla
+ */
+async function cargarGeneros() {
   try {
-    //Hacemos la petición
-    const respuesta = await fetch("../php/partidas.php", {
+    //Cargamos los géneros
+    const respuestaGeneros = await fetch("../php/registro.php", {
       method: "POST",
-      headers: { "Content-type": "application/json; charset=utf-8" },
-      body: JSON.stringify(filtro),
+      headers: { "Content-type": "application/json;charset=UTF-8" },
+      body: JSON.stringify({ "cargarGeneros": true }),
     });
-    //Convertimos la respues ta json
-    const respuestaJSON = await respuesta.json();
-    //Compruebo si dió error
-    if (Object.hasOwn(respuestaJSON, "error")) {
-      throw respuestaJSON["error"];
+    const generos = await respuestaGeneros.json();
+    //Comprobamos que no diese error
+    if(Object.hasOwn(generos, "error")){
+      throw json["error"];
     }
-    //Limpiamos la lista
-    lista.innerHTML = "";
-    //Cargo cada uno de los li
-    pagina = filtro["pagina"] != 0 ? filtro["pagina"] / 7 : 0;
-    paginacion = crearPaginacion(respuestaJSON["numPag"], pagina);
-    if (paginacion != "") {
-      document
-        .querySelector("#result_panel")
-        .insertAdjacentElement("afterend", paginacion);
-    }
-    //Le añadimos los escuchadores
-    let elementosLi = document.querySelectorAll(".pagination li");
-    if (elementosLi != null) {
-      elementosLi.forEach((elemento) =>
-        elemento.firstElementChild.addEventListener("click", filtrarPartidas)
-      );
-    }
-    //Cargo los datos de las partidas
-    respuestaJSON["tuplas"].forEach((dato) => {
-      lista.append(crearContenedorPartida(dato));
+
+    //Cargamos la plantilla de mustache
+    const peticionMustache = await fetch('../mustache/partials/optionGeneros.mustache', opcionesFetchMustache);
+    const plantillaMustache = await peticionMustache.text();
+    return {"datos": generos, "plantilla": plantillaMustache};
+  }
+  catch(error){
+    console.log(error);
+    return {"datos": {}, "plantilla": ""};
+  }
+}
+
+/**
+ * Limpia los filtros
+ *
+ * @param   {Node}  filtro  Contenedor con los filtros
+ *
+ * @return  {void}          No devuelve nada
+ */
+function limpiarFiltro() {
+  let filtro = document.getElementById("filtro");
+  let elementosFiltro = Array.from(filtro.querySelectorAll('input:not(input[type="submit"]), select'));
+  elementosFiltro.forEach(elemento => elemento.value = "");
+  let botonFiltrar = filtro.querySelector("button");
+  botonFiltrar.dispatchEvent(new Event('click'));
+}
+
+/**
+ * Carga más información sobre la partida
+ *
+ * @param   {[type]}  e  [e description]
+ *
+ * @return  {[type]}     [return description]
+ */
+async function masInfoPartida(e) {
+  let mainCuerpo = document.querySelector("main");
+  let masInfoPartida = document.querySelector(".masInfoPartida:last-of-type");
+  //Si tiene otra ventana abierta la cerramos
+  if(masInfoPartida != null) await masInfoPartida.querySelector(".masInfoPartida > button:last-of-type").dispatchEvent(new Event("click"));
+  try {
+    let masInfo = await new Promise(async (resolve, reject) => {
+      //Cogemos el id del botón
+      let idPartida = e.currentTarget.dataset.id;
+      //iniciamos la peticion
+      const respuesta = await fetch("../php/partidas.php", {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({ masInfoPartida: idPartida }),
+      });
+      //Traducimos la respuesta
+      const respuestaJSON = await respuesta.json();
+      //Comprobamos que no diera error
+      if (Object.hasOwn(respuestaJSON, "error")) {
+        throw respuestaJSON["error"];
+      }
+      //Creamos el contenedor
+      let peticionMustache = await fetch('../mustache/masInfoPartida.mustache', opcionesFetchMustache);
+      let plantilla = await peticionMustache.text();
+      let cadena = Mustache.render(plantilla, respuestaJSON);
+      mainCuerpo.insertAdjacentHTML("beforeend", cadena);
+
+      //Añadir eventos
+      let masInfoPartida = document.querySelector(".masInfoPartida:last-of-type");
+      let botonVolver = masInfoPartida.lastElementChild;
+      let botonReservar = botonVolver.previousElementSibling;
+      botonVolver.addEventListener("click", volverPaginaPartidas);
+      botonReservar.addEventListener("click", reservarPartida);
+      return resolve = masInfoPartida;
     });
+    $(masInfo).show(1000);
   } catch (error) {
     console.log(error);
   }
-}*/
+}
+
+/**
+ * Oculta el modal de mas info
+ *
+ * @return  {void}  No devuelve nada
+ */
+ async function volverPaginaPartidas() {
+  let masInfo = document.querySelector(".masInfoPartida");
+  $(masInfo).hide(1000, () => masInfo.remove());
+}

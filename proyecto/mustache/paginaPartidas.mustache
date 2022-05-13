@@ -49,9 +49,15 @@
     </div>
     <button
       type="button"
-      class="btn btn-primary btn-lg btn-block align-self-center"
+      class="btn btn-lg btn-block align-self-center"
     >
       Filtrar
+    </button>
+    <button
+      type="button"
+      class="btn btn-lg btn-block align-self-center"
+    >
+      Limpiar filtro
     </button>
   </form>
 </div>
@@ -63,14 +69,14 @@
   </div>
   <div class="panel-body">
     <ul class="list-group">
-        {{> partidas}}
+    {{> partidas}}
     </ul>
   </div>
-</div>
-<div class="pagination">
-  <ul>
-      {{# paginacion}}
-        <li><a href="#" {{#activa}}class="active"{{/activa}}>{{numPag}}</a></li>
-      {{/paginacion}}
-  </ul>
+  <div class="pagination">
+    <ul>
+        {{# paginacion}}
+          <li><a href="#" {{#activa}}class="active"{{/activa}}>{{numPag}}</a></li>
+        {{/paginacion}}
+    </ul>
+  </div>
 </div>

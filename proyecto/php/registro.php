@@ -16,7 +16,7 @@ try {
         //Comprobamos si es un pdoStatement (Hay datos)
         if($resultado instanceof \PDOStatement) {
             //Array con todos los géneros
-            $generos = $resultado->fetchAll(\PDO::FETCH_NUM);
+            $generos = $resultado->fetchAll(\PDO::FETCH_ASSOC);
             $devolver = ["generos" => $generos];
         }
     }

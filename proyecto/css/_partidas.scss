@@ -40,6 +40,12 @@ ul.list-group {
   overflow-x: hidden;
   overflow-y: auto;
   font-size: 1.75rem !important;
+
+  .noPartidas {
+    margin: auto;
+    display: block;
+    padding: 5%;
+  }
 }
 
 // Centrar el título y modificar el tamaño de letra
@@ -64,11 +70,24 @@ ul.list-group {
     background-color: white;
   }
   button {
-    width: 20% !important;
+    width: 15% !important;
     margin: 1vw;
     margin-top: 0 !important;
-    background-color: $colorPrincipal !important;
+    background-color: $colorPrincipal;
     font-size: 1.75rem !important;
+    color: $colorLetra;
+
+    &:hover {
+      background-color: aclararColor($colorPrincipal);
+    }
+
+    &:last-of-type {
+      background-color: $colorSecundario;
+
+       &:hover {
+        background-color: aclararColor($colorSecundario);
+       }
+    }
   }
   .form-control {
     font-size: 2rem;
@@ -95,6 +114,7 @@ ul li.list-group-item {
       inset-inline-start: 50%;
       transform: translate(-50%, -50%);
     }
+
   }
 
   div.info {
@@ -114,11 +134,6 @@ ul li.list-group-item {
   }
 }
 
-// Como la base de la lista era muy pequeña para el tamaño de imagen le hemos dado unos límites más grandes
-.panel-primary {
-  max-height: 1000px !important;
-}
-
 
 .list-group {
   max-height: 800px !important;
@@ -128,6 +143,8 @@ ul li.list-group-item {
 // Usando la base ofrecida por w3schools en paginación hemos adaptado nuestras necesidades a sus modelos
 
 .pagination {
+  padding-bottom: 1%;
+
   li {
     list-style: none;
     display: inline-block;
@@ -154,7 +171,7 @@ ul li.list-group-item {
 }
 
 //Contenedor que aparece con mas informacion
-#masInfoPartida {
+.masInfoPartida {
   @include contenedor(60%, auto, $fondoLogin);
   margin: auto;
   padding: 1%;
@@ -182,6 +199,10 @@ ul li.list-group-item {
   p {
     flex-basis: 40%;
     text-align: center;
+  }
+
+  & > button:not(button:last-of-type){
+    margin: 3% 5%;
   }
 
     //Botón cierre
@@ -212,6 +233,10 @@ ul li.list-group-item {
       border-radius: 100%;
       border: 3px solid $colorLetra;
       background-color: $colorPrincipal;
+    }
+
+    .carousel-inner {
+      margin-bottom: 5%;
     }
 
     //Botones de antes y despues del carousel
@@ -284,7 +309,7 @@ ul li.list-group-item {
 //Adaptación para móviles mediante aspect ratio
 @media screen and (max-aspect-ratio:  195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
   //#MasInfo
-  #masInfoPartida {
+  .masInfoPartida {
       width: 100%;
 
       button:not(button:last-of-type) {

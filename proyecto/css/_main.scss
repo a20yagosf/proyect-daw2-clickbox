@@ -1,5 +1,9 @@
 @use "sass:math";
 
+html {
+    scroll-behavior: smooth;
+}
+
 //Características generales
 * {
     margin: 0px;
