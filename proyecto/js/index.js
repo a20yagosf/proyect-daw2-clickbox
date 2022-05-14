@@ -16,6 +16,13 @@ async function cargarPaginaPrincipal() {
     //Añadimos los escuchadores para el header
     document.getElementById("navSuscripciones").firstElementChild.addEventListener("click", cargarPaginaSuscripciones);
     document.getElementById("navPartidas").firstElementChild.addEventListener("click", cargarPaginaPartidas);
+    if(usuario){
+        let botonPerfilUsuario = document.getElementById("perfilUsuarioEnlace");
+        botonPerfilUsuario.addEventListener("click", cargarPerfilUsuario);
+        if(administrador) {
+            let botonPanelControl = document.getElementById("panelControlEnlace");
+        }
+    }
 
     //Cargamos la pantalla del footer
     let peticionFooter     = await fetch("../mustache/footer.mustache", opcionesFetchMustache);

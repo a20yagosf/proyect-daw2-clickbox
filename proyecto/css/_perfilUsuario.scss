@@ -1,17 +1,13 @@
 
 #perfilUsuario {
-    padding: 2%;
-
-    //Formulario
-    form {
-        @include contenedor(90%, auto, $colorLetra);
-        margin: auto;
-        padding: 0% 2%;
-        border-radius: $borderRadius;
-        font-size: 1.2em;
-        //Flex como padre
-        display: flex;
-        flex-wrap: wrap;
+    @include contenedor(90%, auto, $colorLetra);
+    margin: auto;
+    padding: 2% 4%;
+    border-radius: $borderRadius;
+    font-size: 1.2em;
+    //Flex como padre
+    display: flex;
+    flex-wrap: wrap;
 
         //Div con titulo y botón editar perfil
         & > div {
@@ -197,14 +193,9 @@
             margin: auto;
             //Margin bottom
             margin-block-end: 5%;
+            display: none;
         }
     }
-
-    //Tipo submit
-    input[type="submit"] {
-        display: none;
-    }
-}
 
 h2,h3 {
     color: $colorPrincipalOscuro;
@@ -368,10 +359,9 @@ h2,h3 {
                 margin-block-start: 5%;
             }
 
-            //Botón cancelar suscripción
-            button {
-                margin: auto;
-            }
+        //Botón cancelar suscripción
+        button {
+            margin: auto;
         }
     }
 }
@@ -379,7 +369,6 @@ h2,h3 {
 //Adaptación para móvil plegable
 @media screen and (max-width: 300px) {
         #perfilUsuario {
-            form {
                 &> div {
                     padding: 2% 1%;
                 }
@@ -399,12 +388,10 @@ h2,h3 {
                 }
             }
         }
-    }
 
 //Adaptación para tablets mediante aspect ratio
 @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px), (aspect-ratio: 1/1)  {
     #perfilUsuario {
-        form {
             font-size: 1.3rem;
     
             //Cabecera Cuenta
@@ -458,4 +445,3 @@ h2,h3 {
         }
     }
 }
-

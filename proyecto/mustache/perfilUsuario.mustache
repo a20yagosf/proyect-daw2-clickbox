@@ -1,0 +1,57 @@
+<form id="perfilUsuario">
+    <div>
+        <h2>Cuenta</h2>
+        <div id="botones">
+            <button type="button" id="editarCuenta">Editar perfil</button>
+            <button type="button" id="historial">Historial</button>
+        </div>
+        <div id="infoTiempos">
+            <p>Última modificación: <span id="ultModif">{{fecha_ult_modif | date_format: 'd-m-Y'}}</span></p>
+            <p>Último inicio de sesión: <span id="ultInicio">{{fecha_ult_acceso | date_format: 'd-m-Y'}}</span></p>
+        </div>
+    </div>
+    <fieldset>
+        <h3>Datos cuenta</h3>
+        <div>
+            <label for="fotoPerfil">Foto de perfil:</label>
+            <div id="contenedorPerfil">
+                <img id="fotoPerfil" src="{{imagen_perfil}}" alt="Imagen de perfil del usuario">
+            </div>
+            <label for="email">Correo:</label>
+            <input readonly="readonly" type="email" name="email" id="email" value="{{email}}">
+            <label for="rol">Rol:</label>
+            <input readonly="readonly" type="text" name="rol" id="rol" value="{{rol | get_rol}}">
+            <label for="genero_favorito">Género favorito:</label>
+            <select disabled="disabled" name="genero_favorito" id="genero_favorito">
+                <option value="">No seleccionado</option>
+                {{> generos}}
+            </select>
+        </div>
+    </fieldset>
+    <fieldset>
+        <h3>Datos personales</h3>
+        <div>
+            <label for="nombre">Nombre:</label>
+            <input readonly="readonly" type="text" name="nombre" id="nombre" value="{{nombre}}">
+            <label for="apellidos">Apellidos:</label>
+            <input readonly="readonly" type="text" name="apellidos" id="apellidos" value="{{apellidos}}">
+            <label for="telefono">Teléfono:</label>
+            <input readonly="readonly" type="tel" name="telefono" id="telefono" value="{{telefono}}">
+            <label for="direccion">Dirección:</label>
+            <input readonly="readonly" type="text" name="direccion" id="direccion" value="{{direccion}}">
+        </div>
+    </fieldset>
+    <fieldset>
+        <h3>Suscripción</h3>
+        <div>
+            <div id="contenedorSuscripcion">
+                <label for="suscripcion">Tipo suscripción:</label>
+                <input readonly="readonly" type="text" name="suscripcion" id="suscripcion" value="{{suscripcion}} mes">
+            </div>
+            <span id="renovacion">Renovación: </span>
+            <input readonly="readonly" type="text" name="suscripcion" id="suscripcion" value="{{fecha_renovacion | date_format: 'd-m-Y'}}">
+            {{# renovar}}<button type="button" id="cancelarRenovacion">Cancelar renovación</button>{{/renovar}}
+        </div>
+    </fieldset>
+    <input type="submit" value="Guardar cambios">
+</form>

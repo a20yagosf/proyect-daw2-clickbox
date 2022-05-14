@@ -3,6 +3,11 @@ let numArticulos = 0;
 
 let opcionesFetchMustache = { method: "POST", headers: {"Content-type": "application/json;charset=utf-8;"}};
 
+//Roles
+const ROL_ANONIMO = 3;
+const ROL_ESTANDAR = 2;
+const ROL_ADMINISTRADOR = 1;
+
 /**
  * Clase fecha con la fecha correcta
  */
@@ -1416,7 +1421,7 @@ async function desconectarPerfil(e) {
  */
 async function cargarDatosPerfil() {
   //Cargamos los options del genero favorito
-  crearOptionGeneros(document.querySelector("select"));
+  //crearOptionGeneros(document.querySelector("select"));
   try {
     let email = sessionStorage.getItem("email");
     // email está almacenado en sessionStorage
@@ -4998,7 +5003,7 @@ Mustache.Formatters = {
       //Según el formato vamos formado la fecha
       switch(formatoActual){
         case "d":
-          let dia = fechaObjeto.getDay();
+          let dia = fechaObjeto.getDate();
           fechaTotal += dia <= 9 ? "0" + dia : dia;
           if(!ultimo) fechaTotal += barraFecha ? "/" : "-";
           break;
@@ -5065,6 +5070,23 @@ Mustache.Formatters = {
     precio = parseInt(precio);
     iva = parseInt(iva);
     return ((precio * (iva/100)) + precio) * duracion;
+  },
+  "get_rol": function (rol) {
+    let rolPalabra = "";
+    switch(parseInt(rol)) {
+      case ROL_ANONIMO:
+        rolPalabra = "Anónimo";
+        break;
+
+      case ROL_ESTANDAR:
+        rolPalabra = "Estándar";
+        break;
+
+      case ROL_ADMINISTRADOR:
+        rolPalabra = "Administrador"  ;
+        break;
+    }
+    return rolPalabra;
   }
 }
 
@@ -5523,4 +5545,69 @@ async function masInfoPartida(e) {
  async function volverPaginaPartidas() {
   let masInfo = document.querySelector(".masInfoPartida");
   $(masInfo).hide(1000, () => masInfo.remove());
+}
+
+/**
+ * Carga el perfil de usuario
+ *
+ * @return  {void}  No devuelve nada
+ */
+async function cargarPerfilUsuario(e) {
+  e.preventDefault();
+  activarPantallaCarga();
+  //Disparamos para que se cierre el menú
+  let botonPerfil = document.getElementById("botonPerfilUsuario");
+  try {
+    let email = sessionStorage["email"];
+    let main = document.querySelector("main");
+    //Si no es un usuario principal lo llevamos a la página principal
+    if(!email) {
+      cargarCuerpoPrincipal();
+    }
+    main.innerHTML = "";
+    main.classList.contains("cuerpoMosaico") ? "" : main.classList.add("cuerpoMosaico");
+    //Cargamos los géneros
+    const generos = await cargarGeneros();
+
+    const peticionPerfil = await fetch("../php/perfil_usuario.php", {
+      method: "POST",
+      headers: { "Content-type": "application/json;charset=UTF-8" },
+      body: JSON.stringify({ "email": email}),
+    });
+    const perfilJSON = await peticionPerfil.json();
+    //Comprobamos que no diese error
+    if(Object.hasOwn(perfilJSON, "error")){
+      throw json["error"];
+    }
+
+    perfilJSON["email"] = email;
+    sessionStorage["rol"] = perfilJSON["rol"];
+    perfilJSON["generos"] = generos["datos"]["generos"];
+    //Ponemos el género seleccionado
+    if(perfilJSON["genero_favorito"]){
+      let indiceGenero = Object.values(perfilJSON["generos"]).findIndex(genero => genero["genero"] == perfilJSON["genero_favorito"]);
+      if(indiceGenero != -1) perfilJSON["generos"][indiceGenero]["activo"] = true;
+    }
+
+    //Cargamos la plantilla de mustache
+    const peticionMustache = await fetch('../mustache/perfilUsuario.mustache', opcionesFetchMustache);
+    const peticionJSON = await peticionMustache.text();
+    let plantillaMustache = Mustache.render(peticionJSON, perfilJSON, {"generos": generos["plantilla"]});
+    main.insertAdjacentHTML("beforeend", plantillaMustache);
+
+    botonPerfil.dispatchEvent(new Event("click"));
+
+    //Añadimos los escuchadores
+    let botonEditarPerfil = document.getElementById("editarCuenta");
+    botonEditarPerfil.addEventListener("click", editarPerfil);
+    let botonHistorial = document.getElementById("historial");
+    botonHistorial.addEventListener("click", mostrarHistorial);
+    let botonGuardar = main.querySelector("input[type=submit]");
+    botonGuardar.addEventListener("click", guardarCambiosPerfil);
+
+    desactivarPantallaCarga();
+  }
+  catch(error){
+    console.log(error);
+  }
 }
