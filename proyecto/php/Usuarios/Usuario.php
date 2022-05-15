@@ -8,6 +8,7 @@ use \Infraestructuras\Bd as bd;
 use Infraestructuras\Email;
 use \Traits\Formulario as formulario;
 use \ServiciosProductos\Suscripcion as suscription;
+use variablesGlobales;
 
 class Usuario
 {
@@ -499,7 +500,7 @@ class Usuario
         $bd = new bd();
         //Sentencia
         $sentenciaNumPag = "SELECT count(*) as num_pag FROM historico_usuarios WHERE email = :email";
-        $sentencia = "SELECT fecha_ult_modif, CONCAT('email:',email , '; ', 'rol:',rol, '; ', 'nombre:',nombre, '; ', 'apellidos:',apellidos, '; ', 'telefono:', IFNULL(telefono, ''), '; ', 'direccion:', IFNULL(direccion, ''), '; ', 'genero_favorito:', IFNULL(genero_favorito, ''), '; ', 'suscripcion:', IFNULL(suscripcion, ''), '; ', 'renovar:', IFNULL(renovar, '')) AS datos FROM historico_usuarios WHERE email = :email";
+        $sentencia = "SELECT * FROM historico_usuarios WHERE email = :email";
         //Comprobamos si cogemos las fechas
         if(count($fechas) == 2){
             $sentenciaNumPag .= " AND (DATE(fecha_ult_modif) BETWEEN :fechaIni AND :fechaFin)";
@@ -524,8 +525,42 @@ class Usuario
             throw new \PDOException($pdoStatement);
         }
         //Cogemos todas las tuplas
-        $historial = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
-        return ["numPag" => $numPag, "historial" => $historial];
+        $datos["historial"] = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
+        if($numPag > 0){
+            for($i = 1; $i <= $numPag; $i++) {
+                $datos["paginacion"][] = ["num" => $i];
+            }
+        }
+        return $datos;
+    }
+
+    public function masDetallesHistorial($idHistorial) {
+        try {
+            //Instanciamos bd
+            $bd = new Bd();
+            $sentencia = "SELECT * FROM historico_usuarios WHERE id = :id";
+            $pdoStatement = $bd->recuperarDatosBDNum($sentencia, ["id" => intval($idHistorial)]);
+            if(!$pdoStatement instanceof \PDOStatement){
+                throw new \PDOException($pdoStatement);
+            }
+            //Sólo va a devolver una tupla ya que filtramos por primary key
+            $datos["historial"] = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
+            //Comprobamos que sea propio del usuario
+            if($datos && $datos["historial"]["email"] != $this->email){
+                //Comprobamos si es un administrador
+                if($this->getRol() != variablesGlobales::$ROL_ADMINISTRADOR){
+                    throw new \Exception("No puede acceder a este apartado");
+                }
+            }
+            return $datos;
+        }
+        catch(\PDOException $pdoError){
+            throw $pdoError;
+        }
+        catch(\Exception $error) {
+            throw $error;
+        }
+
     }
 
     /**

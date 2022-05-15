@@ -10,9 +10,13 @@ try {
     if($_SESSION["usuario"] == null){
         $devolver = ["noUser" => "No es un usuairo"];
     }
-    if(isset($datosUsuario["usuario"])){
+    else if(isset($datosUsuario["usuario"])){
         $user = new user($_SESSION["usuario"]["email"]);
         $devolver = $user->cargarHistorial($datosUsuario["usuario"]);
+    }
+    else if(isset($datosUsuario["historial"])){
+        $user = new user($_SESSION["usuario"]["email"]);
+        $devolver = $user->masDetallesHistorial($datosUsuario["historial"]);
     }
     else if(isset($datosUsuario["admin"])) {
         //Comprobamos que sea administrador

@@ -1,0 +1,40 @@
+<div id="contenedorHistorial">
+  <form id="formHistorial" action="../php/historial.php" method="POST">
+    <label for="fechaIniHistorial">Fecha inicio</label>
+    <input type="date" name="fechaIniHistorial" id="fechaIniHistorial" />
+    <label for="fechaFinHistorial">Fecha fin</label><input
+      type="date"
+      name="fechaFinHistorial"
+      id="fechaFinHistorial"
+    /><button type="button">Filtrar</button>
+  </form>
+  <table id="listaElementos">
+    <thead>
+      <tr>
+        <th>Fecha modificación</th>
+        <th>Datos</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+        {{#historial}}
+      <tr>
+        <td>{{fecha_ult_modif | date_format: 'd-m-Y H:i:s'}}</td>
+        <td>
+          email: {{email}}; rol: {{rol | get_rol}}; nombre: {{nombre}}; apellidos: {{apellidos}}; telefono: {{telefono}}; direccion: {{direccion}}; genero_favorito: {{genero_favorito}}; suscripcion: {{suscripcion}} {{^suscripcion}}Sin suscripcion {{/suscripcion}}; renovar: {{renovar | si_no_campo}}
+        </td>
+        <td><button type="button" data-idhistorial="{{id}}" class="detallesHistorial">Detalles</button></td>
+      </tr>
+      {{/historial}}
+    </tbody>
+  </table>
+  {{^historial}}<p>No se han encontrado modificaciones del perfil</p>{{/historial}}
+  <button>X</button>
+  <div class="pagination">
+    <ul>
+        {{# paginacion}}
+            <li><a href="#" data-historial="{{num}}" {{#activo}}class="active"{{/activo}}>{{num}}</a></li>
+        {{/paginacion}}
+    </ul>
+  </div>
+</div>

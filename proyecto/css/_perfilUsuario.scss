@@ -239,14 +239,24 @@ h2,h3 {
     }
 
     #listaElementos {
+        table-layout: fixed;
         @include contenedor(100%, 100%, transparent);
         text-align: center;
         margin: 3% 0%;
+        overflow: hidden;
     }
 
     thead {
         //Border bottom
         border-block-end: 1px solid $colorPrincipal;
+
+        th:first-of-type {
+            width: 160px;
+        }
+
+        th:last-of-type {
+            width: 100px;
+        }
 
         th {
             color: $colorPrincipal;
@@ -264,7 +274,15 @@ h2,h3 {
 
     tbody {
         td {
-            padding: 0.3% 0%;
+            padding: 0.3% 1%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        td:nth-of-type(2){
+            text-align: left;
+            white-space: nowrap;
+            text-overflow: ellipsis;
         }
 
         tr:not(tr:last-of-type) {
@@ -277,7 +295,104 @@ h2,h3 {
             margin: auto;
         }
     }
-    
+
+    p {
+        text-align: center;
+        padding-top: 5%;
+    }
+}
+
+//MasDetalles historial
+#masDetallesHistorial {
+    display: grid;
+    grid-template-columns: repeat(2,calc(100%/2));
+    grid-template-rows: 5% repeat(2, 47%);
+    grid-template-areas: "cuenta cuenta" "datosCuenta datosPersonales" "suscripcion suscripcion";
+
+    div > h3 {
+        text-align: center;
+    }
+
+    & > div {
+        width: 100%;
+    }
+
+    & > h2 {
+        grid-area: cuenta;
+        text-align: center;
+    }
+
+    #masDetallesCuenta {
+        grid-area: datosCuenta;
+
+        & > div {
+            width: 100%;
+            
+            & > div {
+
+                span:first-of-type {
+                    display: inline-block;
+                    width: 200px;
+                }
+                
+                span:nth-of-type(2), img {
+                    //Margin left
+                    margin-inline-start: 2%;
+                }
+            }
+        }
+    }
+
+    #masDetallesPersonales {
+        grid-area: datosPersonales;
+
+        & > div {
+            width: 100%;
+
+            & > div {
+                
+                span:first-of-type {
+                    display: inline-block;
+                    width: 200px;
+                }
+                
+                span:nth-of-type(2), img {
+                    //Margin left
+                    margin-inline-start: 2%;
+                }
+            }
+        }
+    }
+
+    #masDetallesSuscripcion {
+        grid-area: suscripcion;
+
+        & > div {
+            width: 100%;
+
+            & > div {
+
+                span:first-of-type {
+                    display: inline-block;
+                    width: 200px;
+                }
+                
+                span:nth-of-type(odd), img {
+                    //Margin left
+                    margin-inline-start: 2%;
+                }
+            }
+        }
+    }
+
+    & > button:last-of-type {
+        @include boton($colorPrincipal, 1.4rem);
+        position: absolute;
+        //Top
+        inset-block-start: 3%;
+        //Right
+        inset-inline-end: 5%;
+    }
 }
 
 //Adaptación para móviles mediante aspect ratio

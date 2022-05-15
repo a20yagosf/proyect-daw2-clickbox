@@ -1,0 +1,53 @@
+<div id="masDetallesHistorial">
+    <h2>Cuenta</h2>
+  {{# historial}}
+  <div id="masDetallesCuenta">
+    <h3>Datos cuenta</h3>
+    <div>
+      <div id="contenedorPerfil">
+        <span>Foto de perfil:</span>
+        <img
+          id="fotoPerfil"
+          src="{{ imagen_perfil }}"
+          alt="Imagen de perfil del usuario"
+        />
+      </div>
+      <div><span>Correo:</span> <span>{{ email }}</span>
+      </div>
+      <div>
+        <span>Rol:</span> <span>{{ rol | get_rol }}</span>
+      </div>
+      <div><span>Género favorito:</span><span>{{ genero_favorito }}</span></div>
+    </div>
+  </div>
+  <div id="masDetallesPersonales">
+    <h3>Datos personales</h3>
+    <div>
+      <div>
+        <span>Nombre:</span> <span>{{ nombre }}</span>
+      </div>
+      <div>
+        <span>Apellidos:</span><span>{{ apellidos }}</span>
+      </div>
+      <div>
+        <span>Teléfono:</span> <span>{{ telefono }}</span>
+      </div>
+      <div>
+        <span>Dirección:</span> <span>{{ direccion }}</span>
+      </div>
+    </div>
+  </div>
+  <div id="masDetallesSuscripcion">
+    <h3>Suscripción</h3>
+    <div>
+      <div id="contenedorSuscripcion">
+          <span>Tipo suscripción:</span>
+          <span>{{ suscripcion }} mes</span>
+          <span>Renovación:</span>
+          <span>{{ fecha_ini_suscripcion | calcularFechaRenovacion : "d-m-Y" : suscripcion  : date_format }}</span>
+      </div>
+    </div>
+  </div>
+  <button type="button">X</button>
+  {{/historial}}
+</div>

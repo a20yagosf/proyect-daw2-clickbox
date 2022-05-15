@@ -2351,15 +2351,23 @@ h2, h3 {
   background-color: #03bdd7;
 }
 #contenedorHistorial #listaElementos {
+  table-layout: fixed;
   width: 100%;
   height: 100%;
   background-color: transparent;
   text-align: center;
   margin: 3% 0%;
+  overflow: hidden;
 }
 #contenedorHistorial thead {
   -webkit-border-after: 1px solid #0291A5;
           border-block-end: 1px solid #0291A5;
+}
+#contenedorHistorial thead th:first-of-type {
+  width: 160px;
+}
+#contenedorHistorial thead th:last-of-type {
+  width: 100px;
 }
 #contenedorHistorial thead th {
   color: #0291A5;
@@ -2383,7 +2391,14 @@ h2, h3 {
   background-color: #03bdd7;
 }
 #contenedorHistorial tbody td {
-  padding: 0.3% 0%;
+  padding: 0.3% 1%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#contenedorHistorial tbody td:nth-of-type(2) {
+  text-align: left;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 #contenedorHistorial tbody tr:not(tr:last-of-type) {
   -webkit-border-after: 1px solid silver;
@@ -2402,6 +2417,86 @@ h2, h3 {
   margin: auto;
 }
 #contenedorHistorial tbody button:hover {
+  background-color: #03bdd7;
+}
+#contenedorHistorial p {
+  text-align: center;
+  padding-top: 5%;
+}
+
+#masDetallesHistorial {
+  display: grid;
+  grid-template-columns: repeat(2, 50%);
+  grid-template-rows: 5% repeat(2, 47%);
+  grid-template-areas: "cuenta cuenta" "datosCuenta datosPersonales" "suscripcion suscripcion";
+}
+#masDetallesHistorial div > h3 {
+  text-align: center;
+}
+#masDetallesHistorial > div {
+  width: 100%;
+}
+#masDetallesHistorial > h2 {
+  grid-area: cuenta;
+  text-align: center;
+}
+#masDetallesHistorial #masDetallesCuenta {
+  grid-area: datosCuenta;
+}
+#masDetallesHistorial #masDetallesCuenta > div {
+  width: 100%;
+}
+#masDetallesHistorial #masDetallesCuenta > div > div span:first-of-type {
+  display: inline-block;
+  width: 200px;
+}
+#masDetallesHistorial #masDetallesCuenta > div > div span:nth-of-type(2), #masDetallesHistorial #masDetallesCuenta > div > div img {
+  -webkit-margin-start: 2%;
+          margin-inline-start: 2%;
+}
+#masDetallesHistorial #masDetallesPersonales {
+  grid-area: datosPersonales;
+}
+#masDetallesHistorial #masDetallesPersonales > div {
+  width: 100%;
+}
+#masDetallesHistorial #masDetallesPersonales > div > div span:first-of-type {
+  display: inline-block;
+  width: 200px;
+}
+#masDetallesHistorial #masDetallesPersonales > div > div span:nth-of-type(2), #masDetallesHistorial #masDetallesPersonales > div > div img {
+  -webkit-margin-start: 2%;
+          margin-inline-start: 2%;
+}
+#masDetallesHistorial #masDetallesSuscripcion {
+  grid-area: suscripcion;
+}
+#masDetallesHistorial #masDetallesSuscripcion > div {
+  width: 100%;
+}
+#masDetallesHistorial #masDetallesSuscripcion > div > div span:first-of-type {
+  display: inline-block;
+  width: 200px;
+}
+#masDetallesHistorial #masDetallesSuscripcion > div > div span:nth-of-type(odd), #masDetallesHistorial #masDetallesSuscripcion > div > div img {
+  -webkit-margin-start: 2%;
+          margin-inline-start: 2%;
+}
+#masDetallesHistorial > button:last-of-type {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.4rem;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  position: absolute;
+  inset-block-start: 3%;
+  inset-inline-end: 5%;
+}
+#masDetallesHistorial > button:last-of-type:hover {
   background-color: #03bdd7;
 }
 

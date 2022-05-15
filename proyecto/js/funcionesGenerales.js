@@ -4974,6 +4974,9 @@ async function cargarCuerpoPrincipal() {
 Mustache.Formatters = {
   //Formatea la fecha según el formato pasado
   "date_format": function (fecha, formato) {
+    if(fecha == undefined){
+      return "";
+    }
     let fechaDividida = formato.split(" ");
     let fechaFormateada = "";
     let fechaObjeto = new Date(fecha);
@@ -5087,6 +5090,20 @@ Mustache.Formatters = {
         break;
     }
     return rolPalabra;
+  },
+  "si_no_campo": function (campo){
+    return campo == 0 || campo == null ? "No" : "Si"
+  },
+  "truncate": function (texto, numPalabras) {
+    return texto.substring(0,numPalabras);
+  },
+  "calcularFechaRenovacion": function (fecha_ini_suscripcion, formato, suscripcion, funcionFormato) {
+    if(fecha_ini_suscripcion == undefined){
+      return "";
+    }
+    let fechaIni = new Date(fecha_ini_suscripcion);
+    fechaIni.setMonth(fechaIni.getMonth() + suscripcion);
+    return funcionFormato(fechaIni.toLocaleString(), formato);
   }
 }
 
@@ -5558,56 +5575,164 @@ async function cargarPerfilUsuario(e) {
   //Disparamos para que se cierre el menú
   let botonPerfil = document.getElementById("botonPerfilUsuario");
   try {
-    let email = sessionStorage["email"];
+    let email = sessionStorage["email"] ?? localStorage["email"];
     let main = document.querySelector("main");
     //Si no es un usuario principal lo llevamos a la página principal
-    if(!email) {
+    if(email == undefined) {
       cargarCuerpoPrincipal();
     }
-    main.innerHTML = "";
-    main.classList.contains("cuerpoMosaico") ? "" : main.classList.add("cuerpoMosaico");
-    //Cargamos los géneros
-    const generos = await cargarGeneros();
+    else {
+      main.innerHTML = "";
+      main.classList.contains("cuerpoMosaico") ? "" : main.classList.add("cuerpoMosaico");
+      //Cargamos los géneros
+      const generos = await cargarGeneros();
 
-    const peticionPerfil = await fetch("../php/perfil_usuario.php", {
+      const peticionPerfil = await fetch("../php/perfil_usuario.php", {
+        method: "POST",
+        headers: { "Content-type": "application/json;charset=UTF-8" },
+        body: JSON.stringify({ "email": email}),
+      });
+      const perfilJSON = await peticionPerfil.json();
+      //Comprobamos que no diese error
+      if(Object.hasOwn(perfilJSON, "error")){
+        throw json["error"];
+      }
+
+      perfilJSON["email"] = email;
+      sessionStorage["rol"] = perfilJSON["rol"];
+      perfilJSON["generos"] = generos["datos"]["generos"];
+      //Ponemos el género seleccionado
+      if(perfilJSON["genero_favorito"]){
+        let indiceGenero = Object.values(perfilJSON["generos"]).findIndex(genero => genero["genero"] == perfilJSON["genero_favorito"]);
+        if(indiceGenero != -1) perfilJSON["generos"][indiceGenero]["activo"] = true;
+      }
+
+      //Cargamos la plantilla de mustache
+      const peticionMustache = await fetch('../mustache/perfilUsuario.mustache', opcionesFetchMustache);
+      const peticionJSON = await peticionMustache.text();
+      let plantillaMustache = Mustache.render(peticionJSON, perfilJSON, {"generos": generos["plantilla"]});
+      main.insertAdjacentHTML("beforeend", plantillaMustache);
+
+      botonPerfil.dispatchEvent(new Event("click"));
+
+      //Añadimos los escuchadores
+      let botonEditarPerfil = document.getElementById("editarCuenta");
+      botonEditarPerfil.addEventListener("click", editarPerfil);
+      let botonHistorial = document.getElementById("historial");
+      botonHistorial.addEventListener("click", cargarHistorialUsuario);
+      let botonGuardar = main.querySelector("input[type=submit]");
+      botonGuardar.addEventListener("click", guardarCambiosPerfil);
+
+      desactivarPantallaCarga();
+    }
+  }
+  catch(error){
+    console.log(error);
+  }
+}
+
+/**
+ * Carga el historial de cambios del usuairo según filtrado
+ * @param {Object} filtro Objeto con los filtros (fechas)
+ * @param {int} pagina Número de la página
+ * @param {int} limite Límite de elementos por página
+ */
+async function cargarHistorialUsuario(filtro = {}, pagina = 0, limite = 7) {
+  let contenedorHistorial = document.getElementById("contenedorHistorial");
+  if(contenedorHistorial != undefined) contenedorHistorial.remove();
+  let main = document.querySelector("main");
+  try {
+    filtro["pagina"] = pagina;
+    filtro["limite"] = limite;
+
+    const peticionHistorial = await fetch("../php/historial.php", {
       method: "POST",
       headers: { "Content-type": "application/json;charset=UTF-8" },
-      body: JSON.stringify({ "email": email}),
+      body: JSON.stringify({ "usuario": filtro}),
     });
-    const perfilJSON = await peticionPerfil.json();
+    const historialJSON = await peticionHistorial.json();
     //Comprobamos que no diese error
-    if(Object.hasOwn(perfilJSON, "error")){
+    if(Object.hasOwn(historialJSON, "error")){
       throw json["error"];
     }
 
-    perfilJSON["email"] = email;
-    sessionStorage["rol"] = perfilJSON["rol"];
-    perfilJSON["generos"] = generos["datos"]["generos"];
-    //Ponemos el género seleccionado
-    if(perfilJSON["genero_favorito"]){
-      let indiceGenero = Object.values(perfilJSON["generos"]).findIndex(genero => genero["genero"] == perfilJSON["genero_favorito"]);
-      if(indiceGenero != -1) perfilJSON["generos"][indiceGenero]["activo"] = true;
-    }
-
     //Cargamos la plantilla de mustache
-    const peticionMustache = await fetch('../mustache/perfilUsuario.mustache', opcionesFetchMustache);
+    const peticionMustache = await fetch('../mustache/historial.mustache', opcionesFetchMustache);
     const peticionJSON = await peticionMustache.text();
-    let plantillaMustache = Mustache.render(peticionJSON, perfilJSON, {"generos": generos["plantilla"]});
+    let plantillaMustache = Mustache.render(peticionJSON, historialJSON);
     main.insertAdjacentHTML("beforeend", plantillaMustache);
 
-    botonPerfil.dispatchEvent(new Event("click"));
-
     //Añadimos los escuchadores
-    let botonEditarPerfil = document.getElementById("editarCuenta");
-    botonEditarPerfil.addEventListener("click", editarPerfil);
-    let botonHistorial = document.getElementById("historial");
-    botonHistorial.addEventListener("click", mostrarHistorial);
-    let botonGuardar = main.querySelector("input[type=submit]");
-    botonGuardar.addEventListener("click", guardarCambiosPerfil);
-
-    desactivarPantallaCarga();
+    contenedorHistorial = document.getElementById("contenedorHistorial");
+    let botonCierre = contenedorHistorial.querySelector("#contenedorHistorial > button:last-of-type");
+    botonCierre.addEventListener("click", cerrarVentanaFlotante);
+    let botonesHistorial = Array.from(contenedorHistorial.getElementsByClassName("detallesHistorial"));
+    botonesHistorial.forEach(boton => boton.addEventListener("click", cargarMasDetalleHistorial));
   }
   catch(error){
+    console.log(error);
+  }
+}
+
+
+/**
+ * Coge los datos del formulario y carga el historial con ese filtrado
+ *
+ * @param {Event}   e que se dispara
+ *
+ * @return  {void}  No devuelve nada
+ */
+ function filtrarHistorialUsuario(e) {
+  e.preventDefault();
+  let filtro = {};
+  let limite = 7;
+  let pagina =
+    e.currentTarget.dataset.historial != null
+      ? (e.currentTarget.dataset.historial - 1) * limite
+      : 0;
+  //Cogemos los datos de las fechas
+  let fechaIni = document.getElementById("fechaIniHistorial");
+  fechaIni != "" && fechaIni != undefined ? (filtro["fechaIni"] = fechaIni.value) : "";
+  let fechaFin = document.getElementById("fechaFinHistorial");
+  fechaFin != "" && fechaFin != undefined ? (filtro["fechaFin"] = fechaFin.value) : "";
+  cargarHistorialUsuario(filtro, pagina, limite);
+}
+
+/**
+ * Carga más detalles del id del historial
+ *
+ * @param   {Event}  e  Evento que lo dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+async function cargarMasDetalleHistorial(e) {
+  e.preventDefault();
+  let idHistorial = e.currentTarget.dataset.idhistorial;
+  let contenedorHistorial = document.getElementById("contenedorHistorial");
+  try {
+    const peticionHistorial = await fetch("../php/historial.php", {
+      method: "POST",
+      headers: { "Content-type": "application/json;charset=UTF-8" },
+      body: JSON.stringify({ "historial": idHistorial}),
+    });
+    const historialJSON = await peticionHistorial.json();
+    //Comprobamos que no diese error
+    if(Object.hasOwn(historialJSON, "error")){
+      throw json["error"];
+    }
+    contenedorHistorial.innerHTML = "";
+
+    //Cargamos la plantilla de mustache
+    const peticionMustache = await fetch('../mustache/partials/historialDetalles.mustache', opcionesFetchMustache);
+    const peticionJSON = await peticionMustache.text();
+    let plantillaMustache = Mustache.render(peticionJSON, historialJSON);
+    contenedorHistorial.insertAdjacentHTML("beforeend", plantillaMustache);
+
+    //Añadimos los escuchadores
+    let botonCerrar = contenedorHistorial.querySelector("#masDetallesHistorial > button:last-of-type");
+    botonCerrar.addEventListener("click", filtrarHistorialUsuario);
+  }
+  catch(error) {
     console.log(error);
   }
 }
