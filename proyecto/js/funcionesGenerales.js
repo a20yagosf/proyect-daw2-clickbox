@@ -1179,7 +1179,7 @@ async function procesarLogin(evento) {
  *
  * @return  {void}  No devuelve nada
  */
-async function loginAutomatico() {
+/*async function loginAutomatico() {
   //Comprobamos si tiene en localStorage guardado la cuenta y que no este ya iniciado sesión
   if (
     sessionStorage["email"] == undefined &&
@@ -1212,7 +1212,7 @@ async function loginAutomatico() {
       console.log("Error: " + $error);
     }
   }
-}
+}*/
 
 /**
  * Procesa el formulario de registro
@@ -1293,7 +1293,7 @@ async function procesarRegistro(evento) {
     await limpiarTodosCamposForm(true);
     //Guardamos el email en localStorage e iniciamos sesión
     localStorage.setItem("email", email);
-    loginAutomatico();
+    //loginAutomatico();
   } catch ($error) {
     //Asignamos al p el mensaje
     resultado.textContent = "Error: " + $error;
@@ -5097,13 +5097,13 @@ Mustache.Formatters = {
   "truncate": function (texto, numPalabras) {
     return texto.substring(0,numPalabras);
   },
-  "calcularFechaRenovacion": function (fecha_ini_suscripcion, formato, suscripcion, funcionFormato) {
+  "calcularFechaRenovacion": function (fecha_ini_suscripcion, suscripcion) {
     if(fecha_ini_suscripcion == undefined){
       return "";
     }
     let fechaIni = new Date(fecha_ini_suscripcion);
-    fechaIni.setMonth(fechaIni.getMonth() + suscripcion);
-    return funcionFormato(fechaIni.toLocaleString(), formato);
+    fechaIni.setMonth(fechaIni.getMonth() + parseInt(suscripcion));
+    return (fechaIni.getFullYear() + "-" + (fechaIni.getMonth() + 1) + "-" + fechaIni.getDate());
   }
 }
 

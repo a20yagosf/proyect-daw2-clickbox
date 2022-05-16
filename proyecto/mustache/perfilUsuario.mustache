@@ -47,10 +47,10 @@
             <div id="contenedorSuscripcion">
                 <label for="suscripcion">Tipo suscripción:</label>
                 <input readonly="readonly" type="text" name="suscripcion" id="suscripcion" value="{{suscripcion}} mes">
+                <span id="renovacion">Renovación: </span>
+                <input readonly="readonly" type="text" name="suscripcion" id="suscripcion" value="{{fecha_renovacion | date_format: 'd-m-Y'}}">
+                {{# renovar}}<button type="button" id="cancelarRenovacion">Cancelar renovación</button>{{/renovar}}
             </div>
-            <span id="renovacion">Renovación: </span>
-            <input readonly="readonly" type="text" name="suscripcion" id="suscripcion" value="{{fecha_renovacion | date_format: 'd-m-Y'}}">
-            {{# renovar}}<button type="button" id="cancelarRenovacion">Cancelar renovación</button>{{/renovar}}
         </div>
     </fieldset>
     <input type="submit" value="Guardar cambios">

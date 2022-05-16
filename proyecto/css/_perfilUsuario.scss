@@ -126,6 +126,15 @@
 
                 #contenedorSuscripcion {
                     flex-basis: 100%;
+                    position: relative;
+                    
+                    button {
+                        display: inline-block;
+                        position: absolute;
+                        right: 0%;
+                        top: 50%;
+                        transform: translateY(-50%);
+                    }
                 }
         
                 input, select {
@@ -329,13 +338,14 @@ h2,h3 {
             width: 100%;
             
             & > div {
+                padding: 1%;
 
                 span:first-of-type {
                     display: inline-block;
                     width: 200px;
                 }
                 
-                span:nth-of-type(2), img {
+                span:nth-of-type(even), img {
                     //Margin left
                     margin-inline-start: 2%;
                 }
@@ -344,54 +354,38 @@ h2,h3 {
     }
 
     #masDetallesPersonales {
+        @extend  #masDetallesCuenta;
         grid-area: datosPersonales;
-
-        & > div {
-            width: 100%;
-
-            & > div {
-                
-                span:first-of-type {
-                    display: inline-block;
-                    width: 200px;
-                }
-                
-                span:nth-of-type(2), img {
-                    //Margin left
-                    margin-inline-start: 2%;
-                }
-            }
-        }
     }
 
     #masDetallesSuscripcion {
+        @extend  #masDetallesCuenta;
         grid-area: suscripcion;
-
+        margin-top: 3%;
+        
         & > div {
-            width: 100%;
 
-            & > div {
+            &  > div {
+                display: flex;
+                justify-content: center;
 
-                span:first-of-type {
-                    display: inline-block;
-                    width: 200px;
-                }
-                
-                span:nth-of-type(odd), img {
-                    //Margin left
-                    margin-inline-start: 2%;
+                span:nth-of-type(3){
+                //Margin left
+                margin-inline-start: 2%;
                 }
             }
         }
     }
 
     & > button:last-of-type {
-        @include boton($colorPrincipal, 1.4rem);
+        @include boton($colorPrincipal, 2rem);
         position: absolute;
         //Top
-        inset-block-start: 3%;
+        inset-block-start: 2%;
         //Right
-        inset-inline-end: 5%;
+        inset-inline-end: 2%;
+        border-radius: 100%;
+        padding: 0.3% 1.2%;
     }
 }
 

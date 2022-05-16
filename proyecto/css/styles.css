@@ -2229,6 +2229,14 @@ label.error, label.exito {
 }
 #perfilUsuario fieldset > div #contenedorSuscripcion {
   flex-basis: 100%;
+  position: relative;
+}
+#perfilUsuario fieldset > div #contenedorSuscripcion button {
+  display: inline-block;
+  position: absolute;
+  right: 0%;
+  top: 50%;
+  transform: translateY(-50%);
 }
 #perfilUsuario fieldset > div input, #perfilUsuario fieldset > div select {
   margin: 2% 0%;
@@ -2440,45 +2448,35 @@ h2, h3 {
   grid-area: cuenta;
   text-align: center;
 }
-#masDetallesHistorial #masDetallesCuenta {
+#masDetallesHistorial #masDetallesCuenta, #masDetallesHistorial #masDetallesSuscripcion, #masDetallesHistorial #masDetallesPersonales {
   grid-area: datosCuenta;
 }
-#masDetallesHistorial #masDetallesCuenta > div {
+#masDetallesHistorial #masDetallesCuenta > div, #masDetallesHistorial #masDetallesSuscripcion > div, #masDetallesHistorial #masDetallesPersonales > div {
   width: 100%;
 }
-#masDetallesHistorial #masDetallesCuenta > div > div span:first-of-type {
+#masDetallesHistorial #masDetallesCuenta > div > div, #masDetallesHistorial #masDetallesSuscripcion > div > div, #masDetallesHistorial #masDetallesPersonales > div > div {
+  padding: 1%;
+}
+#masDetallesHistorial #masDetallesCuenta > div > div span:first-of-type, #masDetallesHistorial #masDetallesSuscripcion > div > div span:first-of-type, #masDetallesHistorial #masDetallesPersonales > div > div span:first-of-type {
   display: inline-block;
   width: 200px;
 }
-#masDetallesHistorial #masDetallesCuenta > div > div span:nth-of-type(2), #masDetallesHistorial #masDetallesCuenta > div > div img {
+#masDetallesHistorial #masDetallesCuenta > div > div span:nth-of-type(even), #masDetallesHistorial #masDetallesSuscripcion > div > div span:nth-of-type(even), #masDetallesHistorial #masDetallesPersonales > div > div span:nth-of-type(even), #masDetallesHistorial #masDetallesCuenta > div > div img, #masDetallesHistorial #masDetallesSuscripcion > div > div img, #masDetallesHistorial #masDetallesPersonales > div > div img {
   -webkit-margin-start: 2%;
           margin-inline-start: 2%;
 }
 #masDetallesHistorial #masDetallesPersonales {
   grid-area: datosPersonales;
 }
-#masDetallesHistorial #masDetallesPersonales > div {
-  width: 100%;
-}
-#masDetallesHistorial #masDetallesPersonales > div > div span:first-of-type {
-  display: inline-block;
-  width: 200px;
-}
-#masDetallesHistorial #masDetallesPersonales > div > div span:nth-of-type(2), #masDetallesHistorial #masDetallesPersonales > div > div img {
-  -webkit-margin-start: 2%;
-          margin-inline-start: 2%;
-}
 #masDetallesHistorial #masDetallesSuscripcion {
   grid-area: suscripcion;
+  margin-top: 3%;
 }
-#masDetallesHistorial #masDetallesSuscripcion > div {
-  width: 100%;
+#masDetallesHistorial #masDetallesSuscripcion > div > div {
+  display: flex;
+  justify-content: center;
 }
-#masDetallesHistorial #masDetallesSuscripcion > div > div span:first-of-type {
-  display: inline-block;
-  width: 200px;
-}
-#masDetallesHistorial #masDetallesSuscripcion > div > div span:nth-of-type(odd), #masDetallesHistorial #masDetallesSuscripcion > div > div img {
+#masDetallesHistorial #masDetallesSuscripcion > div > div span:nth-of-type(3) {
   -webkit-margin-start: 2%;
           margin-inline-start: 2%;
 }
@@ -2487,14 +2485,16 @@ h2, h3 {
   background-color: #0291A5;
   border: none;
   padding: 2% 3%;
-  font-size: 1.4rem;
+  font-size: 2rem;
   border-radius: 10px;
   color: white;
   cursor: pointer;
   transition: all 0.5s linear;
   position: absolute;
-  inset-block-start: 3%;
-  inset-inline-end: 5%;
+  inset-block-start: 2%;
+  inset-inline-end: 2%;
+  border-radius: 100%;
+  padding: 0.3% 1.2%;
 }
 #masDetallesHistorial > button:last-of-type:hover {
   background-color: #03bdd7;

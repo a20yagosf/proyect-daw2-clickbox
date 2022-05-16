@@ -17,23 +17,23 @@
       <div>
         <span>Rol:</span> <span>{{ rol | get_rol }}</span>
       </div>
-      <div><span>Género favorito:</span><span>{{ genero_favorito }}</span></div>
+      <div><span>Género favorito:</span><span>{{ genero_favorito }} {{^genero_favorito}} - {{/genero_favorito}}</span></div>
     </div>
   </div>
   <div id="masDetallesPersonales">
     <h3>Datos personales</h3>
     <div>
       <div>
-        <span>Nombre:</span> <span>{{ nombre }}</span>
+        <span>Nombre:</span> <span>{{ nombre }} {{^ nombre }} - {{/nombre }}</span>
       </div>
       <div>
-        <span>Apellidos:</span><span>{{ apellidos }}</span>
+        <span>Apellidos:</span><span>{{ apellidos }} {{^ apellidos }} - {{/apellidos }}</span>
       </div>
       <div>
-        <span>Teléfono:</span> <span>{{ telefono }}</span>
+        <span>Teléfono:</span> <span>{{ telefono }} {{^ telefono }} - {{/telefono }}</span>
       </div>
       <div>
-        <span>Dirección:</span> <span>{{ direccion }}</span>
+        <span>Dirección:</span> <span>{{ direccion }} {{^ direccion }} - {{/direccion }}</span>
       </div>
     </div>
   </div>
@@ -42,9 +42,10 @@
     <div>
       <div id="contenedorSuscripcion">
           <span>Tipo suscripción:</span>
-          <span>{{ suscripcion }} mes</span>
+          <span>{{# suscripcion}} {{ suscripcion }} mes{{/suscripcion}} {{^suscripcion}} - {{/suscripcion}}</span>
           <span>Renovación:</span>
-          <span>{{ fecha_ini_suscripcion | calcularFechaRenovacion : "d-m-Y" : suscripcion  : date_format }}</span>
+          {{# renovar}}<span>{{ fecha_ini_suscripcion | calcularFechaRenovacion : suscripcion | date_format : 'd-m-Y' }}</span>{{/renovar}}
+          {{^ renovar}}<span>-</span>{{/renovar}}
       </div>
     </div>
   </div>
