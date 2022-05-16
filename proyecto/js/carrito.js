@@ -3,8 +3,8 @@ cargarScripts();
 
 
 window.onload = async function () {
-    desactivarScroll();
-    loginAutomatico();
+    activarPantallaCarga();
+    //loginAutomatico();
     //Creamos el header
     crearHeader();
     crearFooter();
@@ -14,11 +14,11 @@ window.onload = async function () {
     //Creamos el mapa
     crearMapa();
     //Seleccionamos los class development y los prototipamos
-    asignarTooltips();
+    //asignarTooltips();
     //Activamos los tooltips
-    activarTooltips();
+    //activarTooltips();
     //Cargamos el carrito
     await cargarCarrito(0, 7);
     //Activamos el scroll
-    activarScroll();
+    desactivarPantallaCarga();
 };

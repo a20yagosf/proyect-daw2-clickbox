@@ -16,6 +16,7 @@ async function cargarPaginaPrincipal() {
     //Añadimos los escuchadores para el header
     document.getElementById("navSuscripciones").firstElementChild.addEventListener("click", cargarPaginaSuscripciones);
     document.getElementById("navPartidas").firstElementChild.addEventListener("click", cargarPaginaPartidas);
+    document.getElementById("iconoCarrito").firstElementChild.addEventListener("click", irCarrito);
     if(usuario){
         let botonPerfilUsuario = document.getElementById("perfilUsuarioEnlace");
         botonPerfilUsuario.addEventListener("click", cargarPerfilUsuario);

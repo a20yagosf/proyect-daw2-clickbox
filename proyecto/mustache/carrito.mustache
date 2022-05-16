@@ -1,0 +1,32 @@
+<div id="carrito">
+  <header>
+    <h1>Cesta</h1>
+    <button type="button" {{# vacio}} disabled="disabled" {{/vacio}} id="botonVaciarCarrito">Vaciar Carrito</button>
+  </header>
+  <div id="cuerpoCarrito">
+    {{^productos}}
+        <div class="vacio">El carrito está vacío</div>
+    {{/ productos}}
+    {{# productos}}
+    <div class="productoCarrito">
+      <div class="imgCarrito">
+        <img src="{{imagen_producto}}" alt="{{nombre}}">
+    </div>
+      <h3>{{nombre}}</h3>
+      <form class="botonesCarrito" action="../php/carrito.php" method="POST">
+        <input type="number" name="{{id_producto}}" minlength="0" value="{{unidades}}" />
+        <button type="button">Eliminar</button>
+      </form>
+      <p>Precio: {{precio}} €</p>
+    </div>
+    {{/productos}}
+    {{^ vacio}}<p><span>Total: {{total}} €</span></p>{{/vacio}}
+  </div>
+  <div class="pagination">
+    <ul>
+        {{# paginacion}}
+          <li><a href="#" {{#activa}}class="active"{{/activa}}>{{numPag}}</a></li>
+        {{/paginacion}}
+    </ul>
+  </div>
+</div>

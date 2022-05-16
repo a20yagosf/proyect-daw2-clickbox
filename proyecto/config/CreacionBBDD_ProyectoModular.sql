@@ -327,6 +327,7 @@ CREATE TABLE IF NOT EXISTS usuarios_partidas (
 -- ---------------------------------------------------
 DROP TABLE IF EXISTS historico_usuarios;
 CREATE TABLE IF NOT EXISTS historico_usuarios (
+	id int unsigned auto_increment  not null,
 	email VARCHAR(150) NOT NULL,
 	rol INT UNSIGNED NOT NULL,
 	-- LA CONSTRASEÑA COMO TAL NO LA GUARDAMOS PORQUE ESTÁ CIFRADA Y NO APORTA NADA LAS CONTRASEÑAS ANTIGUAS
@@ -339,7 +340,9 @@ CREATE TABLE IF NOT EXISTS historico_usuarios (
 	fecha_ult_modif DATE NOT NULL,
 	-- ÚLTIMO ACCESO NO SE GUARDA PORQUE SINO TENDRÍAMOS MUCHISIMAS ENTRADAS
 	suscripcion TINYINT NULL,
-	renovar BOOLEAN NULL
+	renovar BOOLEAN NULL,
+	-- Clave y restricciones
+	primary key (id)
 )ENGINE MYISAM, character set UTF8mb4 collate utf8mb4_bin;
 
 -- CREACIÓN DE LOS USUARIOS DE LA BD

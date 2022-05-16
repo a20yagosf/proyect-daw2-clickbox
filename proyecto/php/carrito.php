@@ -22,11 +22,16 @@ try {
     }
     //Cargar carrito
     else if(isset($peticion["cargarCarrito"])) {
-        $devolver = ["carrito" => $usuario->getCarrito($peticion["cargarCarrito"])];
+        $devolver = $usuario->getCarrito($peticion["cargarCarrito"]);
+        if(count($devolver["productos"]) == 0) $devolver["vacio"] = true;
     }
     //GuardarProducto
     else if(isset($peticion["guardarProducto"])) {
         $devolver = ["carrito" => $usuario->actualizarCarrito($peticion["guardarProducto"])];
+    }
+
+    else if(isset($peticion["vaciarCarrito"])) {
+        $devolver = $usuario->vaciarCarrito();
     }
 }
 catch(\PDOException $pdoError){

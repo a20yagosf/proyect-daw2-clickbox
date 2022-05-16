@@ -189,6 +189,27 @@ class Usuario
         return $this->getPrecioTotal($datos);
     }
 
+    /**
+     * Vacia el carrito del usuario
+     *
+     * @return  bool  Devuelve un error o true
+     */
+    public function vaciarCarrito() {
+        try {
+            //Instanciamos BD
+            $bd = new BD();
+            $sentencia = "DELETE carritos WHERE usuario_carrito = ?;";
+            $bd->agregarModificarDatosBD($sentencia, [$this->email]);
+        }
+        catch(\PDOException $pdoError) {
+            throw $pdoError;
+        }
+        catch(\Exception $error){
+            throw $error;
+        }
+        return true;
+    }
+
     public function anadirProducto(){
     }
 

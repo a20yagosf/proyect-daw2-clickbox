@@ -4971,7 +4971,7 @@ async function cargarCuerpoPrincipal() {
  *
  * @var {[type]}
  */
-Mustache.Formatters = {
+/*Mustache.Formatters = {
   //Formatea la fecha según el formato pasado
   "date_format": function (fecha, formato) {
     if(fecha == undefined){
@@ -5105,7 +5105,7 @@ Mustache.Formatters = {
     fechaIni.setMonth(fechaIni.getMonth() + parseInt(suscripcion));
     return (fechaIni.getFullYear() + "-" + (fechaIni.getMonth() + 1) + "-" + fechaIni.getDate());
   }
-}
+}*/
 
 /**
  * Devuelve el nombre del mes
@@ -5336,6 +5336,8 @@ async function cargarSuscripcionActiva(e) {
   //Borramos el recibo
   let mainCuerpo = document.querySelector("main");
   mainCuerpo.innerHTML = "";
+  activarPantallaCarga();
+  mainCuerpo.classList.contains("cuerpoMosaico") ? mainCuerpo.classList.remove("cuerpoMosaico") : "";
   try {
     if(sessionStorage["email"]){
       //Cargamos la plantilla de partidas
@@ -5359,7 +5361,7 @@ async function cargarSuscripcionActiva(e) {
       botonFiltro.addEventListener("click", filtrarPartidas);
 
       paginacion = document.querySelector(".pagination");
-      if(paginacion) {
+      if(paginacion != undefined) {
         let enlacesPaginacion = Array.from(paginacion.querySelector("a"));
         enlacesPaginacion.forEach(enlace => enlace.addEventListener("click", filtrarPartidas));
       }
@@ -5371,6 +5373,7 @@ async function cargarSuscripcionActiva(e) {
 
       let botonLimpiarFiltro = botonFiltro.nextElementSibling;
       botonLimpiarFiltro.addEventListener("click", limpiarFiltro);
+      desactivarPantallaCarga();
     }
     else {
       mostrarInicioSesion();
@@ -5718,7 +5721,7 @@ async function cargarMasDetalleHistorial(e) {
     const historialJSON = await peticionHistorial.json();
     //Comprobamos que no diese error
     if(Object.hasOwn(historialJSON, "error")){
-      throw json["error"];
+      throw historialJSON["error"];
     }
     contenedorHistorial.innerHTML = "";
 
@@ -5733,6 +5736,106 @@ async function cargarMasDetalleHistorial(e) {
     botonCerrar.addEventListener("click", filtrarHistorialUsuario);
   }
   catch(error) {
+    console.log(error);
+  }
+}
+
+/**
+ * Carga el carrito del usuario
+ *
+ * @param   {Event}  e  Evento que lo dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+async function cargarCarrito(pagina = 0, limite = 7) {
+  activarPantallaCarga();
+  try {
+    //Cuerpo del carrito
+    let main = document.querySelector("main");
+    main.innerHTML = "";
+    main.classList.contains("cuerpoMosaico") ? "" : main.classList.add("cuerpoMosaico");
+    //Iniciamos la petición
+    const respuesta = await fetch("../php/carrito.php", {
+      method: "POST",
+      headers: {"Content-type": "application/json; charset=UTF-8"},
+      body: JSON.stringify({"cargarCarrito": {"pagina": pagina, "limite": limite}})
+    });
+    //Traducimos la respuesta
+    const respuestaJSON = await respuesta.json();
+    //Comprobamos que no diera que no tiene la sesión iniciada
+    if(Object.hasOwn(respuestaJSON, "noSesion")){
+      cargarCuerpoPrincipal();
+    }
+    //Comprobamos que no diera error
+    if(Object.hasOwn(respuestaJSON, "error")){
+      throw respuestaJSON["error"];
+    }
+
+    //Cargamos la plantilla
+    const peticionMustache = await fetch('../mustache/carrito.mustache', opcionesFetchMustache);
+    const mustacheJSON  = await peticionMustache.text();
+    let plantilla = await Mustache.render(mustacheJSON, respuestaJSON);
+    main.insertAdjacentHTML("beforeend", plantilla);
+
+    //Añadimos los escuchadores
+    let botonVaciar = document.getElementById("botonVaciarCarrito");
+    botonVaciar.addEventListener("click", vaciarCarrito)
+
+    desactivarPantallaCarga();
+  }
+  catch(error){
+    console.log(error);
+  }
+}
+
+/**
+ * Va a la pestaña del carrito
+ *
+ * @param   {Evento}  e  Evento que se dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+function irCarrito(e) {
+  e.preventDefault();
+  let limite = 7;
+  let pagina =
+    e.currentTarget.dataset.productos != null
+      ? (e.currentTarget.dataset.productos - 1) * limite
+      : 0;
+  cargarCarrito(pagina, limite);
+}
+
+/**
+ * Vacia el carrito y vuelve a cargalo
+ *
+ * @param   {Event}  e  Evento que disparó el evento
+ *
+ * @return  {void}     No devuelve nada
+ */
+async function vaciarCarrito(e) {
+  e.preventDefault();
+  try {
+    //Iniciamos la petición
+    const respuesta = await fetch("../php/carrito.php", {
+      method: "POST",
+      headers: {"Content-type": "application/json; charset=UTF-8"},
+      body: JSON.stringify({"vaciarCarrito": true})
+    });
+    //Traducimos la respuesta
+    const respuestaJSON = await respuesta.json();
+    //Comprobamos que no diera que no tiene la sesión iniciada
+    if(Object.hasOwn(respuestaJSON, "noSesion")){
+      cargarCuerpoPrincipal();
+    }
+    //Comprobamos que no diera error
+    if(Object.hasOwn(respuestaJSON, "error")){
+      throw respuestaJSON["error"];
+    }
+
+    //Cargamos otra vez el carrito
+    cargarCarrito();
+  }
+  catch(error){
     console.log(error);
   }
 }

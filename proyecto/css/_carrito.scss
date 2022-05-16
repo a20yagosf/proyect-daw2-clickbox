@@ -1,14 +1,9 @@
-//Main
-#carritoCuerpo {
-    padding: 2% 0%
-}
-
 //Div contenedor del carrito
 #carrito {
     @include contenedor(80%, auto, white);
     border: 1px solid $colorPrincipal;
     border-radius: $borderRadius;
-    margin: auto;
+    margin: 5% auto;
 
     header {
         background-color: $colorPrincipal;
@@ -48,8 +43,18 @@
 
         .imgCarrito {
             @include contenedor(100%, $sizeProdCarrito, transparent);
-            background-position: center;
-            background-size: contain;
+            position: relative;
+            overflow: hidden;
+
+            img {
+                height: 100%;
+                position: absolute;
+                //Top
+                inset-block-start: 50%;
+                //Left
+                inset-inline-start: 50%;
+                transform: translate(-50%, -50%);
+            }
 
             //Grid como hijo
             grid-area: img;
