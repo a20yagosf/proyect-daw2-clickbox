@@ -1,128 +1,120 @@
 //Variables globales
 let numArticulos = 0;
+let carrito =
+  localStorage["carrito"] != undefined
+    ? JSON.parse(localStorage["carrito"])
+    : {};
 
-let opcionesFetchMustache = { method: "POST", headers: {"Content-type": "application/json;charset=utf-8;"}};
+let opcionesFetchMustache = {
+  method: "POST",
+  headers: { "Content-type": "application/json;charset=utf-8;" },
+};
+
+let HOST = "http://localhost:9003/proyecto/html";
 
 //Roles
 const ROL_ANONIMO = 3;
 const ROL_ESTANDAR = 2;
 const ROL_ADMINISTRADOR = 1;
 
-/**
- * Clase fecha con la fecha correcta
- */
-class Fecha {
-  constructor(fecha) {
-    this.fecha = new Date(fecha);
-    this.formatearFecha();
-  }
-
-  getFecha() {
-    return this.fecha;
-  }
-
-  /**
-   * Formatea la fecha le pasan
-   * @param {Date}  Fecha a formatear
-   */
-  formatearFecha() {
-    let dia =
-      this.fecha.getDate() < 9
-        ? "0" + this.fecha.getDate()
-        : this.fecha.getDate();
-    let mes = this.fecha.getMonth() + 1 > 12 ? 1 : this.fecha.getMonth() + 1;
-    this.fecha =
-      dia + "-" + (mes < 9 ? "0" + mes : mes) + "-" + this.fecha.getFullYear();
-  }
-
-  /**
-   * Devuelve la diferencia de fechas en Semanas, dias y horas, si es menos de una hora devuelve hoy
-   *
-   * @return  {string}  Cadena con la diferencia de la fecha con este momento
-   */
-  fechaDesdeHoyAnhos() {
-    //Constantes para pasar desde milisegundos a las otras unidades
-    const horas = 1000 * 60 * 60;
-    const dias = horas * 24;
-    const semana = dias * 7;
-    let diferenciaMiliSegundos = Math.abs(
-      Date.now() - new Date(this.fecha).getTime()
-    );
-    let difSemana = Math.floor(diferenciaMiliSegundos / semana);
-    let tiempo =
-      difSemana > 0
-        ? "Hace " + difSemana + (difSemana > 1 ? " semanas " : " semana ")
-        : "Hace ";
-    let difDias = Math.floor((diferenciaMiliSegundos % semana) / dias);
-    tiempo += difDias > 0 ? difDias + (difDias > 1 ? " días" : " día") : "";
-    let difHoras = Math.floor(
-      ((diferenciaMiliSegundos % semana) % difDias) / dias
-    );
-    tiempo +=
-      difHoras > 0 ? difHoras + (difHoras > 1 ? " horas" : " hora") : "";
-    difSemana > 7 ? (tiempo = this.fecha) : "";
-    //Comprobamos que no quedara vacío (que haga menos  de 1 hora)
-    return tiempo == "Hace " ? "Hoy" : tiempo;
-  }
-
-  /**
-   * Devuelve la fecha en formato mes año
-   */
-  formatearFechaMesAnho() {
-    let mes = this.fecha.substring(3, 5);
-    let anho = this.fecha.substring(6);
-    let fecha = "";
-    switch (parseInt(mes)) {
-      case 1:
-        fecha = "Enero " + anho;
-        break;
-
-      case 2:
-        fecha = "Febrero " + anho;
-        break;
-
-      case 3:
-        fecha = "Marzo " + anho;
-        break;
-
-      case 4:
-        fecha = "Abril " + anho;
-        break;
-
-      case 5:
-        fecha = "Mayo " + anho;
-        break;
-
-      case 6:
-        fecha = "Junio " + anho;
-        break;
-
-      case 7:
-        fecha = "Julio " + anho;
-        break;
-
-      case 8:
-        fecha = "Agosto " + anho;
-        break;
-
-      case 9:
-        fecha = "Septiembre " + anho;
-        break;
-
-      case 10:
-        fecha = "Octubre " + anho;
-        break;
-
-      case 11:
-        fecha = "Noviembre " + anho;
-        break;
-
-      case 12:
-        fecha = "Diciembre " + anho;
-        break;
+class Router {
+  constructor (name, rutas){
+    return {
+      name: name,
+      rutas: rutas
     }
-    return fecha;
   }
+}
+    
+let routerClickBox = new Router('routerClickbox', [
+  {
+    path: '/',
+    name: 'Index'
+  },
+  {
+    path: '/suscripciones',
+    name: "Suscripciones"
+  },
+  {
+    path: '/partidas',
+    name: "Partdias"
+  },
+  {
+    path: "/tienda",
+    name: "Tienda"
+  },
+  {
+    path: "/inicio_sesion",
+    name: "Iniciar sesión"
+  },
+  {
+    path: "/perfil_usuario",
+    name: "Perfil usuario"
+  }
+]);
+
+window.onunload = async function () {
+  localStorage["carrito"] = JSON.stringify(carrito);
+  if (sessionStorage["email"]) {
+    try {
+      if (Object.values(carrito).length > 0) {
+        //Iniciamos la petición
+        const respuesta = await fetch("../php/carrito.php", {
+          method: "POST",
+          headers: { "Content-type": "application/json; charset=UTF-8" },
+          body: JSON.stringify({ gardarCarrito: carrito }),
+        });
+        //Traducimos la respuesta
+        const respuestaJSON = await respuesta.json();
+        //Comprobamos que no diera que no tiene la sesión iniciada
+        if (Object.hasOwn(respuestaJSON, "noSesion")) {
+          cargarCuerpoPrincipal();
+        }
+        //Comprobamos que no diera error
+        if (Object.hasOwn(respuestaJSON, "error")) {
+          throw respuestaJSON["error"];
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};
+window.addEventListener('hashchange', cambioEnElHash, false);
+
+function cambioEnElHash() {
+  let paginaCompleta = window.location.pathname;
+  let indice = paginaCompleta.lastIndexOf("/");
+  var paginaActual = paginaCompleta.substring(indice);
+  switch(paginaActual) {
+    case "/":
+      cargarCuerpoPrincipal();
+      break;
+
+    case "/suscripciones" :
+      cargarPaginaSuscripciones();
+      break;
+
+    case "/partidas":
+      cargarPaginaPartidas();
+      break;
+
+    case "/perfil_usuario" : 
+      cargarPerfilUsuario();
+      break;
+  }
+  console.log("Cambio el hash!");
+}
+
+function cambiarHash(e) {
+  e.preventDefault();
+  let ruta = e.currentTarget.getAttribute("route");
+  let infoRuta = routerClickBox.rutas.filter(rutaRouter => rutaRouter.path === ruta);
+  //console.log(routerClickBox.rutas);
+  infoRuta = infoRuta.length > 0 ? infoRuta[0] : undefined;
+  window.history.pushState(null, 'null', HOST + infoRuta.path);
+  //location.hash = HOST + infoRuta.path;
+  window.dispatchEvent(new Event("hashchange"));
 }
 
 /**
@@ -182,7 +174,7 @@ function crearHeader() {
     let salirPerfil;
     //Carrito
     let iconoCarrito;
-    let botonCarrito
+    let botonCarrito;
     let atributosIcono;
     let recorridoIcono;
     let cantidadProd;
@@ -191,13 +183,30 @@ function crearHeader() {
       //Admin
       case 1:
         //Creamos el carrito para comprar
-        iconoCarrito = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        atributosIcono = {"width": "35", "height": "35", "fill" : "currentColor", "class" : "bi bi-cart4", "viewBox" : "0 0 16 16"};
+        iconoCarrito = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "svg"
+        );
+        atributosIcono = {
+          width: "35",
+          height: "35",
+          fill: "currentColor",
+          class: "bi bi-cart4",
+          viewBox: "0 0 16 16",
+        };
         cantidadProd = crearContenedor("span", {}, numArticulos);
         cantidadProd.setAttribute("class", "badge rounded-pill");
-        Object.entries(atributosIcono).forEach(atributo => iconoCarrito.setAttribute(atributo[0], atributo[1]));
-        recorridoIcono = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        recorridoIcono.setAttribute("d", "M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l.5 2H5V5H3.14zM6 5v2h2V5H6zm3 0v2h2V5H9zm3 0v2h1.36l.5-2H12zm1.11 3H12v2h.61l.5-2zM11 8H9v2h2V8zM8 8H6v2h2V8zM5 8H3.89l.5 2H5V8zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z");
+        Object.entries(atributosIcono).forEach((atributo) =>
+          iconoCarrito.setAttribute(atributo[0], atributo[1])
+        );
+        recorridoIcono = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path"
+        );
+        recorridoIcono.setAttribute(
+          "d",
+          "M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l.5 2H5V5H3.14zM6 5v2h2V5H6zm3 0v2h2V5H9zm3 0v2h1.36l.5-2H12zm1.11 3H12v2h.61l.5-2zM11 8H9v2h2V8zM8 8H6v2h2V8zM5 8H3.89l.5 2H5V8zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z"
+        );
         iconoCarrito.append(recorridoIcono);
         botonCarrito = crearEnlace("../html/carrito.html", iconoCarrito);
         botonCarrito.append(cantidadProd);
@@ -233,7 +242,11 @@ function crearHeader() {
         //Añadimos el escuchador al botón del header
         botonPanelControl.addEventListener("click", desplegarMenuPerfil);
         //Añadimos el botón al contenedor fluid el botón de Inicio de sesión
-        navegador.firstChild.append(botonCarrito, botonPanelControl, contenedorPerfil);
+        navegador.firstChild.append(
+          botonCarrito,
+          botonPanelControl,
+          contenedorPerfil
+        );
         //Añadimos al header
         cabecera.append(navegador);
         //Añadimos al body al inicio de todo
@@ -246,13 +259,30 @@ function crearHeader() {
       //Estandar
       default:
         //Creamos el carrito para comprar
-        iconoCarrito = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        atributosIcono = {"width": "35", "height": "35", "fill" : "currentColor", "class" : "bi bi-cart4", "viewBox" : "0 0 16 16"};
+        iconoCarrito = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "svg"
+        );
+        atributosIcono = {
+          width: "35",
+          height: "35",
+          fill: "currentColor",
+          class: "bi bi-cart4",
+          viewBox: "0 0 16 16",
+        };
         cantidadProd = crearContenedor("span", {}, "2");
         cantidadProd.setAttribute("class", "badge rounded-pill");
-        Object.entries(atributosIcono).forEach(atributo => iconoCarrito.setAttribute(atributo[0], atributo[1]));
-        recorridoIcono = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        recorridoIcono.setAttribute("d", "M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l.5 2H5V5H3.14zM6 5v2h2V5H6zm3 0v2h2V5H9zm3 0v2h1.36l.5-2H12zm1.11 3H12v2h.61l.5-2zM11 8H9v2h2V8zM8 8H6v2h2V8zM5 8H3.89l.5 2H5V8zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z");
+        Object.entries(atributosIcono).forEach((atributo) =>
+          iconoCarrito.setAttribute(atributo[0], atributo[1])
+        );
+        recorridoIcono = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path"
+        );
+        recorridoIcono.setAttribute(
+          "d",
+          "M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l.5 2H5V5H3.14zM6 5v2h2V5H6zm3 0v2h2V5H9zm3 0v2h1.36l.5-2H12zm1.11 3H12v2h.61l.5-2zM11 8H9v2h2V8zM8 8H6v2h2V8zM5 8H3.89l.5 2H5V8zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z"
+        );
         iconoCarrito.append(recorridoIcono);
         botonCarrito = crearEnlace("../html/carrito.html", iconoCarrito);
         botonCarrito.append(cantidadProd);
@@ -283,7 +313,11 @@ function crearHeader() {
         //Añadimos el escuchador al botón del header
         botonPerfil.addEventListener("click", desplegarMenuPerfil);
         //Añadimos el botón al contenedor fluid el botón de Inicio de sesión
-        navegador.firstChild.append(botonCarrito, botonPerfil, contenedorPerfil);
+        navegador.firstChild.append(
+          botonCarrito,
+          botonPerfil,
+          contenedorPerfil
+        );
         //Añadimos al header
         cabecera.append(navegador);
         //Añadimos al body al inicio de todo
@@ -636,7 +670,8 @@ function cargarScripts() {
     crearLink({
       rel: "stylesheet",
       href: "https://unpkg.com/leaflet@1.8.0/dist/leaflet.css",
-      integrity: "sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==",
+      integrity:
+        "sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==",
       crossorigin: "",
     })
   );
@@ -644,7 +679,8 @@ function cargarScripts() {
   cabeza.append(
     crearScript({
       src: "https://unpkg.com/leaflet@1.8.0/dist/leaflet.js",
-      integrity: "sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ==",
+      integrity:
+        "sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ==",
       crossorigin: "",
     })
   );
@@ -1148,7 +1184,7 @@ async function procesarLogin(evento) {
     const respuestaJSON = await fetch("../php/login.php", {
       method: "POST",
       headers: { "Content-type": "application/json; charset=utf-8" },
-      body: JSON.stringify({ "email": email, "pwd": pwd }),
+      body: JSON.stringify({ email: email, pwd: pwd }),
     });
     //Cogemos el mensaje y esperamos a que este listo
     const resultadoPeticion = await respuestaJSON.json();
@@ -1158,8 +1194,24 @@ async function procesarLogin(evento) {
     }
     sessionStorage.setItem("email", email);
     sessionStorage.setItem("rol", resultadoPeticion["exito"]);
-    //Guardamos tambien en localStorage el email
-    localStorage.setItem("email", email);
+    try {
+      if (Object.values(carrito).length > 0) {
+        //Guardamos el carrito local si no está vacio
+        let peticion = await fetch("../php/carrito.php", {
+          method: "POST",
+          headers: { "Content-type": "application/json;charset=ut-8;" },
+          body: JSON.stringify({ guardarCarrito: carrito }),
+        });
+        peticionJSON = await peticion.json();
+        if (Object.hasOwn(peticionJSON, "error")) {
+          throw peticionJSON["error"];
+        }
+      } else {
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
     //Cargamos el número de artículos del carrito
     cargarNumArticulos();
     if (resultadoPeticion["exito"] == 1) {
@@ -1291,9 +1343,6 @@ async function procesarRegistro(evento) {
     resultado.classList = "exito";
     limpiarCampo(resultado, 2000);
     await limpiarTodosCamposForm(true);
-    //Guardamos el email en localStorage e iniciamos sesión
-    localStorage.setItem("email", email);
-    //loginAutomatico();
   } catch ($error) {
     //Asignamos al p el mensaje
     resultado.textContent = "Error: " + $error;
@@ -1780,77 +1829,6 @@ function irPrincipal(e) {
   }
 }
 
-/**
- * Lleva a la página principal
- *
- */
-function irCarrito(e) {
-  e.preventDefault();
-  //Comprobamos el rol del usuario (Si no tiene rol es que no esta registrado y no puede acceder a partidas)
-  if (sessionStorage["rol"] != null) {
-    location.assign("../html/carrito.html");
-  } else {
-    //Disparamos el evento para que aparezca el login
-    aparecerLogin();
-  }
-}
-
-/**
- * Carga las partidas según el filtro que se le pase
- *
- * @param   {Object}  filtro  Filtro de tipo {clave: valor}
- *
- */
-async function cargarPartidas(filtro = {}, pagina = 0, limite = 7) {
-  //Limpiamos el contenedor de las partidas
-  let lista = document.querySelector("ul[class='list-group']");
-  let paginacion = document.querySelector(".pagination");
-  //Buscamos si ya hay una paginación y si la hay la borramos
-  if (paginacion != null) {
-    paginacion.remove();
-  }
-  lista.innerHTML = "";
-  //LE añado al filtro la página y el limite
-  filtro["pagina"] = pagina;
-  filtro["limite"] = limite;
-  try {
-    //Hacemos la petición
-    const respuesta = await fetch("../php/partidas.php", {
-      method: "POST",
-      headers: { "Content-type": "application/json; charset=utf-8" },
-      body: JSON.stringify(filtro),
-    });
-    //Convertimos la respues ta json
-    const respuestaJSON = await respuesta.json();
-    //Compruebo si dió error
-    if (Object.hasOwn(respuestaJSON, "error")) {
-      throw respuestaJSON["error"];
-    }
-    //Limpiamos la lista
-    lista.innerHTML = "";
-    //Cargo cada uno de los li
-    pagina = filtro["pagina"] != 0 ? filtro["pagina"] / 7 : 0;
-    paginacion = crearPaginacion(respuestaJSON["numPag"], pagina);
-    if (paginacion != "") {
-      document
-        .querySelector("#result_panel")
-        .insertAdjacentElement("afterend", paginacion);
-    }
-    //Le añadimos los escuchadores
-    let elementosLi = document.querySelectorAll(".pagination li");
-    if (elementosLi != null) {
-      elementosLi.forEach((elemento) =>
-        elemento.firstElementChild.addEventListener("click", filtrarPartidas)
-      );
-    }
-    //Cargo los datos de las partidas
-    respuestaJSON["partidas"].forEach((dato) => {
-      lista.append(crearContenedorPartida(dato));
-    });
-  } catch (error) {
-    console.log(error);
-  }
-}
 
 /**
  * Crea un contenedor para una partida con los datos que le pasamos
@@ -1924,36 +1902,6 @@ function crearContenedorPartida(datosPartida) {
   return elemLista;
 }
 
-/**
- * Carga las partidas con los filtros que le pusimos
- *
- * @param {Event} Evento que lo dispara
- *
- */
-function filtrarPartidas(e) {
-  e.preventDefault();
-  let limite = 7;
-  let pagina =
-    e.currentTarget.dataset.partida != null
-      ? (e.currentTarget.dataset.partida - 1) * limite
-      : 0;
-  //Cojo los valores de los input
-  let genero = document.querySelector("select").value;
-  filtros = {};
-  if (genero != "") {
-    filtros["genero"] = genero;
-    //Quitamos el valor vacío
-  }
-  let fechaIni = document.getElementById("fechaIni").value;
-  if (fechaIni != "") {
-    filtros["fechaIni"] = fechaIni;
-  }
-  let fechaFin = document.getElementById("fechaFin").value;
-  if (fechaFin != "") {
-    filtros["fechaFin"] = fechaFin;
-  }
-  cargarPartidas(filtros, pagina, limite);
-}
 
 /**
  * Crea los Li con cada uno de los números
@@ -3962,53 +3910,6 @@ function mostrarHistorial() {
   cargarHistorialUsuario();
 }
 
-/**
- * Carga los datos del usuario en la ventana flotante
- *
- * @return  {void}  No devuelve nada
- */
-async function cargarHistorialUsuario(filtro = {}, pagina = 0, limite = 7) {
-  filtro["pagina"] = pagina;
-  filtro["limite"] = limite;
-  let cuerpoTabla = document.querySelector("tbody");
-  //Limpiamos el contenedor
-  cuerpoTabla.innerHTML = "";
-  try {
-    //Iniciamos la peticion
-    const respuesta = await fetch("../php/historial.php", {
-      method: "POST",
-      headers: { "Content-type": "application/json; charset=utf-8;" },
-      body: JSON.stringify({ usuario: filtro }),
-    });
-    //Traducimos la respuesta
-    const respuestaJSON = await respuesta.json();
-    //Comprobamos que no diera error
-    if (Object.hasOwn(respuestaJSON, "error")) {
-      throw respuestaJSON["error"];
-    }
-    //Cargamos cada fila
-    respuestaJSON["historial"].forEach((dato) => {
-      let filaHistorial = crearFilaTabla("td", dato);
-      cuerpoTabla.append(filaHistorial);
-    });
-    //Creamos la paginación
-    let contenedor = document.getElementById("contenedorHistorial");
-    let pagina = filtro["pagina"] != 0 ? filtro["pagina"] / 7 : 0;
-    contenedor.append(crearPaginacion(respuestaJSON["numPag"], pagina));
-    //Le añadimos el escuchador a cada uno de ellos
-    let listaLi = Array.from(document.querySelectorAll(".pagination li"));
-    if (listaLi != null) {
-      listaLi.forEach((elementoLi) =>
-        elementoLi.firstElementChild.addEventListener(
-          "click",
-          cogerFiltradoHistorial
-        )
-      );
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
 
 /**
  * Coge los datos del formulario y carga el historial con ese filtrado
@@ -4581,146 +4482,46 @@ async function cargarNumArticulos() {
     //Iniciamos la petición
     const respuesta = await fetch("../php/carrito.php", {
       method: "POST",
-      headers: {"Content-type": "application/json; charset=UTF-8"},
-      body: JSON.stringify({"numArticulos": true})
+      headers: { "Content-type": "application/json; charset=UTF-8" },
+      body: JSON.stringify({ numArticulos: true }),
     });
     //Traducimos la respuesta
     const respuestaJSON = respuesta.json();
     //Comprobamos que no diera error
-    if(Object.hasOwn(respuestaJSON, "error")){
+    if (Object.hasOwn(respuestaJSON, "error")) {
       throw respuestaJSON["error"];
     }
     numArticulos = respuestaJSON["numArticulos"];
-  }
-  catch(error){
+  } catch (error) {
     console.log(error);
   }
 }
 
-/**
- * Carga la información del carrito
- *
- * @param   {int}  pagina  Número de la página en la que se encuentra
- * @param   {int}  limite  Número de artículos a mostrar
- *
- * @return  {void}          No devuelve nada
- */
-async function cargarCarrito(pagina, limite) {
-  try {
-    //Cuerpo del carrito
-    let cuerpoCarrito = document.getElementById("cuerpoCarrito");
-    cuerpoCarrito.innerHTML = "";
-    //Iniciamos la petición
-    const respuesta = await fetch("../php/carrito.php", {
-      method: "POST",
-      headers: {"Content-type": "application/json; charset=UTF-8"},
-      body: JSON.stringify({"cargarCarrito": {"pagina": pagina, "limite": limite}})
-    });
-    //Traducimos la respuesta
-    const respuestaJSON = await respuesta.json();
-    //Comprobamos que no diera que no tiene la sesión iniciada
-    if(Object.hasOwn(respuestaJSON, "noSesion")){
-      location.replace("../html/index.html");
-    }
-    //Comprobamos que no diera error
-    if(Object.hasOwn(respuestaJSON, "error")){
-      throw respuestaJSON["error"];
-    }
-    //Creamos cada uno de los artículos
-   let productos = Object.values(respuestaJSON["carrito"]["productos"]);
-   if(productos.length > 0) {
-      productos.forEach(producto =>{
-        cuerpoCarrito.append(crearProductoCarrito(producto["nombre"], producto["id_producto"], producto["imagen_producto"], producto["unidades"], producto["precio"]));
-      });
-      //Creamos el total
-      let spanPrecio = crearContenedor("span", {}, "Total: " + respuestaJSON["carrito"]["total"] + " €");
-      let total = document.createElement("p");
-      total.append(spanPrecio);
-      cuerpoCarrito.append(total);
-   }
-   else {
-     let divNoProd = crearContenedor("div", {"class": "vacio"}, "El carrito está vacío");
-     cuerpoCarrito.append(divNoProd);
-     let botonVacio = cuerpoCarrito.previousElementSibling.lastElementChild;
-     botonVacio.setAttribute("disabled", "disabled");
-   }
-  }
-  catch(error){
-    console.log(error);
-  }
-}
 
 function crearProductoCarrito(nombre, id, img, unidades, precio) {
   //Creamos el contenedor
-  let contenedorCarrito = crearContenedor("div", {"class": "productoCarrito"});
-  let contenedorImg      = crearContenedor("div", {"class": "imgCarrito"});
+  let contenedorCarrito = crearContenedor("div", { class: "productoCarrito" });
+  let contenedorImg = crearContenedor("div", { class: "imgCarrito" });
   contenedorImg.style.backgroundImage = `url(${img})`;
-  let titulo                       = crearContenedor("h3", {}, nombre);
-  let formulario               = crearContenedor("form", {"class": "botonesCarrito", "action": "../php/carrito.php", "method": "POST"});
-  let cantidadProd          = crearContenedor("input", {"type": "number", "name": id, "minlength": 0, "value": unidades});
+  let titulo = crearContenedor("h3", {}, nombre);
+  let formulario = crearContenedor("form", {
+    class: "botonesCarrito",
+    action: "../php/carrito.php",
+    method: "POST",
+  });
+  let cantidadProd = crearContenedor("input", {
+    type: "number",
+    name: id,
+    minlength: 0,
+    value: unidades,
+  });
   cantidadProd.addEventListener("change", actualizarProducto);
-  let botonEliminar         = crearContenedor("button", {"type": "button"}, "Eliminar");
+  let botonEliminar = crearContenedor("button", { type: "button" }, "Eliminar");
   botonEliminar.addEventListener("click", actualizarProducto);
   formulario.append(cantidadProd, botonEliminar);
-  let parrafoPrecio          = crearContenedor("p", {}, "Precio: " + precio + " €");
+  let parrafoPrecio = crearContenedor("p", {}, "Precio: " + precio + " €");
   contenedorCarrito.append(contenedorImg, titulo, formulario, parrafoPrecio);
   return contenedorCarrito;
-}
-
-/**
- * Guarda el producto en el carrito, si ya está en el carrito actualiza sus unidades (o lo elimina si son 0)
- *
- * @param   {int}  id_producto  ID del producto
- * @param   {int}  unidades     Número de unidades
- *
- * @return  {bool}               No devuelve nada
- */
-async function guardarProducto(id_producto, unidades, carrito = false) {
-  let datosPasar = {"id_producto": id_producto, "unidades": unidades, "carrito" : carrito};
-    try {
-      //Iniciamos la petición
-      const respuesta = await fetch("../php/carrito.php", {
-        method: "POST",
-        headers: {"Content-type": "application/json; charset=UTF-8"},
-        body: JSON.stringify({"guardarProducto": datosPasar})
-      });
-      //Traducimos la respuesta
-      const respuestaJSON = await respuesta.json();
-      //Comprobamos que no diera que no tiene la sesión iniciada
-      if(Object.hasOwn(respuestaJSON, "noSesion")){
-        location.replace("../html/index.html");
-      }
-      //Comprobamos que no diera error
-      if(Object.hasOwn(respuestaJSON, "error")){
-        throw respuestaJSON["error"];
-      }
-      return respuestaJSON["carrito"];
-    }
-    catch(error){
-      console.log(error);
-    }
-}
-
-async function actualizarProducto(e) {
-  let inputUnidades;
-  let unidades;
-  if(e.currentTarget.nodeName == "BUTTON"){
-    let botonEliminar = e.currentTarget;
-    inputUnidades = botonEliminar.previousElementSibling;
-    unidades = 0;
-  }
-  else {
-    inputUnidades = e.currentTarget;
-    unidades = inputUnidades.value;
-  }
-  let id_producto = inputUnidades.getAttribute("name");
-  let total = await guardarProducto(id_producto, unidades, true);
-  if(unidades <= 0){
-    cargarCarrito(0, 7);
-  }
-  else {
-    document.getElementById("cuerpoCarrito").lastElementChild.firstElementChild.textContent = "Total: " + total + "€";
-  }
 }
 
 /**
@@ -4728,21 +4529,20 @@ async function actualizarProducto(e) {
  *
  * @return  {mixed}  Array o no devuelve nada si hubo un error
  */
-async function cargarUltimasNovedades () {
+async function cargarUltimasNovedades() {
   let numNovedades = 3;
   try {
-    let peticion = await fetch('../php/tienda.php', {
+    let peticion = await fetch("../php/tienda.php", {
       method: "POST",
-      headers: {"Content-type": "application/json;charset=ut-8;"},
-      body: JSON.stringify({"ultimoProducto" : numNovedades})
+      headers: { "Content-type": "application/json;charset=ut-8;" },
+      body: JSON.stringify({ ultimoProducto: numNovedades }),
     });
     let peticionJSON = await peticion.json();
-    if(Object.hasOwn(peticionJSON, "error")) {
+    if (Object.hasOwn(peticionJSON, "error")) {
       throw peticionJSON["error"];
     }
     return peticionJSON;
-  }
-  catch(error){
+  } catch (error) {
     console.log(error);
   }
 }
@@ -4753,7 +4553,7 @@ async function cargarUltimasNovedades () {
  * @return  {void}     No devuelve nada
  */
 function ocultarMenu() {
-  $('#menuPerfilUser').animate({height: 'toggle'}, 500);
+  $("#menuPerfilUser").animate({ height: "toggle" }, 500);
 }
 
 /**
@@ -4762,22 +4562,26 @@ function ocultarMenu() {
  * @return  {void}  No devuelve nada
  */
 async function mostrarInicioSesion() {
+  window.stop();
   activarPantallaCarga();
-
   //Limpiamos el cuerpo
   let main = document.querySelector("main");
   main.innerHTML = "";
-  main.classList.contains("cuerpoMosaico") ? main.classList.remove("cuerpoMosaico") : "";
+  main.classList.contains("cuerpoMosaico")
+    ? main.classList.remove("cuerpoMosaico")
+    : "";
 
   //Actualizamos el header con el activo
   let header = document.querySelector("nav");
   let elementosActivos = Array.from(header.getElementsByClassName("navActive"));
-  elementosActivos.forEach(elemento => elemento.classList.remove("navActive"));
+  elementosActivos.forEach((elemento) =>
+    elemento.classList.remove("navActive")
+  );
 
   //Cargamos la plantilla
-  let peticion = await fetch('../mustache/login_registro.mustache', {
+  let peticion = await fetch("../mustache/login_registro.mustache", {
     method: "POST",
-    headers: {"Content-type": "application/json;charset=ut-8;"}
+    headers: { "Content-type": "application/json;charset=ut-8;" },
   });
   let plantilla = await peticion.text();
   let resultado = Mustache.render(plantilla, {});
@@ -4787,84 +4591,89 @@ async function mostrarInicioSesion() {
   let login = document.getElementById("login");
   let contenedorBotones = login.querySelector("div");
   let botones = Array.from(contenedorBotones.querySelectorAll("button"));
-  botones.forEach(boton => {
-    boton.addEventListener('click', mostrarRegistro);
+  botones.forEach((boton) => {
+    boton.addEventListener("click", mostrarRegistro);
   });
 
-  let botonesCancelar = Array.from(document.getElementsByClassName("cancelarLogin"));
-  botonesCancelar.forEach(boton => boton.addEventListener('click', irPaginaPrincipal));
+  let botonesCancelar = Array.from(
+    document.getElementsByClassName("cancelarLogin")
+  );
+  botonesCancelar.forEach((boton) =>
+    boton.addEventListener("click", irPaginaPrincipal)
+  );
 
   //Validador de código
   let formLogin = $("#login form");
   formLogin.validate({
-    rules : {
-      "email" : {
+    rules: {
+      email: {
         required: true,
         minlength: 2,
-        email: true
+        email: true,
       },
-      "pwd": {
-        required: true
-      }
+      pwd: {
+        required: true,
+      },
     },
     messages: {
-      "email" : "Debe introducir un email válido. Ej: nombre@gmail.com",
-      "pwd": "Debe introducir una contraseña"
-    }
+      email: "Debe introducir un email válido. Ej: nombre@gmail.com",
+      pwd: "Debe introducir una contraseña",
+    },
   });
 
   let formRegistro = $("#registro");
   jQuery.validator.addMethod("validarTelefono", validarTelefono);
   formRegistro.validate({
-    rules : {
-      "email" : {
+    rules: {
+      email: {
         required: true,
         minlength: 3,
-        email: true
+        email: true,
       },
-      "pwd": {
-        required: true
-      },
-      "pwd2": {
-        required: true
-      },
-      "nombre": {
+      pwd: {
         required: true,
-        minlength: 2
       },
-      "apellidos": {
-        required: true
+      pwd2: {
+        required: true,
       },
-      "telf": {
-        validarTelefono: true
+      nombre: {
+        required: true,
+        minlength: 2,
       },
-      "fecha_nac": {
-        date: true
-      }
-
+      apellidos: {
+        required: true,
+      },
+      telf: {
+        validarTelefono: true,
+      },
+      fecha_nac: {
+        date: true,
+      },
     },
     messages: {
-      "email" : "Debe introducir un email válido. Ej: nombre@gmail.com",
-      "pwd": "Debe introducir una contraseña",
-      "pwd2": "Debe repetir la contraseña",
-      "nombre": "Debe rellenar el nombre",
-      "apellidos": "Debe rellenar los apellidos",
-      "telf": "Debe introducir un teléfono válido",
-      "fecha_nac": "Debe introducir una fecha de nacimiento válida",
-    }
+      email: "Debe introducir un email válido. Ej: nombre@gmail.com",
+      pwd: "Debe introducir una contraseña",
+      pwd2: "Debe repetir la contraseña",
+      nombre: "Debe rellenar el nombre",
+      apellidos: "Debe rellenar los apellidos",
+      telf: "Debe introducir un teléfono válido",
+      fecha_nac: "Debe introducir una fecha de nacimiento válida",
+    },
   });
 
-  $('select', registro).select2({
-    placeholder: 'Selecciona una opción',
+  $("select", registro).select2({
+    placeholder: "Selecciona una opción",
     allowClear: true,
   });
 
   //Evento de los formularios
-  formLogin.on('submit', procesarLogin);
-  formRegistro.on('submit', procesarRegistro);
+  formLogin.on("submit", procesarLogin);
+  formRegistro.on("submit", procesarRegistro);
 
   let botonesAcordeon = Array.from($("button", formRegistro));
-  botonesAcordeon.forEach(boton => boton.addEventListener('click', mostrarOcultarAcordeon));
+  botonesAcordeon.forEach((boton) =>
+    boton.addEventListener("click", mostrarOcultarAcordeon)
+  );
   desactivarPantallaCarga();
 }
 
@@ -4877,13 +4686,12 @@ async function mostrarInicioSesion() {
  */
 function mostrarRegistro(e) {
   let butonActivado = e.currentTarget;
-  if(butonActivado.dataset.nombre == "login")  {
+  if (butonActivado.dataset.nombre == "login") {
     document.querySelector("#login form").style.display = "flex";
     registro.style.display = "none";
     butonActivado.classList.remove("noActivo");
     butonActivado.previousElementSibling.classList.add("noActivo");
-  }
-  else {
+  } else {
     let registro = document.getElementById("registro");
     document.querySelector("#login form").style.display = "none";
     registro.style.display = "block";
@@ -4901,11 +4709,11 @@ function mostrarRegistro(e) {
  */
 function mostrarOcultarAcordeon(e) {
   let acordeon = e.currentTarget.nextElementSibling;
-  $(acordeon).animate({height: 'toggle'}, 500);
-  let visibilidadAcordeon = getStyle(acordeon, "display")
+  $(acordeon).animate({ height: "toggle" }, 500);
+  let visibilidadAcordeon = getStyle(acordeon, "display");
   console.log(visibilidadAcordeon);
   //Centramos la ventana en el acordeon desplegado
-  if(visibilidadAcordeon == "flex") {
+  if (visibilidadAcordeon == "flex") {
     let offset = $(acordeon).offset();
     let height = $(acordeon).outerHeight();
     let centerY = offset.top + height / 2;
@@ -4924,13 +4732,17 @@ function mostrarOcultarAcordeon(e) {
  * @return  {void}        No devuelve nada
  */
 function getStyle(elemento, propiedad) {
-    return elemento.currentStyle ? elemento.currentStyle[propiedad] : window.getComputedStyle ? window.getComputedStyle(elemento, null).getPropertyValue(propiedad) : null;
+  return elemento.currentStyle
+    ? elemento.currentStyle[propiedad]
+    : window.getComputedStyle
+    ? window.getComputedStyle(elemento, null).getPropertyValue(propiedad)
+    : null;
 }
 
 /**
  * Carga el cuerpo principal
  *
- * 
+ *
  * @return  {void}  No devuelve nada
  */
 async function cargarCuerpoPrincipal() {
@@ -4942,26 +4754,50 @@ async function cargarCuerpoPrincipal() {
   //Actualizamos el header con el activo
   let header = document.querySelector("nav");
   let elementosActivos = Array.from(header.getElementsByClassName("navActive"));
-  elementosActivos.forEach(elemento => elemento.classList.remove("navActive"));
+  elementosActivos.forEach((elemento) =>
+    elemento.classList.remove("navActive")
+  );
 
   //Le quitamos el atributo de cuerpoMosaico si lo tiene
-  main.classList.contains("cuerpoMosaico") ? main.classList.remove("cuerpoMosaico") : "";
+  main.classList.contains("cuerpoMosaico")
+    ? main.classList.remove("cuerpoMosaico")
+    : "";
   try {
     let plantillaCajasSorpresa = await cagarCajasSorpresasAnteriores();
     let plantillaPartidas = await cargarPartidasPrincipal();
     let plantillaTienda = await cargarTiendaPrincipal();
 
-    let datos = {"cajas": plantillaCajasSorpresa["datos"], "partidas": plantillaPartidas["datos"], "tienda": plantillaTienda["datos"]};
-    let partials = {"cajasSorpresaAnteriores": plantillaCajasSorpresa["plantilla"], "partidasPrincipal": plantillaPartidas["plantilla"], "tiendaPrincipal": plantillaTienda["plantilla"]};
+    let datos = {
+      cajas: plantillaCajasSorpresa["datos"],
+      partidas: plantillaPartidas["datos"],
+      tienda: plantillaTienda["datos"],
+    };
+    let partials = {
+      cajasSorpresaAnteriores: plantillaCajasSorpresa["plantilla"],
+      partidasPrincipal: plantillaPartidas["plantilla"],
+      tiendaPrincipal: plantillaTienda["plantilla"],
+    };
 
     //Pagina principal
-    let peticionPrincipal = await fetch("../mustache/paginaPrincipal.mustache", opcionesFetchMustache);
+    let peticionPrincipal = await fetch(
+      "../mustache/paginaPrincipal.mustache",
+      opcionesFetchMustache
+    );
     let plantillaPrincipal = await peticionPrincipal.text();
-    let plantillaTotal = Mustache.render(plantillaPrincipal, datos, partials);
+    let plantillaTotal = await Mustache.render(
+      plantillaPrincipal,
+      datos,
+      partials
+    );
     main.insertAdjacentHTML("beforeend", plantillaTotal);
-    desactivarPantallaCarga();
-  }
-  catch(error){
+    Promise.all([plantillaCajasSorpresa, plantillaPartidas, plantillaTienda]).then(() => {
+      //Cargamos una imagen en memoria del mosaico para estar seguros que se cargó todo apropriadamente
+      $('<img/>').attr('src', '../img/mosaicoDisenho/SuscDesignTop.svg').on('load', function() {
+        $(this).remove(); //La eliminamos para limpiar memoria
+        desactivarPantallaCarga();
+     });
+    });
+  } catch (error) {
     console.log(error);
   }
 }
@@ -4971,10 +4807,10 @@ async function cargarCuerpoPrincipal() {
  *
  * @var {[type]}
  */
-/*Mustache.Formatters = {
+Mustache.Formatters = {
   //Formatea la fecha según el formato pasado
-  "date_format": function (fecha, formato) {
-    if(fecha == undefined){
+  date_format: function (fecha, formato) {
+    if (fecha == undefined) {
       return "";
     }
     let fechaDividida = formato.split(" ");
@@ -4983,84 +4819,92 @@ async function cargarCuerpoPrincipal() {
     let anhoDividido;
     let barraFecha = fechaDividida[0].search("/") != -1;
     //comprobamos si tambien tiene horas
-    if(fechaDividida.length > 1) {
+    if (fechaDividida.length > 1) {
       //Fecha
-      anhoDividido   = barraFecha ? fechaDividida[0].split("/") : fechaDividida[0].split("-");
+      anhoDividido = barraFecha
+        ? fechaDividida[0].split("/")
+        : fechaDividida[0].split("-");
       let horasDivididas = fechaDividida[1].split(":");
       anhoDividido.concat(horasDivididas);
     }
     //Si sólo tiene uno comprobamos si es sólo tiempo o sólo fecha
     else {
-      if(fechaDividida[0].search(":") != -1){
+      if (fechaDividida[0].search(":") != -1) {
         fechaObjeto = new Date("2022-06-24 " + fecha);
         anhoDividido = fechaDividida[0].split(":");
-      }
-      else {
-        anhoDividido = barraFecha ? fechaDividida[0].split("/") : fechaDividida[0].split("-");
+      } else {
+        anhoDividido = barraFecha
+          ? fechaDividida[0].split("/")
+          : fechaDividida[0].split("-");
       }
     }
     //Recorremos las letras del formato
     fechaFormateada = anhoDividido.reduce(function (fechaTotal, formatoActual) {
       //Comprobamos si es el último elemento del formato
-      let ultimo = (formatoActual == formato[formato.length -1]);
+      let ultimo = formatoActual == formato[formato.length - 1];
       //Según el formato vamos formado la fecha
-      switch(formatoActual){
+      switch (formatoActual) {
         case "d":
           let dia = fechaObjeto.getDate();
           fechaTotal += dia <= 9 ? "0" + dia : dia;
-          if(!ultimo) fechaTotal += barraFecha ? "/" : "-";
+          if (!ultimo) fechaTotal += barraFecha ? "/" : "-";
           break;
 
         case "D":
-          fechaTotal += fechaObjeto.toLocaleString("es-ES", {weekday: "long"});
-          if(!ultimo) fechaTotal += " ";
+          fechaTotal += fechaObjeto.toLocaleString("es-ES", {
+            weekday: "long",
+          });
+          if (!ultimo) fechaTotal += " ";
           break;
 
-        case "m" :
-          let mes = fechaObjeto.getMonth() + 1
+        case "m":
+          let mes = fechaObjeto.getMonth() + 1;
           fechaTotal += mes <= 9 ? "0" + mes : mes;
-          if(!ultimo) fechaTotal += barraFecha ? "/" : "-";
+          if (!ultimo) fechaTotal += barraFecha ? "/" : "-";
           break;
 
-          case "mm" :
-            fechaTotal += fechaObjeto.toLocaleString("es-ES", {month: "long"});
-            if(!ultimo) fechaTotal += " ";
+        case "mm":
+          fechaTotal += fechaObjeto.toLocaleString("es-ES", { month: "long" });
+          if (!ultimo) fechaTotal += " ";
           break;
 
         case "M":
-          let mesLetra = fechaObjeto.toLocaleString("es-ES", {month: "long"});
-          mesLetra = mesLetra.substring(0,1).toUpperCase() + mesLetra.substring(1);
+          let mesLetra = fechaObjeto.toLocaleString("es-ES", { month: "long" });
+          mesLetra =
+            mesLetra.substring(0, 1).toUpperCase() + mesLetra.substring(1);
           fechaTotal += mesLetra;
-          if(!ultimo) fechaTotal += " ";
+          if (!ultimo) fechaTotal += " ";
           break;
 
         case "y":
-          fechaTotal += fechaObjeto.toLocaleString("es-ES", {year: "2-digit"});
-          if(!ultimo) fechaTotal += barraFecha ? "/" : "-";
+          fechaTotal += fechaObjeto.toLocaleString("es-ES", {
+            year: "2-digit",
+          });
+          if (!ultimo) fechaTotal += barraFecha ? "/" : "-";
           break;
 
-        case "Y"  :
+        case "Y":
           fechaTotal += fechaObjeto.getFullYear();
           let primero = formatoActual == fechaFormateada[0];
-          primero ? fechaTotal += barraFecha ? "/" : "-" : " ";
+          primero ? (fechaTotal += barraFecha ? "/" : "-") : " ";
           break;
 
         case "h":
         case "H":
           fechaTotal += fechaObjeto.getHours();
-          if(!ultimo) fechaTotal += ":";
+          if (!ultimo) fechaTotal += ":";
           break;
 
-        case "i"  :
+        case "i":
         case "I":
           fechaTotal += fechaObjeto.getMinutes();
-          if(!ultimo) fechaTotal += ":";
+          if (!ultimo) fechaTotal += ":";
           break;
 
         case "s":
-        case "S"    :
+        case "S":
           fechaTotal += fecha.getSeconds();
-          if(!ultimo) fechaTotal += ":";
+          if (!ultimo) fechaTotal += ":";
           break;
       }
       return fechaTotal;
@@ -5069,14 +4913,14 @@ async function cargarCuerpoPrincipal() {
     return fechaFormateada.trim();
   },
   //Calcula el total teniendo en cuenta el precio, iva y la duración de la suscripción
-  "calcularTotal": function (precio, iva, duracion) {
+  calcularTotal: function (precio, iva, duracion) {
     precio = parseInt(precio);
     iva = parseInt(iva);
-    return ((precio * (iva/100)) + precio) * duracion;
+    return (precio * (iva / 100) + precio) * duracion;
   },
-  "get_rol": function (rol) {
+  get_rol: function (rol) {
     let rolPalabra = "";
-    switch(parseInt(rol)) {
+    switch (parseInt(rol)) {
       case ROL_ANONIMO:
         rolPalabra = "Anónimo";
         break;
@@ -5086,26 +4930,35 @@ async function cargarCuerpoPrincipal() {
         break;
 
       case ROL_ADMINISTRADOR:
-        rolPalabra = "Administrador"  ;
+        rolPalabra = "Administrador";
         break;
     }
     return rolPalabra;
   },
-  "si_no_campo": function (campo){
-    return campo == 0 || campo == null ? "No" : "Si"
+  si_no_campo: function (campo) {
+    return campo == 0 || campo == null ? "No" : "Si";
   },
-  "truncate": function (texto, numPalabras) {
-    return texto.substring(0,numPalabras);
+  truncate: function (texto, numPalabras) {
+    return texto.substring(0, numPalabras);
   },
-  "calcularFechaRenovacion": function (fecha_ini_suscripcion, suscripcion) {
-    if(fecha_ini_suscripcion == undefined){
+  calcularFechaRenovacion: function (fecha_ini_suscripcion, suscripcion) {
+    if (fecha_ini_suscripcion == undefined) {
       return "";
     }
     let fechaIni = new Date(fecha_ini_suscripcion);
     fechaIni.setMonth(fechaIni.getMonth() + parseInt(suscripcion));
-    return (fechaIni.getFullYear() + "-" + (fechaIni.getMonth() + 1) + "-" + fechaIni.getDate());
-  }
-}*/
+    return (
+      fechaIni.getFullYear() +
+      "-" +
+      (fechaIni.getMonth() + 1) +
+      "-" +
+      fechaIni.getDate()
+    );
+  },
+  contarArray: function (array) {
+    return array.length;
+  },
+};
 
 /**
  * Devuelve el nombre del mes
@@ -5114,8 +4967,21 @@ async function cargarCuerpoPrincipal() {
  *
  * @return  {string}       Devuelve la cadena con el nombre del mes
  */
-function devolverMesPorNumero (mes) {
-  let meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+function devolverMesPorNumero(mes) {
+  let meses = [
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre",
+  ];
   return meses[mes - 1];
 }
 
@@ -5124,30 +4990,32 @@ function devolverMesPorNumero (mes) {
  *
  * @return  {void}  No devuelve nada
  */
-async function cagarCajasSorpresasAnteriores () {
+async function cagarCajasSorpresasAnteriores() {
   try {
     //Petición PHP
-    let peticionPHP = await fetch('../php/cajaSorpresa.php', {
+    let peticionPHP = await fetch("../php/cajaSorpresa.php", {
       method: "POST",
-      headers: {"Content-type": "application/json;charset=utf-8;"},
-      body: JSON.stringify({"cajasSorpresa": 3})
+      headers: { "Content-type": "application/json;charset=utf-8;" },
+      body: JSON.stringify({ cajasSorpresa: 3 }),
     });
     let respuestaJSON = await peticionPHP.json();
     //Comprobamos que no diera error
-    if(Object.hasOwn(respuestaJSON, "error")) {
+    if (Object.hasOwn(respuestaJSON, "error")) {
       throw respuestaJSON["error"];
     }
 
     //Petición Mustache
-    let peticion = await fetch('../mustache/partials/cajasSorpresaAnteriores.mustache', opcionesFetchMustache);
-    let plantilla = await peticion.text(); 
+    let peticion = await fetch(
+      "../mustache/partials/cajasSorpresaAnteriores.mustache",
+      opcionesFetchMustache
+    );
+    let plantilla = await peticion.text();
     let resultado = Mustache.render(plantilla, respuestaJSON);
     /*document.querySelector("main").insertAdjacentHTML("beforeend", resultado);
     let elementoActivoCarrusel = document.getElementById("suscripciones").querySelector(".carousel-item");
     elementoActivoCarrusel.classList.add("active");*/
-    return {"datos": respuestaJSON, "plantilla": resultado};
-  }
-  catch(error){
+    return { datos: respuestaJSON, plantilla: resultado };
+  } catch (error) {
     console.log(error);
   }
 }
@@ -5157,16 +5025,18 @@ async function cagarCajasSorpresasAnteriores () {
  *
  * @return  {void}  No devuelve nada
  */
-async function cargarPartidasPrincipal () {
+async function cargarPartidasPrincipal() {
   try {
     //Petición Mustache
-    let peticion = await fetch('../mustache/partials/partidasPrincipal.mustache', opcionesFetchMustache);
-    let plantilla = await peticion.text(); 
+    let peticion = await fetch(
+      "../mustache/partials/partidasPrincipal.mustache",
+      opcionesFetchMustache
+    );
+    let plantilla = await peticion.text();
     let resultado = Mustache.render(plantilla, {});
     //document.querySelector("main").insertAdjacentHTML("beforeend", resultado);
-    return {"datos": {}, "plantilla": resultado};
-  }
-  catch(error){
+    return { datos: {}, plantilla: resultado };
+  } catch (error) {
     console.log(error);
   }
 }
@@ -5176,29 +5046,31 @@ async function cargarPartidasPrincipal () {
  *
  * @return  {void}  No devuelve nada
  */
-async function cargarTiendaPrincipal () {
+async function cargarTiendaPrincipal() {
   try {
     //Petición PHP
-    let peticionPHP = await fetch('../php/tienda.php', {
+    let peticionPHP = await fetch("../php/tienda.php", {
       method: "POST",
-      headers: {"Content-type": "application/json;charset=utf-8;"},
-      body: JSON.stringify({"ultimoProducto": 3})
+      headers: { "Content-type": "application/json;charset=utf-8;" },
+      body: JSON.stringify({ ultimoProducto: 3 }),
     });
     let respuestaJSON = await peticionPHP.json();
     //Comprobamos que no diera error
-    if(Object.hasOwn(respuestaJSON, "error")) {
+    if (Object.hasOwn(respuestaJSON, "error")) {
       throw respuestaJSON["error"];
     }
-    datos = {"novedades": respuestaJSON};
+    datos = { novedades: respuestaJSON };
 
     //Petición Mustache
-    let peticion = await fetch('../mustache/partials/tiendaPrincipal.mustache', opcionesFetchMustache);
-    let plantilla = await peticion.text(); 
+    let peticion = await fetch(
+      "../mustache/partials/tiendaPrincipal.mustache",
+      opcionesFetchMustache
+    );
+    let plantilla = await peticion.text();
     let resultado = Mustache.render(plantilla, datos);
     //document.querySelector("main").insertAdjacentHTML("beforeend", resultado);
-    return {"datos": datos, "plantilla": resultado};
-  }
-  catch(error){
+    return { datos: datos, plantilla: resultado };
+  } catch (error) {
     console.log(error);
   }
 }
@@ -5210,7 +5082,7 @@ async function cargarTiendaPrincipal () {
  *
  * @return  {void}     No devuelve nada
  */
-async function irPaginaPrincipal(e){
+async function irPaginaPrincipal(e) {
   e.preventDefault();
   cargarCuerpoPrincipal();
 }
@@ -5219,11 +5091,11 @@ async function irPaginaPrincipal(e){
  * Carga la página de suscripciones
  *
  * @param {Event} e Evento que se dispara
- * 
+ *
  * @return  {void}  No devuelve nada
  */
-async function cargarPaginaSuscripciones(e) {
-  e.preventDefault();
+async function cargarPaginaSuscripciones() {
+  //window.stop();
   activarPantallaCarga();
 
   //Borramos el main
@@ -5233,46 +5105,58 @@ async function cargarPaginaSuscripciones(e) {
   //Actualizamos el header con el activo
   let header = document.querySelector("nav");
   let elementosActivos = Array.from(header.getElementsByClassName("navActive"));
-  elementosActivos.forEach(elemento => elemento.classList.remove("navActive"));
-  let enlaceActivo = e.currentTarget;
+  elementosActivos.forEach((elemento) =>
+    elemento.classList.remove("navActive")
+  );
+  let enlaceActivo = document.getElementById("navSuscripciones");
   let elementoListaActivo = enlaceActivo.parentElement;
   elementoListaActivo.classList.add("navActive");
 
   try {
     //Petición PHP
-    let peticionPHP = await fetch('../php/suscripciones.php', {
+    let peticionPHP = await fetch("../php/suscripciones.php", {
       method: "POST",
-      headers: {"Content-type": "application/json;charset=utf-8;"}
+      headers: { "Content-type": "application/json;charset=utf-8;" },
     });
     let respuestaJSON = await peticionPHP.json();
     //Comprobamos que no diera error
-    if(Object.hasOwn(respuestaJSON, "error")) {
+    if (Object.hasOwn(respuestaJSON, "error")) {
       throw respuestaJSON["error"];
     }
 
     //Petición Mustache
-    let peticion = await fetch('../mustache/suscripciones.mustache', opcionesFetchMustache);
-    let plantilla = await peticion.text(); 
+    let peticion = await fetch(
+      "../mustache/suscripciones.mustache",
+      opcionesFetchMustache
+    );
+    let plantilla = await peticion.text();
     //Cargamos el parcial
-    let peticionPartial = await fetch('../mustache/partials/suscripcionesReciboActiva.mustache', opcionesFetchMustache);
+    let peticionPartial = await fetch(
+      "../mustache/partials/suscripcionesReciboActiva.mustache",
+      opcionesFetchMustache
+    );
     let plantillaPartial = await peticionPartial.text();
-    let resultado = Mustache.render(plantilla, respuestaJSON, {"suscripcionesReciboActiva": plantillaPartial});
+    let resultado = Mustache.render(plantilla, respuestaJSON, {
+      suscripcionesReciboActiva: plantillaPartial,
+    });
     mainPagina.insertAdjacentHTML("beforeend", resultado);
 
     //Le añadimos al cuerpo el aspecto de cuerpoMosaico
-    mainPagina.classList.contains("cuerpoMosaico") ? "" :  mainPagina.classList.add("cuerpoMosaico");
-    
+    mainPagina.classList.contains("cuerpoMosaico")
+      ? ""
+      : mainPagina.classList.add("cuerpoMosaico");
 
     //Añadimos los escuchadores
     let contenedorSusc = document.getElementById("tiposSusc");
     let botones = Array.from(contenedorSusc.getElementsByTagName("button"));
-    botones.forEach(boton => boton.addEventListener("click", cargarSuscripcionActiva));
+    botones.forEach((boton) =>
+      boton.addEventListener("click", cargarSuscripcionActiva)
+    );
     let recibo = document.getElementById("recibo");
     let botonSuscribirse = recibo.querySelector("button");
     botonSuscribirse.addEventListener("click", suscribirse);
     desactivarPantallaCarga();
-  }
-  catch(error){
+  } catch (error) {
     console.log(error);
   }
 }
@@ -5293,20 +5177,23 @@ async function cargarSuscripcionActiva(e) {
   recibo.innerHTML = "";
   try {
     //Petición PHP
-    let peticionPHP = await fetch('../php/suscripciones.php', {
+    let peticionPHP = await fetch("../php/suscripciones.php", {
       method: "POST",
-      headers: {"Content-type": "application/json;charset=utf-8;"},
-      body: JSON.stringify({"duracion": suscripcionActiva})
+      headers: { "Content-type": "application/json;charset=utf-8;" },
+      body: JSON.stringify({ duracion: suscripcionActiva }),
     });
     let respuestaJSON = await peticionPHP.json();
     //Comprobamos que no diera error
-    if(Object.hasOwn(respuestaJSON, "error")) {
+    if (Object.hasOwn(respuestaJSON, "error")) {
       throw respuestaJSON["error"];
     }
 
     //Petición Mustache
-    let peticion = await fetch('../mustache/partials/suscripcionesReciboActiva.mustache', opcionesFetchMustache);
-    let plantilla = await peticion.text(); 
+    let peticion = await fetch(
+      "../mustache/partials/suscripcionesReciboActiva.mustache",
+      opcionesFetchMustache
+    );
+    let plantilla = await peticion.text();
     let resultado = Mustache.render(plantilla, respuestaJSON);
     recibo.insertAdjacentHTML("beforeend", resultado);
 
@@ -5315,11 +5202,12 @@ async function cargarSuscripcionActiva(e) {
     botonSuscribirse.addEventListener("click", suscribirse);
 
     //Ponemos los botones como activos
-    let botonesActivos = Array.from(document.querySelectorAll("button.suscActiva"));
-    botonesActivos.forEach(boton => boton.classList.remove("suscActiva"));
+    let botonesActivos = Array.from(
+      document.querySelectorAll("button.suscActiva")
+    );
+    botonesActivos.forEach((boton) => boton.classList.remove("suscActiva"));
     botonSuscActivo.classList.add("suscActiva");
-  }
-  catch(error){
+  } catch (error) {
     console.log(error);
   }
 }
@@ -5328,18 +5216,20 @@ async function cargarSuscripcionActiva(e) {
  * Carga la página de partidas
  *
  * @param {Event} e Evento que se dispara
- * 
+ *
  * @return  {void}     No devuelve nada
  */
- async function cargarPaginaPartidas(e) {
-   e.preventDefault();
+async function cargarPaginaPartidas() {
+  //window.stop();
   //Borramos el recibo
   let mainCuerpo = document.querySelector("main");
   mainCuerpo.innerHTML = "";
   activarPantallaCarga();
-  mainCuerpo.classList.contains("cuerpoMosaico") ? mainCuerpo.classList.remove("cuerpoMosaico") : "";
+  mainCuerpo.classList.contains("cuerpoMosaico")
+    ? ""
+    : mainCuerpo.classList.add("cuerpoMosaico");
   try {
-    if(sessionStorage["email"]){
+    if (sessionStorage["email"]) {
       //Cargamos la plantilla de partidas
       let plantillaPartidas = await cargarPartidas(true);
 
@@ -5347,12 +5237,18 @@ async function cargarSuscripcionActiva(e) {
       let generos = await cargarGeneros();
 
       //Petición Mustache
-      const peticion = await fetch('../mustache/paginaPartidas.mustache', opcionesFetchMustache);
-      const plantilla = await peticion.text(); 
+      const peticion = await fetch(
+        "../mustache/paginaPartidas.mustache",
+        opcionesFetchMustache
+      );
+      const plantilla = await peticion.text();
 
       plantillaPartidas["datos"]["generos"] = generos["datos"]["generos"];
 
-      let resultado = Mustache.render(plantilla, plantillaPartidas["datos"], {"partidas": plantillaPartidas["plantilla"], "generos": generos["plantilla"]});
+      let resultado = Mustache.render(plantilla, plantillaPartidas["datos"], {
+        partidas: plantillaPartidas["plantilla"],
+        generos: generos["plantilla"],
+      });
       mainCuerpo.insertAdjacentHTML("beforeend", resultado);
 
       //Añadimos los escuchadores
@@ -5361,25 +5257,31 @@ async function cargarSuscripcionActiva(e) {
       botonFiltro.addEventListener("click", filtrarPartidas);
 
       paginacion = document.querySelector(".pagination");
-      if(paginacion != undefined) {
+      if (paginacion != undefined) {
         let enlacesPaginacion = Array.from(paginacion.querySelector("a"));
-        enlacesPaginacion.forEach(enlace => enlace.addEventListener("click", filtrarPartidas));
+        enlacesPaginacion.forEach((enlace) =>
+          enlace.addEventListener("click", filtrarPartidas)
+        );
       }
 
       let botonesMasInfo = Array.from(mainCuerpo.querySelectorAll(".masInfo"));
-      botonesMasInfo.forEach(boton => boton.addEventListener("click", masInfoPartida));
-      let botonesReserva = Array.from(mainCuerpo.querySelectorAll(".reservarPartida"));
-      botonesReserva.forEach(boton => boton.addEventListener("click", reservarPartida));
+      botonesMasInfo.forEach((boton) =>
+        boton.addEventListener("click", masInfoPartida)
+      );
+      let botonesReserva = Array.from(
+        mainCuerpo.querySelectorAll(".reservarPartida")
+      );
+      botonesReserva.forEach((boton) =>
+        boton.addEventListener("click", reservarPartida)
+      );
 
       let botonLimpiarFiltro = botonFiltro.nextElementSibling;
       botonLimpiarFiltro.addEventListener("click", limpiarFiltro);
       desactivarPantallaCarga();
-    }
-    else {
+    } else {
       mostrarInicioSesion();
     }
-  }
-  catch(error){
+  } catch (error) {
     console.log(error);
   }
 }
@@ -5390,7 +5292,7 @@ async function cargarSuscripcionActiva(e) {
  * @param {Object} filtro Objeto con los filtros
  * @param {int} pagina Página que carga
  * @param {int} limite Número de partidas por página
- * @returns 
+ * @returns
  */
 async function cargarPartidas(devolver, filtro = {}, pagina = 0, limite = 7) {
   //Limpiamos el contenedor de las partidas
@@ -5398,51 +5300,58 @@ async function cargarPartidas(devolver, filtro = {}, pagina = 0, limite = 7) {
   let paginacion = document.querySelector(".pagination");
   //Buscamos si ya hay una paginación y si la hay la borramos
   paginacion != null ? paginacion.remove() : "";
-  lista != null ? lista.innerHTML = "" : "";
+  lista != null ? (lista.innerHTML = "") : "";
   //Le añadimos al filtro la página y el limite
   filtro["pagina"] = pagina;
   filtro["limite"] = limite;
   try {
     //Petición PHP
-    let peticionPHP = await fetch('../php/partidas.php', {
+    let peticionPHP = await fetch("../php/partidas.php", {
       method: "POST",
-      headers: {"Content-type": "application/json;charset=utf-8;"},
-      body: JSON.stringify(filtro)
+      headers: { "Content-type": "application/json;charset=utf-8;" },
+      body: JSON.stringify(filtro),
     });
     let respuestaJSON = await peticionPHP.json();
     //Comprobamos que no diera error
-    if(Object.hasOwn(respuestaJSON, "error")) {
+    if (Object.hasOwn(respuestaJSON, "error")) {
       throw respuestaJSON["error"];
     }
 
     //Petición Mustache
-    let peticion = await fetch('../mustache/partials/partida.mustache', opcionesFetchMustache);
-    let plantilla = await peticion.text(); 
+    let peticion = await fetch(
+      "../mustache/partials/partida.mustache",
+      opcionesFetchMustache
+    );
+    let plantilla = await peticion.text();
 
-    if(devolver){
-      return {"datos": respuestaJSON, "plantilla": plantilla};
-    }
-    else {
+    if (devolver) {
+      return { datos: respuestaJSON, plantilla: plantilla };
+    } else {
       let resultado = Mustache.render(plantilla, respuestaJSON);
       lista.insertAdjacentHTML("beforeend", resultado);
 
       //Añadimos los escuchadores
       paginacion = document.querySelector(".pagination");
-      if(paginacion) {
+      if (paginacion) {
         let enlacesPaginacion = Array.from(paginacion.querySelector("a"));
-        enlacesPaginacion.forEach(enlace => enlace.addEventListener("click", filtrarPartidas));
+        enlacesPaginacion.forEach((enlace) =>
+          enlace.addEventListener("click", filtrarPartidas)
+        );
       }
       let botonesMasInfo = Array.from(lista.querySelectorAll(".masInfo"));
-      botonesMasInfo.forEach(boton => boton.addEventListener("click", masInfoPartida));
-      let botonesReserva = Array.from(lista.querySelectorAll(".reservarPartida"));
-      botonesReserva.forEach(boton => boton.addEventListener("click", reservarPartida));
-
-      
+      botonesMasInfo.forEach((boton) =>
+        boton.addEventListener("click", masInfoPartida)
+      );
+      let botonesReserva = Array.from(
+        lista.querySelectorAll(".reservarPartida")
+      );
+      botonesReserva.forEach((boton) =>
+        boton.addEventListener("click", reservarPartida)
+      );
     }
-  }
-  catch(error){
+  } catch (error) {
     console.log(error);
-    return {"datos": {}, "plantilla": {}}
+    return { datos: {}, plantilla: {} };
   }
 }
 
@@ -5455,13 +5364,18 @@ async function cargarPartidas(devolver, filtro = {}, pagina = 0, limite = 7) {
  */
 async function filtrarPartidas(e) {
   e.preventDefault();
-  let pagina = (e.currentTarget.nodeName == "BUTTON") ? 0 : e.currentTarget.textContent;
+  let pagina =
+    e.currentTarget.nodeName == "BUTTON" ? 0 : e.currentTarget.textContent;
   //Cogemos todos los filtros
   let filtro = document.getElementById("filtro");
   let genero = filtro.querySelector("select[name='generos'").value;
   let fechaIni = filtro.querySelector("input[name='fechaIni'").value;
   let fechaFin = filtro.querySelector("input[name='fechaFin'").value;
-  await cargarPartidas(false, {"genero": genero, "fechaIni": fechaIni, "fechaFin": fechaFin}, pagina);
+  await cargarPartidas(
+    false,
+    { genero: genero, fechaIni: fechaIni, fechaFin: fechaFin },
+    pagina
+  );
 }
 
 /**
@@ -5475,22 +5389,24 @@ async function cargarGeneros() {
     const respuestaGeneros = await fetch("../php/registro.php", {
       method: "POST",
       headers: { "Content-type": "application/json;charset=UTF-8" },
-      body: JSON.stringify({ "cargarGeneros": true }),
+      body: JSON.stringify({ cargarGeneros: true }),
     });
     const generos = await respuestaGeneros.json();
     //Comprobamos que no diese error
-    if(Object.hasOwn(generos, "error")){
+    if (Object.hasOwn(generos, "error")) {
       throw json["error"];
     }
 
     //Cargamos la plantilla de mustache
-    const peticionMustache = await fetch('../mustache/partials/optionGeneros.mustache', opcionesFetchMustache);
+    const peticionMustache = await fetch(
+      "../mustache/partials/optionGeneros.mustache",
+      opcionesFetchMustache
+    );
     const plantillaMustache = await peticionMustache.text();
-    return {"datos": generos, "plantilla": plantillaMustache};
-  }
-  catch(error){
+    return { datos: generos, plantilla: plantillaMustache };
+  } catch (error) {
     console.log(error);
-    return {"datos": {}, "plantilla": ""};
+    return { datos: {}, plantilla: "" };
   }
 }
 
@@ -5503,10 +5419,12 @@ async function cargarGeneros() {
  */
 function limpiarFiltro() {
   let filtro = document.getElementById("filtro");
-  let elementosFiltro = Array.from(filtro.querySelectorAll('input:not(input[type="submit"]), select'));
-  elementosFiltro.forEach(elemento => elemento.value = "");
+  let elementosFiltro = Array.from(
+    filtro.querySelectorAll('input:not(input[type="submit"]), select')
+  );
+  elementosFiltro.forEach((elemento) => (elemento.value = ""));
   let botonFiltrar = filtro.querySelector("button");
-  botonFiltrar.dispatchEvent(new Event('click'));
+  botonFiltrar.dispatchEvent(new Event("click"));
 }
 
 /**
@@ -5520,7 +5438,10 @@ async function masInfoPartida(e) {
   let mainCuerpo = document.querySelector("main");
   let masInfoPartida = document.querySelector(".masInfoPartida:last-of-type");
   //Si tiene otra ventana abierta la cerramos
-  if(masInfoPartida != null) await masInfoPartida.querySelector(".masInfoPartida > button:last-of-type").dispatchEvent(new Event("click"));
+  if (masInfoPartida != null)
+    await masInfoPartida
+      .querySelector(".masInfoPartida > button:last-of-type")
+      .dispatchEvent(new Event("click"));
   try {
     let masInfo = await new Promise(async (resolve, reject) => {
       //Cogemos el id del botón
@@ -5538,18 +5459,23 @@ async function masInfoPartida(e) {
         throw respuestaJSON["error"];
       }
       //Creamos el contenedor
-      let peticionMustache = await fetch('../mustache/masInfoPartida.mustache', opcionesFetchMustache);
+      let peticionMustache = await fetch(
+        "../mustache/masInfoPartida.mustache",
+        opcionesFetchMustache
+      );
       let plantilla = await peticionMustache.text();
       let cadena = Mustache.render(plantilla, respuestaJSON);
       mainCuerpo.insertAdjacentHTML("beforeend", cadena);
 
       //Añadir eventos
-      let masInfoPartida = document.querySelector(".masInfoPartida:last-of-type");
+      let masInfoPartida = document.querySelector(
+        ".masInfoPartida:last-of-type"
+      );
       let botonVolver = masInfoPartida.lastElementChild;
       let botonReservar = botonVolver.previousElementSibling;
       botonVolver.addEventListener("click", volverPaginaPartidas);
       botonReservar.addEventListener("click", reservarPartida);
-      return resolve = masInfoPartida;
+      return (resolve = masInfoPartida);
     });
     $(masInfo).show(1000);
   } catch (error) {
@@ -5562,7 +5488,7 @@ async function masInfoPartida(e) {
  *
  * @return  {void}  No devuelve nada
  */
- async function volverPaginaPartidas() {
+async function volverPaginaPartidas() {
   let masInfo = document.querySelector(".masInfoPartida");
   $(masInfo).hide(1000, () => masInfo.remove());
 }
@@ -5581,23 +5507,24 @@ async function cargarPerfilUsuario(e) {
     let email = sessionStorage["email"] ?? localStorage["email"];
     let main = document.querySelector("main");
     //Si no es un usuario principal lo llevamos a la página principal
-    if(email == undefined) {
+    if (email == undefined) {
       cargarCuerpoPrincipal();
-    }
-    else {
+    } else {
       main.innerHTML = "";
-      main.classList.contains("cuerpoMosaico") ? "" : main.classList.add("cuerpoMosaico");
+      main.classList.contains("cuerpoMosaico")
+        ? ""
+        : main.classList.add("cuerpoMosaico");
       //Cargamos los géneros
       const generos = await cargarGeneros();
 
       const peticionPerfil = await fetch("../php/perfil_usuario.php", {
         method: "POST",
         headers: { "Content-type": "application/json;charset=UTF-8" },
-        body: JSON.stringify({ "email": email}),
+        body: JSON.stringify({ email: email }),
       });
       const perfilJSON = await peticionPerfil.json();
       //Comprobamos que no diese error
-      if(Object.hasOwn(perfilJSON, "error")){
+      if (Object.hasOwn(perfilJSON, "error")) {
         throw json["error"];
       }
 
@@ -5605,15 +5532,23 @@ async function cargarPerfilUsuario(e) {
       sessionStorage["rol"] = perfilJSON["rol"];
       perfilJSON["generos"] = generos["datos"]["generos"];
       //Ponemos el género seleccionado
-      if(perfilJSON["genero_favorito"]){
-        let indiceGenero = Object.values(perfilJSON["generos"]).findIndex(genero => genero["genero"] == perfilJSON["genero_favorito"]);
-        if(indiceGenero != -1) perfilJSON["generos"][indiceGenero]["activo"] = true;
+      if (perfilJSON["genero_favorito"]) {
+        let indiceGenero = Object.values(perfilJSON["generos"]).findIndex(
+          (genero) => genero["genero"] == perfilJSON["genero_favorito"]
+        );
+        if (indiceGenero != -1)
+          perfilJSON["generos"][indiceGenero]["activo"] = true;
       }
 
       //Cargamos la plantilla de mustache
-      const peticionMustache = await fetch('../mustache/perfilUsuario.mustache', opcionesFetchMustache);
+      const peticionMustache = await fetch(
+        "../mustache/perfilUsuario.mustache",
+        opcionesFetchMustache
+      );
       const peticionJSON = await peticionMustache.text();
-      let plantillaMustache = Mustache.render(peticionJSON, perfilJSON, {"generos": generos["plantilla"]});
+      let plantillaMustache = Mustache.render(peticionJSON, perfilJSON, {
+        generos: generos["plantilla"],
+      });
       main.insertAdjacentHTML("beforeend", plantillaMustache);
 
       botonPerfil.dispatchEvent(new Event("click"));
@@ -5628,8 +5563,7 @@ async function cargarPerfilUsuario(e) {
 
       desactivarPantallaCarga();
     }
-  }
-  catch(error){
+  } catch (error) {
     console.log(error);
   }
 }
@@ -5642,7 +5576,7 @@ async function cargarPerfilUsuario(e) {
  */
 async function cargarHistorialUsuario(filtro = {}, pagina = 0, limite = 7) {
   let contenedorHistorial = document.getElementById("contenedorHistorial");
-  if(contenedorHistorial != undefined) contenedorHistorial.remove();
+  if (contenedorHistorial != undefined) contenedorHistorial.remove();
   let main = document.querySelector("main");
   try {
     filtro["pagina"] = pagina;
@@ -5651,32 +5585,39 @@ async function cargarHistorialUsuario(filtro = {}, pagina = 0, limite = 7) {
     const peticionHistorial = await fetch("../php/historial.php", {
       method: "POST",
       headers: { "Content-type": "application/json;charset=UTF-8" },
-      body: JSON.stringify({ "usuario": filtro}),
+      body: JSON.stringify({ usuario: filtro }),
     });
     const historialJSON = await peticionHistorial.json();
     //Comprobamos que no diese error
-    if(Object.hasOwn(historialJSON, "error")){
+    if (Object.hasOwn(historialJSON, "error")) {
       throw json["error"];
     }
 
     //Cargamos la plantilla de mustache
-    const peticionMustache = await fetch('../mustache/historial.mustache', opcionesFetchMustache);
+    const peticionMustache = await fetch(
+      "../mustache/historial.mustache",
+      opcionesFetchMustache
+    );
     const peticionJSON = await peticionMustache.text();
     let plantillaMustache = Mustache.render(peticionJSON, historialJSON);
     main.insertAdjacentHTML("beforeend", plantillaMustache);
 
     //Añadimos los escuchadores
     contenedorHistorial = document.getElementById("contenedorHistorial");
-    let botonCierre = contenedorHistorial.querySelector("#contenedorHistorial > button:last-of-type");
+    let botonCierre = contenedorHistorial.querySelector(
+      "#contenedorHistorial > button:last-of-type"
+    );
     botonCierre.addEventListener("click", cerrarVentanaFlotante);
-    let botonesHistorial = Array.from(contenedorHistorial.getElementsByClassName("detallesHistorial"));
-    botonesHistorial.forEach(boton => boton.addEventListener("click", cargarMasDetalleHistorial));
-  }
-  catch(error){
+    let botonesHistorial = Array.from(
+      contenedorHistorial.getElementsByClassName("detallesHistorial")
+    );
+    botonesHistorial.forEach((boton) =>
+      boton.addEventListener("click", cargarMasDetalleHistorial)
+    );
+  } catch (error) {
     console.log(error);
   }
 }
-
 
 /**
  * Coge los datos del formulario y carga el historial con ese filtrado
@@ -5685,7 +5626,7 @@ async function cargarHistorialUsuario(filtro = {}, pagina = 0, limite = 7) {
  *
  * @return  {void}  No devuelve nada
  */
- function filtrarHistorialUsuario(e) {
+function filtrarHistorialUsuario(e) {
   e.preventDefault();
   let filtro = {};
   let limite = 7;
@@ -5695,9 +5636,13 @@ async function cargarHistorialUsuario(filtro = {}, pagina = 0, limite = 7) {
       : 0;
   //Cogemos los datos de las fechas
   let fechaIni = document.getElementById("fechaIniHistorial");
-  fechaIni != "" && fechaIni != undefined ? (filtro["fechaIni"] = fechaIni.value) : "";
+  fechaIni != "" && fechaIni != undefined
+    ? (filtro["fechaIni"] = fechaIni.value)
+    : "";
   let fechaFin = document.getElementById("fechaFinHistorial");
-  fechaFin != "" && fechaFin != undefined ? (filtro["fechaFin"] = fechaFin.value) : "";
+  fechaFin != "" && fechaFin != undefined
+    ? (filtro["fechaFin"] = fechaFin.value)
+    : "";
   cargarHistorialUsuario(filtro, pagina, limite);
 }
 
@@ -5716,26 +5661,30 @@ async function cargarMasDetalleHistorial(e) {
     const peticionHistorial = await fetch("../php/historial.php", {
       method: "POST",
       headers: { "Content-type": "application/json;charset=UTF-8" },
-      body: JSON.stringify({ "historial": idHistorial}),
+      body: JSON.stringify({ historial: idHistorial }),
     });
     const historialJSON = await peticionHistorial.json();
     //Comprobamos que no diese error
-    if(Object.hasOwn(historialJSON, "error")){
+    if (Object.hasOwn(historialJSON, "error")) {
       throw historialJSON["error"];
     }
     contenedorHistorial.innerHTML = "";
 
     //Cargamos la plantilla de mustache
-    const peticionMustache = await fetch('../mustache/partials/historialDetalles.mustache', opcionesFetchMustache);
+    const peticionMustache = await fetch(
+      "../mustache/partials/historialDetalles.mustache",
+      opcionesFetchMustache
+    );
     const peticionJSON = await peticionMustache.text();
     let plantillaMustache = Mustache.render(peticionJSON, historialJSON);
     contenedorHistorial.insertAdjacentHTML("beforeend", plantillaMustache);
 
     //Añadimos los escuchadores
-    let botonCerrar = contenedorHistorial.querySelector("#masDetallesHistorial > button:last-of-type");
+    let botonCerrar = contenedorHistorial.querySelector(
+      "#masDetallesHistorial > button:last-of-type"
+    );
     botonCerrar.addEventListener("click", filtrarHistorialUsuario);
-  }
-  catch(error) {
+  } catch (error) {
     console.log(error);
   }
 }
@@ -5753,37 +5702,89 @@ async function cargarCarrito(pagina = 0, limite = 7) {
     //Cuerpo del carrito
     let main = document.querySelector("main");
     main.innerHTML = "";
-    main.classList.contains("cuerpoMosaico") ? "" : main.classList.add("cuerpoMosaico");
-    //Iniciamos la petición
-    const respuesta = await fetch("../php/carrito.php", {
-      method: "POST",
-      headers: {"Content-type": "application/json; charset=UTF-8"},
-      body: JSON.stringify({"cargarCarrito": {"pagina": pagina, "limite": limite}})
-    });
-    //Traducimos la respuesta
-    const respuestaJSON = await respuesta.json();
-    //Comprobamos que no diera que no tiene la sesión iniciada
-    if(Object.hasOwn(respuestaJSON, "noSesion")){
-      cargarCuerpoPrincipal();
+    main.classList.contains("cuerpoMosaico")
+      ? ""
+      : main.classList.add("cuerpoMosaico");
+    let respuestaJSON;
+    //Comprobamos si tienen sesión
+    if (sessionStorage["email"]) {
+      //Iniciamos la petición
+      const respuesta = await fetch("../php/carrito.php", {
+        method: "POST",
+        headers: { "Content-type": "application/json; charset=UTF-8" },
+        body: JSON.stringify({
+          cargarCarrito: { pagina: pagina, limite: limite },
+        }),
+      });
+      //Traducimos la respuesta
+      respuestaJSON = await respuesta.json();
+      //Comprobamos que no diera que no tiene la sesión iniciada
+      if (Object.hasOwn(respuestaJSON, "noSesion")) {
+        cargarCuerpoPrincipal();
+      }
+      //Comprobamos que no diera error
+      if (Object.hasOwn(respuestaJSON, "error")) {
+        throw respuestaJSON["error"];
+      }
+      respuestaJSON["productos"].forEach((producto) => {
+        carrito[producto["id_producto"]] = producto["unidades"];
+      });
+    } else if (Object.values(carrito).length > 0) {
+      //Iniciamos la petición para pedir los productos del carrito local
+      const respuesta = await fetch("../php/carrito.php", {
+        method: "POST",
+        headers: { "Content-type": "application/json; charset=UTF-8" },
+        body: JSON.stringify({
+          cargarCarritoLocal: {
+            productos: carrito,
+            pagina: pagina,
+            limite: limite,
+          },
+        }),
+      });
+      //Traducimos la respuesta
+      respuestaJSON = await respuesta.json();
+      //Comprobamos que no diera que no tiene la sesión iniciada
+      if (Object.hasOwn(respuestaJSON, "noSesion")) {
+        cargarCuerpoPrincipal();
+      }
+      //Comprobamos que no diera error
+      if (Object.hasOwn(respuestaJSON, "error")) {
+        throw respuestaJSON["error"];
+      }
+    } else {
+      respuestaJSON = { vacio: true };
     }
-    //Comprobamos que no diera error
-    if(Object.hasOwn(respuestaJSON, "error")){
-      throw respuestaJSON["error"];
-    }
-
     //Cargamos la plantilla
-    const peticionMustache = await fetch('../mustache/carrito.mustache', opcionesFetchMustache);
-    const mustacheJSON  = await peticionMustache.text();
+    const peticionMustache = await fetch(
+      "../mustache/carrito.mustache",
+      opcionesFetchMustache
+    );
+    const mustacheJSON = await peticionMustache.text();
     let plantilla = await Mustache.render(mustacheJSON, respuestaJSON);
     main.insertAdjacentHTML("beforeend", plantilla);
 
     //Añadimos los escuchadores
     let botonVaciar = document.getElementById("botonVaciarCarrito");
-    botonVaciar.addEventListener("click", vaciarCarrito)
+    botonVaciar.addEventListener("click", vaciarCarrito);
+    let botonEliminar = Array.from(
+      document.getElementsByClassName("botonEliminarCarrito")
+    );
+    botonEliminar.forEach((boton) =>
+      boton.addEventListener("click", actualizarProducto)
+    );
+    let inputsUnidades = Array.from(
+      document.querySelectorAll("input[type='number']")
+    );
+    inputsUnidades.forEach((input) =>
+      input.addEventListener("click", actualizarProducto)
+    );
+    let botonProcesarPedido = document.getElementById("botonProcesarPedido");
+    if (botonProcesarPedido != undefined)
+      botonProcesarPedido.addEventListener("click", procesarPedido);
 
     desactivarPantallaCarga();
-  }
-  catch(error){
+  } catch (error) {
     console.log(error);
   }
 }
@@ -5814,28 +5815,185 @@ function irCarrito(e) {
  */
 async function vaciarCarrito(e) {
   e.preventDefault();
-  try {
-    //Iniciamos la petición
-    const respuesta = await fetch("../php/carrito.php", {
-      method: "POST",
-      headers: {"Content-type": "application/json; charset=UTF-8"},
-      body: JSON.stringify({"vaciarCarrito": true})
-    });
-    //Traducimos la respuesta
-    const respuestaJSON = await respuesta.json();
-    //Comprobamos que no diera que no tiene la sesión iniciada
-    if(Object.hasOwn(respuestaJSON, "noSesion")){
-      cargarCuerpoPrincipal();
+  carrito = {};
+  if (sessionStorage["email"]) {
+    try {
+      //Iniciamos la petición
+      const respuesta = await fetch("../php/carrito.php", {
+        method: "POST",
+        headers: { "Content-type": "application/json; charset=UTF-8" },
+        body: JSON.stringify({ vaciarCarrito: true }),
+      });
+      //Traducimos la respuesta
+      const respuestaJSON = await respuesta.json();
+      //Comprobamos que no diera que no tiene la sesión iniciada
+      if (Object.hasOwn(respuestaJSON, "noSesion")) {
+        cargarCuerpoPrincipal();
+      }
+      //Comprobamos que no diera error
+      if (Object.hasOwn(respuestaJSON, "error")) {
+        throw respuestaJSON["error"];
+      }
+    } catch (error) {
+      console.log(error);
     }
-    //Comprobamos que no diera error
-    if(Object.hasOwn(respuestaJSON, "error")){
-      throw respuestaJSON["error"];
-    }
-
-    //Cargamos otra vez el carrito
-    cargarCarrito();
   }
-  catch(error){
+  //Cargamos otra vez el carrito
+  cargarCarrito();
+}
+
+/**
+ * Guarda el producto en el carrito, si ya está en el carrito actualiza sus unidades (o lo elimina si son 0)
+ *
+ * @param   {int}  id_producto  ID del producto
+ * @param   {int}  unidades     Número de unidades
+ *
+ * @return  {bool}               No devuelve nada
+ */
+async function guardarProducto(id_producto, unidades, carritoBD = false) {
+  let datosPasar = {
+    id_producto: id_producto,
+    unidades: unidades,
+    carrito: carritoBD,
+  };
+  unidades > 0
+    ? (carrito[id_producto] = unidades)
+    : delete carrito[id_producto];
+  if (sessionStorage["email"]) {
+    try {
+      //Iniciamos la petición
+      const respuesta = await fetch("../php/carrito.php", {
+        method: "POST",
+        headers: { "Content-type": "application/json; charset=UTF-8" },
+        body: JSON.stringify({ guardarProducto: datosPasar }),
+      });
+      //Traducimos la respuesta
+      const respuestaJSON = await respuesta.json();
+      //Comprobamos que no diera que no tiene la sesión iniciada
+      if (Object.hasOwn(respuestaJSON, "noSesion")) {
+        cargarCuerpoPrincipal();
+      }
+      //Comprobamos que no diera error
+      if (Object.hasOwn(respuestaJSON, "error")) {
+        throw respuestaJSON["error"];
+      }
+      return respuestaJSON["carrito"];
+    } catch (error) {
+      console.log(error);
+    }
+  }
+}
+
+/**
+ * Actualiza el producto
+ *
+ * @param   {Event}  e  Evento que lo dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+async function actualizarProducto(e) {
+  let unidades;
+  let id_producto;
+  if (e.currentTarget.nodeName == "BUTTON") {
+    let botonEliminar = e.currentTarget;
+    inputUnidades = botonEliminar.previousElementSibling;
+    unidades = 0;
+    id_producto = inputUnidades.getAttribute("name");
+    delete carrito[id_producto];
+  } else {
+    inputUnidades = e.currentTarget;
+    unidades = inputUnidades.value;
+    id_producto = inputUnidades.getAttribute("name");
+    carrito[id_producto] = unidades;
+  }
+  let total = await guardarProducto(id_producto, unidades, true);
+  //Si se elimina el carrito volvemos a cargar el carrito
+  if (unidades <= 0) {
+    cargarCarrito();
+  } else {
+    document.getElementById(
+      "cuerpoCarrito"
+    ).lastElementChild.previousElementSibling.firstElementChild.textContent =
+      "Total: " + total + "€";
+  }
+}
+
+/**
+ * Carga la pantalla de procesamiento del pedido
+ *
+ * @param   {Event}  e  Evento que lo dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+async function procesarPedido(e) {
+  e.preventDefault();
+  let main = document.querySelector("main");
+  try {
+    //Comprobamos que tenga cuenta
+    if (!sessionStorage["email"]) {
+      mostrarInicioSesion();
+    } else {
+      activarPantallaCarga();
+      main.innerHTML = "";
+      main.classList.contains("cuerpoMosaico")
+        ? ""
+        : main.classList.add("cuerpoMosaico");
+      //Cargamos el carrito
+      let peticionCarrito = await fetch("../php/carrito.php", {
+        method: "POST",
+        headers: { "Content-type": "application/json;charset=utf-8" },
+        body: JSON.stringify({
+          cargarCarrito: {
+            email: sessionStorage["email"],
+            pagina: 0,
+            limite: 100,
+          },
+        }),
+      });
+      let jsonCarrito = await peticionCarrito.json();
+
+      //Cargamos la template
+      let peticionMustache = await fetch(
+        "../mustache/pedido.mustache",
+        opcionesFetchMustache
+      );
+      let jsonMustache = await peticionMustache.text();
+      let plantilla = Mustache.render(jsonMustache, jsonCarrito);
+      main.insertAdjacentHTML("beforeend", plantilla);
+      desactivarPantallaCarga();
+
+      let pedido = document.getElementById("pedido");
+      $(pedido).validate({
+        rules: {
+          direccion: {
+            required: true,
+            minlength: 2,
+          },
+        },
+        messages: {
+          direccion: "Debe introducir una dirección válida",
+        },
+      });
+    }
+    pedido.addEventListener("submit", realizarCompra);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/**
+ * Redirige al principal tras comprar los productos
+ *
+ * @return  {[void]}  No devuelve nada
+ */
+async function realizarCompra(e) {
+  try {
+    e.preventDefault();
+    setTimeout(500, function () {
+      cargarCuerpoPrincipal();
+    });
+    this.submit();
+  } catch (error) {
     console.log(error);
   }
 }

@@ -15,12 +15,15 @@
       <h3>{{nombre}}</h3>
       <form class="botonesCarrito" action="../php/carrito.php" method="POST">
         <input type="number" name="{{id_producto}}" minlength="0" value="{{unidades}}" />
-        <button type="button">Eliminar</button>
+        <button type="button" class="botonEliminarCarrito">Eliminar</button>
       </form>
       <p>Precio: {{precio}} €</p>
     </div>
     {{/productos}}
-    {{^ vacio}}<p><span>Total: {{total}} €</span></p>{{/vacio}}
+    {{^ vacio}}
+      <p><span>Total: {{total}} €</span></p>
+      <button type="button" id="botonProcesarPedido" data-idCarrito="{{id_carrito}}">Comprar</button>
+    {{/vacio}}
   </div>
   <div class="pagination">
     <ul>

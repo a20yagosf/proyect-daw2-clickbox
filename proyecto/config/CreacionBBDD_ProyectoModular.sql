@@ -236,7 +236,7 @@ CREATE TABLE IF NOT EXISTS pedidos(
    usuario_pedido VARCHAR(150) NOT NULL,
    fecha_pedido DATE NOT NULL,
    fecha_emtrega DATE NOT NULL,
-   entregado BOOLEAN NULL,
+   entregado BOOLEAN NULL default 0,
    -- KEYS Y CONSTRAINS 
    PRIMARY KEY (id_pedido),
    FOREIGN KEY (usuario_pedido) REFERENCES usuarios (email)

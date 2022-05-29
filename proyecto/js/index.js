@@ -1,6 +1,6 @@
 async function cargarPaginaPrincipal() {
     //Comprobamos si el usuario es anónimo o registrado viendo la variable local
-    let usuario = (localStorage["email"] != undefined);
+    let usuario = (sessionStorage["email"] != undefined);
     //Si da verdadero vemos el rol
     let administrador = usuario ? (sessionStorage["rol"] == 1) : usuario;
 
@@ -14,9 +14,8 @@ async function cargarPaginaPrincipal() {
     let resultadoMustache = Mustache.render(plantilla, datos);
     document.querySelector("header").insertAdjacentHTML("beforeend", resultadoMustache);
     //Añadimos los escuchadores para el header
-    document.getElementById("navSuscripciones").firstElementChild.addEventListener("click", cargarPaginaSuscripciones);
-    document.getElementById("navPartidas").firstElementChild.addEventListener("click", cargarPaginaPartidas);
-    document.getElementById("iconoCarrito").firstElementChild.addEventListener("click", irCarrito);
+   // document.getElementById("navSuscripciones").firstElementChild.addEventListener("click", cargarPaginaSuscripciones);
+    //document.getElementById("navPartidas").firstElementChild.addEventListener("click", cargarPaginaPartidas);
     if(usuario){
         let botonPerfilUsuario = document.getElementById("perfilUsuarioEnlace");
         botonPerfilUsuario.addEventListener("click", cargarPerfilUsuario);
@@ -31,6 +30,8 @@ async function cargarPaginaPrincipal() {
     let resultadoFooter   = Mustache.render(plantillaFooter, {});
     document.querySelector("main").insertAdjacentHTML("afterend", resultadoFooter);
     crearMapa();
+     //Añadimos el escuchador al carrito
+    document.getElementById("iconoCarrito").firstElementChild.addEventListener("click", irCarrito);
 
     //Añadimos los escuchadores para el menú 
     if(usuario) {
@@ -44,14 +45,7 @@ async function cargarPaginaPrincipal() {
     else {
         document.getElementById("inicioSesion").addEventListener('click', mostrarInicioSesion);
     }
-    //Si es administrador cargamos el panel de control
-    if(administrador){
 
-    }
-    //Si es un usuario estandar o anónimo cargamos la página principal
-    else {
-        cargarCuerpoPrincipal();
-    }
     return usuario;
 }
 
@@ -61,6 +55,28 @@ window.onload = async function () {
     let usuario = await cargarPaginaPrincipal();
     //Hacemos un tiemOut para que no se mire como se oculta el botón
     usuario ? setTimeout(desactivarPantallaCarga, 500) : desactivarPantallaCarga();
+
+    //Router
+      let rutasActivas = Array.from(document.querySelectorAll("[route]"));
+      rutasActivas.forEach(ruta => ruta.addEventListener("click", cambiarHash));
+
+    let paginaCompleta = window.location.pathname;
+    let indice = paginaCompleta.lastIndexOf("/");
+    var paginaActual = paginaCompleta.substring(indice);
+    switch(paginaActual) {
+        case "/":
+        cargarCuerpoPrincipal();
+        break;
+
+        case "/suscripciones":
+            cargarPaginaSuscripciones();
+            break;
+
+        case "/partidas":
+        cargarPaginaPartidas();
+        break;
+    }
+
     /*loginAutomatico();
     //Creamos el header
     crearHeader();

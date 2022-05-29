@@ -16,6 +16,7 @@
   margin-bottom: 10px;
   overflow: scroll;
   -webkit-overflow-scrolling: touch;
+  background: white;
 }
 
 // Cambiar la paleta de bootrsrap para la lista a los colores principales
@@ -54,7 +55,7 @@ ul.list-group {
 
   h2 {
     text-align: center;
-    margin: 5%;
+    padding: 5%;
   }
   p {
     font-size: 1.75rem;

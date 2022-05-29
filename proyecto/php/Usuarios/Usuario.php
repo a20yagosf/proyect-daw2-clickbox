@@ -4,11 +4,14 @@ namespace Usuarios;
 
 use DateInterval;
 use DateTime;
+use Exception;
 use \Infraestructuras\Bd as bd;
 use Infraestructuras\Email;
 use \Traits\Formulario as formulario;
 use \ServiciosProductos\Suscripcion as suscription;
 use variablesGlobales;
+use \Infraestructuras\Smarty as Smarty;
+use \Infraestructuras\TCPDF as PDF;
 
 class Usuario
 {
@@ -131,6 +134,7 @@ class Usuario
         if(count($productos) > 0){
             $total = $this->getPrecioTotal(["idCarrito" => $productos[0]["id_carrito"]]);
             $devolver = ["productos" =>$productos, "total" => $total];
+            $devolver["id_carrito"] = $productos[0]["id_carrito"];
         }
         else {
             $devolver = ["productos" =>$productos];
@@ -138,10 +142,87 @@ class Usuario
         return $devolver ;
     }
 
+    /**
+     * Devuelve el carrito del usuairo usando un procedimiento almacenado
+     *
+     * @param   array  $datos  Array asociativo con el email, página y límite
+     *
+     * @return  mixed          Devuelve o nada o todos los ratos del carrito (Con el límite)
+     */
+    public function getCarritoLocal($datos) {
+        //Instanciamos BD
+        $bd = new BD();
+        $claves = array_keys($datos["productos"]);
+        $sentenciaProc = "SELECT * FROM productos WHERE id_producto IN (:" . implode(',:', $claves) . ") LIMIT :pagina, :limite;";
+        foreach($claves as $indice){
+            $params[$indice] = intval($indice);
+        }
+        $params["pagina"] = intval($datos["pagina"]);
+        $params["limite"] =  intval($datos["limite"]);
+        $resultado = $bd->recuperarDatosBDNum($sentenciaProc, $params);
+        //Comprobamos si dio error
+        if(!$resultado instanceof \PDOStatement){
+            throw new \PDOException($resultado);
+        }
+        $productos = [];
+        $total = 0;
+        $indice = 0;
+        while($producto = $resultado->fetch(\PDO::FETCH_ASSOC)) {
+            $productos[$indice] = $producto;
+            $productos[$indice]["unidades"] = $datos["productos"][$producto["id_producto"]];
+            $total += $producto["precio"];
+            $indice++;
+        }
+        if(count($productos) > 0){
+            $devolver = ["productos" =>$productos, "total" => number_format($total, 2)];
+        }
+        else {
+            $devolver = ["productos" =>$productos];
+        }
+        return $devolver ;
+    }
+
+    /**
+     * Guarda el carrito local en la BD
+     *
+     * @param   Array  $carrito  Carrito array asociativo [id_producto => unidades]
+     *
+     * @return  array            Array con éxito o excepción
+     */
+    public function guardarCarrito($carrito) {
+        try {
+            $bd = new BD();
+            $sentencia = "SELECT id_carrito FROM carritos where usuario_carrito = :usuario_carrito";
+            $pdoStatement = $bd->recuperDatosBD($sentencia, ["usuario_carrito" => $this->email]);
+            //Comprobamos si dio error
+            if(!$pdoStatement instanceof \PDOStatement){
+                throw new \PDOException($pdoStatement);
+            }
+            $carritoBD = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
+            unset($pdoStatement);
+            unset($bd);
+            //Comprobamos que contenga algo
+            if($carritoBD){
+                //Vaciamos el carrito y lo actualizamos
+                $this->vaciarCarrito();
+                foreach($carrito as $id_producto => $unidades){
+                    $this->guardarProducto(["id_carrito" => $carritoBD["id_carrito"],"unidades" => $unidades, "id_producto" => $id_producto]);
+                }
+            }
+            return ["exito" => true];
+        }
+        catch(\PDOException $pdoError) {
+            throw $pdoError;
+        }
+        catch(\Exception $error){
+            throw $error;
+        }
+    }
+
     public function guardarProducto($datos) {
         try {
             //Comprobamos si es un producto nuevo o ya lo tenemos en el carrito (mediante una variable que se pasa)
-            if($datos["carrito"]) {
+            if(isset($datos["carrito"])) {
                 $resultado = $datos["unidades"] > 0 ? $this->actualizarCarrito($datos) : $this->eliminarProducto($datos);
             }
             //Lo estamos añadiendo por primera vez
@@ -171,13 +252,18 @@ class Usuario
             $bd = new BD();
             $sentencia = "SELECT id_carrito FROM carritos WHERE usuario_carrito = ?;";
             $id_carrito = $bd->recuperDatosBD($sentencia, [$this->email])->fetch(\PDO::FETCH_ASSOC);
-            $datos["idCarrito"] = $id_carrito;
-            if($datos["unidades"] > 0){
-                $sentenciaAct = "UPDATE productos_carritos SET unidades = :unidades  WHERE carrito = :carrito AND producto = :producto;";
-                $bd->agregarModificarDatosBDNum($sentenciaAct, ["unidades" => intval($datos["unidades"]), "carrito" => intval($id_carrito), "producto" => intval($datos["id_producto"])]);
+            if($id_carrito == false){
+                throw new \PDOException($id_carrito);
             }
             else {
-                $this->eliminarProducto($datos);
+                $datos["idCarrito"] = $id_carrito["id_carrito"];
+                if($datos["unidades"] > 0){
+                    $sentenciaAct = "UPDATE productos_carritos SET unidades = :unidades  WHERE carrito = :carrito AND producto = :producto;";
+                    $bd->agregarModificarDatosBDNum($sentenciaAct, ["unidades" => intval($datos["unidades"]), "carrito" => intval($datos["idCarrito"]), "producto" => intval($datos["id_producto"])]);
+                }
+                else {
+                    $this->eliminarProducto($datos);
+                }
             }
         }
         catch(\PDOException $pdoError) {
@@ -198,8 +284,18 @@ class Usuario
         try {
             //Instanciamos BD
             $bd = new BD();
-            $sentencia = "DELETE carritos WHERE usuario_carrito = ?;";
-            $bd->agregarModificarDatosBD($sentencia, [$this->email]);
+            $sentenciaCarrito = "SELECT id_carrito FROM carritos where usuario_carrito = :usuario_carrito;";
+            $pdoStatement = $bd->recuperDatosBD($sentenciaCarrito, ["usuario_carrito" => $this->email]);
+            if(!$pdoStatement instanceof \PDOStatement){
+                throw new \PDOException($pdoStatement);
+            }
+            $idCarrito = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
+            if($idCarrito){
+                $idCarrito = $idCarrito["id_carrito"];
+                $sentencia = "DELETE FROM productos_carritos WHERE carrito = :carrito;";
+                $bd->agregarModificarDatosBDNum($sentencia, ["carrito" => intval($idCarrito)]);
+            }
+            return $idCarrito;
         }
         catch(\PDOException $pdoError) {
             throw $pdoError;
@@ -207,10 +303,21 @@ class Usuario
         catch(\Exception $error){
             throw $error;
         }
-        return true;
     }
 
-    public function anadirProducto(){
+    public function anadirProducto($datos){
+        try {
+            //Instanciamos BD
+            $bd = new BD();
+            $sentenciaAct = "INSERT INTO productos_carritos  (carrito, producto, unidades) VALUES (:carrito, :producto, :unidades)";
+            $bd->agregarModificarDatosBDNum($sentenciaAct, ["carrito" => intval($datos["id_carrito"]), "producto" => intval($datos["id_producto"]), "unidades" => intval($datos["unidades"])]);
+        }
+        catch(\PDOException $pdoError) {
+            throw $pdoError;
+        }
+        catch(\Exception $error){
+            throw $error;
+        }
     }
 
     /**
@@ -767,5 +874,94 @@ class Usuario
         //Hacemos fetchAll ya que la búsqueda está limitada a 5 como mucho
         $juegos = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
         return $juegos;
+    }
+
+    /**
+     * Crea el pedido
+     *
+     * @param   int  $id_carrito  Id del carrito
+     * @param   string  $direccion   Dirección de envío
+     *
+     * @return  void               Muestra una factura por pantalla
+     */
+    public function crearPedido($id_carrito, $direccion) {
+        try {
+            //Primero cogemos los datos del carrito
+            $bd = new BD();
+            $total = $this->getPrecioTotal(["idCarrito" => $id_carrito]);
+
+            //Creamos la transaccion
+            $pdo = $bd->getPDO();
+            $pdo->beginTransaction();
+            $sentenciaPedido = "INSERT INTO pedidos (precio, direccion, usuario_pedido, fecha_pedido) VALUES (:precio, :direccion, :usuario_pedido, NOW())";
+
+            $pdoStatementPedido = $pdo->prepare($sentenciaPedido);
+            //Cargamos los parámetros
+            $bd->asignarValoresParam(["precio" => intval($total), "direccion" => $direccion, "usuario_pedido" => $this->getEmail()], $pdoStatementPedido);
+            $pdoStatementPedido->execute();
+            $id_pedido = $pdo->lastInsertId();
+            if(!$id_pedido) {
+                throw new \PDOException($pdo->errorInfo()[2]);
+            }
+            
+            //Añadimos los productos al pedido
+            $sentencia = "SELECT * FROM productos_carritos where carrito = :carrito";
+            $pdoStatement = $bd->recuperDatosBD($sentencia, ["carrito" => $id_carrito]);
+            if(!$pdoStatement instanceof \PDOStatement){
+                throw new \PDOException($pdoStatement);
+            }
+            while($producto = $pdoStatement->fetch(\PDO::FETCH_ASSOC)) {
+                $sentenciaProductos = "INSERT INTO pedidos_productos (pedido, producto, unidades) VALUES (:pedido, :producto, :unidades)";
+                $pdoStatementProductos = $pdo->prepare($sentenciaProductos);
+                $bd->asignarValoresParam(["pedido" => $id_pedido, "producto" => $producto["producto"], "unidades" => $producto["unidades"]], $pdoStatementProductos);
+                $pdoStatementProductos->execute();
+                if(!$pdo->lastInsertId()){
+                    throw new \PDOException($pdo->errorInfo()[2]);
+                }
+            }
+            $pdo->commit();
+            return $id_pedido;
+
+        } catch (\PDOException $pdoError) {
+            $numPag = "Error " . $pdoError->getCode() . " :" . $pdoError->getMessage();
+            $pdo->rollBack();
+        } catch (\Exception $error) {
+            $numPag = "Error " . $error->getCode() . " :" . $error->getMessage();
+            $pdo->rollBack();
+        }
+    }
+
+    /**
+     * Genera una factura del carrrito
+     *
+     * @return  void  No devuelve nada
+     */
+    public function generarFacturaPedido ($id_pedido, $direccion) {
+        try {
+            //Cogemos los datos del pedido
+            $bd = new BD();
+            $carrito = $this->getCarrito(["email" => $this->email, "pagina" =>0, "limite" => 100]);
+            $carrito["email"] = $this->email;
+            $carrito["direccion"] = $direccion;
+            $carrito["id_pedido"] = $id_pedido;
+            $carrito["fecha_pedido"] = date("m-d-Y");
+            $carrito["total"] = count($carrito["productos"]) > 0 ? $this->getPrecioTotal(["idCarrito" =>$carrito["id_carrito"]]) : 0;
+
+            //Eliminamos el carrito
+            $this->vaciarCarrito();
+        }
+        catch (\PDOException $pdoError) {
+            $numPag = "Error " . $pdoError->getCode() . " :" . $pdoError->getMessage();
+        } catch (\Exception $error) {
+            $numPag = "Error " . $error->getCode() . " :" . $error->getMessage();
+        }
+
+        //Creamos la plantilla de smarty
+        $smarty = new Smarty(); //["data" => $carrito]
+        $contenido = $smarty->renderTemplate($carrito, "factura_carrito.tpl");
+        //$title, $asunto, $keyWords, $header = false, $footer = false
+        $tituloPdf = "Factura " . date('d-m-Y');
+        $pdf   = new PDF($tituloPdf, $tituloPdf, "");
+        $pdf->generarPDFactura($contenido, date('d-m-Y_H_i_s'));
     }
 }

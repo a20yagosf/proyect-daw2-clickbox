@@ -324,6 +324,10 @@
     }*/
 }
 
+input.error, label.error {
+    display: inline-block;
+}
+
 label.error {
     background-image: url("../img/iconos/iconoError.svg");
     padding-left: 1.2em;

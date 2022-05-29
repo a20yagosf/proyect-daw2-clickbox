@@ -62,9 +62,10 @@ h1, h2, h3, h4, h5, h6 {
 
 //Main
 main {
+    min-height: 80vh;
     font-family: "Resolve";
     position: relative;
-    padding: 1.5% 0%;
+    padding: 0.01% 0%;
 }
 
 //Presentación
@@ -976,6 +977,10 @@ main {
         rect {
             fill: $colorPrincipal;
             transform: rotate(180deg) translate(-500px, -229px);
+        }
+
+        rect:first-of-type {
+            fill: $fondoLogo;
         }
     }
 }

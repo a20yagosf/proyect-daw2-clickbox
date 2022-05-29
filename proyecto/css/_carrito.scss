@@ -30,6 +30,20 @@
         }
     }
 
+    #cuerpoCarrito {
+        position: relative;
+
+        & > button {
+            @include boton($colorPrincipal, 1.3em);
+            margin: auto;
+            position: absolute;
+            inset-inline-start: 50%;
+            transform: translateX(-50%);
+            font-size: 1.3em;
+            padding: 0.8% 5%;
+        }
+    }
+
     .productoCarrito {
         padding: 1%;
 
@@ -54,6 +68,8 @@
                 //Left
                 inset-inline-start: 50%;
                 transform: translate(-50%, -50%);
+                border: 1px solid oscurecerColor($colorPrincipal);
+                border-radius: $borderRadius;
             }
 
             //Grid como hijo

@@ -1,0 +1,101 @@
+#pedido {
+    background-color: $colorLetra;
+    margin: 0% auto;
+    width: 80%;
+    border: 1px solid $colorPrincipal;
+    border-radius: $borderRadius;
+    padding: 2%;
+
+    header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: static;
+        //Margin botom
+        margin-block-end: 2%;
+        z-index: 1;
+
+        img {
+            width: $heighPartidaImg;
+            //Margin right
+            margin-inline-end: 5%;
+        }
+        
+        h2 {
+            font-size: 2.3em;
+        }
+    }
+
+    h4 {
+        background-color: $colorPrincipal;
+        border-radius: $borderRadius $borderRadius 0px 0px;
+        color: $colorLetra;
+        padding: 1%;
+        margin: 2% 0px;
+    }
+
+    .partePedido {
+        //Border botom
+        border-block-end: 1px solid oscurecerColor($colorLetra);
+        padding: 1% 0%;
+
+        label {
+            margin: 0% 5%;
+        }
+
+        input {
+            @include inputFormulario();
+            width: 50%;
+            padding: 0.5%;
+        }
+
+        table {
+            border: 1px solid oscurecerColor($colorLetra);
+            border-radius: $borderRadius;
+            width: 90%;
+            margin: 1% auto;
+            border-collapse: collapse;
+
+            input, span {
+                //Margin left
+                margin-inline-start: 2%;
+                padding: 1%;
+                width: 20%;
+                text-align: center;
+            }
+
+            img {
+                width: $sizeLogoFooter;
+            }
+
+            td {
+                padding: 2%;
+                width: 50%;
+            }
+        }
+    }
+
+    & > div:last-of-type {
+        display: flex;
+        margin: 2%;
+        justify-content: center;
+        align-items: center;
+
+        input[type="submit"] {
+            @include boton($colorPrincipal, 1.5em);
+            //Margin right
+            margin-inline-end: 2%;
+            padding: 1% 2%;
+        }
+
+        span {
+            font-size: 1.8rem;
+            width: 25%;
+
+            span {
+                //Margin left
+                margin-inline-start: 2%;
+            }
+        }
+    }
+}

@@ -1,0 +1,33 @@
+<form id="pedido" method="POST" action="../php/pedido.php" target="_blank">
+    <header>
+        <img src="../img/logoClickBox.svg" alt="Logo Clickbox"/>
+        <h2>Tramitar pedido ({{productos|contarArray}} productos)</h2>
+    </header>
+    <h4>Dirección</h4>
+    <div class="partePedido">
+        <label for="direccion">Dirección</label>
+        <input type="text" name="direccion" id="direccion"/>
+        <input type="hidden" name="id_carrito" value="{{id_carrito}}"/>
+    </div>
+    <h4>Productos</h4>
+    <div class="partePedido">
+        {{#productos}}
+            <table>
+                <tr>
+                    <td rowspan="3"><img src="{{imagen_producto}}" alt="{{nombre}}"></td>
+                    <td>{{nombre}}</td>
+                </tr>
+                <tr>
+                    <td>Precio (unidad): <span>{{precio}} €</span></td>
+                </tr>
+                <tr>
+                    <td>Cantidad: <span>{{unidades}}</span></td>
+                </tr>
+            </table>
+        {{/productos}}
+    </div>
+    <div>
+        <input type="submit" data-idCarrito="{{id_carrito}}" value="Comprar"/>
+        <span>Importe total: <span>{{total}} €</span></span>
+    </div>
+</form>

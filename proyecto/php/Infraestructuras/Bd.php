@@ -43,6 +43,15 @@ class Bd
     }
 
     /**
+     * Devuelve el pdo para pdoer hacer transacciones
+     *
+     * @return  \PDO  Objeto PDO
+     */
+    public function getPDO() {
+        return $this->conectarBD();
+    }
+
+    /**
      * Crea una conexión la BD
      *
      * @return  PDO  PDO con la conexión
@@ -376,7 +385,7 @@ class Bd
      *
      * @return  [type]                 [return description]
      */
-    private function asignarValoresParam($valores, $pdoStatement)
+    public function asignarValoresParam($valores, $pdoStatement)
     {
         //Asignamos los valores
         foreach ($valores as $indice => $valor) {

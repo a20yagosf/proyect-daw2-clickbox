@@ -359,9 +359,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 main {
+  min-height: 80vh;
   font-family: "Resolve";
   position: relative;
-  padding: 1.5% 0%;
+  padding: 0.01% 0%;
 }
 
 #presentacion {
@@ -1149,6 +1150,9 @@ main {
   fill: #0291A5;
   transform: rotate(180deg) translate(-500px, -229px);
 }
+#ventanaCarga svg rect:first-of-type {
+  fill: #afc2c4;
+}
 
 #info_partidas, #filtro, #result_panel, .pagination {
   padding: 3%;
@@ -1164,6 +1168,7 @@ main {
   margin-bottom: 10px;
   overflow: scroll;
   -webkit-overflow-scrolling: touch;
+  background: white;
 }
 
 .panel-primary > .panel-heading {
@@ -1198,7 +1203,7 @@ ul.list-group .noPartidas {
 }
 #info_partidas h2 {
   text-align: center;
-  margin: 5%;
+  padding: 5%;
 }
 #info_partidas p {
   font-size: 1.75rem;
@@ -2094,6 +2099,10 @@ form#formulario_tienda div.center_submit button {
       background-repeat: no-repeat;
       background-size: contain;
   }*/
+}
+
+input.error, input.exito, label.error, label.exito {
+  display: inline-block;
 }
 
 label.error, label.exito {
@@ -3105,6 +3114,29 @@ h2, h3 {
   background-color: #7e9296;
   cursor: not-allowed;
 }
+#carrito #cuerpoCarrito {
+  position: relative;
+}
+#carrito #cuerpoCarrito > button {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.3em;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  margin: auto;
+  position: absolute;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  font-size: 1.3em;
+  padding: 0.8% 5%;
+}
+#carrito #cuerpoCarrito > button:hover {
+  background-color: #03bdd7;
+}
 #carrito .productoCarrito {
   padding: 1%;
   display: grid;
@@ -3128,6 +3160,8 @@ h2, h3 {
   inset-block-start: 50%;
   inset-inline-start: 50%;
   transform: translate(-50%, -50%);
+  border: 1px solid #013840;
+  border-radius: 10px;
 }
 #carrito .productoCarrito input[type=number] {
   padding: 0.5% 0%;
@@ -3170,6 +3204,110 @@ h2, h3 {
   padding: 100px;
   font-size: 2em;
   text-align: center;
+}
+
+#pedido {
+  background-color: #F3F3F3;
+  margin: 0% auto;
+  width: 80%;
+  border: 1px solid #0291A5;
+  border-radius: 10px;
+  padding: 2%;
+}
+#pedido header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: static;
+  -webkit-margin-after: 2%;
+          margin-block-end: 2%;
+  z-index: 1;
+}
+#pedido header img {
+  width: 300px;
+  -webkit-margin-end: 5%;
+          margin-inline-end: 5%;
+}
+#pedido header h2 {
+  font-size: 2.3em;
+}
+#pedido h4 {
+  background-color: #0291A5;
+  border-radius: 10px 10px 0px 0px;
+  color: #F3F3F3;
+  padding: 1%;
+  margin: 2% 0px;
+}
+#pedido .partePedido {
+  -webkit-border-after: 1px solid silver;
+          border-block-end: 1px solid silver;
+  padding: 1% 0%;
+}
+#pedido .partePedido label {
+  margin: 0% 5%;
+}
+#pedido .partePedido input {
+  margin: 2% 0%;
+  padding: 1%;
+  font-family: "Resolve";
+  border-radius: 5px;
+  border: 1px solid #0291A5;
+  outline-color: #FFB775;
+  transition: all 1s ease-in-out;
+  width: 50%;
+  padding: 0.5%;
+}
+#pedido .partePedido table {
+  border: 1px solid silver;
+  border-radius: 10px;
+  width: 90%;
+  margin: 1% auto;
+  border-collapse: collapse;
+}
+#pedido .partePedido table input, #pedido .partePedido table span {
+  -webkit-margin-start: 2%;
+          margin-inline-start: 2%;
+  padding: 1%;
+  width: 20%;
+  text-align: center;
+}
+#pedido .partePedido table img {
+  width: 180px;
+}
+#pedido .partePedido table td {
+  padding: 2%;
+  width: 50%;
+}
+#pedido > div:last-of-type {
+  display: flex;
+  margin: 2%;
+  justify-content: center;
+  align-items: center;
+}
+#pedido > div:last-of-type input[type=submit] {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1.5em;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  -webkit-margin-end: 2%;
+          margin-inline-end: 2%;
+  padding: 1% 2%;
+}
+#pedido > div:last-of-type input[type=submit]:hover {
+  background-color: #03bdd7;
+}
+#pedido > div:last-of-type span {
+  font-size: 1.8rem;
+  width: 25%;
+}
+#pedido > div:last-of-type span span {
+  -webkit-margin-start: 2%;
+          margin-inline-start: 2%;
 }
 
 footer {

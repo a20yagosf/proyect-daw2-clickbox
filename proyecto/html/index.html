@@ -30,10 +30,12 @@
                     <mask id="maskLogo">
                         <title>Clip del logo de la página</title>
                         <desc>El logo de Clickbox para usar como máscara</desc>
-                        <image x="0" y="0"   width="500" height="229" href="../img/mascaraLogo.svg" preserveAspectRatio="xMidYMax meet"></image>
+                        <image x="0" y="0"   width="500" height="229" href="../img/mascaraLogo.svg" preserveAspectRatio="xMidYMax meet" ></image>
                     </mask>
                 </defs>
-                <rect x="0" y="0" width="500" height="229" fill="red" mask="url(#maskLogo)" style="transform: rotate(180deg) translate(-500px, -229px)">
+                <rect x="0" y="0" width="500" height="229" fill="#0291A5" mask="url(#maskLogo)" style="transform: rotate(180deg) translate(-500px, -229px)">
+                </rect>
+                <rect x="0" y="0" width="500" height="229" fill="#0291A5" mask="url(#maskLogo)" style="transform: rotate(180deg) translate(-500px, -229px)">
                     <animate attributeType="XML" attributeName="height" from="0" to="229" dur="3s" begin="1s" repeatCount="indefinite"></animate>
                 </rect>
                 <text x="30%" y="280">Cargando</text>
