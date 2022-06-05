@@ -1,0 +1,45 @@
+<form id="formPanelAdmin" action="../php/panelAdministrador.php" method="POST" enctype="multipart/form-data">
+  <label for="nombre_juego">Nombre juego</label>
+  <div class="inputDesplegable">
+    <input type="text" name="nombre_juego" id="nombre_juego" data-id="{{juego_partida}}" value="{{nombre_juego}}" />
+  </div>
+  <label for="fecha">Fecha</label>
+  <div class="contenedorInput">
+    <input type="date" name="fecha" id="fecha" value="{{fecha}}"/>
+  </div>
+  <label for="plazas_min">Plazas mínimas</label>
+  <div class="contenedorInput">
+    <input type="number" name="plazas_min" id="plazas_min"  value="{{plazas_min}}"/>
+  </div>
+  <label for="plazas_totales">Plazas totales</label>
+  <div class="contenedorInput">
+    <input type="number" name="plazas_totales" id="plazas_totales"  value="{{plazas_totales}}"/>
+  </div>
+  <label for="hora_inicio">Hora de inicio</label>
+  <div class="contenedorInput">
+    <input type="time" name="hora_inicio" id="hora_inicio" value="{{hora_inicio|date_format:'H:i'}}"/>
+  </div>
+  <label for="duracion">Duracion (min)</label>
+  <div class="contenedorInput">
+    <input type="number" name="duracion" id="duracion" value="{{duracion}}"/>
+  </div>
+  <label for="director_partida">Director/a partida</label>
+  <div class="inputDesplegable">
+    <input type="text" name="director_partida" id="director_partida" value="{{director_partida}}"/>
+  </div>
+  {{^ editarPartida}}
+    <label for="imagen_partida">Imágenes de la partida</label>
+    <div class="contenedorInput">
+      <input type="file" name="imagen_partida[]" id="imagen_partida" value="{{imagen_partida}}"/>
+    </div>
+  {{/ editarPartida}}
+  <p id="resultadoOperacion"></p>
+    <input type="submit" value="Guarda cambios" data-id="{{id_partida}}" />
+    {{# editarPartida}}
+      <button
+        type="button"
+        id="eliminarPartida" data-id="{{id_partida}}">
+        Eliminar partida</button>
+    {{/ editarPartida}}
+    <button type="button" id="cancelarPartida">Cancelar</button>
+</form>

@@ -106,8 +106,15 @@
         }
 
 
-        input, label, select, .inputDesplegable {
+        label, .contenedorInput, .inputDesplegable {
             flex-basis: calc(100%/2);
+        }
+
+        & > .contenedorInput {
+            input, select {
+                width: 100%;
+                padding: 2%;
+            }
         }
 
         .inputDesplegable {
@@ -144,6 +151,8 @@
 
         input[type="submit"], button {
             @include boton($colorPrincipal, 1.5rem);
+            //margin top
+            margin-block-start: 3%;
              //Margin bottom
             margin-block-end: 0%;
             margin: 0% 2%;
@@ -250,6 +259,12 @@
         tbody {
             td {
                 padding: 0.3% 0%;
+            }
+
+            //Renglón cuando no se encuentran elementos
+            td[colspan="7"]{
+                padding: 3%;
+                font-size: 1.2em;
             }
 
             tr:not(tr:last-of-type) {

@@ -153,9 +153,6 @@ class Administrador extends user{
     public function editarProducto(){
         
     }
-    public function eliminarProducto(){
-        
-    }
     public function crearProducto(){ // producto o accesorio
         
     }
@@ -237,7 +234,7 @@ class Administrador extends user{
         //Instanciamos la BD
         $bd = new bd();
         //Creamos la sentencia
-        $sentencia = "SELECT P.juego_partida, PR.nombre as nombre_juego, P.fecha, P.plazas_min, P.plazas_totales, P.hora_inicio, P.duracion, P.director_partida  FROM partidas AS P INNER JOIN productos as PR ON P.juego_partida = PR.id_producto WHERE id_partida = :id_partida";
+        $sentencia = "SELECT P.id_partida, P.juego_partida, PR.nombre as nombre_juego, P.fecha, P.plazas_min, P.plazas_totales, P.hora_inicio, P.duracion, P.director_partida  FROM partidas AS P INNER JOIN productos as PR ON P.juego_partida = PR.id_producto WHERE id_partida = :id_partida";
         //Guardamos el id en un array ya que es lo que pide el método y lo convertimos a int ya que al venir de JSOn viene como string
         $datosAsignar = ["id_partida" => intval($idPartida)];
         //Mandamos la sentencia para que se ejecute

@@ -50,7 +50,23 @@ let routerClickBox = new Router('routerClickbox', [
   {
     path: "/perfil_usuario",
     name: "Perfil usuario"
-  }
+  },
+  {
+    path: "/panel_administracion",
+    name: "Panel Administración"
+  },
+  {
+    path: "/panel_administracion/partidas",
+    name: "Panel Administración Partidas"
+  },
+  {
+    path: "/panel_administracion/partidas/reservas",
+    name: "Panel Administración Reservas"
+  },
+  {
+    path: "/panel_administracion/usuarios",
+    name: "Panel Administración Usuarios"
+  },
 ]);
 
 window.onunload = async function () {
@@ -100,6 +116,18 @@ function cambioEnElHash() {
       break;
 
     case "/perfil_usuario" : 
+      cargarPerfilUsuario();
+      break;
+     
+    case "/panel_administracion_partidas" : 
+      cargarPanelAdministracion("partidas");
+      break;
+      
+    case "/panel_administracion_partidas_reservas" : 
+      cargarPerfilUsuario();
+      break;
+
+    case "/panel-administracion/usuarios" : 
       cargarPerfilUsuario();
       break;
   }
@@ -1368,20 +1396,6 @@ function marcarCamposOblig(camposOblig) {
 }
 
 /**
- * Comprueba que todos los campos obligatorios tengan valor
- *
- * @param   {array}  camposOblig  Todos los ide de los campos obligatorios
- *
- * @return  {boolean}               True si todos los campos están cubiertos, False si no
- */
-function comprobarCamposOblig(camposOblig) {
-  return (
-    camposOblig.find((campo) => document.getElementById(campo).value == "") ==
-    undefined
-  );
-}
-
-/**
  * Comprueba que las contraseñas coincidan
  *
  * @param   {string}  clave1  Clave
@@ -1975,85 +1989,7 @@ function ocultarMostrarOpcionesCreacion(e) {
     : $(filtros).slideUp(500);
 }
 
-/**
- * Crea una partida en la BD
- * @param {Event}  Evento que dispara
- */
-async function crearPartida(e) {
-  //Prevenimos que envíe el formulario
-  e.preventDefault();
-  let resultado = document.getElementById("resultadoOperacion");
-  try {
-    let camposOblig = [
-      "fecha",
-      "hora_inicio",
-      "duracion",
-      "plazas_min",
-      "plazas_totales",
-      "nombre_juego",
-    ];
-    //Comprobamos que cubriera todo
-    if (!comprobarCamposOblig(camposOblig)) {
-      throw "Debe cubrir todos los campos";
-    }
-    //Comprobamos que la fecha sea válida
-    let fecha = document.getElementById("fecha").value;
-    if (!validarFecha(fecha)) {
-      throw "Debe introducir una fecha válida";
-    }
-    //Datos
-    let juego = document.getElementById("nombre_juego").dataset.id;
-    let hora_inicio = document.getElementById("hora_inicio").value;
-    let duracion = document.getElementById("duracion").value;
-    let plazas_min = document.getElementById("plazas_min").value;
-    let plazas_totales = document.getElementById("plazas_totales").value;
-    let imagenes = Array.from(document.getElementById("imagen_partida").files);
-    let datosPartida = {
-      juego_partida: juego,
-      fecha: fecha,
-      hora_inicio: hora_inicio,
-      duracion: duracion,
-      plazas_min: plazas_min,
-      plazas_totales: plazas_totales,
-    };
-    //Mensaje que enviaremos
-    const mensajeJSON = new FormData();
-    //Recorremos las imagenes y las voy añadiendo en el array
-    imagenes.forEach((imagen) =>
-      mensajeJSON.append("imagenesPartida[]", imagen)
-    );
-    mensajeJSON.append("datosPartida", JSON.stringify(datosPartida));
-    //Lanzamos la petición
-    const respuesta = await fetch("../php/panelAdministrador.php", {
-      method: "POST",
-      body: mensajeJSON,
-    });
-    const respuestaJSON = await respuesta.json();
-    if (Object.hasOwn(respuestaJSON, "error")) {
-      throw respuestaJSON["error"];
-    }
-    resultado.textContent = "Se ha creado la partida con éxito";
-    resultado.removeAttribute("class", "error");
-    resultado.setAttribute("class", "exito");
-    //Limpiamos la ventana de éxito
-    limpiarCampo(resultado, 2000);
-    //Limpiamos el resto de campos del formulario
-    let todosInput = Array.from(
-      document.querySelectorAll(
-        "input:not(input[type='file'], input[type='submit'])"
-      )
-    );
-    limpiarCampoArrayInput(todosInput, 2000);
-    //Limpiamos el campo File
-    limpiarCampoFile(document.getElementById("imagen_partida"), 2000);
-    //Limpiamos el select
-    limpiarCampoSelect(document.querySelector("select"), 2000);
-  } catch ($error) {
-    resultado.textContent = $error;
-    resultado.removeAttribute("class", "exito");
-    resultado.setAttribute("class", "error");
-  }
-}
+
 
 /**
  * Restringe el acceso a los que no son usuarios
@@ -2083,117 +2019,6 @@ function restringirAccesoNoAdmin() {
   }
 }
 
-/**
- * Carga la página de filtrar partidas
- *
- * @param   {Object}  filtros  Filtros a aplicar tipo {clave: valor}
- * @param   {int}        Página en la nos encontramos
- *
- */
-function cargarPartidasAdmin() {
-  let contenedorAdmin = document.getElementById("panelAdmin");
-  //Limpiamos el contenedor
-  if (contenedorAdmin.firstElementChild.nextElementSibling != null) {
-    contenedorAdmin.removeChild(
-      contenedorAdmin.firstElementChild.nextElementSibling
-    );
-  }
-  //Creamos unos botones para cambiar a modo reserva
-  let contenedorBotones = crearContenedor("div", { id: "contenedorBotones" });
-  let botonPartidas = crearBoton("Partidas", {
-    type: "button",
-    "data-nombre": "partidas",
-  });
-  let botonReservas = crearBoton("Reservas", {
-    type: "button",
-    "data-nombre": "reservas",
-    class: "noActivo",
-  });
-  contenedorBotones.append(botonPartidas, botonReservas);
-  //Añadimos los escuchadores
-  botonPartidas.addEventListener("click", cargarPartidasAdmin);
-  botonReservas.addEventListener("click", cargarReservasAdmin);
-
-  //Creamos el contenedor que almacenará todo
-  let contenedor = crearContenedor("div", { id: "contenedorElementos" });
-  //Formulario de filtrado
-  let formFiltrado = crearContenedor("form", {
-    id: "filtradoPartida",
-    action: "../php/panelAdministrador.php",
-    method: "POST",
-  });
-  //Le añadimos el escuchador al formulario
-  formFiltrado.addEventListener("submit", activarFiltro);
-  //Creamos cada uno de los label e inputs de filtrado
-  let labelJuego = crearElem("label", { for: "juego_partida" }, "Juego");
-  let inputJuego = crearElem("input", {
-    type: "text",
-    name: "juego_partida",
-    id: "juego_partida",
-  });
-  labelJuego.append(inputJuego);
-  let labelFecha = crearElem("label", { for: "fecha" }, "Fecha inicio");
-  let inputFecha = crearElem("input", {
-    type: "date",
-    name: "fecha",
-    id: "fecha",
-  });
-  let labelFechaFin = crearElem("label", { for: "fechaFin" }, "Fecha fin");
-  let inputFechaFin = crearElem("input", {
-    type: "date",
-    name: "fechaFin",
-    id: "fechaFin",
-  });
-  labelFecha.append(inputFecha);
-  labelFechaFin.append(inputFechaFin);
-  let inputSubmit = crearElem("input", { type: "submit", value: "Filtrar" });
-  //Añadimos todos al form
-  formFiltrado.append(labelJuego, labelFecha, labelFechaFin, inputSubmit);
-
-  //Creamos la tabla
-  let tabla = crearContenedor("table", { id: "listaElementos" });
-  //Creamos el thead
-  let encabezadoTabla = document.createElement("thead");
-  //Creamos la fila del encabezado menos la última fila del botón
-  let filaEncabezado = crearFilaTabla("th", [
-    "ID",
-    "Juego",
-    "Fecha",
-    "Nº jugadores",
-    "Director partida",
-  ]);
-  //Creo el th del botón
-  let encabezadoBoton = crearContenedor("th", { colspan: "2" });
-  //Creo el botón
-  let botonEncabezado = crearBoton("Nueva partida +");
-  //Añadimos el escuchador
-  botonEncabezado.addEventListener("click", modoCrearPartidasAdmin);
-  //Añadimos todo al encabezado y después a la tabla
-  encabezadoBoton.append(botonEncabezado);
-  filaEncabezado.append(encabezadoBoton);
-  encabezadoTabla.append(filaEncabezado);
-  tabla.append(encabezadoTabla);
-  //Cuerpo de la tabla
-  let cuerpoTabla = document.createElement("tbody");
-  tabla.append(cuerpoTabla);
-  //Añadimos todo al contenedor
-  contenedor.append(contenedorBotones, formFiltrado, tabla);
-  //Añadimos todo al cuerpo
-  contenedorAdmin.append(contenedor);
-  //Ponemos partidas como marcado
-  let lista = document.getElementById("opcionesPanelAdmin");
-  let elementosActivo = Array.from(
-    lista.querySelectorAll("a[class='listaActivo']")
-  );
-  //Creamos la paginacion
-  elementosActivo.forEach((elemento) =>
-    elemento.classList.remove("listaActivo")
-  );
-  document
-    .getElementById("pestPartidas")
-    .firstElementChild.classList.add("listaActivo");
-  filtrarPartidasAdmin();
-}
 
 /**
  * Carga la página con las reservas
@@ -2285,122 +2110,6 @@ function cargarReservasAdmin() {
 }
 
 /**
- * Crear el contenedor con las partidas para Admin (todas las partidas)
- *
- * @return  {void}  No devuelve nada
- */
-function modoCrearPartidasAdmin() {
-  let contenedorAdmin = document.getElementById("panelAdmin");
-  //Limpiamos el contenedor
-  if (contenedorAdmin.firstElementChild.nextElementSibling != null) {
-    contenedorAdmin.removeChild(
-      contenedorAdmin.firstElementChild.nextElementSibling
-    );
-  }
-  //Creamos el formulario
-  let formulario = crearElem("form", {
-    id: "formPanelAdmin",
-    action: "../php/panelAdministrador.php",
-    method: "POST",
-  });
-  //Creamos cada uno de los label
-  let labelJuego = crearElem("label", { for: "juego_partida" }, "Juego");
-  //Contenedor para el input para poder mostrar un desplegable
-  let contenedorInputNombre = crearContenedor("div", {
-    class: "inputDesplegable",
-  });
-  let inputJuego = crearElem("input", {
-    name: "nombre_juego",
-    id: "nombre_juego",
-    type: "text",
-  });
-  contenedorInputNombre.append(inputJuego);
-  //Añadimos los escuchadores
-  inputJuego.addEventListener("keyup", buscarJuegoNombreEscribir);
-  inputJuego.addEventListener("focusout", eliminarDesplegable);
-  let labelFecha = crearElem("label", { for: "fecha" }, "Fecha");
-  let inputFecha = crearElem("input", {
-    type: "date",
-    name: "fecha",
-    id: "fecha",
-  });
-  let horaInicio = crearElem("label", { for: "hora_inicio" }, "Hora de inicio");
-  let inputHoraInicio = crearElem("input", {
-    type: "time",
-    name: "hora_inicio",
-    id: "hora_inicio",
-  });
-  let labelDuracion = crearElem("label", { for: "duracion" }, "Duración");
-  let inputDuracion = crearElem("input", {
-    type: "number",
-    name: "duracion",
-    id: "duracion",
-  });
-  let labelPlazasMin = crearElem(
-    "label",
-    { for: "plazas_min" },
-    "Plazas mínimas"
-  );
-  let inputPlazasMin = crearElem("input", {
-    type: "number",
-    name: "plazas_min",
-    id: "plazas_min",
-  });
-  let labelPlazasTotales = crearElem(
-    "label",
-    { for: "plazas_totales" },
-    "Plazas totales"
-  );
-  let inputPlazasTotales = crearElem("input", {
-    type: "number",
-    name: "plazas_totales",
-    id: "plazas_totales",
-  });
-  let labelImagenPartida = crearElem(
-    "label",
-    { for: "imagen_partida" },
-    "Imagen partida"
-  );
-  let inputImagenPartida = crearElem("input", {
-    type: "file",
-    name: "imagenes_partida[]",
-    id: "imagen_partida",
-    multiple: "multiple",
-  });
-  let resultado = crearElem("p", { id: "resultadoOperacion" });
-  let botonSubmit = crearElem("input", {
-    type: "submit",
-    value: "Crear partida",
-  });
-  //Añadimos el escuchador
-  formulario.addEventListener("submit", crearPartida);
-  let botonCancelar = crearBoton("Cancelar", { type: "button" });
-  //Añadimos ele scuchado al botón
-  botonCancelar.addEventListener("click", cargarPartidasAdmin);
-  //Añadimos todo al formulario
-  formulario.append(
-    labelJuego,
-    contenedorInputNombre,
-    labelFecha,
-    inputFecha,
-    horaInicio,
-    inputHoraInicio,
-    labelDuracion,
-    inputDuracion,
-    labelPlazasMin,
-    inputPlazasMin,
-    labelPlazasTotales,
-    inputPlazasTotales,
-    labelImagenPartida,
-    inputImagenPartida,
-    resultado,
-    botonSubmit,
-    botonCancelar
-  );
-  contenedorAdmin.append(formulario);
-}
-
-/**
  * Filtra los usuarios por nombre o rol
  *
  * @param   {[type]}  e  [e description]
@@ -2450,72 +2159,6 @@ function activarFiltro(e) {
   );
 }
 
-/**
- * Filtra las partidas según los filtros que le pasemos
- *
- * @param   {Object}  filtros  Filtros a aplicar tipo {clave: valor}
- * @param   {int}        Página en la nos encontramos
- *
- */
-async function filtrarPartidasAdmin(filtros = {}, pagina = 0) {
-  let contenedor = document.getElementById("contenedorElementos");
-  let cuerpoTabla = document.querySelector("tbody");
-  //Limpiamos el cuerpo de la tabla
-  cuerpoTabla.innerHTML = "";
-  //Le añadimos la página y el limite de tuplas por pagina
-  filtros["pagina"] = pagina;
-  filtros["limite"] = 7;
-  try {
-    //Crea la petición
-    const respuesta = await fetch("../php/panelAdministrador.php", {
-      method: "POST",
-      header: { "Content-type": "application/json; charset=utf-8" },
-      body: JSON.stringify({ filtrosPartida: filtros }),
-    });
-    //Traducimos la respuesta
-    const respuestaJSON = await respuesta.json();
-    //Comprobamos que no diera error
-    if (Object.hasOwn(respuestaJSON, "error")) {
-      throw respuestaJSON["error"];
-    }
-    //Creamos cada fila de la tabla
-    respuestaJSON["partidas"].forEach((datosPartidas) => {
-      //La fecha la formateamos a formato Español
-      datosPartidas["fecha"] = new Fecha(datosPartidas["fecha"]).getFecha();
-      let fila = crearFilaTabla("td", Object.values(datosPartidas));
-      //Creamos los dos botones para editar y eliminar
-      let celdaEditar = document.createElement("td");
-      let editar = crearBoton("Editar");
-      //Le añadimos el escuchador al boton
-      editar.addEventListener("click", modoEditarPartida);
-      celdaEditar.append(editar);
-      let celdaEliminar = document.createElement("td");
-      let eliminar = crearBoton("Eliminar");
-      //Le añadimos el escuchador
-      eliminar.addEventListener("click", eliminarPartidaTabla);
-      celdaEliminar.append(eliminar);
-      //Añadimos los botones a la fila
-      fila.append(celdaEditar, celdaEliminar);
-      //Añadimos todo al cuerpo de la tabla
-      cuerpoTabla.append(fila);
-    });
-    //Creamos la paginación
-    pagina = filtros["pagina"] != 0 ? filtros["pagina"] / 7 : 0;
-    contenedor.append(crearPaginacion(respuestaJSON["numPag"], pagina));
-    //Le añadimos el escuchador a cada uno de ellos
-    let listaLi = Array.from(document.querySelectorAll(".pagination li"));
-    if (listaLi != null) {
-      listaLi.forEach((elementoLi) =>
-        elementoLi.firstElementChild.addEventListener(
-          "click",
-          cogerFiltrosPartidasAdmin
-        )
-      );
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
 
 /**
  * Filtra las partidas según los parámetros
@@ -2710,300 +2353,6 @@ async function limpiarCampoSelect(campo, tiempo) {
     //Para limpiar el tipo file lo clonamos y sustituimos, tenemos que hacer todo esto porque no nos deja cambiar el valor a un elemento activo por seguridad
     campo.options[0].setAttribute("selected", "selected");
   }, tiempo);
-}
-
-/**
- * Carga el modo editar de la partida
- *
- * @param   {Event}  e  Evento que se dispara
- *
- * @return  {void}     No devuelve nada
- */
-async function modoEditarPartida(e) {
-  //Cogemos el id de la partida (El texto del primer elementod el padre)
-  let idPartida =
-    e.currentTarget.parentElement.parentElement.firstElementChild.textContent;
-
-  //Limpiamos el contenedor (Si tiene algún formulario o el contenedor elementos)
-  let panelAdmin = document.getElementById("panelAdmin");
-  if (panelAdmin.firstElementChild.nextElementSibling != "") {
-    panelAdmin.removeChild(panelAdmin.firstElementChild.nextElementSibling);
-  }
-  //Creamos el formulario con las opciones
-  let formEditPartida = crearContenedor("form", {
-    id: "formPanelAdmin",
-    action: "../php/panelAdministrador.php",
-    method: "POST",
-  });
-  formEditPartida.addEventListener("submit", guardarCambiosEditarPartida);
-  //Creamos cada uno de los elementos
-  let labelNombre = crearElem("label", { for: "nombre_juego" }, "Nombre juego");
-  //Contenedor para el input para poder mostrar un desplegable
-  let contenedorInputNombre = crearContenedor("div", {
-    class: "inputDesplegable",
-  });
-  let inputNombre = crearElem("input", {
-    type: "text",
-    name: "nombre_juego",
-    id: "nombre_juego",
-  });
-  contenedorInputNombre.append(inputNombre);
-  //Le asignamos el escuchador
-  inputNombre.addEventListener("keyup", buscarJuegoNombreEscribir);
-  inputNombre.addEventListener("focusout", eliminarDesplegable);
-  let labelFecha = crearElem("label", { for: "fecha" }, "Fecha");
-  let inputFecha = crearElem("input", {
-    type: "date",
-    name: "fecha",
-    id: "fecha",
-  });
-  let labelPlazasMin = crearElem(
-    "label",
-    { for: "plazas_min" },
-    "Plazas mínimas"
-  );
-  let inputPlazasMin = crearElem("input", {
-    type: "number",
-    name: "plazas_min",
-    id: "plazas_min",
-  });
-  let labelPlazasTotales = crearElem(
-    "label",
-    { for: "plazas_totales" },
-    "Plazas totales"
-  );
-  let inputPlazasTotales = crearElem("input", {
-    type: "number",
-    name: "plazas_totales",
-    id: "plazas_totales",
-  });
-  let labelHoraInicio = crearElem(
-    "label",
-    { for: "hora_inicio" },
-    "Hora de inicio"
-  );
-  let inputHoraInicio = crearElem("input", {
-    type: "time",
-    name: "hora_inicio",
-    id: "hora_inicio",
-  });
-  let labelDuracion = crearElem("label", { for: "duracion" }, "Duracion");
-  let inputDuracion = crearElem("input", {
-    type: "number",
-    name: "duracion",
-    id: "duracion",
-  });
-  let labelDirectorPartida = crearElem(
-    "label",
-    { for: "director_partida" },
-    "Director/a partida"
-  );
-  //Contenedor para el input para poder mostrar un desplegable
-  let contenedorInputDirectorPartida = crearContenedor("div", {
-    class: "inputDesplegable",
-  });
-  let inputDirectorPartida = crearElem("input", {
-    type: "text",
-    name: "director_partida",
-    id: "director_partida",
-  });
-  contenedorInputDirectorPartida.append(inputDirectorPartida);
-  //Le asignamos el escuchador
-  inputDirectorPartida.addEventListener("keyup", buscarDirectoresEscribir);
-  inputDirectorPartida.addEventListener("focusout", eliminarDesplegable);
-  let parrafoResultado = crearElem("p", { id: "resultadoOperacion" });
-  //Creamos los botones para guardar, cancelar o eliminar partida
-  let inputGuardar = crearElem("input", {
-    type: "submit",
-    value: "Guarda cambios",
-    "data-id": idPartida,
-  });
-  let botonEliminar = crearElem(
-    "button",
-    { type: "button", id: "eliminarPartida" },
-    "Eliminar partida"
-  );
-  let botonCancelar = crearElem(
-    "button",
-    { type: "button", id: "cancelarPartida" },
-    "Cancelar"
-  );
-  //Le añadimos el escuchador
-  botonCancelar.addEventListener("click", cargarPartidasAdmin);
-  botonEliminar.addEventListener("click", eliminarPartidaEdicion);
-  //Añadimos todo al formulario
-  formEditPartida.append(
-    labelNombre,
-    contenedorInputNombre,
-    labelFecha,
-    inputFecha,
-    labelPlazasMin,
-    inputPlazasMin,
-    labelPlazasTotales,
-    inputPlazasTotales,
-    labelHoraInicio,
-    inputHoraInicio,
-    labelDuracion,
-    inputDuracion,
-    labelDirectorPartida,
-    contenedorInputDirectorPartida,
-    parrafoResultado,
-    inputGuardar,
-    botonEliminar,
-    botonCancelar
-  );
-  //Añadimos todo al contenedor de elementos
-  panelAdmin.append(formEditPartida);
-
-  try {
-    //Mandamos una petición para coger todos los datos de la partida
-    const respuesta = await fetch("../php/panelAdministrador.php", {
-      method: "POST",
-      headers: { "Content-type": "application/json; charset=utf8;" },
-      body: JSON.stringify({ id_partida: idPartida }),
-    });
-    //Traducimos la respuesta
-    const respuestaJSON = await respuesta.json();
-    //Comprobamos que no diera error
-    if (Object.hasOwn("error")) {
-      throw respuestaJSON["error"];
-    }
-    //Quitamos el id del array de datos devueltos y lo eliminamos
-    idPartida = respuestaJSON["juego_partida"];
-    delete respuestaJSON["juego_partida"];
-    //Ponemos la hora de inicio para que no tenga los segundos
-    respuestaJSON["hora_inicio"] = respuestaJSON["hora_inicio"].substring(
-      0,
-      respuestaJSON["hora_inicio"].length - 3
-    );
-    //Asignamos el valor a cada uno de los input, dividimos en objeto en array de 0: id 1: valor y se lo asignamos
-    Object.entries(respuestaJSON).forEach(
-      (input) => (document.getElementById(input[0]).value = input[1])
-    );
-    //Asignamos al input el atributo data-idPartida
-    inputNombre.setAttribute("data-id", idPartida);
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-/**
- * Actualiza los datos editados en la BD
- *
- * @param   {Event}  e  Evento que la dispara
- *
- * @return  {void}     No devuelve nada
- */
-async function guardarCambiosEditarPartida(e) {
-  e.preventDefault();
-  let parrafo = document.getElementById("resultadoOperacion");
-  try {
-    let camposPartida = [
-      "nombre_juego",
-      "fecha",
-      "plazas_min",
-      "plazas_totales",
-      "hora_inicio",
-      "duracion",
-      "director_partida",
-    ];
-    //Comprobamos que tengan valor
-    if (!comprobarCamposOblig(camposPartida)) {
-      //Si no estñan vacios salimos de la función
-      throw "Debe cubrir todos los campos";
-    }
-    //Cogemos el id del juego de la partida
-    let idJuegoPartida = document
-      .getElementById("nombre_juego")
-      .getAttribute("data-id");
-    //Cogemos los datos que hay en los input
-    let datosPartida = {};
-    //Eliminamos el dato del nombre de juego
-    camposPartida.shift();
-    camposPartida.forEach(
-      (campo) => (datosPartida[campo] = document.getElementById(campo).value)
-    );
-    datosPartida["juego_partida"] = idJuegoPartida;
-    //Enviamos la petición
-    const respuesta = await fetch("../php/panelAdministrador.php", {
-      method: "POST",
-      headers: { "Content-type": "application/json; charset=utf-8;" },
-      body: JSON.stringify({ edicion_partida: datosPartida }),
-    });
-    //Traducimos la respuesta
-    const respuestaJSON = await respuesta.json();
-    //Comprobamos si se dio un error
-    if (Object.hasOwn(respuestaJSON, "error")) {
-      throw respuestaJSON["error"];
-    }
-    //Si no se dio un error es que se cambiaron con éxito asique mostramos mensaje de éxito
-    parrafo.textContent = "Datos actualizados con éxito";
-    parrafo.classList.remove("error");
-    parrafo.classList.add("exito");
-    limpiarCampo(parrafo, 500);
-  } catch (error) {
-    parrafo.textContent = error;
-    parrafo.classList.remove("exito");
-    parrafo.classList.add("error");
-  }
-}
-
-/**
- * Elimina la partida si acepta el administrador
- *
- * @param   {[type]}  idPartida  [idPartida description]
- *
- * @return  {[type]}             [return description]
- */
-function eliminarPartidaTabla(e) {
-  let idPartida =
-    e.currentTarget.parentElement.parentElement.firstChild.textContent;
-  if (confirm("Esta seguro que quiere borrar la partida?")) {
-    eliminarPartida(idPartida);
-  }
-}
-
-/**
- * Manda eliminar la partida en la que nos encontramos
- *
- * @param   {Event}  e  Evento que lo dispara
- *
- * @return  {void}     No devuelve nada
- */
-function eliminarPartidaEdicion(e) {
-  //Cogemos el id del botón de guardar cambios
-  let idPartida = e.currentTarget.previousSibling.dataset.id;
-  if (confirm("Esta seguro que quiere borrar la partida?")) {
-    eliminarPartida(idPartida);
-  }
-}
-
-/**
- * Elimina la partida de la BD
- *
- * @param   {int}  idPartida  ID de la partida
- *
- * @return  {void}             No devuelve nada
- */
-async function eliminarPartida(idPartida) {
-  try {
-    //Creamos la conexión
-    const respuesta = await fetch("../php/panelAdministrador.php", {
-      method: "POST",
-      headers: { "Content-type": "application/json; charset=utf-8" },
-      body: JSON.stringify({ idPartidaEliminar: idPartida }),
-    });
-    //Traducimos la respuesta
-    const respuestaJSON = await respuesta.json();
-    //Comprobamos que no hubiese ningún error
-    if (Object.hasOwn(respuestaJSON, "error")) {
-      throw respuestaJSON["error"];
-    }
-    //Recargamos las partidas
-    cargarPartidasAdmin();
-  } catch (error) {
-    console.log(error);
-  }
 }
 
 /**
@@ -5498,8 +4847,7 @@ async function volverPaginaPartidas() {
  *
  * @return  {void}  No devuelve nada
  */
-async function cargarPerfilUsuario(e) {
-  e.preventDefault();
+async function cargarPerfilUsuario() {
   activarPantallaCarga();
   //Disparamos para que se cierre el menú
   let botonPerfil = document.getElementById("botonPerfilUsuario");
@@ -5995,5 +5343,472 @@ async function realizarCompra(e) {
     this.submit();
   } catch (error) {
     console.log(error);
+  }
+}
+
+/**
+ * Carga el panel de administración
+ *
+ * @param   {string}  pagina  Página a la que accede
+ *
+ * @return  {void}          No devuelve nada
+ */
+async function cargarPanelAdministracion(pagina) {
+  try {
+    activarPantallaCarga();
+    let main = document.querySelector("main");
+    main.classList.contains("cuerpoMosaico") ? "" : main.classList.add("cuerpoMosaico");
+    main.innerHTML = "";
+    let datos = {};
+    let partials = {};
+    switch(pagina){
+      case "partidas":
+        datos = await cargarPaginaPartidasAdmin(false);
+        partials = {"partidas": datos["plantilla"]};
+
+         //Cargamos la parte de mustache
+        let plantilla = await fetch('../mustache/panelAdministrador.mustache', opcionesFetchMustache);
+        let plantillaJson = await plantilla.text();
+        let cadena = Mustache.render(plantillaJson, datos["datos"], partials);
+        main.insertAdjacentHTML("beforeend", cadena);
+
+        //Event listeners
+        let filtrado =  document.getElementById("filtradoPartida");
+        let botonFiltrado = filtrado.querySelector("input[type='submit']");
+        botonFiltrado.addEventListener("click", filtrarPartidasAdmin);
+
+        let tablaElementos = document.getElementById("listaElementos");
+        let botonNuevaPartida = tablaElementos.querySelector("thead button");
+        botonNuevaPartida.addEventListener("click", modoCrearPartidasAdmin);
+
+        let cuerpoTabla = tablaElementos.querySelector("tbody");
+        let botonesEditar =cuerpoTabla.querySelectorAll('button[data-action="editar"]');
+        let botonesEliminar = cuerpoTabla.querySelectorAll('button[data-action="eliminar"]');
+        if(botonesEditar){
+          botonesEditar = Array.from(botonesEditar);
+          botonesEditar.forEach(boton => boton.addEventListener("click", editarPartidaAdmin));
+          botonesEliminar = Array.from(botonesEliminar);
+          botonesEliminar.forEach(boton => boton.addEventListener("click", eliminarPartidaTabla));
+        }
+        break;
+
+      case "partidas_reservas":
+        datos = await cargarPartidasReservas();
+        partials = {"partidas": datos["plantilla"]};
+        break;
+
+      case "usuarios":
+        datos = await cargarModoUsuariosAdmin();
+        partials = {"usuarios": datos["plantilla"]};
+        break;  
+    }
+
+    //Escuchadores generales
+    if (datos) {
+      let botonPartidasGeneral = document.getElementById("pestPartidas");
+      botonPartidasGeneral.addEventListener("click", cargarPaginaPartidasAdmin);
+
+      desactivarPantallaCarga();
+    }
+  }
+  catch(error){
+    console.log(error);
+  }
+}
+
+/**
+ * Carga la página de partidas
+ *
+ * @param   {bool}  parcial  Si carga todo el panel o ya está en el panel y carga sólo la parte de partidas
+ * @param   {[type]}  false    [false description]
+ *
+ * @return  {mixed}          Devuelve un Objeto ["datos", "plantilla"] o nada si se carga de forma parcial
+ */
+async function cargarPaginaPartidasAdmin(parcial = true) {
+
+  try {
+    //Filtramos las partidas
+    let datosPartidas       = await cargarPartidasAdmin();
+
+    //Cargamos la plantilla mustache
+    let peticion                = await fetch('../mustache/partials/paginaPartidasAdmin.mustache', opcionesFetchMustache);
+    let peticionJSON       = await peticion.text();
+    let parciales               = {"filtrado": datosPartidas["plantilla"]};
+    let plantilla                = await Mustache.render(peticionJSON, datosPartidas["datos"], parciales);
+    return Promise.all([datosPartidas, plantilla]).then(function (resolve, reject) {
+      //Si es parcial es que estamos en la página de plantillas y sólo filtramos
+      if(parcial) {
+        let panelAdmin        = document.getElementById("panelAdmin");
+        let contenedorFinal = panelAdmin.lastElementChild;
+        //Limpiamos el cuerpo de la tabla
+        contenedorFinal.remove();
+        panelAdmin.insertAdjacentHTML("beforeend", plantilla);
+
+        //Event listeners
+        let filtrado =  document.getElementById("filtradoPartida");
+        let botonFiltrado = filtrado.querySelector("input[type='submit']");
+        botonFiltrado.addEventListener("click", filtrarPartidasAdmin);
+
+        let tablaElementos = document.getElementById("listaElementos");
+        let botonNuevaPartida = tablaElementos.querySelector("thead button");
+        botonNuevaPartida.addEventListener("click", modoCrearPartidasAdmin);
+
+        let cuerpoTabla = tablaElementos.querySelector("tbody");
+        let botonesEditar =cuerpoTabla.querySelectorAll('button[data-action="editar"]');
+        let botonesEliminar = cuerpoTabla.querySelectorAll('button[data-action="eliminar"]');
+        if(botonesEditar){
+          botonesEditar = Array.from(botonesEditar);
+          botonesEditar.forEach(boton => boton.addEventListener("click", editarPartidaAdmin));
+        }
+        if(botonesEliminar){
+          botonesEliminar = Array.from(botonesEliminar);
+          botonesEliminar.forEach(boton => boton.addEventListener("click", eliminarPartidaTabla));
+        }
+        return resolve;
+      }
+      else {
+        return {"datos": datosPartidas["datos"], "plantilla": plantilla};
+      }
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/**
+ * Filtra las partidas según los filtros que le pasemos
+ *
+ * @param   {Object}  filtros  Filtros a aplicar tipo {clave: valor}
+ * @param   {int}        Página en la nos encontramos
+ * 
+ * @return  {mixed}          Devuelve un Objeto ["datos", "plantilla"] o nada si se carga de forma parcial
+ */
+ async function cargarPartidasAdmin(filtros = {}, pagina = 0, parcial = false) {
+  //Le añadimos la página y el limite de tuplas por pagina
+  filtros["pagina"] = pagina;
+  filtros["limite"] = 7;
+  try {
+    //Crea la petición
+    const respuesta = await fetch("../php/panelAdministrador.php", {
+      method: "POST",
+      header: { "Content-type": "application/json; charset=utf-8" },
+      body: JSON.stringify({ filtrosPartida: filtros }),
+    });
+    //Traducimos la respuesta
+    const respuestaJSON = await respuesta.json();
+    //Comprobamos que no diera error
+    if (Object.hasOwn(respuestaJSON, "error")) {
+      throw respuestaJSON["error"];
+    }
+    
+    //Cargamos la plantilla mustache
+    let peticion          = await fetch('../mustache/partials/filtradoPartidasAdmin.mustache', opcionesFetchMustache);
+    let peticionJSON = await peticion.text();
+    let plantilla          = await Mustache.render(peticionJSON, respuestaJSON);
+    return Promise.all([plantilla]).then(function (resolve,reject) {
+      //Si es parcial es que estamos en la página de plantillas y sólo filtramos
+     if(parcial) {
+      let contenedor    = document.getElementById("contenedorElementos");
+      let cuerpoTabla   = contenedor.querySelector("tbody");
+      cuerpoTabla.innerHTML = "";
+      cuerpoTabla.insertAdjacentHTML("beforeend", plantilla);
+
+      //Event listemers
+      let botonesEditar = cuerpoTabla.querySelectorAll('button[data-action="editar"]');
+      let botonesEliminar = cuerpoTabla.querySelectorAll('button[data-action="eliminar"]');
+      if(botonesEditar){
+        botonesEditar = Array.from(botonesEditar);
+        botonesEditar.forEach(boton => boton.addEventListener("click", editarPartidaAdmin));
+      }
+      if(botonesEliminar){
+        botonesEliminar = Array.from(botonesEliminar);
+        botonesEliminar.forEach(boton => boton.addEventListener("click", eliminarPartidaTabla));
+      }
+       return resolve;
+     }
+     else {
+       return {"datos": respuestaJSON, "plantilla": plantilla};
+     }
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/**
+ * Llama a la función para filtrar las partidas con los filtros
+ *
+ * @return  {[void]}  No devuelve nada
+ */
+function filtrarPartidasAdmin (e) {
+  e.preventDefault();
+  //Cogemos los filtrados
+  let juego_partida = document.getElementById("juego_partida");
+  let fecha_ini = document.getElementById("fecha");
+  let fecha_fin = document.getElementById("fechaFin");
+  let filtros = {};
+  if(juego_partida == undefined){
+    filtros = {};
+  }
+  else {
+    filtros = {"juego_partida": juego_partida.value ?? "", "fecha": fecha_ini.value ?? "", "fechaFin": fecha_fin.value ?? ""};
+  }
+  cargarPartidasAdmin(filtros, 0, true);
+}
+
+/**
+ * Crear el contenedor con las partidas para Admin (todas las partidas)
+ *
+ * @return  {void}  No devuelve nada
+ */
+ async function modoCrearPartidasAdmin(datos = {}) {
+  try {
+    let contenedorElementos = document.getElementById("contenedorElementos");
+    contenedorElementos.remove();
+    let panelAdmin = document.getElementById("panelAdmin");
+    //Cargamos la plantilla mustache
+    let peticion = await fetch('../mustache/partials/editarPartidaAdmin.mustache', opcionesFetchMustache);
+    let peticionJSON = await peticion.text();
+    let plantilla          = await Mustache.render(peticionJSON, datos);
+    panelAdmin.insertAdjacentHTML("beforeend", plantilla);
+
+    let formulario = document.getElementById("formPanelAdmin");
+
+    $(formulario).validate({
+      rules: {
+        nombre_juego: {
+          required: true,
+          minlength: 2
+        },
+        fecha: {
+          required: true,
+          date: true
+        },
+        plazas_min: {
+          required: true,
+          min: 1
+        },
+        plazas_totales: {
+          required: true,
+          max: 8
+        },
+        hora_inicio: {
+          required: true
+        },
+        duracion: {
+          required: true,
+          min: 20
+        },
+        director_partida: {
+          required: true,
+          minlength: 2
+        }
+      },
+      messages: {
+        nombre_juego: "Debe introducir un juego del sistema",
+        fecha: "Debe introducir una fecha válida",
+        plazas_min: "Debe introducir un valor válido",
+        plazas_totales: "Debe introducir un valor válido",
+        hora_inicio: "Debe introducir una hora de inicio",
+        duracion: "Debe introducir una duración superior a 20",
+        director_partida: "Debe introducir un director de partida del sistema",
+      },
+    });
+
+    //Añadimos el escuchador
+    formulario.addEventListener("submit", guardarCambiosPartidaAdmin);
+    let botonCancelar = document.getElementById("cancelarPartida");
+    botonCancelar.addEventListener("click", cargarPaginaPartidasAdmin);
+    let botonEliminar = document.getElementById("eliminarPartida");
+    if(botonEliminar){
+      botonEliminar.addEventListener("click", eliminarPartidaTabla);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/**
+ * Pone el modo editar partida
+ *
+ * @param   {Event}  e  Evento que lo dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+async function editarPartidaAdmin(e) {
+  let idPartida = e.currentTarget.dataset.id;
+  try {
+    //Cargamos la plantilla mustache
+    const peticion = await fetch("../php/panelAdministrador.php", {
+      method: "POST",
+      headers: { "Content-type": "application/json; charset=utf8;" },
+      body: JSON.stringify({ "id_partida": idPartida }),
+    });
+    let peticionJSON = await peticion.json();
+    peticionJSON["editarPartida"] = true;
+    modoCrearPartidasAdmin(peticionJSON);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/**
+ * Elimina la partida si acepta el administrador
+ *
+ * @param   {[type]}  idPartida  [idPartida description]
+ *
+ * @return  {[type]}             [return description]
+ */
+ function eliminarPartidaTabla(e) {
+  let idPartida = e.currentTarget.dataset.id;
+  if (confirm("Esta seguro que quiere borrar la partida?")) {
+    eliminarPartidaAdmin(idPartida);
+  }
+}
+
+
+
+/**
+ * Elimina la partida de la BD
+ *
+ * @param   {int}  idPartida  ID de la partida
+ *
+ * @return  {void}             No devuelve nada
+ */
+ async function eliminarPartidaAdmin(idPartida) {
+  try {
+    //Creamos la conexión
+    const respuesta = await fetch("../php/panelAdministrador.php", {
+      method: "POST",
+      headers: { "Content-type": "application/json; charset=utf-8" },
+      body: JSON.stringify({ idPartidaEliminar: idPartida }),
+    });
+    //Traducimos la respuesta
+    const respuestaJSON = await respuesta.json();
+    //Comprobamos que no hubiese ningún error
+    if (Object.hasOwn(respuestaJSON, "error")) {
+      throw respuestaJSON["error"];
+    }
+    //Recargamos las partidas
+    cargarPaginaPartidasAdmin();
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/**
+ * Crea una nueva partida o guarda los cambios
+ *
+ * @param   {Event}  e  Evento que lo dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+function guardarCambiosPartidaAdmin(e) {
+  e.preventDefault();
+  let id = document.getElementById("eliminarPartida").dataset.id;
+  id ? guardarCambiosEditarPartidaAdmin(id) : crearPartidaAdmin();
+}
+
+/**
+ * Crea una partida en la BD
+ * @param {Event}  Evento que dispara
+ */
+ async function crearPartidaAdmin() {
+  let resultado = document.getElementById("resultadoOperacion");
+  try {
+    //Datos
+    let juego = document.getElementById("nombre_juego").dataset.id;
+    let hora_inicio = document.getElementById("hora_inicio").value;
+    let duracion = document.getElementById("duracion").value;
+    let plazas_min = document.getElementById("plazas_min").value;
+    let plazas_totales = document.getElementById("plazas_totales").value;
+    let imagenes = Array.from(document.getElementById("imagen_partida").files);
+    let datosPartida = {
+      juego_partida: juego,
+      fecha: fecha,
+      hora_inicio: hora_inicio,
+      duracion: duracion,
+      plazas_min: plazas_min,
+      plazas_totales: plazas_totales,
+    };
+    //Mensaje que enviaremos
+    const mensajeJSON = new FormData();
+    //Recorremos las imagenes y las voy añadiendo en el array
+    imagenes.forEach((imagen) =>
+      mensajeJSON.append("imagenesPartida[]", imagen)
+    );
+    mensajeJSON.append("datosPartida", JSON.stringify(datosPartida));
+    //Lanzamos la petición
+    const respuesta = await fetch("../php/panelAdministrador.php", {
+      method: "POST",
+      body: mensajeJSON,
+    });
+    const respuestaJSON = await respuesta.json();
+    if (Object.hasOwn(respuestaJSON, "error")) {
+      throw respuestaJSON["error"];
+    }
+    resultado.textContent = "Se ha creado la partida con éxito";
+    resultado.removeAttribute("class", "error");
+    resultado.setAttribute("class", "exito");
+    //Limpiamos la ventana de éxito
+    limpiarCampo(resultado, 2000);
+    //Limpiamos el resto de campos del formulario
+    let todosInput = Array.from(
+      document.querySelectorAll(
+        "input:not(input[type='file'], input[type='submit'])"
+      )
+    );
+    limpiarCampoArrayInput(todosInput, 2000);
+    //Limpiamos el campo File
+    limpiarCampoFile(document.getElementById("imagen_partida"), 2000);
+    //Limpiamos el select
+    limpiarCampoSelect(document.querySelector("select"), 2000);
+  } catch ($error) {
+    resultado.textContent = $error;
+    resultado.removeAttribute("class", "exito");
+    resultado.setAttribute("class", "error");
+  }
+}
+
+/**
+ * Actualiza los datos editados en la BD
+ *
+ * @param   {Event}  e  Evento que la dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+ async function guardarCambiosEditarPartidaAdmin(id) {
+  let parrafo = document.getElementById("resultadoOperacion");
+  try {
+    //Cogemos los datos que hay en los input
+    let datosPartida = {};
+    let camposPartida =Array.from(document.querySelectorAll("input:not(input[type='submit']), select"));
+    //Eliminamos el dato del nombre de juego
+    camposPartida.shift();
+    camposPartida.forEach(
+      (campo) => (datosPartida[campo] = document.getElementById(campo).value)
+    );
+    datosPartida["juego_partida"] = id;
+    //Enviamos la petición
+    const respuesta = await fetch("../php/panelAdministrador.php", {
+      method: "POST",
+      headers: { "Content-type": "application/json; charset=utf-8;" },
+      body: JSON.stringify({ edicion_partida: datosPartida }),
+    });
+    //Traducimos la respuesta
+    const respuestaJSON = await respuesta.json();
+    //Comprobamos si se dio un error
+    if (Object.hasOwn(respuestaJSON, "error")) {
+      throw respuestaJSON["error"];
+    }
+    //Si no se dio un error es que se cambiaron con éxito asique mostramos mensaje de éxito
+    parrafo.textContent = "Datos actualizados con éxito";
+    parrafo.classList.remove("error");
+    parrafo.classList.add("exito");
+    limpiarCampo(parrafo, 500);
+  } catch (error) {
+    parrafo.textContent = error;
+    parrafo.classList.remove("exito");
+    parrafo.classList.add("error");
   }
 }

@@ -2729,8 +2729,12 @@ h2, h3 {
   flex-basis: 100%;
   text-align: center;
 }
-#panelAdmin #formPanelAdmin input, #panelAdmin #formPanelAdmin label, #panelAdmin #formPanelAdmin select, #panelAdmin #formPanelAdmin .inputDesplegable {
+#panelAdmin #formPanelAdmin label, #panelAdmin #formPanelAdmin .contenedorInput, #panelAdmin #formPanelAdmin .inputDesplegable {
   flex-basis: 50%;
+}
+#panelAdmin #formPanelAdmin > .contenedorInput input, #panelAdmin #formPanelAdmin > .contenedorInput select {
+  width: 100%;
+  padding: 2%;
 }
 #panelAdmin #formPanelAdmin .inputDesplegable {
   position: relative;
@@ -2780,6 +2784,8 @@ h2, h3 {
   color: white;
   cursor: pointer;
   transition: all 0.5s linear;
+  -webkit-margin-before: 3%;
+          margin-block-start: 3%;
   -webkit-margin-after: 0%;
           margin-block-end: 0%;
   margin: 0% 2%;
@@ -2893,6 +2899,10 @@ h2, h3 {
 }
 #panelAdmin #contenedorElementos tbody td {
   padding: 0.3% 0%;
+}
+#panelAdmin #contenedorElementos tbody td[colspan="7"] {
+  padding: 3%;
+  font-size: 1.2em;
 }
 #panelAdmin #contenedorElementos tbody tr:not(tr:last-of-type) {
   -webkit-border-after: 1px solid silver;

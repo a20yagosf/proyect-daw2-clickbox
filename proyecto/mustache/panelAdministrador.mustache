@@ -1,0 +1,121 @@
+<div id="panelAdmin">
+  <div>
+    <a href="#">Opciones de creación</a>
+    <ul id="opcionesPanelAdmin">
+      <!-- Tooltips: Como no se genera con DOM esta parte podemos meterlo manual-->
+      <li id="pestCaja">
+        <a
+          href="#"
+          data-toggle="tooltip"
+          data-placement="top"
+          title="En desarrollo"
+          class="ventanaDesc development"
+          >Cajas sorpresa</a
+        >
+      </li>
+      <li id="pestPartidas">
+          <a href="#" class="">Partidas</a>
+        </li>
+      <li id="pestProductos">
+        <a
+          href="#"
+          data-toggle="tooltip"
+          data-placement="top"
+          title="En desarrollo"
+          class="ventanaDesc development"
+          >Productos</a
+        >
+      </li>
+      <li id="pestUsuarios">
+          <a href="#" class="listaActivo">Usuarios</a>
+        </li>
+    </ul>
+  </div>
+  <!-- Comentar esto porque se carga todo desde JS-->
+
+  <!--<form id="formPanelAdmin">
+            <h2>Cajas sorpresa</h2>
+            <label for="fecha">Fecha lanzamiento:</label>
+            <input type="date" name="fecha" id="fecha"/>
+            <label for="min_jug">Mínimo de jugadores:</label>
+            <input type="number" name="min_jug" id="min_jug" max="10" min="3"/>
+            <label for="max_jug">Máximo de jugadores:</label>
+            <input type="number" name="max_jug" id="max_jug" max="10" min="3"/>
+            <label for="genero">Género</label>
+            <select name="genero" id="genero">
+                <option value="aventuras">Aventuras</option>
+                <option value="thriller">Thriller</option>
+            </select>
+            <label for="tematica">Temática</label>
+            <select name="tematica" id="tematica">
+                <option value="navidad">Navidad</option>
+                <option value="sanValentin">San valentín</option>
+            </select>
+            <input type="submit" value="Crear caja"/>
+            <button type="button">Cancelar</button>
+        </form>-->
+        {{# cajas_sorpresa}}
+            {{> cajas_sorpresa}}
+        {{/cajas_sorpresa}}
+        {{# paginaPartidas}}
+            {{> partidas}}
+        {{/paginaPartidas}}
+        {{# productos}}
+            {{> productos}}
+        {{/productos}}
+        {{# usuarios}}
+            {{> usuarios}}
+        {{/usuarios}}
+    {{! <form id="formPanelAdmin">
+    <div id="contenedorElementos">
+      <div>
+        <button data-nombre="cambiarRol" type="button">Cambiar rol</button
+        ><button data-nombre="historial" class="noActivo" type="button">
+          Historial usuarios
+        </button>
+      </div>
+      <h2>Filtro de usuarios</h2>
+      <table id="filtroUsuarios">
+        <thead>
+          <tr>
+            <th>Email del usuario</th>
+            <th>Rol</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <input
+                id="filtro-email"
+                type="text"
+                name="email"
+                placeholder="Buscar por..."
+              />
+            </td>
+            <td>
+              <select id="filtro-rol" name="rol">
+                <option value="">No seleccionado</option>
+                <option value="2">Estándar</option>
+                <option value="1">Administrador</option>
+              </select>
+            </td>
+            <td>
+              <button id="filtrarUsuariosAdmin" type="button">Filtrar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <h2>Usuarios y roles</h2>
+      <table id="listaElementos">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Rol</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </form>}}
+</div>

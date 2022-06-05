@@ -57,25 +57,9 @@ window.onload = async function () {
     usuario ? setTimeout(desactivarPantallaCarga, 500) : desactivarPantallaCarga();
 
     //Router
-      let rutasActivas = Array.from(document.querySelectorAll("[route]"));
-      rutasActivas.forEach(ruta => ruta.addEventListener("click", cambiarHash));
-
-    let paginaCompleta = window.location.pathname;
-    let indice = paginaCompleta.lastIndexOf("/");
-    var paginaActual = paginaCompleta.substring(indice);
-    switch(paginaActual) {
-        case "/":
-        cargarCuerpoPrincipal();
-        break;
-
-        case "/suscripciones":
-            cargarPaginaSuscripciones();
-            break;
-
-        case "/partidas":
-        cargarPaginaPartidas();
-        break;
-    }
+    let rutasActivas = Array.from(document.querySelectorAll("[route]"));
+    rutasActivas.forEach(ruta => ruta.addEventListener("click", cambiarHash));
+    cambioEnElHash();
 
     /*loginAutomatico();
     //Creamos el header

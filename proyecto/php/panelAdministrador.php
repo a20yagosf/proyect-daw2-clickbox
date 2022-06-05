@@ -40,7 +40,7 @@ try {
     else if(isset($datosPOST["filtrosPartida"])) {
         $partidas = $admin->filtarPartidas($datosPOST["filtrosPartida"]);
         if($partidas){
-            $devolver = $partidas;
+            $devolver = ["paginaPartidas" => $partidas];
         }
     }
     //Si está en modo edición de una partida

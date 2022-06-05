@@ -1,0 +1,18 @@
+{{# paginaPartidas}}
+{{# partidas}}
+    <tr>
+        <td>{{ id_partida }}</td>
+        <td>{{ juego_partida }}</td>
+        <td>{{ fecha | date_format: "d-m-Y" }}</td>
+        <td>{{ num_jugadores }}</td>
+        <td>{{ director_partida }}</td>
+        <td><button data-id="{{ id_partida }}" data-action="editar">Editar</button></td>
+        <td><button data-id="{{ id_partida }}" data-action="eliminar">Eliminar</button></td>
+    </tr>
+{{/partidas}}
+{{^ partidas}}
+    <tr>
+        <td colspan="7">No se han encontrado partidas</td>
+    </tr>
+{{/partidas}}
+{{/ paginaPartidas}}
