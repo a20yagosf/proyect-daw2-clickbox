@@ -1,0 +1,25 @@
+{{# paginaReservas}}
+    {{# reservas}}
+    <tr>
+        <td>{{usuario}}</td>
+        <td>{{fecha}}</td>
+        <td>{{nombre}}</td>
+        <td>{{director_partida}}</td>
+        <td>
+        <button type="button" data-id="{{id_partida}}" data-action="aceptar">
+            Aceptar
+        </button>
+        </td>
+        <td>
+        <button type="button" data-id="{{id_partida}}" data-action="rechazar">
+            Rechazar
+        </button>
+        </td>
+    </tr>
+    {{/ reservas}}
+    {{^ reservas}}
+        <tr>
+            <td colspan="7">No se han encontrado reservas</td>
+        </tr>
+    {{/reservas}}
+{{/ paginaReservas}}

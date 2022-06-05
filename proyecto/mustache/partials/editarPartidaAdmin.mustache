@@ -9,11 +9,11 @@
   </div>
   <label for="plazas_min">Plazas mínimas</label>
   <div class="contenedorInput">
-    <input type="number" name="plazas_min" id="plazas_min"  value="{{plazas_min}}"/>
+    <input type="number" name="plazas_min" id="plazas_min"  {{#plazas_min}}value="{{plazas_min}}"{{/plazas_min}} {{^plazas_min}}value="2"{{/plazas_min}}/>
   </div>
   <label for="plazas_totales">Plazas totales</label>
   <div class="contenedorInput">
-    <input type="number" name="plazas_totales" id="plazas_totales"  value="{{plazas_totales}}"/>
+    <input type="number" name="plazas_totales" id="plazas_totales"  {{# plazas_totales}}value="{{plazas_totales}}"{{/plazas_totales}}  {{^ plazas_totales}}value="3"{{/plazas_totales}}/>
   </div>
   <label for="hora_inicio">Hora de inicio</label>
   <div class="contenedorInput">
@@ -21,7 +21,7 @@
   </div>
   <label for="duracion">Duracion (min)</label>
   <div class="contenedorInput">
-    <input type="number" name="duracion" id="duracion" value="{{duracion}}"/>
+    <input type="number" name="duracion" id="duracion" {{# duracion}}value="{{duracion}}"{{/duracion}} {{^ duracion}}value="20"{{/duracion}}/>
   </div>
   <label for="director_partida">Director/a partida</label>
   <div class="inputDesplegable">
@@ -30,7 +30,7 @@
   {{^ editarPartida}}
     <label for="imagen_partida">Imágenes de la partida</label>
     <div class="contenedorInput">
-      <input type="file" name="imagen_partida[]" id="imagen_partida" value="{{imagen_partida}}"/>
+      <input type="file" name="imagen_partida[]" id="imagen_partida" value="{{imagen_partida}}" multiple/>
     </div>
   {{/ editarPartida}}
   <p id="resultadoOperacion"></p>

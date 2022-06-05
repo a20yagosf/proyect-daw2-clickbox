@@ -1,0 +1,33 @@
+<div id="contenedorElementos">
+  <div id="contenedorBotones">
+    <button route="/panel_administracion_partidas" type="button" data-nombre="partidas" {{# paginaReservas}}class="noActivo"{{/paginaReservas}}>Partidas</button>
+    <button route="/panel_administracion_partidas_reservas" type="button" data-nombre="reservas"{{# paginaPartidas}}class="noActivo"{{/paginaPartidas}}>Reservas</button>
+  </div>
+  <form
+    id="filtradoPartida"
+    action="../php/panelAdministrador.php"
+    method="POST"
+  >
+    <label for="usuario"
+      >Usuario<input type="text" name="usuario" id="usuario" /></label
+    ><label for="fechaIni"
+      >Fecha inicio<input type="date" name="fecha" id="fecha" /></label
+    ><label for="fechaFin"
+      >Fecha fin<input type="date" name="fechaFin" id="fechaFin" /></label
+    ><input type="submit" value="Filtrar" />
+  </form>
+  <table id="listaElementos">
+    <thead>
+      <tr>
+        <th>Usuario</th>
+        <th>Fecha</th>
+        <th>Juego</th>
+        <th>Director partida</th>
+        <th colspan="2"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {{> filtrado}}
+    </tbody>
+  </table>
+</div>

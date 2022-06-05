@@ -488,7 +488,7 @@ class Administrador extends user{
             }
             //Cogemos los valores con fetchAll ya que los tenemos limitados, como mucho devuelve 7 tuplas
             $tuplas = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
-            $respuesta = ["numPag" => $numPag, "reservas" => $tuplas];
+            $respuesta["paginaReservas"] = ["numPag" => $numPag, "reservas" => $tuplas];
         }
         catch(\PDOException $pdoError) {
             $respuesta = "Error " . $pdoError->getCode() . " :" . $pdoError->getMessage();

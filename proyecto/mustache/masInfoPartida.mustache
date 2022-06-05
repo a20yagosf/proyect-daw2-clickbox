@@ -3,47 +3,37 @@
     <h1>Partida {{id_partida}}</h1>
     {{^sinImagenes}}
     <div id="imagenesPartida" class="carousel slide" data-bs-ride="carousel">
-        {{# indicadores}}
             <div class="carousel-indicators">
-            <button
-                type="button"
-                data-bs-target="#imagenesPartida"
-                data-bs-slide-to="{{num}}"
-                aria-label="partida0"
-                {{# activo}}class="active"{{/activo}}
-                aria-current="true"
-            ></button>
+                {{# indicadores}}
+                <button
+                    type="button"
+                    data-bs-target="#imagenesPartida"
+                    data-bs-slide-to="{{num}}"
+                    aria-label="Imagen {{num}}"
+                    {{# activo}}class="active" aria-current="true"{{/activo}}
+                ></button>
+                {{/indicadores}}
             </div>
-        {{/indicadores}}
-        {{# imagenes}}
             <div class="carousel-inner">
-            <div class="carousel-item active">
-                <div class="tarjeta masInfoTarjeta">
-                    <img
-                        src="..\img\partidas\pexels-ann-poan-5797939.jpg"
-                        alt="Foto partidas organizadas"
-                    />
-                </div>
+                {{# imagenes}}
+                    <div class="carousel-item {{# activo}}active{{/activo}}">
+                        <div class="tarjeta masInfoTarjeta">
+                            <img
+                                src="{{imagen}}"
+                                alt="Foto partidas organizadas"
+                            />
+                        </div>
+                    </div>
+                {{/imagenes}}
             </div>
-            </div>
-        {{/imagenes}}
-        <button
-        class="carousel-control-prev"
-        type="button"
-        data-bs-target="#imagenesPartida"
-        data-bs-slide="prev" {{^indicadores}}hidden{{/indicadores}}
-        >
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span
-        ><span class="visually-hidden">Anterior</span></button
-        ><button
-        class="carousel-control-next"
-        type="button"
-        data-bs-target="#imagenesPartida"
-        data-bs-slide="next" {{^indicadores}}hidden{{/indicadores}}
-        >
-        <span class="carousel-control-next-icon" aria-hidden="true"></span
-        ><span class="visually-hidden">Siguiente</span>
-        </button>
+        <button class="carousel-control-prev" type="button" data-bs-target="#imagenesPartida" data-bs-slide="prev"  {{^indicadores}}hidden{{/indicadores}}>
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#imagenesPartida" data-bs-slide="next" {{^indicadores}}hidden{{/indicadores}}>
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
     </div>
   {{/sinImagenes}}
     <p>Fecha: {{fecha | date_format : "d-m-Y"}}</p>

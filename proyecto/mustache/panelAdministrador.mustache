@@ -14,7 +14,7 @@
         >
       </li>
       <li id="pestPartidas">
-          <a href="#" class="">Partidas</a>
+          <a href="#" {{# paginaPartidas}}class="listaActivo" {{/paginaPartidas}} {{# paginaReservas}}class="listaActivo" {{/paginaReservas}}>Partidas</a>
         </li>
       <li id="pestProductos">
         <a
@@ -27,7 +27,7 @@
         >
       </li>
       <li id="pestUsuarios">
-          <a href="#" class="listaActivo">Usuarios</a>
+          <a href="#" {{# paginaUsuarios}}class="listaActivo" {{/paginaUsuarios}}>Usuarios</a>
         </li>
     </ul>
   </div>
@@ -54,18 +54,21 @@
             <input type="submit" value="Crear caja"/>
             <button type="button">Cancelar</button>
         </form>-->
-        {{# cajas_sorpresa}}
+        {{# paginaCajas}}
             {{> cajas_sorpresa}}
-        {{/cajas_sorpresa}}
+        {{/paginaCajas}}
         {{# paginaPartidas}}
             {{> partidas}}
         {{/paginaPartidas}}
-        {{# productos}}
+        {{# paginaReservas}}
+          {{> reservas}}
+        {{/ paginaReservas}}
+        {{# paginaProductos}}
             {{> productos}}
-        {{/productos}}
-        {{# usuarios}}
+        {{/paginaProductos}}
+        {{# paginaUsuarios}}
             {{> usuarios}}
-        {{/usuarios}}
+        {{/paginaUsuarios}}
     {{! <form id="formPanelAdmin">
     <div id="contenedorElementos">
       <div>

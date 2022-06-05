@@ -30,8 +30,6 @@ async function cargarPaginaPrincipal() {
     let resultadoFooter   = Mustache.render(plantillaFooter, {});
     document.querySelector("main").insertAdjacentHTML("afterend", resultadoFooter);
     crearMapa();
-     //Añadimos el escuchador al carrito
-    document.getElementById("iconoCarrito").firstElementChild.addEventListener("click", irCarrito);
 
     //Añadimos los escuchadores para el menú 
     if(usuario) {

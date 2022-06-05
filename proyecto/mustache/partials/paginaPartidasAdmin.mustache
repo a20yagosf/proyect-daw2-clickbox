@@ -1,7 +1,7 @@
 <div id="contenedorElementos">
     <div id="contenedorBotones">
-      <button type="button" data-nombre="partidas" {{# paginaReservas}}class="noActivo"{{/paginaReservas}}>Partidas</button
-      ><button type="button" data-nombre="reservas"{{# paginaPartidas}}class="noActivo"{{/paginaPartidas}}>
+      <button route="/panel_administracion_partidas" type="button" data-nombre="partidas" {{# paginaReservas}}class="noActivo"{{/paginaReservas}}>Partidas</button
+      ><button route="/panel_administracion_partidas_reservas" type="button" data-nombre="reservas"{{# paginaPartidas}}class="noActivo"{{/paginaPartidas}}>
         Reservas
       </button>
     </div>
