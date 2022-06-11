@@ -1,0 +1,16 @@
+{{#paginaHistorial}}
+    {{#historial}}
+        <tr>
+            <td>{{fecha_ult_modif | date_format: 'd-m-Y H:i:s'}}</td>
+            <td colspan="2">
+                email: {{email}}; rol: {{rol | get_rol}}; nombre: {{nombre}}; apellidos: {{apellidos}}; telefono: {{telefono}}; direccion: {{direccion}}; genero_favorito: {{genero_favorito}}; suscripcion: {{suscripcion}} {{^suscripcion}}Sin suscripcion {{/suscripcion}}; renovar: {{renovar | si_no_campo}}
+            </td>
+            <td><button type="button" data-idhistorial="{{id}}" class="detallesHistorial">Detalles</button></td>
+        </tr>
+    {{/historial}}
+    {{^ historial}}
+    <tr>
+        <td colspan="2" id="noElementos">No se han encontrado datos del historial</td>
+    </tr>
+    {{/ historial}}
+{{/paginaHistorial}}

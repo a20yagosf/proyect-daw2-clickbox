@@ -1,0 +1,49 @@
+<form id="formPanelAdmin">
+  <div id="contenedorElementos">
+    <div>
+      <button data-nombre="cambiarRol" type="button" class="noActivo">
+        Cambiar rol</button
+      ><button data-nombre="historial" type="button">Historial usuarios</button>
+    </div>
+    <h2>Filtro de usuarios</h2>
+    <table id="filtroUsuarios">
+      <thead>
+        <tr>
+          <th>
+            <label for="fechaIniHistorial"
+              >Fecha inicio<input
+                id="fechaIniHistorial"
+                type="date"
+                name="email"
+            /></label>
+          </th>
+          <th>
+            <label for="filtroFechaFinHistorial"
+              >Fecha fin<input
+                id="filtroFechaFinHistorial"
+                type="date"
+                name="email"
+            /></label>
+          </th>
+          <th>
+            <button id="filtrarUsuariosAdmin" type="button">Filtrar</button>
+          </th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <h2>Historial de usuarios</h2>
+    <table id="listaElementos" class="historial">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Datos</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{> filtrado}}
+      </tbody>
+    </table>
+    {{> paginacion}}
+  </div>
+</form>

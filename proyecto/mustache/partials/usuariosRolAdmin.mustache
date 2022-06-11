@@ -1,0 +1,55 @@
+<form id="formPanelAdmin">
+  <div id="contenedorElementos">
+    <div>
+      <button route="/panel_administracion_usuarios" data-nombre="cambiarRol" type="button">Cambiar rol</button
+      ><button route="/panel_administracion_usuarios_historial" data-nombre="historial" class="noActivo" type="button">
+        Historial usuarios
+      </button>
+    </div>
+    <h2>Filtro de usuarios</h2>
+    <table id="filtroUsuarios">
+      <thead>
+        <tr>
+          <th>Email del usuario</th>
+          <th>Rol</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>
+                <input
+                id="filtro-email"
+                type="text"
+                name="email"
+                placeholder="Buscar por..."
+                />
+            </td>
+            <td>
+                <select id="filtro-rol" name="rol">
+                <option value="">No seleccionado</option>
+                <option value="2">Estándar</option>
+                <option value="1">Administrador</option>
+                </select>
+            </td>
+            <td>
+                <button id="filtrarUsuariosAdmin" type="button">Filtrar</button>
+            </td>
+         </tr>
+      </tbody>
+    </table>
+    <h2>Usuarios y roles</h2>
+    <table id="listaElementos">
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Rol</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {{> filtrado}}
+      </tbody>
+    </table>
+    {{> paginacion}}
+  </div>
+</form>

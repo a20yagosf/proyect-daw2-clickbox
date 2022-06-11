@@ -6,7 +6,7 @@
 </div>
 <nav class="navbar navbar-expand-md">
     <div class="container-fluid">
-        <a href="index.html" id="logoHeader">
+        <a route="/" href="index.html" id="logoHeader">
             <img src="../img/logoClickBox.svg" alt="Logo ClickBox">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#listaNav" aria-controls="listaNav" aria-expanded="false" aria-label="Menú hamburguesa"></button>
@@ -29,7 +29,7 @@
             <span class="badge rounded-pill">0</span>
         </a>
         {{# usuario}}
-        <button id="botonPerfilUsuario">irea.vila.ramilo@gmail.com</button>
+        <button id="botonPerfilUsuario">{{email}}</button>
         <div id="menuPerfilUser">
             <a route="/perfil_usuario" href="#" id="perfilUsuarioEnlace">Perfil de usuario</a>
             {{! Sección para usuarios administradores}}

@@ -14,7 +14,7 @@
         >
       </li>
       <li id="pestPartidas">
-          <a href="#" {{# paginaPartidas}}class="listaActivo" {{/paginaPartidas}} {{# paginaReservas}}class="listaActivo" {{/paginaReservas}}>Partidas</a>
+          <a route="/panel_administracion_partidas" href="#" {{# paginaPartidas}}class="listaActivo" {{/paginaPartidas}} {{# paginaReservas}}class="listaActivo" {{/paginaReservas}}>Partidas</a>
         </li>
       <li id="pestProductos">
         <a
@@ -27,7 +27,7 @@
         >
       </li>
       <li id="pestUsuarios">
-          <a href="#" {{# paginaUsuarios}}class="listaActivo" {{/paginaUsuarios}}>Usuarios</a>
+          <a route="/panel_administracion_usuarios" href="#" {{# paginaUsuarios}}class="listaActivo" {{/paginaUsuarios}} {{# paginaHistorial}}class="listaActivo" {{/paginaHistorial}}>Usuarios</a>
         </li>
     </ul>
   </div>
@@ -69,6 +69,9 @@
         {{# paginaUsuarios}}
             {{> usuarios}}
         {{/paginaUsuarios}}
+        {{# paginaHistorial}}
+        {{> historial}}
+    {{/paginaHistorial}}
     {{! <form id="formPanelAdmin">
     <div id="contenedorElementos">
       <div>

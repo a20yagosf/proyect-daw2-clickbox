@@ -1,0 +1,21 @@
+{{# paginaUsuarios}}
+{{# usuarios}}
+    <tr>
+        <td>{{email}}</td>
+        <td>
+        <select name="nuevo_rol" id="{{email}}">
+            <option value="2" {{^ admin}} selected="selected"{{/admin}}>Estándar</option>
+            <option value="1" {{# admin}} selected="selected"{{/admin}}>Administrador</option>
+        </select>
+        </td>
+        <td>
+        <button>Guardar</button>
+        </td>
+    </tr>
+{{/ usuarios}}
+{{^ usuarios}}
+    <tr>
+        <td colspan="2" id="noElementos">No se han encontrado usuarios</td>
+    </tr>
+{{/ usuarios}}
+{{/ paginaUsuarios}}

@@ -2857,11 +2857,30 @@ h2, h3 {
 #panelAdmin #contenedorElementos form label, #panelAdmin #contenedorElementos form input {
   text-align: center;
 }
+#panelAdmin #contenedorElementos .historial {
+  overflow-x: scroll;
+  table-layout: fixed;
+}
+#panelAdmin #contenedorElementos .historial th:first-of-type {
+  width: 150px;
+}
+#panelAdmin #contenedorElementos .historial th:nth-of-type(2) {
+  width: 70%;
+}
+#panelAdmin #contenedorElementos .historial tbody td:nth-of-type(2) {
+  text-align: left;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
 #panelAdmin #contenedorElementos #listaElementos {
   width: 100%;
   height: 100%;
   background-color: transparent;
   text-align: center;
+}
+#panelAdmin #contenedorElementos #listaElementos #noElementos {
+  padding: 3% 0%;
 }
 #panelAdmin #contenedorElementos #filtroUsuarios {
   width: 100%;

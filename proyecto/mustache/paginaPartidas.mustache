@@ -72,13 +72,5 @@
     {{> partidas}}
     </ul>
   </div>
-  {{# paginacion}}
-  <div class="pagination">
-    <ul>
-        {{# paginacion}}
-          <li><a href="#" {{#activa}}class="active"{{/activa}}>{{numPag}}</a></li>
-        {{/paginacion}}
-    </ul>
-  </div>
-  {{/paginacion}}
+  {{> paginacion}}
 </div>

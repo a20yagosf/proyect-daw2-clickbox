@@ -646,20 +646,26 @@ class Usuario
         $numPag = $this->calcularNumPag($sentenciaNumPag, $datosFiltrado);
         //Añadimos el limite
         $sentencia .= " LIMIT :pagina, :limite;";
-        $datosFiltrado["pagina"] = intval($filtro["pagina"]);
+        $datosFiltrado["pagina"] = (intval($filtro["pagina"]) - 1) * 7;
         $datosFiltrado["limite"] = intval($filtro["limite"]);
         //Cogemos los datos
         $pdoStatement = $bd->recuperarDatosBDNum($sentencia, $datosFiltrado);
         if(!$pdoStatement instanceof \PDOStatement){
             throw new \PDOException($pdoStatement);
         }
+
         //Cogemos todas las tuplas
         $datos["historial"] = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
+        
+        //Rellenamos la paginación
         if($numPag > 0){
-            for($i = 1; $i <= $numPag; $i++) {
-                $datos["paginacion"][] = ["num" => $i];
-            }
+            for($i = 1; $i <= ($numPag + 1); $i++){
+                $datos["paginacion"][] = ["numPag" => $i];
+                }
+            $paginaActual = intval($filtro["pagina"]) - 1;
+            $datos["paginacion"][$paginaActual]["activa"] = true;
         }
+        
         return $datos;
     }
 
@@ -733,7 +739,7 @@ class Usuario
         //Añadimos el límite para la sentencia que recupera los datos
         $sentencia .= " LIMIT :pagina, :limite ;";
         //Los converitmos a int porque como vienen del JSON vienen como string
-        $datosFiltrado["pagina"] = intval($filtro["pagina"]);
+        $datosFiltrado["pagina"] = (intval($filtro["pagina"]) - 1) * 7;
         $datosFiltrado["limite"] = intval($filtro["limite"]);
         //Instancio la BD
         $bd = new bd();
@@ -749,7 +755,7 @@ class Usuario
             for($i = 1; $i <= ($numPag + 1); $i++){
                 $respuesta["paginacion"][] = ["numPag" => $i];
             }
-            $paginaActual = $filtro["pagina"]/7;
+            $paginaActual = intval($filtro["pagina"]) - 1;
             $respuesta["paginacion"][$paginaActual]["activa"] = true;
         }
 
@@ -864,8 +870,8 @@ class Usuario
         //Instanciamos bd
         $bd = new bd();
         //Creamos la sentencia
-        $sentencia = "SELECT PR.id_producto, PR.nombre  FROM productos AS PR INNER JOIN juegos AS J ON PR.id_producto = J.juego AND nombre LIKE ? LIMIT 0, 5";
-        $datosAsignar = ["%" . $nombreJuego . "%"];
+        $sentencia = "SELECT PR.id_producto, PR.nombre  FROM productos AS PR INNER JOIN juegos AS J ON PR.id_producto = J.juego AND LOWER(nombre) LIKE ? LIMIT 0, 5";
+        $datosAsignar = ["%" . mb_strtolower($nombreJuego) . "%"];
         //Pasamos el dato a un array para enviarselo a la función
         $pdoStatement = $bd->recuperDatosBD($sentencia, $datosAsignar);
         //Comprobamos que nos devolviera un PDOStatement

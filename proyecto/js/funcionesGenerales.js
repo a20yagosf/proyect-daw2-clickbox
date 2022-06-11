@@ -18,58 +18,62 @@ const ROL_ESTANDAR = 2;
 const ROL_ADMINISTRADOR = 1;
 
 class Router {
-  constructor (name, rutas){
+  constructor(name, rutas) {
     return {
       name: name,
-      rutas: rutas
-    }
+      rutas: rutas,
+    };
   }
 }
-    
-let routerClickBox = new Router('routerClickbox', [
+
+let routerClickBox = new Router("routerClickbox", [
   {
-    path: '/',
-    name: 'Index'
+    path: "/",
+    name: "Index",
   },
   {
-    path: '/suscripciones',
-    name: "Suscripciones"
+    path: "/suscripciones",
+    name: "Suscripciones",
   },
   {
-    path: '/partidas',
-    name: "Partdias"
+    path: "/partidas",
+    name: "Partdias",
   },
   {
     path: "/tienda",
-    name: "Tienda"
+    name: "Tienda",
   },
   {
     path: "/carrito",
-    name: "Carrito"
+    name: "Carrito",
   },
   {
-    path: "/inicio_sesion",
-    name: "Iniciar sesión"
+    path: "/iniciar_sesion",
+    name: "Iniciar sesión",
   },
   {
     path: "/perfil_usuario",
-    name: "Perfil usuario"
+    name: "Perfil usuario",
   },
   {
     path: "/panel_administracion",
-    name: "Panel Administración"
+    name: "Panel Administración",
   },
   {
     path: "/panel_administracion_partidas",
-    name: "Panel Administración Partidas"
+    name: "Panel Administración Partidas",
   },
   {
     path: "/panel_administracion_partidas_reservas",
-    name: "Panel Administración Reservas"
+    name: "Panel Administración Reservas",
   },
   {
     path: "/panel_administracion_usuarios",
-    name: "Panel Administración Usuarios"
+    name: "Panel Administración Usuarios",
+  },
+  {
+    path: "/panel_administracion_usuarios_historial",
+    name: "Panel Administración Historial Usuarios",
   },
 ]);
 
@@ -100,18 +104,18 @@ window.onunload = async function () {
     }
   }
 };
-window.addEventListener('hashchange', cambioEnElHash, false);
+window.addEventListener("hashchange", cambioEnElHash, false);
 
 function cambioEnElHash() {
   let paginaCompleta = window.location.pathname;
   let indice = paginaCompleta.lastIndexOf("/");
   var paginaActual = paginaCompleta.substring(indice);
-  switch(paginaActual) {
+  switch (paginaActual) {
     case "/":
       cargarCuerpoPrincipal();
       break;
 
-    case "/suscripciones" :
+    case "/suscripciones":
       cargarPaginaSuscripciones();
       break;
 
@@ -119,28 +123,52 @@ function cambioEnElHash() {
       cargarPaginaPartidas();
       break;
 
+    case "/iniciar_sesion":
+      mostrarInicioSesion();
+      break;
+
     case "/carrito":
       cargarCarrito();
-      break;  
-
-    case "/perfil_usuario" : 
-      cargarPerfilUsuario();
-      document.getElementById("botonPerfilUsuario").dispatchEvent(new Event("click"));
-      break;
-     
-    case "/panel_administracion_partidas" : 
-      cargarPanelAdministracion("partidas");
-      document.getElementById("botonPerfilUsuario").dispatchEvent(new Event("click"));
-      break;
-      
-    case "/panel_administracion_partidas_reservas" : 
-      cargarPerfilUsuario();
-      document.getElementById("botonPerfilUsuario").dispatchEvent(new Event("click"));
       break;
 
-    case "/panel-administracion/usuarios" : 
-      cargarPerfilUsuario();
-      document.getElementById("botonPerfilUsuario").dispatchEvent(new Event("click"));
+    case "/perfil_usuario":
+      if (sessionStorage["email"]) {
+        cargarPerfilUsuario();
+      } else {
+        document.getElementById("logoHeader").dispatchEvent(new Event("click"));
+      }
+      break;
+
+    case "/panel_administracion_partidas":
+      if (sessionStorage["email"]) {
+        cargarPanelAdministracion("partidas");
+      } else {
+        document.getElementById("logoHeader").dispatchEvent(new Event("click"));
+      }
+      break;
+
+    case "/panel_administracion_partidas_reservas":
+      if (sessionStorage["email"]) {
+        cargarPanelAdministracion("partidas_reservas");
+      } else {
+        document.getElementById("logoHeader").dispatchEvent(new Event("click"));
+      }
+      break;
+
+    case "/panel_administracion_usuarios":
+      if (sessionStorage["email"]) {
+        cargarPanelAdministracion("usuarios");
+      } else {
+        document.getElementById("logoHeader").dispatchEvent(new Event("click"));
+      }
+      break;
+
+    case "/panel_administracion_usuarios_historial":
+      if (sessionStorage["email"]) {
+        cargarPanelAdministracion("historial");
+      } else {
+        document.getElementById("logoHeader").dispatchEvent(new Event("click"));
+      }
       break;
   }
   console.log("Cambio el hash!");
@@ -149,10 +177,25 @@ function cambioEnElHash() {
 function cambiarHash(e) {
   e.preventDefault();
   let ruta = e.currentTarget.getAttribute("route");
-  let infoRuta = routerClickBox.rutas.filter(rutaRouter => rutaRouter.path === ruta);
+  let infoRuta = routerClickBox.rutas.filter(
+    (rutaRouter) => rutaRouter.path === ruta
+  );
+  switch (ruta) {
+    case "/perfil_usuario":
+    case "/panel_administracion_partidas":
+    case "/panel_administracion_partidas_reservas":
+    case "/panel_administracion_usuarios":
+      let botonPerfil = document.getElementById("botonPerfilUsuario");
+      let menuPerfil = document.getElementById("menuPerfilUser");
+      if (botonPerfil && $(menuPerfil).is(":visible")) {
+        botonPerfil.dispatchEvent(new Event("click"));
+      }
+      break;
+  }
+
   //console.log(routerClickBox.rutas);
   infoRuta = infoRuta.length > 0 ? infoRuta[0] : undefined;
-  window.history.pushState(null, 'null', HOST + infoRuta.path);
+  window.history.pushState(null, "null", HOST + infoRuta.path);
   //location.hash = HOST + infoRuta.path;
   window.dispatchEvent(new Event("hashchange"));
 }
@@ -776,79 +819,6 @@ function crearLink(atributos) {
   return elementoLink;
 }
 
-/**
- * Hace aparecer o desaparecer la ventana de login
- *
- */
-function aparecerLogin() {
-  let contenedorLogin = document.getElementById("login");
-  //Compruebamos si el login ya existe
-  if (contenedorLogin) {
-    //Ocultamos o elemento
-    $(contenedorLogin).toggle(1000);
-  }
-  //Si no existe creamos el elemento
-  else {
-    contenedorLogin = document.createElement("div");
-    //Le asignamos el id
-    contenedorLogin.setAttribute("id", "login");
-    //Creamos los componentes del interior
-    let encabezado = document.createElement("h2");
-    encabezado.textContent = "Registrate o inicia sesión";
-    let paragrafo = document.createElement("p");
-    paragrafo.textContent =
-      "Por favor crea una cuenta para poder acceder a más funcionalidades de la web como suscribirte, reservar partidas y mucho más";
-    //Parrafo que explica que * son los campos obligatorios
-    let parrafoOblig = document.createElement("p");
-    parrafoOblig.textContent = "Los campos obligatorios están marcados con :";
-    parrafoOblig.setAttribute("class", "campoOblig");
-    //Contenedor de los botones
-    let contenedorBotones = document.createElement("div");
-    //Botones
-    let registro = crearBoton("Registrarse", {
-      class: "noActivo",
-      "data-nombre": "registro",
-    });
-    let login = crearBoton("Iniciar sesión", { "data-nombre": "login" });
-    let botones = [registro, login];
-    contenedorBotones.append(...botones);
-    //Creamos el formulario (Por defecto se activa con el login)
-    let formulario = document.createElement("form");
-    //Atributos del formulario
-    let atributosForm = {
-      action: "../php/registro.php",
-      method: "POST",
-      enctype: "multipart/form-data",
-    };
-    //Le asignamos los atributos al formulario
-    Object.entries(atributosForm).forEach((atributo) =>
-      formulario.setAttribute(atributo[0], atributo[1])
-    );
-    //Creamos el botón de cierre
-    let botonCierre = crearBoton("X");
-    //Lo añadimos todo al contenedor login
-    contenedorLogin.append(
-      encabezado,
-      paragrafo,
-      parrafoOblig,
-      contenedorBotones,
-      formulario,
-      botonCierre
-    );
-    //Le añadimos los escuchadores a los botones
-    botones.forEach((boton) => boton.addEventListener("click", cambiarForm));
-    botonCierre.addEventListener("click", aparecerLogin);
-    //Pomos o elemento como display none para mostralo cunha animación
-    contenedorLogin.style.display = "none";
-    //Añadimos el contenedor al body
-    document.querySelector("body").append(contenedorLogin);
-    //Creamos el interior del formulario
-    crearLogin(formulario);
-    //Marcamos los campos Obligatorios
-    marcarCamposOblig(["email", "pwd"]);
-    $(contenedorLogin).show(1000);
-  }
-}
 
 /**
  * Cambiar el formulario
@@ -895,92 +865,6 @@ function crearElem(tipoElemento, atributos, texto = "") {
   //Le asignamos el texto
   elementoForm.textContent = texto;
   return elementoForm;
-}
-
-/**
- * Crea los elementos del login y los asigna al formulario que le pasemos
- *
- * @param   {DOMElement}  formulario  Formulario del DOM
- *
- */
-function crearLogin(formulario) {
-  //Le quitamos el escucharo del registro (si lo tiene) y le añadimos al formulario el botón para escuchar el evento
-  formulario.removeEventListener("submit", procesarRegistro);
-  formulario.addEventListener("submit", procesarLogin);
-  //Label del login
-  let labelEmail = crearElem("label", { for: "email" }, "Email");
-  let labelClave = crearElem("label", { for: "pwd" }, "Contraseña");
-  //Input login
-  let inputEmail = crearElem("input", {
-    type: "email",
-    name: "email",
-    placeholder: "Correo electrónico",
-    id: "email",
-  });
-  let inputClave = crearElem("input", {
-    type: "password",
-    name: "pwd",
-    placeholder: "Contraseña",
-    id: "pwd",
-  });
-  //Creamos los input y los añadimos al formulario
-  formulario.append(labelEmail, inputEmail, labelClave, inputClave);
-  //Marcamos los campos Obligatorios
-  marcarCamposOblig(["email", "pwd"]);
-  //Párrafo para mostrar el mensaje de éxito o error
-  let parrafoResult = document.createElement("p");
-  parrafoResult.setAttribute("id", "resultadoForm");
-  //Botón para móvil para poder salir
-  let botonCancelar = crearBoton("Cancelar", { type: "button" });
-  botonCancelar.setAttribute("class", "movil");
-  //Añadimos el escuchador al botón
-  botonCancelar.addEventListener("click", aparecerLogin);
-  let botonLogin = crearBoton("Iniciar sesión", { type: "submit" });
-  //Creo el botón de iniciar sesión
-  formulario.append(parrafoResult, botonLogin, botonCancelar);
-}
-
-/**
- * Crea los elementos del registro del login
- *
- * @param   {DOMElement}  formulario  Formulario del login
- *
- */
-function crearRegistro(formulario) {
-  //Le quitamos el escucharo del registro (si lo tiene) y le añadimos al formulario el botón para escuchar el evento
-  formulario.removeEventListener("submit", procesarLogin);
-  formulario.addEventListener("submit", procesarRegistro);
-  //Acordeon 1
-  formulario.append(crearAcordeonDatosCuenta());
-
-  //Acordeon2
-  formulario.append(crearAcordeonDatosPersonales());
-
-  //Marcamos los campos Obligatorios
-  marcarCamposOblig([
-    "email",
-    "pwd",
-    "pwd2",
-    "imagenPerfil",
-    "nombre",
-    "apellidos",
-    "fecha_nac",
-  ]);
-  //Párrafo para mostrar el mensaje de éxito o error
-  let parrafoResult = document.createElement("p");
-  parrafoResult.setAttribute("id", "resultadoForm");
-  //Botón de registro
-  let botonRegistro = crearElem("input", {
-    type: "submit",
-    value: "Registrarme",
-  });
-  //Botón para móvil para poder salir
-  let botonCancelar = crearBoton("Cancelar", { type: "button" });
-  botonCancelar.setAttribute("class", "movil");
-  //Añadimos el escuchador al botón
-  botonCancelar.addEventListener("click", aparecerLogin);
-  //Añadimos todo al formulario
-  formulario.append(parrafoResult, botonRegistro, botonCancelar);
 }
 
 /**
@@ -1234,30 +1118,25 @@ async function procesarLogin(evento) {
     }
     sessionStorage.setItem("email", email);
     sessionStorage.setItem("rol", resultadoPeticion["exito"]);
-    try {
-      if (Object.values(carrito).length > 0) {
-        //Guardamos el carrito local si no está vacio
-        let peticion = await fetch("../php/carrito.php", {
-          method: "POST",
-          headers: { "Content-type": "application/json;charset=ut-8;" },
-          body: JSON.stringify({ guardarCarrito: carrito }),
-        });
-        peticionJSON = await peticion.json();
-        if (Object.hasOwn(peticionJSON, "error")) {
-          throw peticionJSON["error"];
-        }
-      } else {
+    if (Object.values(carrito).length > 0) {
+      //Guardamos el carrito local si no está vacio
+      let peticion = await fetch("../php/carrito.php", {
+        method: "POST",
+        headers: { "Content-type": "application/json;charset=ut-8;" },
+        body: JSON.stringify({ guardarCarrito: carrito }),
+      });
+      peticionJSON = await peticion.json();
+      if (Object.hasOwn(peticionJSON, "error")) {
+        throw peticionJSON["error"];
       }
-    } catch (error) {
-      console.log(error);
     }
 
     //Cargamos el número de artículos del carrito
     cargarNumArticulos();
     if (resultadoPeticion["exito"] == 1) {
-      location.assign("../html/panelAdministrador.html");
+      location.href = HOST + "/panel_administracion_partidas";
     } else {
-      location.assign("../html/index.html");
+      location.href = HOST + "/";
     }
   } catch ($error) {
     //Asignamos al p el mensaje
@@ -1316,77 +1195,59 @@ async function procesarRegistro(evento) {
   //Prevenimos al botón de realizar su tarea normalmente (Enviar la petición al servidor)
   evento.preventDefault();
   //Párrafo donde mostraremos el mensaje
-  let resultado = document.getElementById("resultadoForm");
-  try {
-    //Comprobamos que todos los campos obligatorios estean cubiertos
-    let camposOblig = [
-      "email",
-      "pwd",
-      "pwd2",
-      "imagenPerfil",
-      "nombre",
-      "apellidos",
-      "fecha_nac",
-    ];
-    if (!comprobarCamposOblig(camposOblig)) {
-      throw "Debe rellenar todos los campos obligatorios";
+  let formRegistro = document.getElementById("registro");
+  let resultado = formRegistro.querySelector("#resultadoForm");
+  if($(formRegistro).valid() == true){
+    try {
+      //Elementos que enviaremos a php
+      let email = formRegistro.querySelector("#email").value;
+      let clave = formRegistro.querySelector("#pwd").value;
+      let clave2 = formRegistro.querySelector("#pwd2").value;
+      let imagenPerfil = formRegistro.querySelector("#imagenPerfil").files[0];
+      let nombre = formRegistro.querySelector("#nombre").value;
+      let apellidos = formRegistro.querySelector("#apellidos").value;
+      let telefono = formRegistro.querySelector("#telf").value;
+      let fecha_nac = formRegistro.querySelector("#fecha_nac").value;
+      let direccion = formRegistro.querySelector("#direccion").value;
+      let genero_favorito = formRegistro.querySelector("#genero_favorito").value;
+      //Comprobamos que las contraseñas coincidan
+      if (!validarClaves(clave, clave2)) {
+        throw "Las contraseñas no coinciden";
+      }
+      //Creamos el objeto con los datos
+      let datosUsuario = {
+        email: email,
+        pwd: clave,
+        pwd2: clave2,
+        nombre: nombre,
+        apellidos: apellidos,
+        telefono: telefono,
+        fecha_nac: fecha_nac,
+        direccion: direccion,
+        genero_favorito: genero_favorito,
+      };
+      const mensajeJSON = new FormData();
+      mensajeJSON.append("imagenPerfil", imagenPerfil);
+      mensajeJSON.append("datosUsuario", JSON.stringify(datosUsuario));
+      //Enviamos los datos a php
+      const resultadoJSON = await fetch("../php/registro.php", {
+        method: "POST",
+        body: mensajeJSON,
+      });
+      const mensaje = await resultadoJSON.json();
+      //Cambiamos el mensaje y le añadimos la claseque trae de respuesta del php (Si dio un error el atributo será error y el mensaje de error sino éxito y su mensaje)
+      if (Object.hasOwn(mensaje, "error")) {
+        throw mensaje["error"];
+      }
+      resultado.textContent = mensaje["exito"];
+      resultado.classList = "exito";
+      limpiarCampo(resultado, 2000);
+      await limpiarTodosCamposForm(true);
+    } catch ($error) {
+      //Asignamos al p el mensaje
+      resultado.textContent = "Error: " + $error;
+      resultado.classList = "error";
     }
-    //Elementos que enviaremos a php
-    let email = document.getElementById("email").value;
-    let clave = document.getElementById("pwd").value;
-    let clave2 = document.getElementById("pwd2").value;
-    let imagenPerfil = document.getElementById("imagenPerfil").files[0];
-    let nombre = document.getElementById("nombre").value;
-    let apellidos = document.getElementById("apellidos").value;
-    let telefono = document.getElementById("telf").value;
-    let fecha_nac = document.getElementById("fecha_nac").value;
-    let direccion = document.getElementById("direccion").value;
-    let genero_favorito = document.getElementById("genero_favorito").value;
-    //Comprobamos que el email sea válido
-    if (!validarEmail(email)) {
-      throw "El email no es válido";
-    }
-    //Comprobamos que las contraseñas coincidan
-    if (!validarClaves(clave, clave2)) {
-      throw "Las contraseñas no coinciden";
-    }
-    //Comprobamos que la fecha de nacimiento sea válida
-    if (!validarFecha(fecha_nac)) {
-      throw "La fecha de nacimiento no es válida";
-    }
-    //Creamos el objeto con los datos
-    let datosUsuario = {
-      email: email,
-      pwd: clave,
-      pwd2: clave2,
-      nombre: nombre,
-      apellidos: apellidos,
-      telefono: telefono,
-      fecha_nac: fecha_nac,
-      direccion: direccion,
-      genero_favorito: genero_favorito,
-    };
-    const mensajeJSON = new FormData();
-    mensajeJSON.append("imagenPerfil", imagenPerfil);
-    mensajeJSON.append("datosUsuario", JSON.stringify(datosUsuario));
-    //Enviamos los datos a php
-    const resultadoJSON = await fetch("../php/registro.php", {
-      method: "POST",
-      body: mensajeJSON,
-    });
-    const mensaje = await resultadoJSON.json();
-    //Cambiamos el mensaje y le añadimos la claseque trae de respuesta del php (Si dio un error el atributo será error y el mensaje de error sino éxito y su mensaje)
-    if (Object.hasOwn(mensaje, "error")) {
-      throw mensaje["error"];
-    }
-    resultado.textContent = mensaje["exito"];
-    resultado.classList = "exito";
-    limpiarCampo(resultado, 2000);
-    await limpiarTodosCamposForm(true);
-  } catch ($error) {
-    //Asignamos al p el mensaje
-    resultado.textContent = "Error: " + $error;
-    resultado.classList = "error";
   }
 }
 
@@ -1420,9 +1281,13 @@ function validarClaves(clave1, clave2) {
 }
 
 function validarTelefono(telefono, elemento) {
-  let regex = new RegExp(/^\d{3}((-|\s)?\d{3}){2}$/);
-  console.log(regex.test(telefono));
-  return regex.test(telefono);
+  let resultado = true;
+  if (telefono) {
+    let regex = new RegExp(/^\d{3}((-|\s)?\d{3}){2}$/);
+    resultado = regex.test(telefono);
+  }
+
+  return resultado;
 }
 
 /**
@@ -1485,7 +1350,7 @@ async function desconectarPerfil(e) {
     //Borra el sesion storage, localstorage y recarga la página
     localStorage.clear();
     sessionStorage.clear();
-    location.assign("../html/index.html");
+    location.href = HOST + "/";
   }
 }
 /**
@@ -1855,7 +1720,6 @@ function irPrincipal(e) {
   }
 }
 
-
 /**
  * Crea un contenedor para una partida con los datos que le pasamos
  *
@@ -1927,7 +1791,6 @@ function crearContenedorPartida(datosPartida) {
   elemLista.append(contenedorImagen, contenedorInfo);
   return elemLista;
 }
-
 
 /**
  * Crea los Li con cada uno de los números
@@ -2001,8 +1864,6 @@ function ocultarMostrarOpcionesCreacion(e) {
     : $(filtros).slideUp(500);
 }
 
-
-
 /**
  * Restringe el acceso a los que no son usuarios
  *
@@ -2029,75 +1890,6 @@ function restringirAccesoNoAdmin() {
     //Lo redirigimos a la página principal
     location.replace("../html/index.html");
   }
-}
-
-
-/**
- * Filtra los usuarios por nombre o rol
- *
- * @param   {[type]}  e  [e description]
- *
- * @return  {[type]}     [return description]
- */
-async function recogerDatos(e) {
-  e.preventDefault();
-  //Seleccionamos el td con el correo del usuario
-  let emailUsuario =
-    e.currentTarget.parentElement.parentElement.firstElementChild.textContent;
-  //Ahora que sabemos el email podemos usarlo para seleccionar el id de igual valor, que será el select con la opción que queremos que tenga
-  let rolUsuario = document.getElementById(emailUsuario).value;
-  //Le mandamos la información para el cambio de usuario al php
-  const respuestaJSON = await fetch("../php/cambiarRol.php", {
-    method: "POST",
-    headers: { "Content-type": "application/json; charset=utf-8" },
-    body: JSON.stringify({ email: emailUsuario, rol: rolUsuario }), //mandamos a mayores el email del supuesto admin para comprobar en php
-  });
-  // Toca recibir la respuesta
-  console.log(respuestaJSON); // prueba
-  const respuestaJS = await respuestaJSON.json(); // Coge la respuesta y la convierte a objeto de js
-  console.log("Prueba"); // prueba
-  if (respuestaJS == true) {
-    window.alert("Base de datos actualizada");
-  } else {
-    window.alert("No se ha podido actualizar la base de datos");
-  }
-}
-
-/**
- * Llama a filtrar las partidas
- *
- * @param   {Event}  e  Evento que lo dispara
- *
- */
-function activarFiltro(e) {
-  e.preventDefault();
-  pagina = e.target.nodeName == "LI" ? e.target.textContent : 0;
-  //Cogemos los filtros
-  let juego = document.getElementById("juego_partida").value;
-  let fecha = document.getElementById("fecha").value;
-  let fechaFin = document.getElementById("fechaFin").value;
-  filtrarPartidasAdmin(
-    { juego_partida: juego, fecha: fecha, fechaFin: fechaFin },
-    pagina
-  );
-}
-
-
-/**
- * Función intermedia para que los enlaces cojan los filtros y se los pase a filtrar paritdas admin
- * @param {Event}   Evento disparado
- */
-function cogerFiltrosPartidasAdmin(e) {
-  //Cogemos los filtros
-  let juego = document.getElementById("juego_partida");
-  let datosFiltro = juego.value != "" ? { juego_partida: juego } : {};
-  let fechaInicio = document.getElementById("fecha");
-  fechaInicio.value != "" ? (datosFiltro["fecha"] = fechaInicio) : "";
-  let fechaFin = document.getElementById("fechaFin");
-  fechaFin.value != "" ? (datosFiltro["fechaFin"] = fechaFin) : "";
-  //Cogemos el número del enlace clicado y le restamos uno (Ya que empieza en 0)
-  let pagina = (e.currentTarget.dataset.partida - 1) * 7;
-  filtrarPartidasAdmin(datosFiltro, pagina);
 }
 
 /**
@@ -2434,8 +2226,8 @@ async function procesarReserva(e) {
       method: "POST",
       headers: { "Content-type": "application/json; charset=utf-8;" },
       body: JSON.stringify({
-        "procesarReserva": accionRealizar,
-        "datosReserva": {id_partida: idPartida, usuario: usuario },
+        procesarReserva: accionRealizar,
+        datosReserva: { id_partida: idPartida, usuario: usuario },
       }),
     });
     //Traducimos la respuesta
@@ -2837,207 +2629,6 @@ function crearInteriorCarrusel(contenidoElemento, classTarjeta) {
 }
 
 /**
- * Carga el modo de los usuarios administradores para roles
- *
- * @return  {void}  No devuelve nada
- */
-async function cargarModoUsuariosAdmin() {
-  let panelAdmin = document.getElementById("panelAdmin");
-  //Comprobamos si tiene ya algo y entonces lo limpiamos y si no no
-  if (panelAdmin.firstElementChild.nextElementSibling != null) {
-    panelAdmin.lastElementChild.remove();
-  }
-  //Creamos el formulario
-  let formulario = crearContenedor("form", { id: "formPanelAdmin" });
-  //Creamos el contenedor que tiene todo
-  let contenedorElementos = crearContenedor("div", {
-    id: "contenedorElementos",
-  });
-  //Contenedor de los botones
-  let contenedorBotones = document.createElement("div");
-  //Botones
-  let rol = crearBoton("Cambiar rol", {
-    "data-nombre": "cambiarRol",
-    type: "button",
-  });
-  let historial = crearBoton("Historial usuarios", {
-    "data-nombre": "historial",
-    class: "noActivo",
-    type: "button",
-  });
-  //Añadimos los escuchadores
-  rol.addEventListener("click", cargarModoUsuariosAdmin);
-  historial.addEventListener("click", cargarModoHistorialAdmin);
-  contenedorBotones.append(rol, historial);
-  //Creamos su cabecera
-  let cabecera = crearElem("h2", {}, "Filtro de usuarios");
-  //Creamos la tabla
-  let tabla = crearContenedor("table", { id: "filtroUsuarios" });
-  //Creamos la fila de la cabecera
-  let cabeceraTabla = document.createElement("thead");
-  let filaCabecera = crearFilaTabla("th", ["Email del usuario", "Rol"]);
-  cabeceraTabla.append(filaCabecera);
-  //Creamos el cuerpo
-  let cuerpoTabla = document.createElement("tbody");
-  //Creamos cada una de las filas
-  //Input de las filas
-  let filtroEmail = crearElem("input", {
-    id: "filtro-email",
-    type: "text",
-    name: "email",
-    placeholder: "Buscar por...",
-  });
-  let selectRol = crearElem("select", { id: "filtro-rol", name: "rol" });
-  //Opciones que tiene
-  let optionNull = crearElem("option", { value: "" }, "No seleccionado");
-  let option1 = crearElem("option", { value: 2 }, "Estándar");
-  let option2 = crearElem("option", { value: 1 }, "Administrador");
-  selectRol.append(optionNull, option1, option2);
-  //Botón para filtar
-  let botonFiltrar = crearBoton("Filtrar", {
-    id: "filtrarUsuariosAdmin",
-    type: "button",
-  });
-  //Le añadimos el escuchador
-  botonFiltrar.addEventListener("click", cogerFiltrosUsuariosAdmin);
-  //Creamos la fila
-  let filaCuerpo = crearFilaTabla("td", [filtroEmail, selectRol, botonFiltrar]);
-  cuerpoTabla.append(filaCuerpo);
-  //Añadimos todo a la tabla
-  tabla.append(cabeceraTabla, cuerpoTabla);
-  //Segunda cabecera
-  let cabeceraUsuarios = crearElem("h2", {}, "Usuarios y roles");
-  let tablaUsuarios = crearContenedor("table", { id: "listaElementos" });
-  //Creamos la cabecera
-  let cabeceraTablaUsuarios = document.createElement("thead");
-  //Creamos su fila
-  let filaCabeceraUsuarios = crearFilaTabla("th", ["Email", "Rol", ""]);
-  cabeceraTablaUsuarios.append(filaCabeceraUsuarios);
-  //Creamos el cuerpo
-  let cuerpoUsuarios = document.createElement("tbody");
-  //Añadimos todo a la tabla
-  tablaUsuarios.append(cabeceraTablaUsuarios, cuerpoUsuarios);
-  //Añadimos todo al contenedor
-  contenedorElementos.append(
-    contenedorBotones,
-    cabecera,
-    tabla,
-    cabeceraUsuarios,
-    tablaUsuarios
-  );
-  formulario.append(contenedorElementos);
-  //Lo añadimos al contenedor panel Admin
-  panelAdmin.append(formulario);
-  //Ponemos el modo visible en el usuario
-  let lista = document.getElementById("opcionesPanelAdmin");
-  let elementosActivo = Array.from(
-    lista.querySelectorAll("a[class='listaActivo']")
-  );
-  elementosActivo.forEach((elemento) =>
-    elemento.classList.remove("listaActivo")
-  );
-  //Se lo ponemos a usuarios
-  document
-    .getElementById("pestUsuarios")
-    .firstElementChild.classList.add("listaActivo");
-}
-
-/**
- * Carga los usuarios según el filtro
- *
- * @param   {Object}  filtro  Filtros a aplicar de tipo {clave: valor}
- * @param   {int}  pagina  Página actual en la que nos encontramos
- *
- * @return  {Promise}        No devuelve nada
- */
-async function cargarUsuarios(filtro = {}, pagina = 0) {
-  //Añadimos al filtro al página en la que nos encontramos
-  filtro["pagina"] = pagina;
-  filtro["limite"] = 7;
-  let tablaUsuarios = document.getElementById("listaElementos");
-  let cuerpoTabla = tablaUsuarios.querySelector("tbody");
-  //Limpiamos el contenedor
-  cuerpoTabla.innerHTML = "";
-  try {
-    //Iniciamos la petición
-    const respuesta = await fetch("../php/cambiarRol.php", {
-      method: "POST",
-      headers: { "Content-type": "application/json; charset = utf-8" },
-      body: JSON.stringify({ filtrarUsuarios: filtro }),
-    });
-    //Traducimos la respuesta
-    const respuestaJSON = await respuesta.json();
-    //Comprobamos que no diera error
-    if (Object.hasOwn(respuestaJSON, "error")) {
-      throw respuestaJSON["error"];
-    }
-    //Recorremos el array
-    respuestaJSON["datosUsuarios"].forEach((fila) => {
-      //Creamos el td con el email y el select con el option seleccionado
-      let email = crearContenedor("td", {}, fila["email"]);
-      let selectRol = crearContenedor("select", {
-        name: "nuevo_rol",
-        id: fila["email"],
-      });
-      //Creamos sus option
-      let optionEstandar = crearElem("option", { value: 2 }, "Estándar");
-      let optionAdmin = crearElem("option", { value: 1 }, "Administrador");
-      optionAdmin.value == fila["rol"]
-        ? optionAdmin.setAttribute("selected", "selected")
-        : optionEstandar.setAttribute("selected", "selected");
-      //Añadimos todo
-      selectRol.append(optionEstandar, optionAdmin);
-      //Botón guardarCambio rol
-      let botonGuardar = crearBoton("Guardar");
-      //Le añadimos el evento
-      botonGuardar.addEventListener("click", recogerDatos);
-      //Creamos la fila
-      let filaTabla = crearFilaTabla("td", [email, selectRol, botonGuardar]);
-      cuerpoTabla.append(filaTabla);
-    });
-    //Creamos la paginación
-    let contenedor = document.getElementById("contenedorElementos");
-    let pagina = filtro["pagina"] != 0 ? filtro["pagina"] / 7 : 0;
-    contenedor.append(crearPaginacion(respuestaJSON["numPag"], pagina));
-    //Le añadimos el escuchador a cada uno de ellos
-    let listaLi = Array.from(document.querySelectorAll(".pagination li"));
-    if (listaLi != null) {
-      listaLi.forEach((elementoLi) =>
-        elementoLi.firstElementChild.addEventListener(
-          "click",
-          cogerFiltrosUsuariosAdmin
-        )
-      );
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-/**
- * Coge los filtros en la pestaña usuarios de admin para cambiar el rol
- *
- * @param   {Event}  e  Evento que lo dispara
- *
- * @return  {void}     No devuelve nada
- */
-function cogerFiltrosUsuariosAdmin(e) {
-  e.preventDefault();
-  let filtros = {};
-  //Cogemos el email de usuario
-  let email = document.getElementById("filtro-email").value;
-  if (email != "") {
-    filtros["email"] = email;
-  }
-  let rol = document.getElementById("filtro-rol").value;
-  if (rol != "") {
-    filtros["rol"] = rol;
-  }
-  //Cargamos las partidas
-  cargarUsuarios(filtros);
-}
-
-/**
  * Muestra una ventana flotante con el historial
  *
  * @return  {void}  No devuelve nada
@@ -3105,7 +2696,6 @@ function mostrarHistorial() {
   cargarHistorialUsuario();
 }
 
-
 /**
  * Coge los datos del formulario y carga el historial con ese filtrado
  *
@@ -3127,199 +2717,6 @@ function cogerFiltradoHistorial(e) {
   let fechaFin = document.getElementById("fechaFinHistorial").value;
   fechaFin != "" ? (filtro["fechaFin"] = fechaFin) : "";
   cargarHistorialUsuario(filtro, pagina, limite);
-}
-
-/**
- * Carga el modo historial del administrador
- *
- * @return  {void}  No devuelve nada
- */
-function cargarModoHistorialAdmin() {
-  let panelAdmin = document.getElementById("panelAdmin");
-  //Comprobamos si tiene ya algo y entonces lo limpiamos y si no no
-  if (panelAdmin.firstElementChild.nextElementSibling != null) {
-    panelAdmin.lastElementChild.remove();
-  }
-  //Creamos el formulario
-  let formulario = crearContenedor("form", { id: "formPanelAdmin" });
-  //Creamos el contenedor que tiene todo
-  let contenedorElementos = crearContenedor("div", {
-    id: "contenedorElementos",
-  });
-  //Contenedor de los botones
-  let contenedorBotones = document.createElement("div");
-  //Botones
-  let rol = crearBoton("Cambiar rol", {
-    "data-nombre": "cambiarRol",
-    type: "button",
-    class: "noActivo",
-  });
-  let historial = crearBoton("Historial usuarios", {
-    "data-nombre": "historial",
-    type: "button",
-  });
-  contenedorBotones.append(rol, historial);
-  rol.addEventListener("click", cargarModoUsuariosAdmin);
-  historial.addEventListener("click", cargarModoHistorialAdmin);
-  //Creamos su cabecera
-  let cabecera = crearElem("h2", {}, "Filtro de usuarios");
-  //Creamos la tabla
-  let tabla = crearContenedor("table", { id: "filtroUsuarios" });
-  //Creamos la fila de la cabecera
-  let cabeceraTabla = document.createElement("thead");
-  //Cabecera de la tabla de filtrado
-  let labelFechaIni = crearElem(
-    "label",
-    { for: "fechaIniHistorial" },
-    "Fecha inicio"
-  );
-  let filtroFechaIniHistorial = crearElem("input", {
-    id: "fechaIniHistorial",
-    type: "date",
-    name: "email",
-  });
-  labelFechaIni.append(filtroFechaIniHistorial);
-  let labelFechaFinHistorial = crearElem(
-    "label",
-    { for: "filtroFechaFinHistorial" },
-    "Fecha fin"
-  );
-  let filtroFechaFinHistorial = crearElem("input", {
-    id: "filtroFechaFinHistorial",
-    type: "date",
-    name: "email",
-  });
-  labelFechaFinHistorial.append(filtroFechaFinHistorial);
-  //Botón para filtar
-  let botonFiltrar = crearBoton("Filtrar", {
-    id: "filtrarUsuariosAdmin",
-    type: "button",
-  });
-  //Le añadimos el escuchador
-  botonFiltrar.addEventListener("click", cogerFiltroHistorialAdmin);
-  let filaCabecera = crearFilaTabla("th", [
-    labelFechaIni,
-    labelFechaFinHistorial,
-    botonFiltrar,
-  ]);
-  //Añadimos su evento
-  cabeceraTabla.append(filaCabecera);
-  //Creamos el cuerpo
-  let cuerpoTabla = document.createElement("tbody");
-  //Añadimos todo a la tabla
-  tabla.append(cabeceraTabla, cuerpoTabla);
-  //Segunda cabecera
-  let cabeceraUsuarios = crearElem("h2", {}, "Historial de usuarios");
-  let tablaUsuarios = crearContenedor("table", { id: "listaElementos" });
-  //Creamos la cabecera
-  let cabeceraTablaUsuarios = document.createElement("thead");
-  //Creamos su fila
-  let filaCabeceraUsuarios = crearFilaTabla("th", ["Fecha", "Datos"]);
-  cabeceraTablaUsuarios.append(filaCabeceraUsuarios);
-  //Creamos el cuerpo
-  let cuerpoUsuarios = document.createElement("tbody");
-  //Añadimos todo a la tabla
-  tablaUsuarios.append(cabeceraTablaUsuarios, cuerpoUsuarios);
-  //Añadimos todo al contenedor
-  contenedorElementos.append(
-    contenedorBotones,
-    cabecera,
-    tabla,
-    cabeceraUsuarios,
-    tablaUsuarios
-  );
-  formulario.append(contenedorElementos);
-  //Lo añadimos al contenedor panel Admin
-  panelAdmin.append(formulario);
-  //Ponemos el modo visible en el usuario
-  let lista = document.getElementById("opcionesPanelAdmin");
-  let elementosActivo = Array.from(
-    lista.querySelectorAll("a[class='listaActivo']")
-  );
-  elementosActivo.forEach((elemento) =>
-    elemento.classList.remove("listaActivo")
-  );
-  //Se lo ponemos a usuarios
-  document
-    .getElementById("pestUsuarios")
-    .firstElementChild.classList.add("listaActivo");
-  filtrarHistorialAdmin();
-}
-
-/**
- * Función para filtrar el historial de administrador
- *
- * @param   {Object}  filtro  Filtros a aplicar de tipo {clave: valor}
- * @param   {int}  pagina  Página en la que te encuentras
- *
- * @return  {void}          No devuelve nada
- */
-async function filtrarHistorialAdmin(filtro = {}, pagina = 0, limite = 7) {
-  filtro["pagina"] = pagina;
-  filtro["limite"] = limite;
-  let cuerpoTabla = document
-    .getElementById("listaElementos")
-    .querySelector("tbody");
-  //Limpiamos el contenedor
-  cuerpoTabla.innerHTML = "";
-  try {
-    //Iniciamos la peticion
-    const respuesta = await fetch("../php/historial.php", {
-      method: "POST",
-      headers: { "Content-type": "application/json; charset=utf-8;" },
-      body: JSON.stringify({ admin: filtro }),
-    });
-    //Traducimos la respuesta
-    const respuestaJSON = await respuesta.json();
-    //Comprobamos que no diera error
-    if (Object.hasOwn(respuestaJSON, "error")) {
-      throw respuestaJSON["error"];
-    }
-    //Cargamos cada fila
-    respuestaJSON["historial"].forEach((dato) => {
-      let filaHistorial = crearFilaTabla("td", dato, [{}, { colspan: 2 }]);
-      cuerpoTabla.append(filaHistorial);
-    });
-    //Creamos la paginación
-    let contenedor = document.getElementById("contenedorElementos");
-    let pagina = filtro["pagina"] != 0 ? filtro["pagina"] / 7 : 0;
-    contenedor.append(crearPaginacion(respuestaJSON["numPag"], pagina));
-    //Le añadimos el escuchador a cada uno de ellos
-    let listaLi = Array.from(document.querySelectorAll(".pagination li"));
-    if (listaLi != null) {
-      listaLi.forEach((elementoLi) =>
-        elementoLi.firstElementChild.addEventListener(
-          "click",
-          cogerFiltroHistorialAdmin
-        )
-      );
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-/**
- * Coge los filtros a aplicar y se los pasa a filtrarHistorialAdmin
- *
- * @param {Event}   e que se dispara
- *
- * @return  {void}  No devuelve nada
- */
-function cogerFiltroHistorialAdmin(e) {
-  e.preventDefault();
-  let filtro = {};
-  let limite = 7;
-  let pagina =
-    e.currentTarget.dataset.partida != null
-      ? (e.currentTarget.dataset.partida - 1) * limite
-      : 0;
-  //Cogemos los datos de las fechas
-  let fechaIni = document.getElementById("fechaIniHistorial").value;
-  fechaIni != "" ? (filtro["fechaIni"] = fechaIni) : "";
-  let fechaFin = document.getElementById("filtroFechaFinHistorial").value;
-  fechaFin != "" ? (filtro["fechaFin"] = fechaFin) : "";
-  filtrarHistorialAdmin(filtro, pagina, limite);
 }
 
 /**
@@ -3692,7 +3089,6 @@ async function cargarNumArticulos() {
   }
 }
 
-
 function crearProductoCarrito(nombre, id, img, unidades, precio) {
   //Creamos el contenedor
   let contenedorCarrito = crearContenedor("div", { class: "productoCarrito" });
@@ -3773,13 +3169,16 @@ async function mostrarInicioSesion() {
     elemento.classList.remove("navActive")
   );
 
+  //Cargamos las opciones de los géneros
+  let generos = await cargarGeneros();
+
   //Cargamos la plantilla
   let peticion = await fetch("../mustache/login_registro.mustache", {
     method: "POST",
     headers: { "Content-type": "application/json;charset=ut-8;" },
   });
   let plantilla = await peticion.text();
-  let resultado = Mustache.render(plantilla, {});
+  let resultado = Mustache.render(plantilla, generos["datos"], {"generos": generos["plantilla"]});
   main.insertAdjacentHTML("beforeend", resultado);
 
   //Event listeners
@@ -3798,8 +3197,8 @@ async function mostrarInicioSesion() {
   );
 
   //Validador de código
-  let formLogin = $("#login form");
-  formLogin.validate({
+  let formLogin = document.querySelector("#login form");
+  $(formLogin).validate({
     rules: {
       email: {
         required: true,
@@ -3856,13 +3255,8 @@ async function mostrarInicioSesion() {
     },
   });
 
-  $("select", registro).select2({
-    placeholder: "Selecciona una opción",
-    allowClear: true,
-  });
-
   //Evento de los formularios
-  formLogin.on("submit", procesarLogin);
+  $(formLogin).on("submit", procesarLogin);
   formRegistro.on("submit", procesarRegistro);
 
   let botonesAcordeon = Array.from($("button", formRegistro));
@@ -3985,12 +3379,18 @@ async function cargarCuerpoPrincipal() {
       partials
     );
     main.insertAdjacentHTML("beforeend", plantillaTotal);
-    Promise.all([plantillaCajasSorpresa, plantillaPartidas, plantillaTienda]).then(() => {
+    Promise.all([
+      plantillaCajasSorpresa,
+      plantillaPartidas,
+      plantillaTienda,
+    ]).then(() => {
       //Cargamos una imagen en memoria del mosaico para estar seguros que se cargó todo apropriadamente
-      $('<img/>').attr('src', '../img/mosaicoDisenho/SuscDesignTop.svg').on('load', function() {
-        $(this).remove(); //La eliminamos para limpiar memoria
-        desactivarPantallaCarga();
-     });
+      $("<img/>")
+        .attr("src", "../img/mosaicoDisenho/SuscDesignTop.svg")
+        .on("load", function () {
+          $(this).remove(); //La eliminamos para limpiar memoria
+          desactivarPantallaCarga();
+        });
     });
   } catch (error) {
     console.log(error);
@@ -4152,6 +3552,24 @@ Mustache.Formatters = {
   },
   contarArray: function (array) {
     return array.length;
+  },
+  rol: function (rol, rolEsperado) {
+    let resultado;
+    switch (rolEsperado) {
+      case ROL_ADMINISTRADOR:
+        resultado = rol == ROL_ADMINISTRADOR;
+        break;
+
+      case ROL_ESTANDAR:
+        resultado = rol == ROL_ESTANDAR;
+        break;
+
+      case ROL_ANONIMO:
+        resultado = rol == ROL_ANONIMO;
+        break;
+    }
+
+    return resultado;
   },
 };
 
@@ -4452,6 +3870,7 @@ async function cargarPaginaPartidas() {
       let resultado = Mustache.render(plantilla, plantillaPartidas["datos"], {
         partidas: plantillaPartidas["plantilla"],
         generos: generos["plantilla"],
+        paginacion: plantillaPartidas["paginacion"],
       });
       mainCuerpo.insertAdjacentHTML("beforeend", resultado);
 
@@ -4462,7 +3881,7 @@ async function cargarPaginaPartidas() {
 
       paginacion = document.querySelector(".pagination");
       if (paginacion != undefined) {
-        let enlacesPaginacion = Array.from(paginacion.querySelector("a"));
+        let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
         enlacesPaginacion.forEach((enlace) =>
           enlace.addEventListener("click", filtrarPartidas)
         );
@@ -4498,7 +3917,7 @@ async function cargarPaginaPartidas() {
  * @param {int} limite Número de partidas por página
  * @returns
  */
-async function cargarPartidas(devolver, filtro = {}, pagina = 0, limite = 7) {
+async function cargarPartidas(devolver, filtro = {}, pagina = 1, limite = 7) {
   //Limpiamos el contenedor de las partidas
   let lista = document.querySelector("ul[class='list-group']");
   let paginacion = document.querySelector(".pagination");
@@ -4528,16 +3947,26 @@ async function cargarPartidas(devolver, filtro = {}, pagina = 0, limite = 7) {
     );
     let plantilla = await peticion.text();
 
+    //Cargamos la paginacion
+    let plantillaPag = await cargarPaginacion(respuestaJSON);
+
     if (devolver) {
-      return { datos: respuestaJSON, plantilla: plantilla };
+      return {
+        datos: respuestaJSON,
+        plantilla: plantilla,
+        paginacion: plantillaPag,
+      };
     } else {
       let resultado = Mustache.render(plantilla, respuestaJSON);
       lista.insertAdjacentHTML("beforeend", resultado);
 
+      let main = document.querySelector("main");
+      main.insertAdjacentHTML("beforeend", plantillaPag);
+
       //Añadimos los escuchadores
       paginacion = document.querySelector(".pagination");
       if (paginacion) {
-        let enlacesPaginacion = Array.from(paginacion.querySelector("a"));
+        let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
         enlacesPaginacion.forEach((enlace) =>
           enlace.addEventListener("click", filtrarPartidas)
         );
@@ -4569,7 +3998,7 @@ async function cargarPartidas(devolver, filtro = {}, pagina = 0, limite = 7) {
 async function filtrarPartidas(e) {
   e.preventDefault();
   let pagina =
-    e.currentTarget.nodeName == "BUTTON" ? 0 : e.currentTarget.textContent;
+    e.currentTarget.nodeName == "BUTTON" ? 1 : e.currentTarget.textContent;
   //Cogemos todos los filtros
   let filtro = document.getElementById("filtro");
   let genero = filtro.querySelector("select[name='generos'").value;
@@ -4712,9 +4141,11 @@ async function cargarPerfilUsuario() {
 
     //Quitamos todos los elementos activos
     let elementosActivos = document.querySelectorAll(".navActive");
-    if(elementosActivos){
+    if (elementosActivos) {
       elementosActivos = Array.from(elementosActivos);
-      elementosActivos.forEach(elemento => elemento.classList.remove("navActive"));
+      elementosActivos.forEach((elemento) =>
+        elemento.classList.remove("navActive")
+      );
     }
 
     //Si no es un usuario principal lo llevamos a la página principal
@@ -4762,8 +4193,6 @@ async function cargarPerfilUsuario() {
       });
       main.insertAdjacentHTML("beforeend", plantillaMustache);
 
-      botonPerfil.dispatchEvent(new Event("click"));
-
       //Añadimos los escuchadores
       let botonEditarPerfil = document.getElementById("editarCuenta");
       botonEditarPerfil.addEventListener("click", editarPerfil);
@@ -4785,7 +4214,7 @@ async function cargarPerfilUsuario() {
  * @param {int} pagina Número de la página
  * @param {int} limite Límite de elementos por página
  */
-async function cargarHistorialUsuario(filtro = {}, pagina = 0, limite = 7) {
+async function cargarHistorialUsuario(filtro = {}, pagina = 1, limite = 7) {
   let contenedorHistorial = document.getElementById("contenedorHistorial");
   if (contenedorHistorial != undefined) contenedorHistorial.remove();
   let main = document.querySelector("main");
@@ -4801,8 +4230,11 @@ async function cargarHistorialUsuario(filtro = {}, pagina = 0, limite = 7) {
     const historialJSON = await peticionHistorial.json();
     //Comprobamos que no diese error
     if (Object.hasOwn(historialJSON, "error")) {
-      throw json["error"];
+      throw historialJSON["error"];
     }
+
+    //cargamos la paginacion
+    let paginacion = await cargarPaginacion(historialJSON);
 
     //Cargamos la plantilla de mustache
     const peticionMustache = await fetch(
@@ -4810,7 +4242,9 @@ async function cargarHistorialUsuario(filtro = {}, pagina = 0, limite = 7) {
       opcionesFetchMustache
     );
     const peticionJSON = await peticionMustache.text();
-    let plantillaMustache = Mustache.render(peticionJSON, historialJSON);
+    let plantillaMustache = Mustache.render(peticionJSON, historialJSON, {
+      paginacion: paginacion,
+    });
     main.insertAdjacentHTML("beforeend", plantillaMustache);
 
     //Añadimos los escuchadores
@@ -4825,6 +4259,14 @@ async function cargarHistorialUsuario(filtro = {}, pagina = 0, limite = 7) {
     botonesHistorial.forEach((boton) =>
       boton.addEventListener("click", cargarMasDetalleHistorial)
     );
+
+    paginacion = document.querySelector(".pagination");
+    if (paginacion != undefined) {
+      let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
+      enlacesPaginacion.forEach((enlace) =>
+        enlace.addEventListener("click", filtrarHistorialUsuario)
+      );
+    }
   } catch (error) {
     console.log(error);
   }
@@ -4842,9 +4284,7 @@ function filtrarHistorialUsuario(e) {
   let filtro = {};
   let limite = 7;
   let pagina =
-    e.currentTarget.dataset.historial != null
-      ? (e.currentTarget.dataset.historial - 1) * limite
-      : 0;
+    e.currentTarget.nodeName != "BUTTON" ? e.currentTarget.textContent : 1;
   //Cogemos los datos de las fechas
   let fechaIni = document.getElementById("fechaIniHistorial");
   fechaIni != "" && fechaIni != undefined
@@ -4920,7 +4360,9 @@ async function cargarCarrito(pagina = 0, limite = 7) {
 
     //Actualizamos el header con el activo
     let header = document.querySelector("nav");
-    let elementosActivos = Array.from(header.getElementsByClassName("navActive"));
+    let elementosActivos = Array.from(
+      header.getElementsByClassName("navActive")
+    );
     elementosActivos.forEach((elemento) =>
       elemento.classList.remove("navActive")
     );
@@ -4950,6 +4392,10 @@ async function cargarCarrito(pagina = 0, limite = 7) {
       respuestaJSON["productos"].forEach((producto) => {
         carrito[producto["id_producto"]] = producto["unidades"];
       });
+      numArticulos = respuestaJSON["productos"].length;
+      let iconoCarrito = document.getElementById("iconoCarrito");
+      let spanNumArt = iconoCarrito.querySelector("span");
+      spanNumArt.textContent = numArticulos;
     } else if (Object.values(carrito).length > 0) {
       //Iniciamos la petición para pedir los productos del carrito local
       const respuesta = await fetch("../php/carrito.php", {
@@ -5039,7 +4485,7 @@ async function vaciarCarrito(e) {
   carrito = {};
   if (sessionStorage["email"]) {
     try {
-      if(confirm("Esta seguro que desa vaciar el carrito?")) {
+      if (confirm("Esta seguro que desa vaciar el carrito?")) {
         //Iniciamos la petición
         const respuesta = await fetch("../php/carrito.php", {
           method: "POST",
@@ -5232,35 +4678,46 @@ async function cargarPanelAdministracion(pagina) {
   try {
     activarPantallaCarga();
     let main = document.querySelector("main");
-    main.classList.contains("cuerpoMosaico") ? "" : main.classList.add("cuerpoMosaico");
+    main.classList.contains("cuerpoMosaico")
+      ? ""
+      : main.classList.add("cuerpoMosaico");
     main.innerHTML = "";
     let datos = {};
     let partials = {};
     //Cargamos la parte de mustache
-    let plantilla ;
+    let plantilla;
     let plantillaJson;
     let cadena;
+    let cuerpoTabla;
+    let botonRol;
+    let botonHistorial;
+    let paginacion;
 
     //Quitamos todos los elementos activos
     let elementosActivos = document.querySelectorAll(".navActive");
-    if(elementosActivos){
+    if (elementosActivos) {
       elementosActivos = Array.from(elementosActivos);
-      elementosActivos.forEach(elemento => elemento.classList.remove("navActive"));
+      elementosActivos.forEach((elemento) =>
+        elemento.classList.remove("navActive")
+      );
     }
 
-    switch(pagina){
+    switch (pagina) {
       case "partidas":
         datos = await cargarPaginaPartidasAdmin(false);
-        partials = {"partidas": datos["plantilla"]};
+        partials = { partidas: datos["plantilla"] };
 
-         //Cargamos la parte de mustache
-        plantilla = await fetch('../mustache/panelAdministrador.mustache', opcionesFetchMustache);
+        //Cargamos la parte de mustache
+        plantilla = await fetch(
+          "../mustache/panelAdministrador.mustache",
+          opcionesFetchMustache
+        );
         plantillaJson = await plantilla.text();
         cadena = Mustache.render(plantillaJson, datos["datos"], partials);
         main.insertAdjacentHTML("beforeend", cadena);
 
         //Event listeners
-        let filtrado =  document.getElementById("filtradoPartida");
+        let filtrado = document.getElementById("filtradoPartida");
         let botonFiltrado = filtrado.querySelector("input[type='submit']");
         botonFiltrado.addEventListener("click", filtrarPartidasAdmin);
 
@@ -5268,49 +4725,165 @@ async function cargarPanelAdministracion(pagina) {
         let botonNuevaPartida = tablaElementos.querySelector("thead button");
         botonNuevaPartida.addEventListener("click", modoCrearPartidasAdmin);
 
-        let cuerpoTabla = tablaElementos.querySelector("tbody");
-        let botonesEditar =cuerpoTabla.querySelectorAll('button[data-action="editar"]');
-        let botonesEliminar = cuerpoTabla.querySelectorAll('button[data-action="eliminar"]');
-        if(botonesEditar){
+        cuerpoTabla = tablaElementos.querySelector("tbody");
+        let botonesEditar = cuerpoTabla.querySelectorAll(
+          'button[data-action="editar"]'
+        );
+        let botonesEliminar = cuerpoTabla.querySelectorAll(
+          'button[data-action="eliminar"]'
+        );
+        if (botonesEditar) {
           botonesEditar = Array.from(botonesEditar);
-          botonesEditar.forEach(boton => boton.addEventListener("click", editarPartidaAdmin));
+          botonesEditar.forEach((boton) =>
+            boton.addEventListener("click", editarPartidaAdmin)
+          );
           botonesEliminar = Array.from(botonesEliminar);
-          botonesEliminar.forEach(boton => boton.addEventListener("click", eliminarPartidaTabla));
+          botonesEliminar.forEach((boton) =>
+            boton.addEventListener("click", eliminarPartidaTabla)
+          );
         }
-        let botonReservas = document.querySelector("button[data-nombre='reservas']");
+        let botonReservas = document.querySelector(
+          "button[data-nombre='reservas']"
+        );
         botonReservas.addEventListener("click", cargarPaginaReservasAdmin);
+
+        paginacion = document.querySelector(".pagination");
+        if (paginacion != undefined) {
+          let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
+          enlacesPaginacion.forEach((enlace) =>
+            enlace.addEventListener("click", filtrarPartidasAdmin)
+          );
+        }
 
         break;
 
       case "partidas_reservas":
-        datos = await cargarReservasAdmin();
-        partials = {"reservas": datos["plantilla"]};
+        datos = await cargarPaginaReservasAdmin(false);
+        partials = { reservas: datos["plantilla"] };
         //Cargamos la parte de mustache
-        plantilla = await fetch('../mustache/panelAdministrador.mustache', opcionesFetchMustache);
+        plantilla = await fetch(
+          "../mustache/panelAdministrador.mustache",
+          opcionesFetchMustache
+        );
         plantillaJson = await plantilla.text();
         cadena = Mustache.render(plantillaJson, datos["datos"], partials);
         main.insertAdjacentHTML("beforeend", cadena);
 
-        let botonPartidas= document.querySelector("button[data-nombre='partidas']");
+        let botonPartidas = document.querySelector(
+          "button[data-nombre='partidas']"
+        );
         botonPartidas.addEventListener("click", cargarPaginaPartidasAdmin);
+
+        paginacion = document.querySelector(".pagination");
+        if (paginacion != undefined) {
+          let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
+          enlacesPaginacion.forEach((enlace) =>
+            enlace.addEventListener("click", filtrarReservasAdmin)
+          );
+        }
 
         break;
 
       case "usuarios":
-        datos = await cargarModoUsuariosAdmin();
-        partials = {"usuarios": datos["plantilla"]};
-        break;  
+        datos = await cargarPaginaUsuariosAdmin(false);
+        partials = { usuarios: datos["plantilla"] };
+        //Cargamos la parte de mustache
+        plantilla = await fetch(
+          "../mustache/panelAdministrador.mustache",
+          opcionesFetchMustache
+        );
+        plantillaJson = await plantilla.text();
+        cadena = Mustache.render(plantillaJson, datos["datos"], partials);
+        main.insertAdjacentHTML("beforeend", cadena);
+
+        cuerpoTabla = main.querySelector("#listaElementos tbody");
+
+        //Event listeners
+        let botonFiltrar = document.getElementById("filtrarUsuariosAdmin");
+        botonFiltrar.addEventListener("click", cogerFiltrosUsuariosAdmin);
+        let botonesGuardar = cuerpoTabla.querySelectorAll("button");
+        if (botonesGuardar) {
+          botonesGuardar = Array.from(botonesGuardar);
+          botonesGuardar.forEach((boton) =>
+            boton.addEventListener("click", recogerDatos)
+          );
+        }
+        botonRol = document.querySelector("button[data-nombre='cambiarRol']");
+        botonRol.addEventListener("click", cargarPaginaUsuariosAdmin);
+        botonHistorial = document.querySelector(
+          "button[data-nombre='historial']"
+        );
+        botonHistorial.addEventListener("click", cargarPaginaHistorialAdmin);
+
+        paginacion = document.querySelector(".pagination");
+        if (paginacion != undefined) {
+          let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
+          enlacesPaginacion.forEach((enlace) =>
+            enlace.addEventListener("click", cogerFiltrosUsuariosAdmin)
+          );
+        }
+
+        break;
+
+      case "historial":
+        datos = await cargarPaginaHistorialAdmin(false);
+        partials = { historial: datos["plantilla"] };
+        //Cargamos la parte de mustache
+        plantilla = await fetch(
+          "../mustache/panelAdministrador.mustache",
+          opcionesFetchMustache
+        );
+        plantillaJson = await plantilla.text();
+        cadena = Mustache.render(plantillaJson, datos["datos"], partials);
+        main.insertAdjacentHTML("beforeend", cadena);
+
+        cuerpoTabla = main.querySelector("#listaElementos tbody");
+
+        //Event listeners
+        let formularioFiltrado = document.getElementById("filtroUsuarios");
+        let botonFiltrarHistorial = formularioFiltrado.querySelector("button");
+        botonFiltrarHistorial.addEventListener(
+          "click",
+          cogerFiltroHistorialAdmin
+        );
+        let botonesDetalles = cuerpoTabla.querySelectorAll("button");
+        if (botonesDetalles) {
+          botonesDetalles = Array.from(botonesDetalles);
+          botonesDetalles.forEach((boton) =>
+            boton.addEventListener("click", cargarMasDetalleHistorialAdmin)
+          );
+        }
+        botonRol = document.querySelector("button[data-nombre='cambiarRol']");
+        botonRol.addEventListener("click", cargarPaginaUsuariosAdmin);
+        botonHistorial = document.querySelector(
+          "button[data-nombre='historial']"
+        );
+        botonHistorial.addEventListener("click", cargarPaginaHistorialAdmin);
+
+        paginacion = document.querySelector(".pagination");
+      if (paginacion != undefined) {
+        let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
+        enlacesPaginacion.forEach((enlace) =>
+          enlace.addEventListener("click", cogerFiltroHistorialAdmin)
+        );
+    }
+
+        break;
     }
 
     //Escuchadores generales
     if (datos) {
       let botonPartidasGeneral = document.getElementById("pestPartidas");
       botonPartidasGeneral.addEventListener("click", cargarPaginaPartidasAdmin);
+      let panelNav = document.getElementById("opcionesPanelAdmin");
+      let botonesNav = Array.from(panelNav.querySelectorAll("a[route]"));
+      botonesNav.forEach((boton) =>
+        boton.addEventListener("click", cambiarHash)
+      );
 
       desactivarPantallaCarga();
     }
-  }
-  catch(error){
+  } catch (error) {
     console.log(error);
   }
 }
@@ -5324,53 +4897,81 @@ async function cargarPanelAdministracion(pagina) {
  * @return  {mixed}          Devuelve un Objeto ["datos", "plantilla"] o nada si se carga de forma parcial
  */
 async function cargarPaginaPartidasAdmin(parcial = true) {
-
   try {
     //Filtramos las partidas
-    let datosPartidas       = await cargarPartidasAdmin();
+    let datosPartidas = await cargarPartidasAdmin();
 
     //Cargamos la plantilla mustache
-    let peticion                = await fetch('../mustache/partials/paginaPartidasAdmin.mustache', opcionesFetchMustache);
-    let peticionJSON       = await peticion.text();
-    let parciales               = {"filtrado": datosPartidas["plantilla"]};
-    let plantilla                = await Mustache.render(peticionJSON, datosPartidas["datos"], parciales);
-    return Promise.all([datosPartidas, plantilla]).then(function (resolve, reject) {
-      //Si es parcial es que estamos en la página de plantillas y sólo filtramos
-      if(parcial) {
-        let panelAdmin        = document.getElementById("panelAdmin");
-        let contenedorFinal = panelAdmin.lastElementChild;
-        //Limpiamos el cuerpo de la tabla
-        contenedorFinal.remove();
-        panelAdmin.insertAdjacentHTML("beforeend", plantilla);
+    let peticion = await fetch(
+      "../mustache/partials/paginaPartidasAdmin.mustache",
+      opcionesFetchMustache
+    );
+    let peticionJSON = await peticion.text();
+    let parciales = {
+      filtrado: datosPartidas["plantilla"],
+      paginacion: datosPartidas["paginacion"],
+    };
+    let plantilla = await Mustache.render(
+      peticionJSON,
+      datosPartidas["datos"],
+      parciales
+    );
+    window.history.pushState(
+      null,
+      "null",
+      HOST + "/panel_administracion_partidas"
+    );
+    //Si es parcial es que estamos en la página de plantillas y sólo filtramos
+    if (parcial) {
+      let panelAdmin = document.getElementById("panelAdmin");
+      let contenedorFinal = panelAdmin.lastElementChild;
+      //Limpiamos el cuerpo de la tabla
+      contenedorFinal.remove();
+      panelAdmin.insertAdjacentHTML("beforeend", plantilla);
 
-        //Event listeners
-        let filtrado =  document.getElementById("filtradoPartida");
-        let botonFiltrado = filtrado.querySelector("input[type='submit']");
-        botonFiltrado.addEventListener("click", filtrarPartidasAdmin);
+      //Event listeners
+      let filtrado = document.getElementById("filtradoPartida");
+      let botonFiltrado = filtrado.querySelector("input[type='submit']");
+      botonFiltrado.addEventListener("click", filtrarPartidasAdmin);
 
-        let tablaElementos = document.getElementById("listaElementos");
-        let botonNuevaPartida = tablaElementos.querySelector("thead button");
-        botonNuevaPartida.addEventListener("click", modoCrearPartidasAdmin);
+      let tablaElementos = document.getElementById("listaElementos");
+      let botonNuevaPartida = tablaElementos.querySelector("thead button");
+      botonNuevaPartida.addEventListener("click", modoCrearPartidasAdmin);
 
-        let cuerpoTabla = tablaElementos.querySelector("tbody");
-        let botonesEditar =cuerpoTabla.querySelectorAll('button[data-action="editar"]');
-        let botonesEliminar = cuerpoTabla.querySelectorAll('button[data-action="eliminar"]');
-        if(botonesEditar){
-          botonesEditar = Array.from(botonesEditar);
-          botonesEditar.forEach(boton => boton.addEventListener("click", editarPartidaAdmin));
-        }
-        if(botonesEliminar){
-          botonesEliminar = Array.from(botonesEliminar);
-          botonesEliminar.forEach(boton => boton.addEventListener("click", eliminarPartidaTabla));
-        }
-        let botonReservas = document.querySelector("button[data-nombre='reservas']");
-        botonReservas.addEventListener("click", cargarPaginaReservasAdmin);
-        return resolve;
+      let cuerpoTabla = tablaElementos.querySelector("tbody");
+      let botonesEditar = cuerpoTabla.querySelectorAll(
+        'button[data-action="editar"]'
+      );
+      let botonesEliminar = cuerpoTabla.querySelectorAll(
+        'button[data-action="eliminar"]'
+      );
+      if (botonesEditar) {
+        botonesEditar = Array.from(botonesEditar);
+        botonesEditar.forEach((boton) =>
+          boton.addEventListener("click", editarPartidaAdmin)
+        );
       }
-      else {
-        return {"datos": datosPartidas["datos"], "plantilla": plantilla};
+      if (botonesEliminar) {
+        botonesEliminar = Array.from(botonesEliminar);
+        botonesEliminar.forEach((boton) =>
+          boton.addEventListener("click", eliminarPartidaTabla)
+        );
       }
-    });
+      let botonReservas = document.querySelector(
+        "button[data-nombre='reservas']"
+      );
+      botonReservas.addEventListener("click", cargarPaginaReservasAdmin);
+
+      paginacion = document.querySelector(".pagination");
+      if (paginacion != undefined) {
+        let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
+        enlacesPaginacion.forEach((enlace) =>
+          enlace.addEventListener("click", filtrarPartidasAdmin)
+        );
+      }
+    } else {
+      return { datos: datosPartidas["datos"], plantilla: plantilla };
+    }
   } catch (error) {
     console.log(error);
   }
@@ -5381,10 +4982,10 @@ async function cargarPaginaPartidasAdmin(parcial = true) {
  *
  * @param   {Object}  filtros  Filtros a aplicar tipo {clave: valor}
  * @param   {int}        Página en la nos encontramos
- * 
+ *
  * @return  {mixed}          Devuelve un Objeto ["datos", "plantilla"] o nada si se carga de forma parcial
  */
- async function cargarPartidasAdmin(filtros = {}, pagina = 0, parcial = false) {
+async function cargarPartidasAdmin(filtros = {}, pagina = 1, parcial = false) {
   //Le añadimos la página y el limite de tuplas por pagina
   filtros["pagina"] = pagina;
   filtros["limite"] = 7;
@@ -5401,36 +5002,68 @@ async function cargarPaginaPartidasAdmin(parcial = true) {
     if (Object.hasOwn(respuestaJSON, "error")) {
       throw respuestaJSON["error"];
     }
-    
+
+    //paginacion
+    let paginacion = await cargarPaginacion(respuestaJSON);
+
     //Cargamos la plantilla mustache
-    let peticion          = await fetch('../mustache/partials/filtradoPartidasAdmin.mustache', opcionesFetchMustache);
+    let peticion = await fetch(
+      "../mustache/partials/filtradoPartidasAdmin.mustache",
+      opcionesFetchMustache
+    );
     let peticionJSON = await peticion.text();
-    let plantilla          = await Mustache.render(peticionJSON, respuestaJSON);
-    return Promise.all([plantilla]).then(function (resolve,reject) {
+    let plantilla = await Mustache.render(peticionJSON, respuestaJSON);
+    return Promise.all([plantilla]).then(function (resolve, reject) {
       //Si es parcial es que estamos en la página de plantillas y sólo filtramos
-     if(parcial) {
-      let contenedor    = document.getElementById("contenedorElementos");
-      let cuerpoTabla   = contenedor.querySelector("tbody");
-      cuerpoTabla.innerHTML = "";
-      cuerpoTabla.insertAdjacentHTML("beforeend", plantilla);
+      if (parcial) {
+        let pagination = document.querySelector(".pagination");
+        if (pagination) pagination.remove();
+        let contenedor = document.getElementById("contenedorElementos");
+        let cuerpoTabla = contenedor.querySelector("tbody");
+        cuerpoTabla.innerHTML = "";
+        cuerpoTabla.insertAdjacentHTML("beforeend", plantilla);
 
-      //Event listemers
-      let botonesEditar = cuerpoTabla.querySelectorAll('button[data-action="editar"]');
-      let botonesEliminar = cuerpoTabla.querySelectorAll('button[data-action="eliminar"]');
-      if(botonesEditar){
-        botonesEditar = Array.from(botonesEditar);
-        botonesEditar.forEach(boton => boton.addEventListener("click", editarPartidaAdmin));
-      }
-      if(botonesEliminar){
-        botonesEliminar = Array.from(botonesEliminar);
-        botonesEliminar.forEach(boton => boton.addEventListener("click", eliminarPartidaTabla));
-      }
+        let contenedorElementos = document.getElementById(
+          "contenedorElementos"
+        );
+        contenedorElementos.insertAdjacentHTML("beforeend", paginacion);
 
-       return resolve;
-     }
-     else {
-       return {"datos": respuestaJSON, "plantilla": plantilla};
-     }
+        paginacion = document.querySelector(".pagination");
+        if (paginacion != undefined) {
+          let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
+          enlacesPaginacion.forEach((enlace) =>
+            enlace.addEventListener("click", filtrarPartidasAdmin)
+          );
+        }
+
+        //Event listemers
+        let botonesEditar = cuerpoTabla.querySelectorAll(
+          'button[data-action="editar"]'
+        );
+        let botonesEliminar = cuerpoTabla.querySelectorAll(
+          'button[data-action="eliminar"]'
+        );
+        if (botonesEditar) {
+          botonesEditar = Array.from(botonesEditar);
+          botonesEditar.forEach((boton) =>
+            boton.addEventListener("click", editarPartidaAdmin)
+          );
+        }
+        if (botonesEliminar) {
+          botonesEliminar = Array.from(botonesEliminar);
+          botonesEliminar.forEach((boton) =>
+            boton.addEventListener("click", eliminarPartidaTabla)
+          );
+        }
+
+        return resolve;
+      } else {
+        return {
+          datos: respuestaJSON,
+          plantilla: plantilla,
+          paginacion: paginacion,
+        };
+      }
     });
   } catch (error) {
     console.log(error);
@@ -5442,20 +5075,25 @@ async function cargarPaginaPartidasAdmin(parcial = true) {
  *
  * @return  {[void]}  No devuelve nada
  */
-function filtrarPartidasAdmin (e) {
+function filtrarPartidasAdmin(e) {
   e.preventDefault();
   //Cogemos los filtrados
+  let pagina =
+    e.currentTarget.nodeName == "A" ? e.currentTarget.textContent : 1;
   let juego_partida = document.getElementById("juego_partida");
   let fecha_ini = document.getElementById("fecha");
   let fecha_fin = document.getElementById("fechaFin");
   let filtros = {};
-  if(juego_partida == undefined){
+  if (juego_partida == undefined) {
     filtros = {};
+  } else {
+    filtros = {
+      juego_partida: juego_partida.value ?? "",
+      fecha: fecha_ini.value ?? "",
+      fechaFin: fecha_fin.value ?? "",
+    };
   }
-  else {
-    filtros = {"juego_partida": juego_partida.value ?? "", "fecha": fecha_ini.value ?? "", "fechaFin": fecha_fin.value ?? ""};
-  }
-  cargarPartidasAdmin(filtros, 0, true);
+  cargarPartidasAdmin(filtros, pagina, true);
 }
 
 /**
@@ -5463,15 +5101,18 @@ function filtrarPartidasAdmin (e) {
  *
  * @return  {void}  No devuelve nada
  */
- async function modoCrearPartidasAdmin(datos = {}) {
+async function modoCrearPartidasAdmin(datos = {}) {
   try {
     let contenedorElementos = document.getElementById("contenedorElementos");
     contenedorElementos.remove();
     let panelAdmin = document.getElementById("panelAdmin");
     //Cargamos la plantilla mustache
-    let peticion = await fetch('../mustache/partials/editarPartidaAdmin.mustache', opcionesFetchMustache);
+    let peticion = await fetch(
+      "../mustache/partials/editarPartidaAdmin.mustache",
+      opcionesFetchMustache
+    );
     let peticionJSON = await peticion.text();
-    let plantilla          = await Mustache.render(peticionJSON, datos);
+    let plantilla = await Mustache.render(peticionJSON, datos);
     panelAdmin.insertAdjacentHTML("beforeend", plantilla);
 
     let formulario = document.getElementById("formPanelAdmin");
@@ -5480,31 +5121,31 @@ function filtrarPartidasAdmin (e) {
       rules: {
         nombre_juego: {
           required: true,
-          minlength: 2
+          minlength: 2,
         },
         fecha: {
           required: true,
-          date: true
+          date: true,
         },
         plazas_min: {
           required: true,
-          min: 1
+          min: 1,
         },
         plazas_totales: {
           required: true,
-          max: 8
+          max: 8,
         },
         hora_inicio: {
-          required: true
+          required: true,
         },
         duracion: {
           required: true,
-          min: 20
+          min: 20,
         },
         director_partida: {
           required: true,
-          minlength: 2
-        }
+          minlength: 2,
+        },
       },
       messages: {
         nombre_juego: "Debe introducir un juego del sistema",
@@ -5518,13 +5159,17 @@ function filtrarPartidasAdmin (e) {
     });
 
     //Añadimos el escuchador
-    document.getElementById("nombre_juego").addEventListener("click", buscarJuegoNombreEscribir);
-    document.getElementById("director_partida").addEventListener("click", buscarDirectoresEscribir);
+    document
+      .getElementById("nombre_juego")
+      .addEventListener("click", buscarJuegoNombreEscribir);
+    document
+      .getElementById("director_partida")
+      .addEventListener("click", buscarDirectoresEscribir);
     formulario.addEventListener("submit", guardarCambiosPartidaAdmin);
     let botonCancelar = document.getElementById("cancelarPartida");
     botonCancelar.addEventListener("click", cargarPaginaPartidasAdmin);
     let botonEliminar = document.getElementById("eliminarPartida");
-    if(botonEliminar){
+    if (botonEliminar) {
       botonEliminar.addEventListener("click", eliminarPartidaTabla);
     }
   } catch (error) {
@@ -5546,7 +5191,7 @@ async function editarPartidaAdmin(e) {
     const peticion = await fetch("../php/panelAdministrador.php", {
       method: "POST",
       headers: { "Content-type": "application/json; charset=utf8;" },
-      body: JSON.stringify({ "id_partida": idPartida }),
+      body: JSON.stringify({ id_partida: idPartida }),
     });
     let peticionJSON = await peticion.json();
     peticionJSON["editarPartida"] = true;
@@ -5563,14 +5208,12 @@ async function editarPartidaAdmin(e) {
  *
  * @return  {[type]}             [return description]
  */
- function eliminarPartidaTabla(e) {
+function eliminarPartidaTabla(e) {
   let idPartida = e.currentTarget.dataset.id;
   if (confirm("Esta seguro que quiere borrar la partida?")) {
     eliminarPartidaAdmin(idPartida);
   }
 }
-
-
 
 /**
  * Elimina la partida de la BD
@@ -5579,7 +5222,7 @@ async function editarPartidaAdmin(e) {
  *
  * @return  {void}             No devuelve nada
  */
- async function eliminarPartidaAdmin(idPartida) {
+async function eliminarPartidaAdmin(idPartida) {
   try {
     //Creamos la conexión
     const respuesta = await fetch("../php/panelAdministrador.php", {
@@ -5617,7 +5260,7 @@ function guardarCambiosPartidaAdmin(e) {
  * Crea una partida en la BD
  * @param {Event}  Evento que dispara
  */
- async function crearPartidaAdmin() {
+async function crearPartidaAdmin() {
   let resultado = document.getElementById("resultadoOperacion");
   try {
     //Datos
@@ -5682,7 +5325,7 @@ function guardarCambiosPartidaAdmin(e) {
  *
  * @return  {void}     No devuelve nada
  */
- async function guardarCambiosEditarPartidaAdmin(id) {
+async function guardarCambiosEditarPartidaAdmin(id) {
   let parrafo = document.getElementById("resultadoOperacion");
   try {
     //Cogemos los datos que hay en los input
@@ -5701,7 +5344,8 @@ function guardarCambiosPartidaAdmin(e) {
     camposPartida.forEach(
       (campo) => (datosPartida[campo] = document.getElementById(campo).value)
     );
-    datosPartida["juego_partida"] = document.getElementById("nombre_juego").dataset.id;
+    datosPartida["juego_partida"] =
+      document.getElementById("nombre_juego").dataset.id;
     //Enviamos la petición
     const respuesta = await fetch("../php/panelAdministrador.php", {
       method: "POST",
@@ -5734,49 +5378,84 @@ function guardarCambiosPartidaAdmin(e) {
  *
  * @return  {mixed}          Devuelve un Objeto ["datos", "plantilla"] o nada si se carga de forma parcial
  */
- async function cargarPaginaReservasAdmin(parcial = true) {
-
+async function cargarPaginaReservasAdmin(parcial = true) {
   try {
     //Filtramos las partidas
-    let datosPartidas       = await cargarReservasAdmin();
+    let datosPartidas = await cargarReservasAdmin();
 
     //Cargamos la plantilla mustache
-    let peticion                = await fetch('../mustache/partials/reservasPartidasAdmin.mustache', opcionesFetchMustache);
-    let peticionJSON       = await peticion.text();
-    let parciales               = {"filtrado": datosPartidas["plantilla"]};
-    let plantilla                = await Mustache.render(peticionJSON, datosPartidas["datos"], parciales);
-    return Promise.all([datosPartidas, plantilla]).then(function (resolve, reject) {
+    let peticion = await fetch(
+      "../mustache/partials/reservasPartidasAdmin.mustache",
+      opcionesFetchMustache
+    );
+    let peticionJSON = await peticion.text();
+    let parciales = {
+      filtrado: datosPartidas["plantilla"],
+      paginacion: datosPartidas["paginacion"],
+    };
+    let plantilla = await Mustache.render(
+      peticionJSON,
+      datosPartidas["datos"],
+      parciales
+    );
+    return Promise.all([datosPartidas, plantilla]).then(function (
+      resolve,
+      reject
+    ) {
       //Si es parcial es que estamos en la página de plantillas y sólo filtramos
-      if(parcial) {
-        let panelAdmin        = document.getElementById("panelAdmin");
+      if (parcial) {
+        window.history.pushState(
+          null,
+          "null",
+          HOST + "/panel_administracion_partidas_reservas"
+        );
+        let panelAdmin = document.getElementById("panelAdmin");
         let contenedorFinal = panelAdmin.lastElementChild;
         //Limpiamos el cuerpo de la tabla
         contenedorFinal.remove();
         panelAdmin.insertAdjacentHTML("beforeend", plantilla);
 
         //Event listeners
-        let filtrado =  document.getElementById("filtradoPartida");
+        let filtrado = document.getElementById("filtradoPartida");
         let botonFiltrado = filtrado.querySelector("input[type='submit']");
         botonFiltrado.addEventListener("click", filtrarReservasAdmin);
 
         let tablaElementos = document.getElementById("listaElementos");
         let cuerpoTabla = tablaElementos.querySelector("tbody");
-        let botonesAceptar =cuerpoTabla.querySelectorAll('button[data-action="aceptar"]');
-        let botonesRechazar = cuerpoTabla.querySelectorAll('button[data-action="rechazar"]');
-        if(botonesAceptar){
+        let botonesAceptar = cuerpoTabla.querySelectorAll(
+          'button[data-action="aceptar"]'
+        );
+        let botonesRechazar = cuerpoTabla.querySelectorAll(
+          'button[data-action="rechazar"]'
+        );
+        if (botonesAceptar) {
           botonesAceptar = Array.from(botonesAceptar);
-          botonesAceptar.forEach(boton => boton.addEventListener("click", procesarReserva));
+          botonesAceptar.forEach((boton) =>
+            boton.addEventListener("click", procesarReserva)
+          );
         }
-        if(botonesRechazar){
+        if (botonesRechazar) {
           botonesRechazar = Array.from(botonesRechazar);
-          botonesRechazar.forEach(boton => boton.addEventListener("click", procesarReserva));
+          botonesRechazar.forEach((boton) =>
+            boton.addEventListener("click", procesarReserva)
+          );
         }
-        let botonReservas = document.querySelector("button[data-nombre='partidas']");
+        let botonReservas = document.querySelector(
+          "button[data-nombre='partidas']"
+        );
         botonReservas.addEventListener("click", cargarPaginaPartidasAdmin);
+
+        let paginacion = document.querySelector(".pagination");
+        if (paginacion != undefined) {
+          let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
+          enlacesPaginacion.forEach((enlace) =>
+            enlace.addEventListener("click", filtrarReservasAdmin)
+          );
+        }
+
         return resolve;
-      }
-      else {
-        return {"datos": datosPartidas["datos"], "plantilla": plantilla};
+      } else {
+        return { datos: datosPartidas["datos"], plantilla: plantilla };
       }
     });
   } catch (error) {
@@ -5784,16 +5463,15 @@ function guardarCambiosPartidaAdmin(e) {
   }
 }
 
-
 /**
  * Filtra las reservas según los filtros que le pasemos
  *
  * @param   {Object}  filtros  Filtros a aplicar tipo {clave: valor}
  * @param   {int}        Página en la nos encontramos
- * 
+ *
  * @return  {mixed}          Devuelve un Objeto ["datos", "plantilla"] o nada si se carga de forma parcial
  */
- async function cargarReservasAdmin(filtros = {}, pagina = 0, parcial = false) {
+async function cargarReservasAdmin(filtros = {}, pagina = 1, parcial = false) {
   let contenedor = document.getElementById("contenedorElementos");
   //Añadimos la página y el limite a los filtros
   filtros["pagina"] = pagina;
@@ -5803,7 +5481,7 @@ function guardarCambiosPartidaAdmin(e) {
     const respuesta = await fetch("../php/panelAdministrador.php", {
       method: "POST",
       headers: { "Content-type": "application/json; charset=utf-8;" },
-      body: JSON.stringify({filtarReservas: filtros }),
+      body: JSON.stringify({ filtarReservas: filtros }),
     });
     //Traducimos la respuesta
     const respuestaJSON = await respuesta.json();
@@ -5811,36 +5489,65 @@ function guardarCambiosPartidaAdmin(e) {
     if (Object.hasOwn(respuestaJSON, "error")) {
       throw respuestaJSON["error"];
     }
-   
+
+    let paginacion = document.querySelector(".pagination");
+    if (paginacion) paginacion.remove();
+
+    //paginacion
+    let pagination = await cargarPaginacion(respuestaJSON);
+
     //Cargamos la template de Mustache
-    let peticion          = await fetch('../mustache/partials/filtradoReservasPartidasAdmin.mustache', opcionesFetchMustache);
+    let peticion = await fetch(
+      "../mustache/partials/filtradoReservasPartidasAdmin.mustache",
+      opcionesFetchMustache
+    );
     let peticionJSON = await peticion.text();
-    let plantilla          = await Mustache.render(peticionJSON, respuestaJSON);
-    return Promise.all([plantilla]).then(function (resolve,reject) {
-      //Si es parcial es que estamos en la página de plantillas y sólo filtramos
-     if(parcial) {
-      let contenedor    = document.getElementById("contenedorElementos");
-      let cuerpoTabla   = contenedor.querySelector("tbody");
+    let plantilla = await Mustache.render(peticionJSON, respuestaJSON, {
+      paginacion: pagination,
+    });
+    //Si es parcial es que estamos en la página de plantillas y sólo filtramos
+    if (parcial) {
+      let contenedor = document.getElementById("contenedorElementos");
+      let cuerpoTabla = contenedor.querySelector("tbody");
       cuerpoTabla.innerHTML = "";
       cuerpoTabla.insertAdjacentHTML("beforeend", plantilla);
 
+      let contenedorElementos = document.getElementById("contenedorElementos");
+      contenedorElementos.insertAdjacentHTML("beforeend", pagination);
+
       //Event listemers
-      let botonesAceptar = cuerpoTabla.querySelectorAll('button[data-action="aceptar"]');
-      let botonesRechazar = cuerpoTabla.querySelectorAll('button[data-action="rechazar"]');
-      if(botonesAceptar){
+      let botonesAceptar = cuerpoTabla.querySelectorAll(
+        'button[data-action="aceptar"]'
+      );
+      let botonesRechazar = cuerpoTabla.querySelectorAll(
+        'button[data-action="rechazar"]'
+      );
+      if (botonesAceptar) {
         botonesAceptar = Array.from(botonesAceptar);
-        botonesAceptar.forEach(boton => boton.addEventListener("click", procesarReserva));
+        botonesAceptar.forEach((boton) =>
+          boton.addEventListener("click", procesarReserva)
+        );
       }
-      if(botonesRechazar){
+      if (botonesRechazar) {
         botonesRechazar = Array.from(botonesRechazar);
-        botonesRechazar.forEach(boton => boton.addEventListener("click", procesarReserva));
+        botonesRechazar.forEach((boton) =>
+          boton.addEventListener("click", procesarReserva)
+        );
       }
-       return resolve;
-     }
-     else {
-       return {"datos": respuestaJSON, "plantilla": plantilla};
-     }
-    });
+      paginacion = document.querySelector(".pagination");
+      if (paginacion != undefined) {
+        let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
+        enlacesPaginacion.forEach((enlace) =>
+          enlace.addEventListener("click", filtrarReservasAdmin)
+        );
+      }
+    } else {
+      return {
+        datos: respuestaJSON,
+        plantilla: plantilla,
+        paginacion: pagination,
+      };
+    }
   } catch (error) {
     console.log(error);
   }
@@ -5851,18 +5558,473 @@ function guardarCambiosPartidaAdmin(e) {
  *
  * @return  {[void]}  No devuelve nada
  */
-function filtrarReservasAdmin (e) {
+function filtrarReservasAdmin(e) {
   e.preventDefault();
   //Cogemos los filtrados
+  let pagina =
+    e.currentTarget.nodeName == "A" ? e.currentTarget.textContent : 1;
   let usuario = document.getElementById("usuario");
   let fecha_ini = document.getElementById("fecha");
   let fecha_fin = document.getElementById("fechaFin");
   let filtros = {};
-  if(usuario == undefined){
+  if (usuario == undefined) {
     filtros = {};
+  } else {
+    filtros = {
+      usuario: usuario.value ?? "",
+      fecha: fecha_ini.value ?? "",
+      fechaFin: fecha_fin.value ?? "",
+    };
   }
-  else {
-    filtros = {"usuario": usuario.value ?? "", "fecha": fecha_ini.value ?? "", "fechaFin": fecha_fin.value ?? ""};
+  cargarReservasAdmin(filtros, pagina, true);
+}
+
+/**
+ * Filtra los usuarios por nombre o rol
+ *
+ * @param   {[type]}  e  [e description]
+ *
+ * @return  {[type]}     [return description]
+ */
+async function recogerDatos(e) {
+  e.preventDefault();
+  //Seleccionamos el td con el correo del usuario
+  let emailUsuario =
+    e.currentTarget.parentElement.parentElement.firstElementChild.textContent;
+  //Ahora que sabemos el email podemos usarlo para seleccionar el id de igual valor, que será el select con la opción que queremos que tenga
+  let rolUsuario = document.getElementById(emailUsuario).value;
+  //Le mandamos la información para el cambio de usuario al php
+  const respuestaJSON = await fetch("../php/cambiarRol.php", {
+    method: "POST",
+    headers: { "Content-type": "application/json; charset=utf-8" },
+    body: JSON.stringify({ email: emailUsuario, rol: rolUsuario }), //mandamos a mayores el email del supuesto admin para comprobar en php
+  });
+  // Toca recibir la respuesta
+  console.log(respuestaJSON); // prueba
+  const respuestaJS = await respuestaJSON.json(); // Coge la respuesta y la convierte a objeto de js
+  console.log("Prueba"); // prueba
+  if (respuestaJS == true) {
+    window.alert("Base de datos actualizada");
+  } else {
+    window.alert("No se ha podido actualizar la base de datos");
   }
-  cargarReservasAdmin(filtros, 0, true);
+}
+
+/**
+ * Carga la página de usuarios Admin
+ *
+ * @param   {bool}  parcial  Si se carga de forma parcial o todo el panel de administración
+ *
+ * @return  {mixed}           Devuelve un objeto con los datos o nada si es parcial
+ */
+async function cargarPaginaUsuariosAdmin(parcial = true) {
+  let datosFiltro = await cargarUsuariosAdmin();
+  let partial = {
+    filtrado: datosFiltro["plantilla"],
+    paginacion: datosFiltro["paginacion"],
+  };
+
+  let peticionMustache = await fetch(
+    "../mustache/partials/usuariosRolAdmin.mustache",
+    opcionesFetchMustache
+  );
+  let peticionJSONMustache = await peticionMustache.text();
+  let plantilla = Mustache.render(peticionJSONMustache, datosFiltro, partial);
+
+  if (parcial) {
+    window.history.pushState(
+      null,
+      "null",
+      HOST + "/panel_administracion_usuarios"
+    );
+    let panelAdmin = document.getElementById("panelAdmin");
+    let paginacion = document.querySelector(".pagination");
+    if (paginacion) paginacion.remove();
+    //Limpiamos el último contenedor
+    panelAdmin.lastElementChild.remove();
+    panelAdmin.insertAdjacentHTML("beforeend", plantilla);
+
+    let cuerpoTabla = panelAdmin.querySelector("#listaElementos tbody");
+
+    //Event listeners
+    let botonFiltrar = document.getElementById("filtrarUsuariosAdmin");
+    botonFiltrar.addEventListener("click", cogerFiltrosUsuariosAdmin);
+    let botonesGuardar = cuerpoTabla.querySelectorAll("button");
+    if (botonesGuardar) {
+      botonesGuardar = Array.from(botonesGuardar);
+      botonesGuardar.forEach((boton) =>
+        boton.addEventListener("click", recogerDatos)
+      );
+    }
+    let botonRol = document.querySelector("button[data-nombre='cambiarRol']");
+    botonRol.addEventListener("click", cargarPaginaUsuariosAdmin);
+    let botonHistorial = document.querySelector(
+      "button[data-nombre='historial']"
+    );
+    botonHistorial.addEventListener("click", cargarPaginaHistorialAdmin);
+
+    paginacion = document.querySelector(".pagination");
+    if (paginacion != undefined) {
+      let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
+      enlacesPaginacion.forEach((enlace) =>
+        enlace.addEventListener("click", cogerFiltrosUsuariosAdmin)
+      );
+    }
+  } else {
+    return { datos: datosFiltro["datos"], plantilla: plantilla };
+  }
+}
+
+/**
+ * Carga los usuarios según el filtro
+ *
+ * @param   {Object}  filtro  Filtros a aplicar de tipo {clave: valor}
+ * @param   {int}  pagina  Página actual en la que nos encontramos
+ *
+ * @return  {Promise}        No devuelve nada
+ */
+async function cargarUsuariosAdmin(filtro = {}, pagina = 1, parcial = false) {
+  //Añadimos al filtro al página en la que nos encontramos
+  filtro["pagina"] = pagina;
+  filtro["limite"] = 7;
+  try {
+    //Iniciamos la petición
+    const respuesta = await fetch("../php/cambiarRol.php", {
+      method: "POST",
+      headers: { "Content-type": "application/json; charset = utf-8" },
+      body: JSON.stringify({ filtrarUsuarios: filtro }),
+    });
+    //Traducimos la respuesta
+    const respuestaJSON = await respuesta.json();
+    //Comprobamos que no diera error
+    if (Object.hasOwn(respuestaJSON, "error")) {
+      throw respuestaJSON["error"];
+    }
+
+    let pagination = await cargarPaginacion(respuestaJSON);
+
+    let peticionMustache = await fetch(
+      "../mustache/partials/filtroUsuariosRolAdmin.mustache",
+      opcionesFetchMustache
+    );
+    let peticionJSONMustache = await peticionMustache.text();
+    let plantilla = await Mustache.render(peticionJSONMustache, respuestaJSON, {
+      "paginacion": pagination,
+    });
+
+    if (parcial) {
+      let paginacion = document.querySelector(".pagination");
+      if (paginacion) paginacion.remove();
+      let tablaUsuarios = document.getElementById("listaElementos");
+      let cuerpoTabla = tablaUsuarios.querySelector("tbody");
+      activarPantallaCarga();
+      //Limpiamos el contenedor
+      cuerpoTabla.innerHTML = "";
+      cuerpoTabla.insertAdjacentHTML("beforeend", plantilla);
+
+      tablaUsuarios.insertAdjacentHTML("afterend", pagination);
+
+      //Event listeners
+      let botonFiltrar = document.getElementById("filtrarUsuariosAdmin");
+      botonFiltrar.addEventListener("click", cogerFiltrosUsuariosAdmin);
+      let botonesGuardar = cuerpoTabla.querySelectorAll("button");
+      if (botonesGuardar) {
+        botonesGuardar = Array.from(botonesGuardar);
+        botonesGuardar.forEach((boton) =>
+          boton.addEventListener("click", recogerDatos)
+        );
+      }
+
+      paginacion = document.querySelector(".pagination");
+      if (paginacion != undefined) {
+        let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
+        enlacesPaginacion.forEach((enlace) =>
+          enlace.addEventListener("click", cogerFiltrosUsuariosAdmin)
+        );
+      }
+
+      desactivarPantallaCarga();
+    } else {
+      return {
+        datos: respuestaJSON,
+        plantilla: plantilla,
+        paginacion: pagination,
+      };
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/**
+ * Coge los filtros en la pestaña usuarios de admin para cambiar el rol
+ *
+ * @param   {Event}  e  Evento que lo dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+function cogerFiltrosUsuariosAdmin(e) {
+  e.preventDefault();
+  let filtros = {};
+  let pagina =
+    e.currentTarget.nodeName == "A" ? e.currentTarget.textContent : 1;
+  //Cogemos el email de usuario
+  let email = document.getElementById("filtro-email").value;
+  if (email != "") {
+    filtros["email"] = email;
+  }
+  let rol = document.getElementById("filtro-rol").value;
+  if (rol != "") {
+    filtros["rol"] = rol;
+  }
+  //Cargamos las partidas
+  cargarUsuariosAdmin(filtros, pagina, true);
+}
+
+/**
+ * Carga la página de historial Admin
+ *
+ * @param   {bool}  parcial  Si se carga de forma parcial o todo el panel de administración
+ *
+ * @return  {mixed}           Devuelve un objeto con los datos o nada si es parcial
+ */
+async function cargarPaginaHistorialAdmin(parcial = true) {
+  let datosFiltro = await filtrarHistorialAdmin();
+  let partial = { filtrado: datosFiltro["plantilla"], "paginacion": datosFiltro["paginacion"]};
+
+  let peticionMustache = await fetch(
+    "../mustache/partials/historialUsuariosAdmin.mustache",
+    opcionesFetchMustache
+  );
+  let peticionJSONMustache = await peticionMustache.text();
+  let plantilla = Mustache.render(peticionJSONMustache, datosFiltro, partial);
+
+  if (parcial) {
+    window.history.pushState(
+      null,
+      "null",
+      HOST + "/panel_administracion_usuarios_historial"
+    );
+    let panelAdmin = document.getElementById("panelAdmin");
+
+    //Limpiamos el último contenedor
+    panelAdmin.lastElementChild.remove();
+    panelAdmin.insertAdjacentHTML("beforeend", plantilla);
+
+    let cuerpoTabla = panelAdmin.querySelector("#listaElementos tbody");
+
+    //Event listeners
+    let botonFiltrar = document.getElementById("filtrarUsuariosAdmin");
+    botonFiltrar.addEventListener("click", filtrarHistorialAdmin);
+    let botonesDetalles = cuerpoTabla.querySelectorAll("button");
+    if (botonesDetalles) {
+      botonesDetalles = Array.from(botonesDetalles);
+      botonesDetalles.forEach((boton) =>
+        boton.addEventListener("click", cargarMasDetalleHistorialAdmin)
+      );
+    }
+    let botonRol = document.querySelector("button[data-nombre='cambiarRol']");
+    botonRol.addEventListener("click", cargarPaginaUsuariosAdmin);
+    let botonHistorial = document.querySelector(
+      "button[data-nombre='historial']"
+    );
+    botonHistorial.addEventListener("click", cargarPaginaHistorialAdmin);
+
+    paginacion = document.querySelector(".pagination");
+      if (paginacion != undefined) {
+        let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
+        enlacesPaginacion.forEach((enlace) =>
+          enlace.addEventListener("click", cogerFiltroHistorialAdmin)
+        );
+    }
+
+  } else {
+    return { datos: datosFiltro["datos"], plantilla: plantilla };
+  }
+}
+
+/**
+ * Función para filtrar el historial de administrador
+ *
+ * @param   {Object}  filtro  Filtros a aplicar de tipo {clave: valor}
+ * @param   {int}  pagina  Página en la que te encuentras
+ *
+ * @return  {void}          No devuelve nada
+ */
+async function filtrarHistorialAdmin(
+  filtro = {},
+  pagina = 1,
+  limite = 7,
+  parcial = false
+) {
+  filtro["pagina"] = pagina;
+  filtro["limite"] = limite;
+  try {
+    //Iniciamos la peticion
+    const respuesta = await fetch("../php/historial.php", {
+      method: "POST",
+      headers: { "Content-type": "application/json; charset=utf-8;" },
+      body: JSON.stringify({ admin: filtro }),
+    });
+    //Traducimos la respuesta
+    const respuestaJSON = await respuesta.json();
+    //Comprobamos que no diera error
+    if (Object.hasOwn(respuestaJSON, "error")) {
+      throw respuestaJSON["error"];
+    }
+
+    let pagination = await cargarPaginacion(respuestaJSON);
+
+    //Mustache
+    let peticionMustache = await fetch(
+      "../mustache/partials/filtroHistorialUsuarios.mustache",
+      opcionesFetchMustache
+    );
+    let peticionJSONMustache = await peticionMustache.text();
+    let plantilla = await Mustache.render(peticionJSONMustache, respuestaJSON);
+
+    if (parcial) {
+      let paginacion = document.querySelector(".pagination");
+      if (paginacion) paginacion.remove();
+      let listaElementos =  document.getElementById("listaElementos");
+      let cuerpoTabla = listaElementos.querySelector("tbody");
+      let contenedorElementos = document.getElementById("contenedorElementos");
+      //Limpiamos el contenedor
+      cuerpoTabla.innerHTML = "";
+      cuerpoTabla.insertAdjacentHTML("beforeend", plantilla);
+
+      contenedorElementos.insertAdjacentHTML("beforeend", pagination);
+
+      //Event listeners
+      let botonesDetalles = cuerpoTabla.querySelectorAll("button");
+      if (botonesDetalles) {
+        botonesDetalles = Array.from(botonesDetalles);
+        botonesDetalles.forEach((boton) =>
+          boton.addEventListener("click", cargarMasDetalleHistorialAdmin)
+        );
+      }
+
+      paginacion = document.querySelector(".pagination");
+      if (paginacion != undefined) {
+        let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
+        enlacesPaginacion.forEach((enlace) =>
+          enlace.addEventListener("click", cogerFiltroHistorialAdmin)
+        );
+      }
+    } else {
+      return { datos: respuestaJSON, plantilla: plantilla, "paginacion": pagination};
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/**
+ * Coge los filtros a aplicar y se los pasa a filtrarHistorialAdmin
+ *
+ * @param {Event}   e que se dispara
+ *
+ * @return  {void}  No devuelve nada
+ */
+function cogerFiltroHistorialAdmin(e) {
+  e.preventDefault();
+  let filtro = {};
+  let limite = 7;
+  let pagina =
+    e.currentTarget.nodeName == "A"
+      ? e.currentTarget.textContent
+      : 1;
+  //Cogemos los datos de las fechas
+  let fechaIni = document.getElementById("fechaIniHistorial").value;
+  fechaIni != "" ? (filtro["fechaIni"] = fechaIni) : "";
+  let fechaFin = document.getElementById("filtroFechaFinHistorial").value;
+  fechaFin != "" ? (filtro["fechaFin"] = fechaFin) : "";
+  filtrarHistorialAdmin(filtro, pagina, limite, true);
+}
+
+/**
+ * Carga más detalles del id del historial
+ *
+ * @param   {Event}  e  Evento que lo dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+async function cargarMasDetalleHistorialAdmin(e) {
+  e.preventDefault();
+  let idHistorial = e.currentTarget.dataset.idhistorial;
+  let main = document.querySelector("main");
+  let contenedorHistorial = document.getElementById("contenedorHistorial");
+  try {
+    const peticionHistorial = await fetch("../php/historial.php", {
+      method: "POST",
+      headers: { "Content-type": "application/json;charset=UTF-8" },
+      body: JSON.stringify({ historial: idHistorial }),
+    });
+    const historialJSON = await peticionHistorial.json();
+    //Comprobamos que no diese error
+    if (Object.hasOwn(historialJSON, "error")) {
+      throw historialJSON["error"];
+    }
+
+    //Cargamos la plantilla de mustache
+    const peticionMustache = await fetch(
+      "../mustache/partials/historialDetallesAdmin.mustache",
+      opcionesFetchMustache
+    );
+    const peticionJSON = await peticionMustache.text();
+    let plantillaMustache = await Mustache.render(peticionJSON, historialJSON);
+    if (plantillaMustache) {
+      if (contenedorHistorial) {
+        contenedorHistorial.remove();
+      }
+      main.insertAdjacentHTML("beforeend", plantillaMustache);
+
+      contenedorHistorial = document.getElementById("contenedorHistorial");
+
+      $(contenedorHistorial).toggle();
+
+      //Añadimos los escuchadores
+      let botonCerrar = contenedorHistorial.querySelector(
+        "#masDetallesHistorial > button:last-of-type"
+      );
+      botonCerrar.addEventListener("click", cerrarHistorialAdmin);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/**
+ * Cierra el historial admin
+ *
+ * @return  {void}  No devuelve nada
+ */
+function cerrarHistorialAdmin() {
+  let contenedorHistorial = document.getElementById("contenedorHistorial");
+  $(contenedorHistorial).toggle(1000);
+  setTimeout(1000, function () {
+    contenedorHistorial.remove();
+  });
+}
+
+/**
+ * Carga la paginación
+ *
+ * @param   {Object}  datos  Datos para la paginación
+ *
+ * @return  {String}         Plantilla
+ */
+async function cargarPaginacion(datos) {
+  try {
+    let peticionMustache = await fetch(
+      "../mustache/partials/paginacion.mustache",
+      opcionesFetchMustache
+    );
+    let peticionJSONMustache = await peticionMustache.text();
+    let plantilla = Mustache.render(peticionJSONMustache, datos);
+
+    return plantilla;
+  } catch (error) {
+    console.log(error);
+  }
 }

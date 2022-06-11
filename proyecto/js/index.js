@@ -7,7 +7,7 @@ async function cargarPaginaPrincipal() {
     //Hacemos una petición para cargar las últimas novedades
     let ultimasNovedades = await cargarUltimasNovedades();
 
-    let datos = {"usuario" : usuario, "administrador" : administrador, "novedades": ultimasNovedades};
+    let datos = {"usuario" : usuario, "administrador" : administrador, "novedades": ultimasNovedades, "email": sessionStorage["email"]};
     //Cargamos la plantilla del header página principal
     let peticion = await fetch("../mustache/header.mustache", opcionesFetchMustache);
     let plantilla = await peticion.text();

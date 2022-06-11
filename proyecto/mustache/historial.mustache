@@ -30,11 +30,5 @@
   </table>
   {{^historial}}<p>No se han encontrado modificaciones del perfil</p>{{/historial}}
   <button>X</button>
-  <div class="pagination">
-    <ul>
-        {{# paginacion}}
-            <li><a href="#" data-historial="{{num}}" {{#activo}}class="active"{{/activo}}>{{num}}</a></li>
-        {{/paginacion}}
-    </ul>
-  </div>
+  {{> paginacion}}
 </div>

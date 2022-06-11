@@ -36,7 +36,7 @@ class Administrador extends user{
                 $bd = new bd();
                 //Sentencia
                 $sentenciaNumPag = "SELECT count(*) as num_pag FROM historico_usuarios WHERE email = :email";
-                $sentencia = "SELECT fecha_ult_modif, CONCAT('email:',email , '; ', 'rol:',rol, '; ', 'nombre:',nombre, '; ', 'apellidos:',apellidos, '; ', 'telefono:', IFNULL(telefono, ''), '; ', 'direccion:', IFNULL(direccion, ''), '; ', 'genero_favorito:', IFNULL(genero_favorito, ''), '; ', 'suscripcion:', IFNULL(suscripcion, ''), '; ', 'renovar:', IFNULL(renovar, '')) AS datos FROM historico_usuarios WHERE email = :email";
+                $sentencia = "SELECT * FROM historico_usuarios WHERE email = :email";
                 //Comprobamos si cogemos las fechas
                 if(count($fechas) == 2){
                     $sentenciaNumPag .= " AND (DATE(fecha_ult_modif) BETWEEN :fechaIni AND :fechaFin)";
@@ -56,7 +56,7 @@ class Administrador extends user{
                 $bd = new bd();
                 //Sentencia
                 $sentenciaNumPag = "SELECT count(*) as num_pag FROM historico_usuarios";
-                $sentencia = "SELECT fecha_ult_modif, CONCAT('email:',email , '; ', 'rol:',rol, '; ', 'nombre:',nombre, '; ', 'apellidos:',apellidos, '; ', 'telefono:', IFNULL(telefono, ''), '; ', 'direccion:', IFNULL(direccion, ''), '; ', 'genero_favorito:', IFNULL(genero_favorito, ''), '; ', 'suscripcion:', IFNULL(suscripcion, ''), '; ', 'renovar:', IFNULL(renovar, '')) AS datos FROM historico_usuarios";
+                $sentencia = "SELECT * FROM historico_usuarios historico_usuarios";
                 //Comprobamos si cogemos las fechas
                 if(count($fechas) == 2){
                     $sentenciaNumPag .= " WHERE DATE(fecha_ult_modif) BETWEEN :fechaIni AND :fechaFin";
@@ -74,16 +74,27 @@ class Administrador extends user{
             $numPag = $this->calcularNumPag($sentenciaNumPag, $datosFiltrado);
             //Añadimos el limite
             $sentencia .= " LIMIT :pagina, :limite;";
-            $datosFiltrado["pagina"] = intval($filtro["pagina"]);
+            $datosFiltrado["pagina"] = (intval($filtro["pagina"]) - 1) * 7;
             $datosFiltrado["limite"] = intval($filtro["limite"]);
+
             //Cogemos los datos
             $pdoStatement = $bd->recuperarDatosBDNum($sentencia, $datosFiltrado);
             if(!$pdoStatement instanceof \PDOStatement){
                 throw new \PDOException($pdoStatement);
             }
+            $repuesta = [];
+            //Rellenamos la paginación
+             if($numPag > 0){
+                for($i = 1; $i <= ($numPag + 1); $i++){
+                    $respuesta[] = ["numPag" => $i];
+                    }
+                $paginaActual = intval($filtro["pagina"]) - 1;
+                $respuesta[$paginaActual]["activa"] = true;
+            }
+
             //Cogemos todas las tuplas
             $historial = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
-            return ["numPag" => $numPag, "historial" => $historial];
+            return ["paginaHistorial" => ["numPag" => $numPag, "historial" => $historial], "paginacion" => $respuesta];
         }
 
     /**
@@ -118,13 +129,13 @@ class Administrador extends user{
         $bd = new bd();
         //Creamos la sentencia
         $sentenciaNumPag = "SELECT COUNT(email) as num_pag FROM usuarios";
-        $sentencia = "SELECT email, rol FROM usuarios";
+        $sentencia = "SELECT email, case when rol = 1 THEN true Else null END as admin from usuarios";
         $datosFiltrado = [];
         //Comprobamos los filtros que puede tener
         if(isset($filtroUsuario["email"])){
-            $sentenciaNumPag .= " WHERE email LIKE :email";
-            $sentencia .= " WHERE email LIKE :email";
-            $datosFiltrado["email"] = "%" . $filtroUsuario["email"] . "%";
+            $sentenciaNumPag .= " WHERE LOWER(email) LIKE :email";
+            $sentencia .= " WHERE LOWER(email) LIKE :email";
+            $datosFiltrado["email"] = "%" . strtolower($filtroUsuario["email"]) . "%";
         }
         if(!empty($filtroUsuario["rol"])) {
             $sentenciaNumPag .= isset(($filtroUsuario["email"])) ? " AND rol = :rol" : " WHERE rol = :rol";
@@ -135,17 +146,28 @@ class Administrador extends user{
         $numPag = $this->calcularNumPag($sentenciaNumPag, $datosFiltrado, 7);
         //LE ponemos el limite
         $sentencia .= " LIMIT :pagina, :limite";
-        $datosFiltrado["pagina"] = intval($filtroUsuario["pagina"]);
+        $datosFiltrado["pagina"] = (intval($filtroUsuario["pagina"]) - 1) * 7;
         $datosFiltrado["limite"] = intval($filtroUsuario["limite"]);
         //Calculamos los usuarios
         $pdoStatement = $bd->recuperarDatosBDNum($sentencia, $datosFiltrado);
+
+        $respuesta = [];
+        //Rellenamos la paginación
+        if($numPag > 0){
+            for($i = 1; $i <= ($numPag + 1); $i++){
+                $respuesta[] = ["numPag" => $i];
+                }
+            $paginaActual = intval($filtroUsuario["pagina"]) - 1;
+            $respuesta[$paginaActual]["activa"] = true;
+        }
+        
         //Comprobamos que no diera error
         if(!$pdoStatement instanceof \PDOStatement){
             throw new \PDOException($pdoStatement);
         }
         //Cogemos todos los datos porque tiene le límite (sólo devolvera limite tuplas)
         $datosUsuarios = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
-        return ["numPag" => $numPag, "datosUsuarios" => $datosUsuarios];
+        return ["paginaUsuarios" => ["numPag" => $numPag, "usuarios" => $datosUsuarios], "paginacion" => $respuesta];
     }
 
     // PRODUCTOS
@@ -438,6 +460,13 @@ class Administrador extends user{
         }
     }
 
+    /**
+     * Filtra las reservas
+     *
+     * @param   Array  $datosPartida  Array asociativo
+     *
+     * @return  Array                 Array asociativo con los datos y la paginación
+     */
     public function filtrarReservas($datosPartida) {
         try {
             //Validamos los campos
@@ -455,10 +484,10 @@ class Administrador extends user{
             $sentencia = "SELECT UP.partida as id_partida, UP.usuario, P.fecha, PR.nombre, P.director_partida  FROM usuarios_partidas as UP INNER JOIN partidas as P ON UP.reservada = 0 AND UP.partida = P.id_partida INNER JOIN productos as PR ON P.juego_partida = PR.id_producto";
             //Compruebo si se aplicó algún filtro
             if(!empty($datosPartida["usuario"])){
-                $sentenciaNumPag .= " AND (UP.usuario LIKE :usuario)";
-                $sentencia .= " AND (UP.usuario LIKE :usuario)";
+                $sentenciaNumPag .= " AND (LOWER(UP.usuario) LIKE :usuario)";
+                $sentencia .= " AND (LOWER(UP.usuario) LIKE :usuario)";
                 //Convertimos el elemento a int ya que como viene de  JS viene como cadena
-                $datosFiltrado["usuario"] = "%" . $datosPartida["usuario"] . "%";
+                $datosFiltrado["usuario"] = "%" . strtolower(($datosPartida["usuario"])) . "%";
             }
             //Compruebo cuantas fechas tengo
             if(count($fechas) == 2) {
@@ -477,7 +506,7 @@ class Administrador extends user{
             //Añadimos el límite para la sentencia que recupera los datos
             $sentencia .= " LIMIT :pagina, :limite ;";
             //Convertimos los elementos a int ya que como viene de  JS viene como cadena
-            $datosFiltrado["pagina"] = intval($datosPartida["pagina"]);
+            $datosFiltrado["pagina"] = (intval($datosPartida["pagina"]) - 1) * 7;
             $datosFiltrado["limite"] = intval($datosPartida["limite"]); 
             //Instanciamos la bd
             $bd = new bd();
@@ -489,6 +518,15 @@ class Administrador extends user{
             //Cogemos los valores con fetchAll ya que los tenemos limitados, como mucho devuelve 7 tuplas
             $tuplas = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
             $respuesta["paginaReservas"] = ["numPag" => $numPag, "reservas" => $tuplas];
+
+            //Rellenamos la paginación
+            if($numPag > 0){
+                for($i = 1; $i <= ($numPag + 1); $i++){
+                    $respuesta["paginacion"][] = ["numPag" => $i];
+                    }
+                $paginaActual = intval($datosPartida["pagina"]) - 1;
+                $respuesta["paginacion"][$paginaActual]["activa"] = true;
+            }
         }
         catch(\PDOException $pdoError) {
             $respuesta = "Error " . $pdoError->getCode() . " :" . $pdoError->getMessage();
@@ -523,8 +561,8 @@ class Administrador extends user{
             $sentencia = "SELECT P.id_partida, PR.nombre as juego_partida, P.fecha,  CONCAT(P.plazas_min, '-', P.plazas_totales) as num_jugadores, P.director_partida  from partidas as P INNER JOIN productos as PR ON P.juego_partida = PR.id_producto";
             //Compruebo si se aplicó algún filtro
             if(!empty($datosPartida["juego_partida"])){
-                $sentenciaNumPag .= " AND (PR.nombre LIKE :juego_partida)";
-                $sentencia .= " AND (PR.nombre LIKE :juego_partida)";
+                $sentenciaNumPag .= " AND (LOWER(PR.nombre) LIKE :juego_partida)";
+                $sentencia .= " AND (LOWER(PR.nombre) LIKE :juego_partida)";
                 //Convertimos el elemento a int ya que como viene de  JS viene como cadena
                 $datosFiltrado["juego_partida"] = "%" . $datosPartida["juego_partida"] . "%";
             }
@@ -545,18 +583,30 @@ class Administrador extends user{
             //Añadimos el límite para la sentencia que recupera los datos
             $sentencia .= " LIMIT :pagina, :limite ;";
             //Convertimos los elementos a int ya que como viene de  JS viene como cadena
-            $datosFiltrado["pagina"] = intval($datosPartida["pagina"]);
+            $datosFiltrado["pagina"] = (intval($datosPartida["pagina"]) - 1) * 7;
             $datosFiltrado["limite"] = intval($datosPartida["limite"]); 
             //Instanciamos la bd
             $bd = new bd();
+
+
             //Envio la petición
             $pdoStatement = $bd->recuperarDatosBDNum($sentencia, $datosFiltrado);
             if(!$pdoStatement instanceof \PDOStatement){
                 throw new \PDOException($pdoStatement);
             }
+
+            //Rellenamos la paginación
+            if($numPag > 0){
+                for($i = 1; $i <= ($numPag + 1); $i++){
+                    $respuesta["paginacion"][] = ["numPag" => $i];
+                    }
+                $paginaActual = intval($datosPartida["pagina"]) - 1;
+                $respuesta["paginacion"][$paginaActual]["activa"] = true;
+            }
+
             //Cogemos los valores con fetchAll ya que los tenemos limitados, como mucho devuelve 7 tuplas
             $tuplas = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
-            $respuesta = ["numPag" => $numPag, "partidas" => $tuplas];
+            $respuesta["paginaPartidas"][ "partidas"] = $tuplas;
         }
         catch(\PDOException $pdoError) {
             $respuesta = "Error " . $pdoError->getCode() . " :" . $pdoError->getMessage();
@@ -603,8 +653,8 @@ class Administrador extends user{
         //Instanciamos bdo
         $bd = new bd();
         //Creamos la sentencia
-        $sentencia = "SELECT email as nombre  FROM usuarios WHERE rol = 1 AND email LIKE ? LIMIT 0, 5";
-        $datosAsignar = ["%" . $datosDirector . "%"];
+        $sentencia = "SELECT email as nombre  FROM usuarios WHERE rol = 1 AND LOWER(email) LIKE ? LIMIT 0, 5";
+        $datosAsignar = ["%" . strtolower($datosDirector) . "%"];
         //Pasamos el dato a un array para enviarselo a la función
         $pdoStatement = $bd->recuperDatosBD($sentencia, $datosAsignar);
         //Comprobamos que nos devolviera un PDOStatement
