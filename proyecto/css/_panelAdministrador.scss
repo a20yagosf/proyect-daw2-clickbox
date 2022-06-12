@@ -2,6 +2,20 @@
 #panelAdmin {
     padding-block-start: 2%;
 
+    .caracteristicasJuegos {    
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+
+        .contenedorInput {
+            flex-basis: 50%;
+
+            input,select {
+                width: 100%;
+            }
+        }
+    }
+
    & > div:first-of-type {
         width: 90%;
         margin: auto;
@@ -166,6 +180,10 @@
         input[type='submit'] {
             @include boton ($colorPrincipal, 1.2em);
             padding: 0% 0.5%
+        }
+
+        input, select {
+            @include inputFormulario();
         }
     }
 

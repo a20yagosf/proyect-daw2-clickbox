@@ -17,12 +17,9 @@
           <a route="/panel_administracion_partidas" href="#" {{# paginaPartidas}}class="listaActivo" {{/paginaPartidas}} {{# paginaReservas}}class="listaActivo" {{/paginaReservas}}>Partidas</a>
         </li>
       <li id="pestProductos">
-        <a
+        <a route="/panel_administracion_productos"
           href="#"
-          data-toggle="tooltip"
-          data-placement="top"
-          title="En desarrollo"
-          class="ventanaDesc development"
+          {{# paginaProductos}}class="listaActivo" {{/paginaProductos}}
           >Productos</a
         >
       </li>

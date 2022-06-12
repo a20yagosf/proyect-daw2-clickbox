@@ -20,6 +20,18 @@ try {
             $devolver = ["generos" => $generos];
         }
     }
+    else if(isset($datos["cargarTematicas"])){
+        //Ejecutamos la sentencia para obtener los géneros
+        $sentencia = "SELECT nombre_tematica as tematica FROM tematicas LIMIT 0, 25;";
+        $resultado = $bd->recuperDatosBD($sentencia);
+        $devolver = ["error" => "No se pudo cargar las temáticas"];
+        //Comprobamos si es un pdoStatement (Hay datos)
+        if($resultado instanceof \PDOStatement) {
+            //Array con todos los géneros
+            $tematicas = $resultado->fetchAll(\PDO::FETCH_ASSOC);
+            $devolver = ["tematicas" => $tematicas];
+        }
+    }
     else {
         //Cogemos los datos del POST que corresponden con todos los datos menos el fichero
         $datos = json_decode($_POST["datosUsuario"], true);

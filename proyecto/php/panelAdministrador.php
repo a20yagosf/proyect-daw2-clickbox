@@ -76,7 +76,7 @@ try {
         $devolver = $reservas;
     }
     //Procesar reserva
-    else if($datosPOST["procesarReserva"]) {
+    else if(isset($datosPOST["procesarReserva"])) {
         if($datosPOST["procesarReserva"] == "aceptar") {
             $resultado = $admin->aceptarSolicitudPartida($datosPOST["datosReserva"]);
         }
@@ -88,6 +88,55 @@ try {
         }
 
         $devolver = ["exito" => "Reserva procesada"];
+    }
+    //Si se está cargando el panel de productos
+    else if(isset($datosPOST["filtrosProductos"])) {
+        $productos = $admin->filtarProductos($datosPOST["filtrosProductos"]);
+        if($productos){
+            $devolver = $productos;
+        }
+    }
+    //Eliminar el producto
+    else if(isset($datosPOST["idProductoEliminar"])) {
+        $resultado = $admin->eliminarProducto($datosPOST["idProductoEliminar"]);
+        if(is_string($resultado) && stripos($resultado, "error") !== false){
+            throw new \Exception($resultado);
+        }
+        //Devolvemos exito (Si da error salta la excepción por lo que si llegamos aquí es que hay datos)
+        $devolver = ["exito"=> "Datos actualizados con exito"];
+    }
+    //Si está en modo edición de un producto
+    else if(isset($datosPOST["id_producto"])) {
+        $producto = $admin->recuperarDatosActualesProducto($datosPOST["id_producto"]);
+        $opcionesCookie = ["secure" => true, "samesite" => "None"];
+        //Creamos una cookie con la partida en la que estamos
+        setcookie("producto", $datosPOST["id_producto"], $opcionesCookie);
+        //Devolvemos los datos (Si no devolvió nada salta la excepción por lo que si llegamos aquí es que hay datos)
+        $devolver = $producto;
+    }
+    //Si se está creando un producto
+    else if(isset($_POST["datosProducto"])) {
+        //Cogemos los datos del POST
+        $datosProducto = json_decode($_POST["datosProducto"], true);
+        //Convertimos a int los que tienen que serlo ya que al cogerlos por JSON vienen como strings
+        $datosProducto["plazas_min"] = intval($datosProducto["plazas_min"]);
+        $datosProducto["plazas_totales"] = intval($datosProducto["plazas_totales"]);
+        $datosProducto["duracion"] = intval($datosProducto["duracion"]);
+        $datosProducto["juego_partida"] = intval($datosProducto["juego_partida"]);
+        //Cogemos la imagen
+        $imagenesPartida = $_FILES["imagenesPartida"];
+        $resultado = $admin->crearProductoAdmin($datosProducto, $imagenesPartida);
+        if($resultado){
+            $devolver = ["exito" => "Se creó el producto con éxito"];
+        }
+    }
+    //Editar partida
+    else if(isset($datosPOST["edicion_producto"])){
+        //Cogemos el id de la partida de la cookie que creamos
+        $datosPOST["edicion_producto"]["id_producto"] = $_COOKIE["producto"];
+        $admin->editarProductoAdmin($datosPOST["edicion_producto"]);
+        //Devolvemos exito (Si da error salta la excepción por lo que si llegamos aquí es que hay datos)
+        $devolver = ["exito"=> "Datos actualizados con éxito"];
     }
 }
 catch(\PDOException $pdoError) {

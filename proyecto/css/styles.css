@@ -2631,6 +2631,17 @@ h2, h3 {
   -webkit-padding-before: 2%;
           padding-block-start: 2%;
 }
+#panelAdmin .caracteristicasJuegos {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+#panelAdmin .caracteristicasJuegos .contenedorInput {
+  flex-basis: 50%;
+}
+#panelAdmin .caracteristicasJuegos .contenedorInput input, #panelAdmin .caracteristicasJuegos .contenedorInput select {
+  width: 100%;
+}
 #panelAdmin > div:first-of-type {
   width: 90%;
   margin: auto;
@@ -2809,6 +2820,15 @@ h2, h3 {
 }
 #panelAdmin #filtradoPartida input[type=submit]:hover {
   background-color: #03bdd7;
+}
+#panelAdmin #filtradoPartida input, #panelAdmin #filtradoPartida select {
+  margin: 2% 0%;
+  padding: 1%;
+  font-family: "Resolve";
+  border-radius: 5px;
+  border: 1px solid #0291A5;
+  outline-color: #FFB775;
+  transition: all 1s ease-in-out;
 }
 #panelAdmin #contenedorElementos {
   width: 90%;

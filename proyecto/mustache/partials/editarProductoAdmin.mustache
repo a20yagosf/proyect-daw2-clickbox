@@ -1,0 +1,67 @@
+<form id="formPanelAdmin" action="../php/panelAdministrador.php" method="POST" enctype="multipart/form-data">
+  <label for="nombre">Nombre</label>
+  <div class="contenedorInput">
+    <input type="text" name="nombre" id="nombre" value="{{nombre}}" />
+  </div>
+  <label for="stock">Stock</label>
+  <div class="contenedorInput">
+    <input type="number" name="stock" id="stock" {{#stock}}value="{{stock}}"{{/stock}} {{^stock}}value="1"{{/stock}}/>
+  </div>
+  <label for="precio">Precio(€)</label>
+  <div class="contenedorInput">
+    <input type="number" name="precio" id="precio"  {{#precio}}value="{{precio}}"{{/precio}} {{^precio}}value="5"{{/precio}}/>
+  </div>
+  <label for="tematica">Temática</label>
+  <div class="contenedorInput">
+    <select id="tematica" name="tematica">
+      <option value="">No seleccionado</option>
+      {{# tematica}}<option value="{{tematica}}" selected>{{tematica}}</option>{{/tematica}}
+      {{> tematicas}}
+    </select>
+  </div>
+  <label for="tipo_producto">Tipo de producto</label>
+  <div class="contenedorInput">
+    <select id="tipo_producto" name="tipo_producto">
+      <option value="">No seleccionado</option>
+      <option value="juego" {{^ accesorio}}selected{{/accesorio}}>Juego</option>
+      <option value="accesorio" {{# accesorio}}selected{{/accesorio}}>Accesorio</option>
+    </select>
+  </div>
+  {{^ editarProducto}}
+  <label for="imagen_producto">Imágenes del producto</label>
+  <div class="contenedorInput">
+    <input type="file" name="imagen_producto" id="imagen_producto" value="{{imagen_producto}}" multiple/>
+  </div>
+{{/ editarProducto}}
+  <div class="caracteristicasJuegos">
+    <label for="duracion">Número mínimo de jugadores</label>
+    <div class="contenedorInput">
+      <input type="number" name="num_jug_min" id="num_jug_min" {{# num_jug_min}}value="{{num_jug_min}}"{{/num_jug_min}} {{^ num_jug_min}}value="2"{{/num_jug_min}}/>
+    </div>
+    <label for="duracion">Número máximo de jugadores</label>
+    <div class="contenedorInput">
+      <input type="number" name="num_jug_max" id="num_jug_max" {{# num_jug_max}}value="{{num_jug_max}}"{{/num_jug_max}} {{^ num_jug_max}}value="8"{{/num_jug_max}}/>
+    </div>
+    <label for="descripcion">Descripción</label>
+    <div class="inputDesplegable">
+      <input type="text" name="descripcion" id="descripcion" value="{{descripcion}}"/>
+    </div>
+    <label for="genero">Género</label>
+    <div class="contenedorInput">
+      <select id="genero" name="genero">
+        <option value="">No seleccionado</option>
+        {{# genero}}<option value="{{genero}}" selected>{{genero}}</option>{{/genero}}
+        {{> generos}}
+      </select>
+    </div>
+  </div>
+  <p id="resultadoOperacion"></p>
+    <input type="submit" value="Guarda cambios" data-id="{{id_partida}}" />
+    {{# editarProducto}}
+      <button
+        type="button"
+        id="eliminarPartida" data-id="{{id_partida}}">
+        Eliminar partida</button>
+    {{/ editarProducto}}
+    <button type="button" id="cancelarPartida">Cancelar</button>
+</form>

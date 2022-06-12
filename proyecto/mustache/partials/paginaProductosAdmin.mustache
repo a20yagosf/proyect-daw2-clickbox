@@ -1,0 +1,35 @@
+<div id="contenedorElementos">
+    <form
+      id="filtradoPartida"
+      action="../php/panelAdministrador.php"
+      method="POST"
+    >
+      <label for="juego_partida"
+        >Nombre<input type="text" name="nombre" id="nombre" /></label
+      >
+      <label for="tipo"
+        >Tipo producto
+        <select id="tipo_producto" name="tipo_producto">
+          <option value="">No seleccionado</option>
+          <option value="juego">Juego</option>
+          <option value="accesorio">Accesorio</option>
+          </select></label>
+          <input type="submit" value="Filtrar" />
+    </form>
+    <table id="listaElementos">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Stock</th>
+          <th>Precio(€)</th>
+          <th>Tipo</th>
+          <th colspan="2"><button>Nuevo producto +</button></th>
+        </tr>
+      </thead>
+      <tbody>
+        {{> filtrado}}
+      </tbody>
+    </table>
+    {{> paginacion}}
+</div>

@@ -1,0 +1,18 @@
+{{# paginaProductos}}
+{{# productos}}
+    <tr>
+        <td>{{ id_producto }}</td>
+        <td>{{ nombre }}</td>
+        <td>{{ stock }}</td>
+        <td>{{ precio }}</td>
+        <td>{{ tipo_producto }}</td>
+        <td><button data-id="{{ id_producto}}" data-action="editar">Editar</button></td>
+        <td><button data-id="{{ id_producto}}" data-action="eliminar">Eliminar</button></td>
+    </tr>
+{{/productos}}
+{{^ productos}}
+    <tr>
+        <td colspan="7">No se han encontrado producto</td>
+    </tr>
+{{/productos}}
+{{/ paginaProductos}}

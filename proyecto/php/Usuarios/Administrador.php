@@ -616,6 +616,279 @@ class Administrador extends user{
         }
         return $respuesta;
     }
+
+    //Productos
+    /**
+     * Filtra las partidas que muestra al administrador
+     *
+     * @param   array  $datosPartida  Array con los datos a filtrar de la partida
+     *
+     * @return  mixed                 O el error en string o un objeto
+     */
+    public function filtarProductos($datosProducto) {
+        try {
+            //Validamos los campos
+            $this->validarCamposForm($datosProducto);
+            //Parametros que le vamos a pasar para filtrar los datos
+            $datosFiltrado = [];
+            //Sentencias
+            //Sentencia para contar el número de páginas es como la normal pero contando las tuplas sin limitar
+            $sentenciaNumPag = "SELECT COUNT(P.id_producto) as num_pag from productos as P LEFT JOIN juegos as J ON P.id_producto = J.juego WHERE 1 = 1";
+            //Sentenica para los datos
+            $sentencia = "SELECT *  from productos as P LEFT JOIN juegos as J ON P.id_producto = J.juego WHERE 1 = 1";
+            //Compruebo si se aplicó algún filtro
+            if(!empty($datosProducto["nombre"])){
+                $sentenciaNumPag .= " AND (LOWER(P.nombre) LIKE :nombre)";
+                $sentencia .= " AND (LOWER(P.nombre) LIKE :nombre)";
+                //Convertimos el elemento a int ya que como viene de  JS viene como cadena
+                $datosFiltrado["nombre"] = "%" . $datosProducto["nombre"] . "%";
+            }
+            if(!empty($datosProducto["tipo_producto"])){
+                $sentenciaNumPag .= " AND (tipo_producto = :tipo_producto)";
+                $sentencia .= " AND (tipo_producto = :tipo_producto)";
+                //Convertimos el elemento a int ya que como viene de  JS viene como cadena
+                $datosFiltrado["tipo_producto"] = $datosProducto["tipo_producto"];
+            }
+            //Calculamos el número de páginas
+            $numPag = $this->calcularNumPag($sentenciaNumPag, $datosFiltrado,  intval($datosProducto["limite"]));
+            //Añadimos el límite para la sentencia que recupera los datos
+            $sentencia .= " LIMIT :pagina, :limite ;";
+            //Convertimos los elementos a int ya que como viene de  JS viene como cadena
+            $datosFiltrado["pagina"] = (intval($datosProducto["pagina"]) - 1) * 7;
+            $datosFiltrado["limite"] = intval($datosProducto["limite"]); 
+            //Instanciamos la bd
+            $bd = new bd();
+
+
+            //Envio la petición
+            $pdoStatement = $bd->recuperarDatosBDNum($sentencia, $datosFiltrado);
+            if(!$pdoStatement instanceof \PDOStatement){
+                throw new \PDOException($pdoStatement);
+            }
+
+            //Rellenamos la paginación
+            if($numPag > 0){
+                for($i = 1; $i <= ($numPag + 1); $i++){
+                    $respuesta["paginacion"][] = ["numPag" => $i];
+                    }
+                $paginaActual = intval($datosProducto["pagina"]) - 1;
+                $respuesta["paginacion"][$paginaActual]["activa"] = true;
+            }
+
+            //Cogemos los valores con fetchAll ya que los tenemos limitados, como mucho devuelve 7 tuplas
+            $tuplas = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
+            $respuesta["paginaProductos"][ "productos"] = $tuplas;
+        }
+        catch(\PDOException $pdoError) {
+            $respuesta = "Error " . $pdoError->getCode() . " :" . $pdoError->getMessage();
+        }
+        catch(\Exception $error){
+            $respuesta = "Error " . $error->getCode() . " :" . $error->getMessage();
+        }
+        return $respuesta;
+    }
+
+    /**
+     * Elimina la partida y todas las tuplas asociadas a ella
+     *
+     * @param   int  $idPartida  Id de la partida a eliminar
+     *
+     * @return  void              No devuelve nada
+     */
+    public function eliminarProducto($idProducto){
+        //Validamos los cmapos
+        $this->validarCamposForm($idProducto);
+        //instanciamos bd
+        $bd = new bd();
+        try {
+            //Convertimos el id a int
+            $idProducto = ["id_producto" => intval($idProducto)];
+            //Creamos la sentencia
+            $sentencia = "DELETE FROM productos WHERE id_producto = :id_producto";
+            $resultado = $bd->agregarModificarDatosBDNum($sentencia, $idProducto);
+            //Comprobamos que no diera error
+            if(is_string($resultado) && stripos($resultado, "error") !== false){
+                throw new \PDOException($resultado);
+            }
+        }
+        catch (\PDOException $pdoError){
+            return "Error " . $pdoError->getMessage();
+        }
+        catch(\Exception $error){
+            return "Error " . $error->getMessage();
+        }
+    }
+
+    /**
+     * Devuelve los datos de la producto a editar
+     *
+     * @param   int  $idProducto  ID del producto
+     *
+     * @return  mixed              Devuelve array con los datos o una Excepción
+     */
+    public function recuperarDatosActualesProducto($idProducto){
+        //Primero validamos los datos que nos pasaron en datosProducto
+        $this->validarCamposForm($idProducto);
+        //Instanciamos la BD
+        $bd = new bd();
+        //Creamos la sentencia
+        $sentencia = "SELECT nombre, stock, precio, tematica, IF(tipo_producto = 'accesorio', true, false) AS accesorio, num_jug, descripcion, genero  FROM productos AS P LEFT JOIN juegos as J ON P.id_producto = J.juego WHERE id_producto = :id_producto";
+        //Guardamos el id en un array ya que es lo que pide el método y lo convertimos a int ya que al venir de JSOn viene como string
+        $datosAsignar = ["id_producto" => intval($idProducto)];
+        //Mandamos la sentencia para que se ejecute
+        $pdoStatement = $bd->recuperarDatosBDNum($sentencia, $datosAsignar);
+        //Comprobamos si nos devolvió un $pdoStatement
+        if(!$pdoStatement instanceof \PDOStatement){
+            throw new \PDOException($pdoStatement);
+        }
+        //Hacemos fetch con los datos, como el id es único sólo hacemos un fetch
+        $datosProducto = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
+        $num_jug = explode("-", $datosProducto["num_jug"]);
+        unset($datosProducto["num_jug"]);
+        $datosProducto["num_jug_min"] = $num_jug[0];
+        $datosProducto["num_jug_max"] = $num_jug[1];
+        //Comprobamos que nos devolviera algo
+        if(!$datosProducto) {
+            throw new \Exception("No existe ese producto");
+        }
+        return $datosProducto;
+    }
+
+    /**
+     * Guarda los nuevos datos del producto
+     *
+     * @param   array  $datosProducto  Datos a insertar
+     *
+     * @return  void                 No devuelve nada
+     */
+    public function editarProductoAdmin($datosProducto){
+        //Validamos los campos
+        $this->validarCamposForm($datosProducto);
+        //Instanciamos bd
+        $bd = new bd();
+        try {
+            if($datosProducto["tipo_producto"] == "accesorio") {
+                //Creamos la sentencia
+                $datosProducto["id_producto"] = intval($datosProducto["id_producto"]);
+                 
+                if(empty($datosProducto["tematica"])) $datosProducto["tematica"] = null;
+                $sentencia = "UPDATE productos as P SET  nombre = :nombre, stock = :stock, precio = :precio, tematica = :tematica, tipo_producto = :tipo_producto WHERE id_producto = :id_producto";
+                $resultado = $bd->agregarModificarDatosBDNum($sentencia, $datosProducto);
+                //Comprobamos que no diera error
+                if(is_string($resultado) && stripos($resultado, "error") !== false){
+                    throw new \PDOException($resultado);
+                }
+            }
+            else {
+                $pdo = $bd->iniciarTransaccionManual();
+                //Creamos las sentencias
+                if(empty($datosProducto["tematica"])) $datosProducto["tematica"] = null;
+                $sentencia = "UPDATE productos as P SET  nombre = :nombre, stock = :stock, precio = :precio, tematica = :tematica, tipo_producto = :tipo_producto WHERE id_producto = :id_producto";
+                $sentencia2 = "UPDATE juegos as J SET num_jug = :num_jug, descripcion = :descripcion, genero = :genero where juego = :juego";
+                $valoresJuego = ["num_jug", "descirpcion", "genero"];
+                $datosJuego = [];
+                foreach($valoresJuego as $valor){
+                    $datosJuego[$valor] = $datosProducto[$valor];
+                    unset($datosProducto[$valor]);
+                }
+                $datosProducto["id_producto"] = intval($datosProducto["id_producto"]);
+                //Realizamos la primera sentencia
+                $resultado = $bd->agregarModificarDatosBDNum($sentencia, $datosProducto, $pdo);
+                //Comprobamos que fuera un éxito
+                if(is_string($resultado) && stripos($resultado, "error") !== false){
+                    throw new \Exception($resultado);
+                }
+                $datosJuego["juego"] = intval($datosProducto["id_producto"]);
+                //Realizamos la segunda sentencia
+                $resultado = $bd->agregarModificarDatosBDNum($sentencia2, $datosJuego, $pdo);
+                //Comprobamos que fuera un éxito
+                if(is_string($resultado) && stripos($resultado, "error") !== false){
+                    throw new \Exception($resultado);
+                }
+                //Si fue un éxito hacemos commit
+                $pdo->commit();
+            }
+        }
+        catch(\PDOException $pdoError){
+            if(isset($pdo)) $pdo->rollBack();
+            throw $pdoError;
+        }
+        catch(\Exception $error){
+            if(isset($pdo)) $pdo->rollBack();
+            throw $error;
+        }
+    }
+
+    /**
+     * Crea una partida
+     *
+     * @param   array  $datosProducto   Datos de la partida
+     * @param   $_FILE  $imagenPartida  Archivo a subir
+     *
+     * @return  bool                  Si se creo la partida con éxito
+     */
+    public function crearProductoAdmin($datosProducto, $imagenProducto){
+        //Primero validamos los datos que nos pasaron en datosProducto
+        $this->validarCamposForm($datosProducto);
+        //Instanciamos bd
+        $bd = new bd();
+       try {
+            //Empezamos la transaccion
+            $pdo = $bd->iniciarTransaccionManual();
+            //Movemos la imagen
+            $carpetaFichero = dirname(__FILE__, 3) . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR . "partidas";
+            $rutaImagen = $bd->gestionarFichero($imagenProducto, $carpetaFichero);
+            if(is_string($rutaImagen) && stripos($rutaImagen, "error") !== false) {
+                throw new \Exception("No se pudo mover el archivo");
+            }
+            if($datosProducto["tipo_producto"] == "accesorio") {
+                $sentencia = "INSERT INTO productos (nombre, stock,precio, tematica, tipo_producto, imagen_producto) VALUES (:nombre, :stock,:precio, :tematica, :tipo_producto, :imagen_producto)";
+                $datosProducto["imagen_producto"] = $rutaImagen;
+                $resultado = $bd->agregarModificarDatosBDNum($sentencia, $datosProducto);
+                //Comprobamos que no diera error
+                if(is_string($resultado) && stripos($resultado, "error") !== false){
+                    throw new \PDOException($resultado);
+                }
+            }
+            else {
+                 //Sentencia para crear la partida
+                $sentencia = "INSERT INTO productos (nombre, stock,precio, tematica, tipo_producto, imagen_producto) VALUES (:nombre, :stock,:precio, :tematica, :tipo_producto, :imagen_producto)";
+                $sentencia2 = "INSERT INTO juegos (num_jug, descripcion, genero) VALUES (:num_jug, :descripcion, :genero)";
+                $valoresJuego = ["num_jug", "descirpcion", "genero"];
+                $datosJuego = [];
+                foreach($valoresJuego as $valor){
+                    $datosJuego[$valor] = $datosProducto[$valor];
+                    unset($datosProducto[$valor]);
+                }
+                $datosProducto["imagen_producto"] = $rutaImagen;
+                //Realizamos la primera sentencia
+                $resultado = $bd->agregarModificarDatosBDNum($sentencia, $datosProducto, $pdo);
+                //Comprobamos que fuera un éxito
+                if(is_string($resultado) && stripos($resultado, "error") !== false){
+                    throw new \Exception($resultado);
+                }
+                //Si no es un error $resultado el es indice de la inserción
+                $datosJuego["juego"] = intval($resultado);
+                //Realizamos la segunda sentencia
+                $resultado = $bd->agregarModificarDatosBDNum($sentencia2, $datosJuego, $pdo);
+                //Comprobamos que fuera un éxito
+                if(is_string($resultado) && stripos($resultado, "error") !== false){
+                    throw new \Exception($resultado);
+                }
+            }
+            //Si fue un éxito hacemos commit
+            $pdo->commit();
+       }
+       catch (\PDOException $pdoError){
+            $pdo->rollBack();
+            return "Error " . $pdoError->getMessage();
+        }
+        catch(\Exception $error){
+            $pdo->rollBack();
+            return "Error " . $error->getMessage();
+        }
+        return true;
+    }
     
     // PANEL DE CONTROL
 

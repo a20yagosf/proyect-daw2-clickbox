@@ -75,6 +75,10 @@ let routerClickBox = new Router("routerClickbox", [
     path: "/panel_administracion_usuarios_historial",
     name: "Panel Administración Historial Usuarios",
   },
+  {
+    path: "/panel_administracion_productos",
+    name: "Panel Administración Productos",
+  },
 ]);
 
 window.onunload = async function () {
@@ -170,6 +174,14 @@ function cambioEnElHash() {
         document.getElementById("logoHeader").dispatchEvent(new Event("click"));
       }
       break;
+
+    case "/panel_administracion_productos":
+      if (sessionStorage["email"]) {
+        cargarPanelAdministracion("productos");
+      } else {
+        document.getElementById("logoHeader").dispatchEvent(new Event("click"));
+      }
+      break;
   }
   console.log("Cambio el hash!");
 }
@@ -185,6 +197,7 @@ function cambiarHash(e) {
     case "/panel_administracion_partidas":
     case "/panel_administracion_partidas_reservas":
     case "/panel_administracion_usuarios":
+    case "/panel_administracion_productos":
       let botonPerfil = document.getElementById("botonPerfilUsuario");
       let menuPerfil = document.getElementById("menuPerfilUser");
       if (botonPerfil && $(menuPerfil).is(":visible")) {
@@ -819,7 +832,6 @@ function crearLink(atributos) {
   return elementoLink;
 }
 
-
 /**
  * Cambiar el formulario
  *
@@ -1197,7 +1209,7 @@ async function procesarRegistro(evento) {
   //Párrafo donde mostraremos el mensaje
   let formRegistro = document.getElementById("registro");
   let resultado = formRegistro.querySelector("#resultadoForm");
-  if($(formRegistro).valid() == true){
+  if ($(formRegistro).valid() == true) {
     try {
       //Elementos que enviaremos a php
       let email = formRegistro.querySelector("#email").value;
@@ -1209,7 +1221,8 @@ async function procesarRegistro(evento) {
       let telefono = formRegistro.querySelector("#telf").value;
       let fecha_nac = formRegistro.querySelector("#fecha_nac").value;
       let direccion = formRegistro.querySelector("#direccion").value;
-      let genero_favorito = formRegistro.querySelector("#genero_favorito").value;
+      let genero_favorito =
+        formRegistro.querySelector("#genero_favorito").value;
       //Comprobamos que las contraseñas coincidan
       if (!validarClaves(clave, clave2)) {
         throw "Las contraseñas no coinciden";
@@ -3178,7 +3191,9 @@ async function mostrarInicioSesion() {
     headers: { "Content-type": "application/json;charset=ut-8;" },
   });
   let plantilla = await peticion.text();
-  let resultado = Mustache.render(plantilla, generos["datos"], {"generos": generos["plantilla"]});
+  let resultado = Mustache.render(plantilla, generos["datos"], {
+    generos: generos["plantilla"],
+  });
   main.insertAdjacentHTML("beforeend", resultado);
 
   //Event listeners
@@ -4027,7 +4042,7 @@ async function cargarGeneros() {
     const generos = await respuestaGeneros.json();
     //Comprobamos que no diese error
     if (Object.hasOwn(generos, "error")) {
-      throw json["error"];
+      throw generos["error"];
     }
 
     //Cargamos la plantilla de mustache
@@ -4037,6 +4052,38 @@ async function cargarGeneros() {
     );
     const plantillaMustache = await peticionMustache.text();
     return { datos: generos, plantilla: plantillaMustache };
+  } catch (error) {
+    console.log(error);
+    return { datos: {}, plantilla: "" };
+  }
+}
+
+/**
+ * Carga todas las temáticas
+ *
+ * @return  {Object}  Obejto con datos y plantilla
+ */
+ async function cargarTematicas() {
+  try {
+    //Cargamos los temáticas
+    const respuestaTematicas = await fetch("../php/registro.php", {
+      method: "POST",
+      headers: { "Content-type": "application/json;charset=UTF-8" },
+      body: JSON.stringify({ "cargarTematicas": true }),
+    });
+    const tematicas = await respuestaTematicas.json();
+    //Comprobamos que no diese error
+    if (Object.hasOwn(tematicas, "error")) {
+      throw tematicas["error"];
+    }
+
+    //Cargamos la plantilla de mustache
+    const peticionMustache = await fetch(
+      "../mustache/partials/optionTematicas.mustache",
+      opcionesFetchMustache
+    );
+    const plantillaMustache = await peticionMustache.text();
+    return { datos: tematicas, plantilla: plantillaMustache };
   } catch (error) {
     console.log(error);
     return { datos: {}, plantilla: "" };
@@ -4861,12 +4908,61 @@ async function cargarPanelAdministracion(pagina) {
         botonHistorial.addEventListener("click", cargarPaginaHistorialAdmin);
 
         paginacion = document.querySelector(".pagination");
-      if (paginacion != undefined) {
-        let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
-        enlacesPaginacion.forEach((enlace) =>
-          enlace.addEventListener("click", cogerFiltroHistorialAdmin)
+        if (paginacion != undefined) {
+          let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
+          enlacesPaginacion.forEach((enlace) =>
+            enlace.addEventListener("click", cogerFiltroHistorialAdmin)
+          );
+        }
+        break;
+
+      case "productos":
+        datos = await cargarPaginaProductosAdmin(false);
+        partials = { productos: datos["plantilla"] };
+
+        //Cargamos la parte de mustache
+        plantilla = await fetch(
+          "../mustache/panelAdministrador.mustache",
+          opcionesFetchMustache
         );
-    }
+        plantillaJson = await plantilla.text();
+        cadena = Mustache.render(plantillaJson, datos["datos"], partials);
+        main.insertAdjacentHTML("beforeend", cadena);
+
+        //Event listeners
+        let filtradoProd = document.getElementById("filtradoPartida");
+          let botonFiltradoProd = filtradoProd.querySelector("input[type='submit']");
+          botonFiltradoProd.addEventListener("click", filtrarProductossAdmin);
+  
+          let tablaElementosProd = document.getElementById("listaElementos");
+          let botonNuevoProd = tablaElementosProd.querySelector("thead button");
+          botonNuevoProd.addEventListener("click", modoCrearProductosAdmin);
+  
+          cuerpoTabla = tablaElementosProd.querySelector("tbody");
+          let botonesEditarProd = cuerpoTabla.querySelectorAll(
+            'button[data-action="editar"]'
+          );
+          let botonesEliminarProd = cuerpoTabla.querySelectorAll(
+            'button[data-action="eliminar"]'
+          );
+          if (botonesEditarProd) {
+            botonesEditarProd = Array.from(botonesEditarProd);
+            botonesEditarProd.forEach((boton) =>
+              boton.addEventListener("click", editarProductoAdmin)
+            );
+            botonesEliminarProd = Array.from(botonesEliminarProd);
+            botonesEliminarProd.forEach((boton) =>
+              boton.addEventListener("click", eliminarProductoTabla)
+            );
+          }
+  
+          paginacion = document.querySelector(".pagination");
+          if (paginacion != undefined) {
+            let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
+            enlacesPaginacion.forEach((enlace) =>
+              enlace.addEventListener("click", filtrarProductossAdmin)
+            );
+          }
 
         break;
     }
@@ -5709,7 +5805,7 @@ async function cargarUsuariosAdmin(filtro = {}, pagina = 1, parcial = false) {
     );
     let peticionJSONMustache = await peticionMustache.text();
     let plantilla = await Mustache.render(peticionJSONMustache, respuestaJSON, {
-      "paginacion": pagination,
+      paginacion: pagination,
     });
 
     if (parcial) {
@@ -5790,7 +5886,10 @@ function cogerFiltrosUsuariosAdmin(e) {
  */
 async function cargarPaginaHistorialAdmin(parcial = true) {
   let datosFiltro = await filtrarHistorialAdmin();
-  let partial = { filtrado: datosFiltro["plantilla"], "paginacion": datosFiltro["paginacion"]};
+  let partial = {
+    filtrado: datosFiltro["plantilla"],
+    paginacion: datosFiltro["paginacion"],
+  };
 
   let peticionMustache = await fetch(
     "../mustache/partials/historialUsuariosAdmin.mustache",
@@ -5831,13 +5930,12 @@ async function cargarPaginaHistorialAdmin(parcial = true) {
     botonHistorial.addEventListener("click", cargarPaginaHistorialAdmin);
 
     paginacion = document.querySelector(".pagination");
-      if (paginacion != undefined) {
-        let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
-        enlacesPaginacion.forEach((enlace) =>
-          enlace.addEventListener("click", cogerFiltroHistorialAdmin)
-        );
+    if (paginacion != undefined) {
+      let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
+      enlacesPaginacion.forEach((enlace) =>
+        enlace.addEventListener("click", cogerFiltroHistorialAdmin)
+      );
     }
-
   } else {
     return { datos: datosFiltro["datos"], plantilla: plantilla };
   }
@@ -5886,7 +5984,7 @@ async function filtrarHistorialAdmin(
     if (parcial) {
       let paginacion = document.querySelector(".pagination");
       if (paginacion) paginacion.remove();
-      let listaElementos =  document.getElementById("listaElementos");
+      let listaElementos = document.getElementById("listaElementos");
       let cuerpoTabla = listaElementos.querySelector("tbody");
       let contenedorElementos = document.getElementById("contenedorElementos");
       //Limpiamos el contenedor
@@ -5912,7 +6010,11 @@ async function filtrarHistorialAdmin(
         );
       }
     } else {
-      return { datos: respuestaJSON, plantilla: plantilla, "paginacion": pagination};
+      return {
+        datos: respuestaJSON,
+        plantilla: plantilla,
+        paginacion: pagination,
+      };
     }
   } catch (error) {
     console.log(error);
@@ -5931,9 +6033,7 @@ function cogerFiltroHistorialAdmin(e) {
   let filtro = {};
   let limite = 7;
   let pagina =
-    e.currentTarget.nodeName == "A"
-      ? e.currentTarget.textContent
-      : 1;
+    e.currentTarget.nodeName == "A" ? e.currentTarget.textContent : 1;
   //Cogemos los datos de las fechas
   let fechaIni = document.getElementById("fechaIniHistorial").value;
   fechaIni != "" ? (filtro["fechaIni"] = fechaIni) : "";
@@ -6024,6 +6124,489 @@ async function cargarPaginacion(datos) {
     let plantilla = Mustache.render(peticionJSONMustache, datos);
 
     return plantilla;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/**
+ * Carga la página de productos
+ *
+ * @param   {bool}  parcial  Si carga todo el panel o ya está en el panel y carga sólo la parte de partidas
+ * @param   {[type]}  false    [false description]
+ *
+ * @return  {mixed}          Devuelve un Objeto ["datos", "plantilla"] o nada si se carga de forma parcial
+ */
+async function cargarPaginaProductosAdmin(parcial = true) {
+  try {
+    //Filtramos las partidas
+    let datosProductos = await cargarProductosAdmin();
+
+    //Cargamos la plantilla mustache
+    let peticion = await fetch(
+      "../mustache/partials/paginaProductosAdmin.mustache",
+      opcionesFetchMustache
+    );
+    let peticionJSON = await peticion.text();
+    let parciales = {
+      filtrado: datosProductos["plantilla"],
+      paginacion: datosProductos["paginacion"],
+    };
+    let plantilla = await Mustache.render(
+      peticionJSON,
+      datosProductos["datos"],
+      parciales
+    );
+    window.history.pushState(
+      null,
+      "null",
+      HOST + "/panel_administracion_productos"
+    );
+    //Si es parcial es que estamos en la página de plantillas y sólo filtramos
+    if (parcial) {
+      let panelAdmin = document.getElementById("panelAdmin");
+      let contenedorFinal = panelAdmin.lastElementChild;
+      //Limpiamos el cuerpo de la tabla
+      contenedorFinal.remove();
+      panelAdmin.insertAdjacentHTML("beforeend", plantilla);
+
+      //Event listeners
+      let filtrado = document.getElementById("filtradoPartida");
+      let botonFiltrado = filtrado.querySelector("input[type='submit']");
+      botonFiltrado.addEventListener("click", filtrarProductossAdmin);
+
+      let tablaElementos = document.getElementById("listaElementos");
+      let botonNuevaPartida = tablaElementos.querySelector("thead button");
+      botonNuevaPartida.addEventListener("click", modoCrearPartidasAdmin);
+
+      let cuerpoTabla = tablaElementos.querySelector("tbody");
+      let botonesEditar = cuerpoTabla.querySelectorAll(
+        'button[data-action="editar"]'
+      );
+      let botonesEliminar = cuerpoTabla.querySelectorAll(
+        'button[data-action="eliminar"]'
+      );
+      if (botonesEditar) {
+        botonesEditar = Array.from(botonesEditar);
+        botonesEditar.forEach((boton) =>
+          boton.addEventListener("click", editarPartidaAdmin)
+        );
+      }
+      if (botonesEliminar) {
+        botonesEliminar = Array.from(botonesEliminar);
+        botonesEliminar.forEach((boton) =>
+          boton.addEventListener("click", eliminarPartidaTabla)
+        );
+      }
+
+      paginacion = document.querySelector(".pagination");
+      if (paginacion != undefined) {
+        let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
+        enlacesPaginacion.forEach((enlace) =>
+          enlace.addEventListener("click", filtrarProductossAdmin)
+        );
+      }
+    } else {
+      return { datos: datosProductos["datos"], plantilla: plantilla };
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/**
+ * Filtra los productos según los filtros que le pasemos
+ *
+ * @param   {Object}  filtros  Filtros a aplicar tipo {clave: valor}
+ * @param   {int}        Página en la nos encontramos
+ *
+ * @return  {mixed}          Devuelve un Objeto ["datos", "plantilla"] o nada si se carga de forma parcial
+ */
+async function cargarProductosAdmin(filtros = {}, pagina = 1, parcial = false) {
+  //Le añadimos la página y el limite de tuplas por pagina
+  filtros["pagina"] = pagina;
+  filtros["limite"] = 7;
+  try {
+    //Crea la petición
+    const respuesta = await fetch("../php/panelAdministrador.php", {
+      method: "POST",
+      header: { "Content-type": "application/json; charset=utf-8" },
+      body: JSON.stringify({ "filtrosProductos": filtros }),
+    });
+    //Traducimos la respuesta
+    const respuestaJSON = await respuesta.json();
+    //Comprobamos que no diera error
+    if (Object.hasOwn(respuestaJSON, "error")) {
+      throw respuestaJSON["error"];
+    }
+
+    //paginacion
+    let paginacion = await cargarPaginacion(respuestaJSON);
+
+    //Cargamos la plantilla mustache
+    let peticion = await fetch(
+      "../mustache/partials/filtradoProductosAdmin.mustache",
+      opcionesFetchMustache
+    );
+    let peticionJSON = await peticion.text();
+    let plantilla = await Mustache.render(peticionJSON, respuestaJSON);
+    return Promise.all([plantilla]).then(function (resolve, reject) {
+      //Si es parcial es que estamos en la página de plantillas y sólo filtramos
+      if (parcial) {
+        let pagination = document.querySelector(".pagination");
+        if (pagination) pagination.remove();
+        let contenedor = document.getElementById("contenedorElementos");
+        let cuerpoTabla = contenedor.querySelector("tbody");
+        cuerpoTabla.innerHTML = "";
+        cuerpoTabla.insertAdjacentHTML("beforeend", plantilla);
+
+        let contenedorElementos = document.getElementById(
+          "contenedorElementos"
+        );
+        contenedorElementos.insertAdjacentHTML("beforeend", paginacion);
+
+        paginacion = document.querySelector(".pagination");
+        if (paginacion != undefined) {
+          let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
+          enlacesPaginacion.forEach((enlace) =>
+            enlace.addEventListener("click", filtrarProductossAdmin)
+          );
+        }
+
+        //Event listemers
+        let botonesEditar = cuerpoTabla.querySelectorAll(
+          'button[data-action="editar"]'
+        );
+        let botonesEliminar = cuerpoTabla.querySelectorAll(
+          'button[data-action="eliminar"]'
+        );
+        if (botonesEditar) {
+          botonesEditar = Array.from(botonesEditar);
+          botonesEditar.forEach((boton) =>
+            boton.addEventListener("click", editarProductoAdmin)
+          );
+        }
+        if (botonesEliminar) {
+          botonesEliminar = Array.from(botonesEliminar);
+          botonesEliminar.forEach((boton) =>
+            boton.addEventListener("click", eliminarProductoAdmin)
+          );
+        }
+
+        return resolve;
+      } else {
+        return {
+          datos: respuestaJSON,
+          plantilla: plantilla,
+          paginacion: paginacion,
+        };
+      }
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/**
+ * Llama a la función para filtrar los productos con los filtros
+ *
+ * @return  {[void]}  No devuelve nada
+ */
+function filtrarProductossAdmin(e) {
+  e.preventDefault();
+  //Cogemos los filtrados
+  let pagina =
+    e.currentTarget.nodeName == "A" ? e.currentTarget.textContent : 1;
+  let nombre = document.getElementById("nombre");
+  let tipo_producto = document.getElementById("tipo_producto");
+  let filtros = {};
+  if (nombre == undefined) {
+    filtros = {};
+  } else {
+    filtros = {
+      nombre: nombre.value ?? "",
+      tipo_producto: tipo_producto.value ?? "",
+    };
+  }
+  cargarProductosAdmin(filtros, pagina, true);
+}
+
+/**
+ * Crea una partida en la BD
+ * @param {Event}  Evento que dispara
+ */
+ async function crearProductoAdmin() {
+  let resultado = document.getElementById("resultadoOperacion");
+  try {
+    //Datos
+    let nombre = document.getElementById("nombre").dataset.id;
+    let stock = document.getElementById("stock").value;
+    let precio = document.getElementById("precio").value;
+    let tematica = document.getElementById("tematica").value;
+    let tipo_producto = document.getElementById("tipo_producto").value;
+    let num_jug = document.getElementById("num_jug").value;
+    let imagenProd = Array.from(document.getElementById("imagen_producto").files);
+    let datosProducto = {};
+    if(tipo_producto == "accesorio") {
+      datosProducto = {
+      nombre: nombre,
+      stock: stock,
+      precio: precio,
+      tematica: tematica,
+      tipo_producto: tipo_producto,
+    };
+    }
+    else {
+      datosProducto = {
+      nombre: nombre,
+      stock: stock,
+      precio: precio,
+      tematica: tematica,
+      tipo_producto: tipo_producto,
+      num_jug: num_jug,
+      descripcion: descripcion,
+      genero: genero,
+    };
+    }
+    //Mensaje que enviaremos
+    const mensajeJSON = new FormData();
+    //Recorremos la imagen
+    mensajeJSON.append("imagenProducto", imagenProd);
+    mensajeJSON.append("datosProducto", JSON.stringify(datosProducto));
+    //Lanzamos la petición
+    const respuesta = await fetch("../php/panelAdministrador.php", {
+      method: "POST",
+      body: mensajeJSON,
+    });
+    const respuestaJSON = await respuesta.json();
+    if (Object.hasOwn(respuestaJSON, "error")) {
+      throw respuestaJSON["error"];
+    }
+    resultado.textContent = "Se ha creado el producto con éxito";
+    resultado.removeAttribute("class", "error");
+    resultado.setAttribute("class", "exito");
+    //Limpiamos la ventana de éxito
+    limpiarCampo(resultado, 2000);
+    //Limpiamos el resto de campos del formulario
+    let todosInput = Array.from(
+      document.querySelectorAll(
+        "input:not(input[type='file'], input[type='submit'])"
+      )
+    );
+    limpiarCampoArrayInput(todosInput, 2000);
+    //Limpiamos el campo File
+    limpiarCampoFile(document.getElementById("imagen_producto"), 2000);
+    //Limpiamos el select
+    let todosSelect = Array.from(document.querySelectorAll("select"));
+    todosSelect.forEach(select => limpiarCampoSelect(select, 2000));
+  } catch ($error) {
+    resultado.textContent = $error;
+    resultado.removeAttribute("class", "exito");
+    resultado.setAttribute("class", "error");
+  }
+}
+
+/**
+ * Crear el contenedor con los productos para Admin
+ *
+ * @return  {void}  No devuelve nada
+ */
+async function modoCrearProductosAdmin(datos = {}) {
+  try {
+    let contenedorElementos = document.getElementById("contenedorElementos");
+    contenedorElementos.remove();
+    let panelAdmin = document.getElementById("panelAdmin");
+
+    let generos = await cargarGeneros();
+    let tematicas = await cargarTematicas();
+    let partials = {"generos": generos["plantilla"], "tematicas": tematicas["plantilla"]};
+    datos["generos"] = generos["datos"]["generos"];
+    datos["tematicas"] = tematicas["datos"]["tematicas"];
+    //Cargamos la plantilla mustache
+    let peticion = await fetch(
+      "../mustache/partials/editarProductoAdmin.mustache",
+      opcionesFetchMustache
+    );
+    let peticionJSON = await peticion.text();
+    let plantilla = await Mustache.render(peticionJSON, datos, partials);
+    panelAdmin.insertAdjacentHTML("beforeend", plantilla);
+
+    let formulario = document.getElementById("formPanelAdmin");
+
+    $(formulario).validate({
+      rules: {
+        nombre: {
+          required: true,
+          minlength: 2,
+        },
+        stock: {
+          required: true,
+        },
+        precio: {
+          required: true,
+          min: 1,
+        },
+        tipo_producto: {
+          required: true
+        },
+        num_jug: {
+          required: true,
+        },
+        genero: {
+          required: true
+        },
+      },
+      messages: {
+        nombre: "Debe introducir un nombre del producto",
+        stock: "Debe introducir una cantidad válida",
+        precio:"Debe introducir un precio",
+        num_jug:"Debe introducir el número de jugadores",
+        genero: "Debe seleccionar un género",
+        tipo_producto: "Debe seleccionar el tipo del producto",
+      },
+    });
+
+    //Añadimos el escuchador
+    formulario.addEventListener("submit", guardarCambiosProductosAdmin);
+    let botonCancelar = document.getElementById("cancelarPartida");
+    botonCancelar.addEventListener("click", cargarPaginaProductosAdmin);
+    let botonEliminar = document.getElementById("eliminarPartida");
+    if (botonEliminar) {
+      botonEliminar.addEventListener("click", eliminarProductoAdmin);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/**
+ * Crea una nueva partida o guarda los cambios
+ *
+ * @param   {Event}  e  Evento que lo dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+ function guardarCambiosProductosAdmin(e) {
+  e.preventDefault();
+  let id = document.getElementById("eliminarPartida");
+  id ? guardarCambiosEditarProductosAdmin(id.dataset.id) : crearProductoAdmin();
+}
+
+/**
+ * Actualiza los datos editados en la BD
+ *
+ * @param   {Event}  e  Evento que la dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+ async function guardarCambiosEditarProductosAdmin(id) {
+  let parrafo = document.getElementById("resultadoOperacion");
+  try {
+    //Cogemos los datos que hay en los input
+    let datosProducto = {};
+    let camposPartida = [
+      "nombre",
+      "stock",
+      "precio",
+      "tematica",
+      "tipo_producto",
+      "num_jug_min",
+      "num_jug_max",
+      "descripcion",
+      "genero",
+    ];
+    camposPartida.forEach(
+      (campo) => (datosProducto[campo] = document.getElementById(campo).value)
+    );
+    if (datosProducto["tipo_producto"] == "accesorio") {
+      caracJuegos = ["num_jug_min","num_jug_max","descripcion","genero"];
+      caracJuegos.forEach(caracteristica => delete datosProducto[caracteristica]);
+    }
+    //Enviamos la petición
+    const respuesta = await fetch("../php/panelAdministrador.php", {
+      method: "POST",
+      headers: { "Content-type": "application/json; charset=utf-8;" },
+      body: JSON.stringify({ edicion_producto: datosProducto }),
+    });
+    //Traducimos la respuesta
+    const respuestaJSON = await respuesta.json();
+    //Comprobamos si se dio un error
+    if (Object.hasOwn(respuestaJSON, "error")) {
+      throw respuestaJSON["error"];
+    }
+    //Si no se dio un error es que se cambiaron con éxito asique mostramos mensaje de éxito
+    parrafo.textContent = "Datos actualizados con éxito";
+    parrafo.classList.remove("error");
+    parrafo.classList.add("exito");
+    limpiarCampo(parrafo, 500);
+  } catch (error) {
+    parrafo.textContent = error;
+    parrafo.classList.remove("exito");
+    parrafo.classList.add("error");
+  }
+}
+
+/**
+ * Pone el modo editar partida
+ *
+ * @param   {Event}  e  Evento que lo dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+async function editarProductoAdmin(e) {
+  let idProducto = e.currentTarget.dataset.id;
+  try {
+    //Cargamos la plantilla mustache
+    const peticion = await fetch("../php/panelAdministrador.php", {
+      method: "POST",
+      headers: { "Content-type": "application/json; charset=utf8;" },
+      body: JSON.stringify({ "id_producto": idProducto }),
+    });
+    let peticionJSON = await peticion.json();
+    peticionJSON["editarProducto"] = true;
+    modoCrearProductosAdmin(peticionJSON);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/**
+ * Elimina el producto si acepta el administrador
+ *
+ * @param   {[type]}  idProducto
+ *
+ * @return  {[type]}             [return description]
+ */
+function eliminarProductoTabla(e) {
+  let idProducto = e.currentTarget.dataset.id;
+  if (confirm("Esta seguro que quiere borrar el producto?")) {
+    eliminarProductoAdmin(idProducto);
+  }
+}
+
+/**
+ * Elimina el producto de la BD
+ *
+ * @param   {int}  idProducto  ID del producto
+ *
+ * @return  {void}             No devuelve nada
+ */
+async function eliminarProductoAdmin(idProducto) {
+  try {
+    //Creamos la conexión
+    const respuesta = await fetch("../php/panelAdministrador.php", {
+      method: "POST",
+      headers: { "Content-type": "application/json; charset=utf-8" },
+      body: JSON.stringify({ "idProductoEliminar": idProducto }),
+    });
+    //Traducimos la respuesta
+    const respuestaJSON = await respuesta.json();
+    //Comprobamos que no hubiese ningún error
+    if (Object.hasOwn(respuestaJSON, "error")) {
+      throw respuestaJSON["error"];
+    }
+    //Recargamos los productos
+    cargarPaginaProductosAdmin();
   } catch (error) {
     console.log(error);
   }
