@@ -732,7 +732,7 @@ class Administrador extends user{
         //Instanciamos la BD
         $bd = new bd();
         //Creamos la sentencia
-        $sentencia = "SELECT nombre, stock, precio, tematica, IF(tipo_producto = 'accesorio', true, false) AS accesorio, num_jug, descripcion, genero  FROM productos AS P LEFT JOIN juegos as J ON P.id_producto = J.juego WHERE id_producto = :id_producto";
+        $sentencia = "SELECT P.id_producto, P.nombre, P.stock, P.precio, P.tematica, IF(P.tipo_producto = 'accesorio', true, null) AS accesorio, J.num_jug, J.descripcion, J.genero  FROM productos AS P LEFT JOIN juegos as J ON P.id_producto = J.juego WHERE id_producto = :id_producto";
         //Guardamos el id en un array ya que es lo que pide el método y lo convertimos a int ya que al venir de JSOn viene como string
         $datosAsignar = ["id_producto" => intval($idProducto)];
         //Mandamos la sentencia para que se ejecute
@@ -743,13 +743,15 @@ class Administrador extends user{
         }
         //Hacemos fetch con los datos, como el id es único sólo hacemos un fetch
         $datosProducto = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
-        $num_jug = explode("-", $datosProducto["num_jug"]);
-        unset($datosProducto["num_jug"]);
-        $datosProducto["num_jug_min"] = $num_jug[0];
-        $datosProducto["num_jug_max"] = $num_jug[1];
         //Comprobamos que nos devolviera algo
         if(!$datosProducto) {
             throw new \Exception("No existe ese producto");
+        }
+        if($datosProducto["accesorio"] == 0) {
+            $num_jug = explode("-", $datosProducto["num_jug"]);
+            unset($datosProducto["num_jug"]);
+            $datosProducto["num_jug_min"] = $num_jug[0];
+            $datosProducto["num_jug_max"] = $num_jug[1];
         }
         return $datosProducto;
     }
@@ -785,7 +787,7 @@ class Administrador extends user{
                 if(empty($datosProducto["tematica"])) $datosProducto["tematica"] = null;
                 $sentencia = "UPDATE productos as P SET  nombre = :nombre, stock = :stock, precio = :precio, tematica = :tematica, tipo_producto = :tipo_producto WHERE id_producto = :id_producto";
                 $sentencia2 = "UPDATE juegos as J SET num_jug = :num_jug, descripcion = :descripcion, genero = :genero where juego = :juego";
-                $valoresJuego = ["num_jug", "descirpcion", "genero"];
+                $valoresJuego = ["num_jug", "descripcion", "genero"];
                 $datosJuego = [];
                 foreach($valoresJuego as $valor){
                     $datosJuego[$valor] = $datosProducto[$valor];
@@ -830,6 +832,7 @@ class Administrador extends user{
     public function crearProductoAdmin($datosProducto, $imagenProducto){
         //Primero validamos los datos que nos pasaron en datosProducto
         $this->validarCamposForm($datosProducto);
+        if(empty($datosProducto["tematica"])) $datosProducto["tematica"] = null;
         //Instanciamos bd
         $bd = new bd();
        try {
@@ -853,8 +856,8 @@ class Administrador extends user{
             else {
                  //Sentencia para crear la partida
                 $sentencia = "INSERT INTO productos (nombre, stock,precio, tematica, tipo_producto, imagen_producto) VALUES (:nombre, :stock,:precio, :tematica, :tipo_producto, :imagen_producto)";
-                $sentencia2 = "INSERT INTO juegos (num_jug, descripcion, genero) VALUES (:num_jug, :descripcion, :genero)";
-                $valoresJuego = ["num_jug", "descirpcion", "genero"];
+                $sentencia2 = "INSERT INTO juegos (juego, num_jug, descripcion, genero) VALUES (:juego, :num_jug, :descripcion, :genero)";
+                $valoresJuego = ["num_jug", "descripcion", "genero"];
                 $datosJuego = [];
                 foreach($valoresJuego as $valor){
                     $datosJuego[$valor] = $datosProducto[$valor];

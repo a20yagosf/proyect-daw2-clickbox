@@ -389,6 +389,7 @@ GRANT ALL ON a2da_clickbox.carritos TO 'a2da_admin'@'localhost';
 GRANT ALL ON a2da_clickbox.productos_carritos TO 'a2da_admin'@'localhost';
 GRANT EXECUTE ON PROCEDURE a2da_clickbox.cargar_carrito TO 'a2da_admin'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.productos TO 'a2da_admin'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.juegos TO 'a2da_admin'@'localhost';
 
 -- DISPARADORES
 DELIMITER $$

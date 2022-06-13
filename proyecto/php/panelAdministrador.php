@@ -118,21 +118,17 @@ try {
     else if(isset($_POST["datosProducto"])) {
         //Cogemos los datos del POST
         $datosProducto = json_decode($_POST["datosProducto"], true);
-        //Convertimos a int los que tienen que serlo ya que al cogerlos por JSON vienen como strings
-        $datosProducto["plazas_min"] = intval($datosProducto["plazas_min"]);
-        $datosProducto["plazas_totales"] = intval($datosProducto["plazas_totales"]);
-        $datosProducto["duracion"] = intval($datosProducto["duracion"]);
-        $datosProducto["juego_partida"] = intval($datosProducto["juego_partida"]);
         //Cogemos la imagen
-        $imagenesPartida = $_FILES["imagenesPartida"];
+        $imagenesPartida = $_FILES["imagenProducto"];
         $resultado = $admin->crearProductoAdmin($datosProducto, $imagenesPartida);
-        if($resultado){
-            $devolver = ["exito" => "Se creó el producto con éxito"];
+        if(is_string($resultado) && stripos($resultado, "error") !== false){
+            throw new \Exception($resultado);
         }
+        $devolver = ["exito" => "Se creó el producto con éxito"];
     }
-    //Editar partida
+    //Editar producto
     else if(isset($datosPOST["edicion_producto"])){
-        //Cogemos el id de la partida de la cookie que creamos
+        //Cogemos el id del producto de la cookie que creamos
         $datosPOST["edicion_producto"]["id_producto"] = $_COOKIE["producto"];
         $admin->editarProductoAdmin($datosPOST["edicion_producto"]);
         //Devolvemos exito (Si da error salta la excepción por lo que si llegamos aquí es que hay datos)

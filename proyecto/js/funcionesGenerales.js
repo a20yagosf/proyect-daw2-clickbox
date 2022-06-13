@@ -6177,7 +6177,7 @@ async function cargarPaginaProductosAdmin(parcial = true) {
 
       let tablaElementos = document.getElementById("listaElementos");
       let botonNuevaPartida = tablaElementos.querySelector("thead button");
-      botonNuevaPartida.addEventListener("click", modoCrearPartidasAdmin);
+      botonNuevaPartida.addEventListener("click", modoCrearProductosAdmin);
 
       let cuerpoTabla = tablaElementos.querySelector("tbody");
       let botonesEditar = cuerpoTabla.querySelectorAll(
@@ -6273,6 +6273,10 @@ async function cargarProductosAdmin(filtros = {}, pagina = 1, parcial = false) {
           );
         }
 
+        let tablaElementosProd = document.getElementById("listaElementos");
+        let botonNuevoProd = tablaElementosProd.querySelector("thead button");
+        botonNuevoProd.addEventListener("click", modoCrearProductosAdmin);
+
         //Event listemers
         let botonesEditar = cuerpoTabla.querySelectorAll(
           'button[data-action="editar"]'
@@ -6289,7 +6293,7 @@ async function cargarProductosAdmin(filtros = {}, pagina = 1, parcial = false) {
         if (botonesEliminar) {
           botonesEliminar = Array.from(botonesEliminar);
           botonesEliminar.forEach((boton) =>
-            boton.addEventListener("click", eliminarProductoAdmin)
+            boton.addEventListener("click", eliminarProductoTabla)
           );
         }
 
@@ -6336,73 +6340,79 @@ function filtrarProductossAdmin(e) {
  * @param {Event}  Evento que dispara
  */
  async function crearProductoAdmin() {
-  let resultado = document.getElementById("resultadoOperacion");
-  try {
-    //Datos
-    let nombre = document.getElementById("nombre").dataset.id;
-    let stock = document.getElementById("stock").value;
-    let precio = document.getElementById("precio").value;
-    let tematica = document.getElementById("tematica").value;
-    let tipo_producto = document.getElementById("tipo_producto").value;
-    let num_jug = document.getElementById("num_jug").value;
-    let imagenProd = Array.from(document.getElementById("imagen_producto").files);
-    let datosProducto = {};
-    if(tipo_producto == "accesorio") {
-      datosProducto = {
-      nombre: nombre,
-      stock: stock,
-      precio: precio,
-      tematica: tematica,
-      tipo_producto: tipo_producto,
-    };
+  let formulario = document.getElementById("formPanelAdmin");
+  if($(formulario).valid() == true) {
+    let resultado = document.getElementById("resultadoOperacion");
+    try {
+      //Datos
+      let nombre = document.getElementById("nombre").value;
+      let stock = document.getElementById("stock").value;
+      let precio = document.getElementById("precio").value;
+      let tematica = document.getElementById("tematica").value;
+      let tipo_producto = document.getElementById("tipo_producto").value;
+      let num_jug_min = document.getElementById("num_jug_min").value;
+      let num_jug_max = document.getElementById("num_jug_max").value;
+      let descripcion = document.getElementById("descripcion").value;
+      let genero = document.getElementById("genero").value;
+      let imagenProd = document.getElementById("imagen_producto").files[0];
+      let datosProducto = {};
+      if(tipo_producto == "accesorio") {
+        datosProducto = {
+        nombre: nombre,
+        stock: stock,
+        precio: precio,
+        tematica: tematica,
+        tipo_producto: tipo_producto,
+      };
+      }
+      else {
+        datosProducto = {
+        nombre: nombre,
+        stock: stock,
+        precio: precio,
+        tematica: tematica,
+        tipo_producto: tipo_producto,
+        num_jug: num_jug_min + "-" + num_jug_max,
+        descripcion: descripcion,
+        genero: genero,
+      };
+      }
+      //Mensaje que enviaremos
+      const mensajeJSON = new FormData();
+      //Recorremos la imagen
+      mensajeJSON.append("imagenProducto", imagenProd);
+      mensajeJSON.append("datosProducto", JSON.stringify(datosProducto));
+      //Lanzamos la petición
+      const respuesta = await fetch("../php/panelAdministrador.php", {
+        method: "POST",
+        body: mensajeJSON,
+      });
+      const respuestaJSON = await respuesta.json();
+      if (Object.hasOwn(respuestaJSON, "error")) {
+        throw respuestaJSON["error"];
+      }
+      resultado.textContent = "Se ha creado el producto con éxito";
+      resultado.removeAttribute("class", "error");
+      resultado.setAttribute("class", "exito");
+      //Limpiamos la ventana de éxito
+      limpiarCampo(resultado, 2000);
+      //Limpiamos el resto de campos del formulario
+      let todosInput = Array.from(
+        document.querySelectorAll(
+          "input:not(input[type='file'], input[type='submit'])"
+        )
+      );
+      limpiarCampoArrayInput(todosInput, 2000);
+      //Limpiamos el campo File
+      limpiarCampoFile(document.getElementById("imagen_producto"), 2000);
+      //Limpiamos el select
+      let todosSelect = Array.from(document.querySelectorAll("select"));
+      todosSelect.forEach(select => limpiarCampoSelect(select, 2000));
+    } catch ($error) {
+      resultado.textContent = $error;
+      resultado.removeAttribute("class", "exito");
+      resultado.setAttribute("class", "error");
     }
-    else {
-      datosProducto = {
-      nombre: nombre,
-      stock: stock,
-      precio: precio,
-      tematica: tematica,
-      tipo_producto: tipo_producto,
-      num_jug: num_jug,
-      descripcion: descripcion,
-      genero: genero,
-    };
-    }
-    //Mensaje que enviaremos
-    const mensajeJSON = new FormData();
-    //Recorremos la imagen
-    mensajeJSON.append("imagenProducto", imagenProd);
-    mensajeJSON.append("datosProducto", JSON.stringify(datosProducto));
-    //Lanzamos la petición
-    const respuesta = await fetch("../php/panelAdministrador.php", {
-      method: "POST",
-      body: mensajeJSON,
-    });
-    const respuestaJSON = await respuesta.json();
-    if (Object.hasOwn(respuestaJSON, "error")) {
-      throw respuestaJSON["error"];
-    }
-    resultado.textContent = "Se ha creado el producto con éxito";
-    resultado.removeAttribute("class", "error");
-    resultado.setAttribute("class", "exito");
-    //Limpiamos la ventana de éxito
-    limpiarCampo(resultado, 2000);
-    //Limpiamos el resto de campos del formulario
-    let todosInput = Array.from(
-      document.querySelectorAll(
-        "input:not(input[type='file'], input[type='submit'])"
-      )
-    );
-    limpiarCampoArrayInput(todosInput, 2000);
-    //Limpiamos el campo File
-    limpiarCampoFile(document.getElementById("imagen_producto"), 2000);
-    //Limpiamos el select
-    let todosSelect = Array.from(document.querySelectorAll("select"));
-    todosSelect.forEach(select => limpiarCampoSelect(select, 2000));
-  } catch ($error) {
-    resultado.textContent = $error;
-    resultado.removeAttribute("class", "exito");
-    resultado.setAttribute("class", "error");
   }
 }
 
@@ -6455,6 +6465,9 @@ async function modoCrearProductosAdmin(datos = {}) {
         genero: {
           required: true
         },
+        imagen_producto: {
+          required: true
+        }
       },
       messages: {
         nombre: "Debe introducir un nombre del producto",
@@ -6472,10 +6485,36 @@ async function modoCrearProductosAdmin(datos = {}) {
     botonCancelar.addEventListener("click", cargarPaginaProductosAdmin);
     let botonEliminar = document.getElementById("eliminarPartida");
     if (botonEliminar) {
-      botonEliminar.addEventListener("click", eliminarProductoAdmin);
+      botonEliminar.addEventListener("click", eliminarProductoTabla);
     }
+
+    let input_tipo_producto = document.querySelector('select[name="tipo_producto"]');
+    input_tipo_producto.addEventListener('change', ocultarTipoProducto);
+
+    if(Object.values(datos).length > 0 && datos["accesorio"] == 1) {
+      input_tipo_producto.dispatchEvent(new Event("change"));
+    }
+
   } catch (error) {
     console.log(error);
+  }
+}
+
+/**
+ * Oculta o muestra el div con las características de los productos
+ *
+ * @param   {Event}  e  Evento que se dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+function ocultarTipoProducto (e) {
+  let divContenedor = $('.caracteristicasJuegos');
+  let estado = e.currentTarget.value;
+  if(estado == "juego") {
+    divContenedor.slideDown();
+  }
+  else {
+    divContenedor.slideUp();
   }
 }
 
@@ -6521,6 +6560,11 @@ async function modoCrearProductosAdmin(datos = {}) {
     if (datosProducto["tipo_producto"] == "accesorio") {
       caracJuegos = ["num_jug_min","num_jug_max","descripcion","genero"];
       caracJuegos.forEach(caracteristica => delete datosProducto[caracteristica]);
+    }
+    else {
+      datosProducto["num_jug"] = datosProducto["num_jug_min"] + "-" + datosProducto["num_jug_max"];
+      delete datosProducto["num_jug_min"];
+      delete datosProducto["num_jug_max"];
     }
     //Enviamos la petición
     const respuesta = await fetch("../php/panelAdministrador.php", {

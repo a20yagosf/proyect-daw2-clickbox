@@ -30,7 +30,7 @@
   {{^ editarProducto}}
   <label for="imagen_producto">Imágenes del producto</label>
   <div class="contenedorInput">
-    <input type="file" name="imagen_producto" id="imagen_producto" value="{{imagen_producto}}" multiple/>
+    <input type="file" name="imagen_producto" id="imagen_producto" value="{{imagen_producto}}"/>
   </div>
 {{/ editarProducto}}
   <div class="caracteristicasJuegos">
@@ -56,12 +56,12 @@
     </div>
   </div>
   <p id="resultadoOperacion"></p>
-    <input type="submit" value="Guarda cambios" data-id="{{id_partida}}" />
+    <input type="submit" value="Guarda cambios" data-id="{{id_producto}}" />
     {{# editarProducto}}
       <button
         type="button"
-        id="eliminarPartida" data-id="{{id_partida}}">
-        Eliminar partida</button>
+        id="eliminarPartida" data-id="{{id_producto}}">
+        Eliminar producto</button>
     {{/ editarProducto}}
     <button type="button" id="cancelarPartida">Cancelar</button>
 </form>
