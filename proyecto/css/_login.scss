@@ -103,6 +103,7 @@
 
                 #imagenPerfil {
                     border: 0px;
+                    width: 100%;
                 }
 
                 //Input y label de Datos perosnales
@@ -204,6 +205,17 @@
             text-align: left;
             font-size: 2.2rem;
         }
+
+        .acordeon {
+            div div {
+                flex-basis: 100%;
+    
+                input, select, & > label {
+                    flex-basis: 100%;
+                }
+            }
+        }
+
 
         //Botón cierre
         & > button {

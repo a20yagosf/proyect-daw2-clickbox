@@ -89,6 +89,15 @@ nav {
     //Boton cuando tienes iniciada sesión
     #botonPerfilUsuario {
         padding: 0.2% 0.5%;
+
+        @media (max-width: 820px) and (min-width: 510px) { 
+            width: 150px;
+            overflow: hidden;
+        }
+
+        @media (max-width: 500px) {
+            width: 60%;
+        }
     }
 
     //Desplegable con las opciones
@@ -162,6 +171,10 @@ nav {
             button:last-of-type {
                 order: 1;
                 font-size: 0.9rem;
+                position: relative;
+                left: 50%;
+                transform: translateX(-60%);
+                margin: 2% 5%;
             }
 
             //Ponemos de último el ul
@@ -263,6 +276,8 @@ nav {
     button:last-of-type {
         @include boton($colorPrincipal, 1em);
         padding: 0.3% 1%;
+
+
     }
 
 }

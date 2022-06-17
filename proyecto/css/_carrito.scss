@@ -13,6 +13,13 @@
         position: relative;
         z-index: 2;
 
+        h1 {
+            @media(max-width: 500px) {
+                text-align: left;
+                margin-left: 7%;
+            }
+        }
+
         button {
             @include boton(aclararColor($colorPrincipal), 1.2em);
             position: absolute;
@@ -119,4 +126,37 @@
        font-size: 2em;
        text-align: center;
    }
+
+   @media (max-width: 820px) {
+        #cuerpoCarrito {
+            padding-bottom: 8%;
+
+            h3,p {
+                text-align: center;
+                width: 100%;
+            }
+        }
+
+        .productoCarrito {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+
+            .imgCarrito {
+
+                img {
+                    height: 80%;
+                }
+            }
+
+            .botonesCarrito button {
+                margin: 5% auto;
+                display: block;
+            }
+
+            h3 {
+                text-align: center;
+            }
+        }
+    }
 }

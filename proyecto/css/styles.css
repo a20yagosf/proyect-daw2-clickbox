@@ -108,6 +108,17 @@ nav .navDesactivado a:hover {
 nav #botonPerfilUsuario {
   padding: 0.2% 0.5%;
 }
+@media (max-width: 820px) and (min-width: 510px) {
+  nav #botonPerfilUsuario {
+    width: 150px;
+    overflow: hidden;
+  }
+}
+@media (max-width: 500px) {
+  nav #botonPerfilUsuario {
+    width: 60%;
+  }
+}
 nav #menuPerfilUser {
   width: 20%;
   height: auto;
@@ -162,6 +173,10 @@ nav .container-fluid {
   nav .container-fluid button:last-of-type {
     order: 1;
     font-size: 0.9rem;
+    position: relative;
+    left: 50%;
+    transform: translateX(-60%);
+    margin: 2% 5%;
   }
   nav .container-fluid ul {
     flex-basis: 100%;
@@ -534,6 +549,7 @@ main {
   height: 500px;
   background-color: white;
   border-radius: 10px 0px 0px 10px;
+  overflow: hidden;
 }
 #suscripciones .imagenCaja img {
   height: 100%;
@@ -1136,6 +1152,12 @@ main {
   inset-block-start: 50%;
   inset-inline-start: 50%;
   transform: translate(-50%, -50%);
+}
+@media (max-width: 500px) {
+  #ventanaCarga svg {
+    transform: rotate(0deg) translate(-340px, -200px);
+    scale: 0.7;
+  }
 }
 #ventanaCarga svg text {
   font-family: "PoetsenOne";
@@ -1943,6 +1965,7 @@ form#formulario_tienda div.center_submit button {
 }
 #login form div div #imagenPerfil {
   border: 0px;
+  width: 100%;
 }
 #login form div div input, #login form div div label, #login form div div select {
   margin: 2% auto;
@@ -2010,6 +2033,12 @@ form#formulario_tienda div.center_submit button {
   #login h2 {
     text-align: left;
     font-size: 2.2rem;
+  }
+  #login .acordeon div div {
+    flex-basis: 100%;
+  }
+  #login .acordeon div div input, #login .acordeon div div select, #login .acordeon div div > label {
+    flex-basis: 100%;
   }
   #login > button {
     padding: 0.5% 3%;
@@ -2513,6 +2542,12 @@ h2, h3 {
   background-color: #03bdd7;
 }
 
+@media (max-width: 800px) {
+  #perfilUsuario h2 {
+    -webkit-padding-after: 15%;
+            padding-block-end: 15%;
+  }
+}
 @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
   #perfilUsuario {
     padding: 2% 0%;
@@ -2524,8 +2559,8 @@ h2, h3 {
     text-align: start;
     -webkit-margin-start: 5%;
             margin-inline-start: 5%;
-    -webkit-padding-after: 10%;
-            padding-block-end: 10%;
+    -webkit-padding-after: 15%;
+            padding-block-end: 15%;
     -webkit-padding-before: 5%;
             padding-block-start: 5%;
   }
@@ -3140,6 +3175,12 @@ h2, h3 {
   position: relative;
   z-index: 2;
 }
+@media (max-width: 500px) {
+  #carrito header h1 {
+    text-align: left;
+    margin-left: 7%;
+  }
+}
 #carrito header button {
   display: block;
   background-color: #03bdd7;
@@ -3253,6 +3294,30 @@ h2, h3 {
   padding: 100px;
   font-size: 2em;
   text-align: center;
+}
+@media (max-width: 820px) {
+  #carrito #cuerpoCarrito {
+    padding-bottom: 8%;
+  }
+  #carrito #cuerpoCarrito h3, #carrito #cuerpoCarrito p {
+    text-align: center;
+    width: 100%;
+  }
+  #carrito .productoCarrito {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  #carrito .productoCarrito .imgCarrito img {
+    height: 80%;
+  }
+  #carrito .productoCarrito .botonesCarrito button {
+    margin: 5% auto;
+    display: block;
+  }
+  #carrito .productoCarrito h3 {
+    text-align: center;
+  }
 }
 
 #pedido {

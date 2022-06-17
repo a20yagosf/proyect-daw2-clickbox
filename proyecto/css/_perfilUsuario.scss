@@ -389,6 +389,15 @@ h2,h3 {
     }
 }
 
+@media (max-width: 800px) {
+   #perfilUsuario {
+
+        h2 {
+            padding-block-end: 15%;
+        }
+   }
+}
+
 //Adaptación para móviles mediante aspect ratio
 @media screen and (max-aspect-ratio:  195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
     #perfilUsuario {
@@ -403,7 +412,7 @@ h2,h3 {
                 text-align: start;
                 margin-inline-start: 5%;
                 //Padding bottom
-                padding-block-end: 10%;
+                padding-block-end: 15%;
                 //Padding top
                 padding-block-start: 5%;
             }

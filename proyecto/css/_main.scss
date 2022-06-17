@@ -295,6 +295,7 @@ main {
         height: $altoSuscriptImg;
         background-color: white;
         border-radius: $borderRadius 0px 0px $borderRadius;
+        overflow: hidden;
 
         img {
             height: 100%;
@@ -962,6 +963,14 @@ main {
         //Left
         inset-inline-start: 50%;
         transform: translate(-50%,-50%);
+
+        @media(max-width: 500px) {
+            & {
+                transform: rotate(0deg) translate(-340px, -200px);
+                scale: 0.7;
+            }
+        }
+
 
         text {
             font-family: "PoetsenOne";

@@ -198,11 +198,8 @@ function cambiarHash(e) {
     case "/panel_administracion_partidas_reservas":
     case "/panel_administracion_usuarios":
     case "/panel_administracion_productos":
-      let botonPerfil = document.getElementById("botonPerfilUsuario");
-      let menuPerfil = document.getElementById("menuPerfilUser");
-      if (botonPerfil && $(menuPerfil).is(":visible")) {
-        botonPerfil.dispatchEvent(new Event("click"));
-      }
+      let menuPerfilUser = document.getElementById("menuPerfilUser");
+      $(menuPerfilUser).hide();
       break;
   }
 

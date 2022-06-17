@@ -52,7 +52,7 @@ window.onload = async function () {
     activarPantallaCarga();
     let usuario = await cargarPaginaPrincipal();
     //Hacemos un tiemOut para que no se mire como se oculta el botón
-    usuario ? setTimeout(desactivarPantallaCarga, 500) : desactivarPantallaCarga();
+   // usuario ? setTimeout(desactivarPantallaCarga, 500) : desactivarPantallaCarga();
 
     //Router
     let rutasActivas = Array.from(document.querySelectorAll("[route]"));
