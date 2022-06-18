@@ -4245,7 +4245,22 @@ async function cargarPerfilUsuario() {
       let botonGuardar = main.querySelector("input[type=submit]");
       botonGuardar.addEventListener("click", guardarCambiosPerfil);
 
-      desactivarPantallaCarga();
+      //Creamos una imagen para estar seguros que se cargó todo
+      Promise.all([
+        peticionJSON,
+        plantillaMustache,
+        perfilJSON
+      ]).then(() => {
+        //Cargamos una imagen en memoria del mosaico para estar seguros que se cargó todo apropriadamente
+        setTimeout(500, function () {
+          $("<img/>")
+          .attr("src", "../img/mosaicoDisenho/mosaico.svg")
+          .on("load", function () {
+            $(this).remove(); //La eliminamos para limpiar memoria
+            desactivarPantallaCarga();
+          });
+        });
+      });
     }
   } catch (error) {
     console.log(error);
@@ -4966,13 +4981,14 @@ async function cargarPanelAdministracion(pagina) {
 
     //Escuchadores generales
     if (datos) {
-      let botonPartidasGeneral = document.getElementById("pestPartidas");
-      botonPartidasGeneral.addEventListener("click", cargarPaginaPartidasAdmin);
       let panelNav = document.getElementById("opcionesPanelAdmin");
       let botonesNav = Array.from(panelNav.querySelectorAll("a[route]"));
       botonesNav.forEach((boton) =>
         boton.addEventListener("click", cambiarHash)
       );
+
+      let rutasActivas = Array.from(document.querySelectorAll("[route]"));
+      rutasActivas.forEach(ruta => ruta.addEventListener("click", cambiarHash));
 
       desactivarPantallaCarga();
     }
@@ -6651,4 +6667,180 @@ async function eliminarProductoAdmin(idProducto) {
   } catch (error) {
     console.log(error);
   }
+}
+
+/**
+ * Carga la página de tienda
+ *
+ * @param {Event} e Evento que se dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+ async function cargarPaginaTienda() {
+  //window.stop();
+  //Borramos el recibo
+  let mainCuerpo = document.querySelector("main");
+  mainCuerpo.innerHTML = "";
+  activarPantallaCarga();
+  mainCuerpo.classList.contains("cuerpoMosaico")
+    ? ""
+    : mainCuerpo.classList.add("cuerpoMosaico");
+
+  //Actualizamos el header con el activo
+  let header = document.querySelector("nav");
+  let elementosActivos = Array.from(header.getElementsByClassName("navActive"));
+  elementosActivos.forEach((elemento) =>
+    elemento.classList.remove("navActive")
+  );
+  let elementoListaActivo = document.getElementById("navTienda");
+  elementoListaActivo.classList.add("navActive");
+
+  try {
+    if (sessionStorage["email"]) {
+      //Cargamos la plantilla de partidas
+      let plantillaTienda = await cargarProductos(true);
+
+      //Cargamos las opciones de los géneros
+      let generos = await cargarGeneros();
+
+      //Petición Mustache
+      const peticion = await fetch(
+        "../mustache/tienda.mustache",
+        opcionesFetchMustache
+      );
+      const plantilla = await peticion.text();
+
+      plantillaTienda["datos"]["generos"] = generos["datos"]["generos"];
+
+      let resultado = Mustache.render(plantilla, plantillaTienda["datos"], {
+        partidas: plantillaTienda["plantilla"],
+        generos: generos["plantilla"],
+        paginacion: plantillaTienda["paginacion"],
+      });
+      mainCuerpo.insertAdjacentHTML("beforeend", resultado);
+
+      //Añadimos los escuchadores
+      let filtro = document.getElementById("filtro");
+      let botonFiltro = filtro.querySelector("button");
+      botonFiltro.addEventListener("click", filtrarPartidas);
+
+      paginacion = document.querySelector(".pagination");
+      if (paginacion != undefined) {
+        let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
+        enlacesPaginacion.forEach((enlace) =>
+          enlace.addEventListener("click", filtrarPartidas)
+        );
+      }
+
+      let botonesMasInfo = Array.from(mainCuerpo.querySelectorAll(".masInfo"));
+      botonesMasInfo.forEach((boton) =>
+        boton.addEventListener("click", masInfoPartida)
+      );
+      let botonesReserva = Array.from(
+        mainCuerpo.querySelectorAll(".reservarPartida")
+      );
+      botonesReserva.forEach((boton) =>
+        boton.addEventListener("click", reservarPartida)
+      );
+
+      let botonLimpiarFiltro = botonFiltro.nextElementSibling;
+      botonLimpiarFiltro.addEventListener("click", limpiarFiltro);
+      desactivarPantallaCarga();
+    } else {
+      mostrarInicioSesion();
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/**
+ * Carga las partidas
+ * @param {bool} devolver Si devuelve la plantilla o carga su información
+ * @param {Object} filtro Objeto con los filtros
+ * @param {int} pagina Página que carga
+ * @param {int} limite Número de partidas por página
+ * @returns
+ */
+async function cargarProductos(devolver, filtro = {}, pagina = 1, limite = 7) {
+  //Limpiamos el contenedor de las partidas
+  let lista = document.querySelector("ul[class='list-group']");
+  let paginacion = document.querySelector(".pagination");
+  //Buscamos si ya hay una paginación y si la hay la borramos
+  paginacion != null ? paginacion.remove() : "";
+  lista != null ? (lista.innerHTML = "") : "";
+  //Le añadimos al filtro la página y el limite
+  filtro["pagina"] = pagina;
+  filtro["limite"] = limite;
+  try {
+    //Petición PHP
+    let peticionPHP = await fetch("../php/tienda.php", {
+      method: "POST",
+      headers: { "Content-type": "application/json;charset=utf-8;" },
+      body: JSON.stringify(filtro),
+    });
+    let respuestaJSON = await peticionPHP.json();
+    //Comprobamos que no diera error
+    if (Object.hasOwn(respuestaJSON, "error")) {
+      throw respuestaJSON["error"];
+    }
+
+    //Petición Mustache
+    let peticion = await fetch(
+      "../mustache/tienda.mustache",
+      opcionesFetchMustache
+    );
+    let plantilla = await peticion.text();
+
+    //Cargamos la paginacion
+    let plantillaPag = await cargarPaginacion(respuestaJSON);
+
+    if (devolver) {
+      return {
+        datos: respuestaJSON,
+        plantilla: plantilla,
+        paginacion: plantillaPag,
+      };
+    } else {
+      let resultado = Mustache.render(plantilla, respuestaJSON);
+      lista.insertAdjacentHTML("beforeend", resultado);
+
+      let main = document.querySelector("main");
+      main.insertAdjacentHTML("beforeend", plantillaPag);
+
+      //Añadimos los escuchadores
+      paginacion = document.querySelector(".pagination");
+      if (paginacion) {
+        let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
+        enlacesPaginacion.forEach((enlace) =>
+          enlace.addEventListener("click", filtrarPartidas)
+        );
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    return { datos: {}, plantilla: {} };
+  }
+}
+
+/**
+ * Filtra las partidas
+ *
+ * @param   {Evento}  e  Evento que lo dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+async function filtrarPartidas(e) {
+  e.preventDefault();
+  let pagina =
+    e.currentTarget.nodeName == "BUTTON" ? 1 : e.currentTarget.textContent;
+  //Cogemos todos los filtros
+  let filtro = document.getElementById("filtro");
+  let genero = filtro.querySelector("select[name='generos'").value;
+  let precio = filtro.querySelector("input[name='precio'").value;
+  await cargarProductos(
+    false,
+    { genero: genero, precio: precio},
+    pagina
+  );
 }

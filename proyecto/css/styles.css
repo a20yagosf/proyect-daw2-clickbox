@@ -150,7 +150,8 @@ nav #menuPerfilUser a:last-of-type {
 }
 @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
   nav #menuPerfilUser {
-    width: 50%;
+    width: 100%;
+    inset-inline-end: 0%;
   }
 }
 @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px) {
@@ -1470,6 +1471,59 @@ main div.title {
   margin: 2%;
 }
 
+#filtradoTienda {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  font-size: 1.4em;
+  width: 80%;
+  margin: auto;
+  padding-top: 3%;
+}
+#filtradoTienda div {
+  flex-basis: 33.3333333333%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#filtradoTienda input, #filtradoTienda select {
+  margin: 2% 0%;
+  padding: 1%;
+  font-family: "Resolve";
+  border-radius: 5px;
+  border: 1px solid #0291A5;
+  outline-color: #FFB775;
+  transition: all 1s ease-in-out;
+  width: 70%;
+  font-size: 1em;
+  text-align: center;
+}
+#filtradoTienda input[name=precio] {
+  width: 200px;
+}
+#filtradoTienda button {
+  display: block;
+  background-color: #0291A5;
+  border: none;
+  padding: 2% 3%;
+  font-size: 1em;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s linear;
+  padding: 0.5% 0.5%;
+}
+#filtradoTienda button:hover {
+  background-color: #03bdd7;
+}
+#filtradoTienda button:last-of-type {
+  background-color: #FFB775;
+}
+#filtradoTienda button:last-of-type:hover {
+  background-color: #ffd2a8;
+}
+
 form#formulario_tienda {
   width: 100%;
 }
@@ -1598,6 +1652,7 @@ form#formulario_tienda div.center_submit button {
   grid-auto-rows: minmax(5%, auto);
 }
 #contenido_tienda .item {
+  background-color: white;
   width: 80%;
   margin-bottom: 10%;
   display: flex;
@@ -2354,11 +2409,14 @@ h2, h3 {
   background-color: white;
   padding: 2%;
   position: absolute;
-  inset-block-start: 50%;
-  inset-inline-start: 50%;
-  transform: translate(-50%, -50%);
+  inset-block-start: 10%;
   border-radius: 10px;
   font-size: 1.1em;
+}
+@media (max-width: 500px) {
+  #contenedorHistorial {
+    width: 100%;
+  }
 }
 #contenedorHistorial > button {
   display: block;
@@ -2542,20 +2600,120 @@ h2, h3 {
   background-color: #03bdd7;
 }
 
-@media (max-width: 800px) {
+@media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px) {
   #perfilUsuario h2 {
     -webkit-padding-after: 15%;
             padding-block-end: 15%;
+  }
+  #perfilUsuario #botones {
+    width: 30%;
+  }
+  #perfilUsuario button {
+    font-size: 1em;
+  }
+  #perfilUsuario fieldset {
+    flex-basis: 100% !important;
+  }
+  #perfilUsuario fieldset div label {
+    width: 50%;
+  }
+  #perfilUsuario fieldset > div #contenedorSuscripcion button {
+    position: static;
+    transform: none;
+  }
+  #perfilUsuario fieldset:first-of-type {
+    border: none;
+    border-bottom: 1px solid #0291A5;
+  }
+
+  #contenedorHistorial {
+    width: 100%;
+  }
+  #contenedorHistorial form {
+    width: 90%;
+  }
+  #contenedorHistorial #masDetallesHistorial {
+    margin-left: 3%;
   }
 }
 @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
   #perfilUsuario {
     padding: 2% 0%;
-  }
-  #perfilUsuario form {
     width: 100%;
   }
-  #perfilUsuario form h2 {
+  #perfilUsuario h2 {
+    -webkit-padding-after: 15%;
+            padding-block-end: 15%;
+  }
+  #perfilUsuario #infoTiempos {
+    font-size: 0.9em;
+    width: 100%;
+  }
+  #perfilUsuario #infoTiempos p {
+    width: 100%;
+    text-align: center;
+  }
+  #perfilUsuario #botones {
+    position: static;
+    width: 100%;
+    justify-content: space-around;
+    font-size: 0.9em;
+  }
+  #perfilUsuario #botones button {
+    padding: 0.5%;
+    font-size: 1em;
+  }
+  #perfilUsuario fieldset {
+    flex-basis: 100% !important;
+  }
+  #perfilUsuario fieldset:first-of-type {
+    border: none;
+    border-bottom: 1px solid #0291A5;
+  }
+  #perfilUsuario fieldset div label {
+    width: 50%;
+  }
+  #perfilUsuario fieldset > div #contenedorPerfil {
+    flex-basis: 50%;
+  }
+  #perfilUsuario fieldset > div #contenedorSuscripcion {
+    flex-basis: 100%;
+    border: none;
+  }
+  #perfilUsuario fieldset > div #contenedorSuscripcion button {
+    position: static;
+    transform: none;
+    margin: auto;
+    display: block;
+  }
+  #perfilUsuario fieldset > div input, #perfilUsuario fieldset > div select, #perfilUsuario fieldset > div input[readonly] {
+    text-align: left !important;
+  }
+  #perfilUsuario fieldset h2 {
+    -webkit-padding-after: 20%;
+            padding-block-end: 20%;
+  }
+  #perfilUsuario fieldset #infoTiempos {
+    inset-block-start: 50%;
+    font-size: 0.8em;
+    width: 100%;
+  }
+  #perfilUsuario fieldset #infoTiempos p {
+    width: 100%;
+    text-align: center;
+  }
+  #perfilUsuario fieldset #botones {
+    width: 80%;
+    inset-inline-end: 10%;
+    inset-block-start: 72%;
+  }
+  #perfilUsuario fieldset #botones button {
+    font-size: 1em;
+  }
+  #perfilUsuario fieldset form {
+    width: 100%;
+  }
+  #perfilUsuario fieldset form h2 {
     text-align: start;
     -webkit-margin-start: 5%;
             margin-inline-start: 5%;
@@ -2564,52 +2722,52 @@ h2, h3 {
     -webkit-padding-before: 5%;
             padding-block-start: 5%;
   }
-  #perfilUsuario form p {
+  #perfilUsuario fieldset form p {
     inset-block-start: 70%;
   }
-  #perfilUsuario form #botones {
+  #perfilUsuario fieldset form #botones {
     inset-block-start: 10%;
     transform: none;
     width: 65%;
   }
-  #perfilUsuario form #infoTiempos {
+  #perfilUsuario fieldset form #infoTiempos {
     position: relative;
     height: -webkit-max-content;
     height: -moz-max-content;
     height: max-content;
     inset-block-start: 0%;
   }
-  #perfilUsuario form fieldset:first-of-type, #perfilUsuario form fieldset:nth-of-type(2) {
+  #perfilUsuario fieldset form fieldset:first-of-type, #perfilUsuario fieldset form fieldset:nth-of-type(2) {
     flex-basis: 100%;
   }
-  #perfilUsuario form fieldset:first-of-type {
+  #perfilUsuario fieldset form fieldset:first-of-type {
     -webkit-border-end: none;
             border-inline-end: none;
     -webkit-border-after: 1px solid #0291A5;
             border-block-end: 1px solid #0291A5;
   }
-  #perfilUsuario form fieldset div input[readonly], #perfilUsuario form fieldset div select[disabled] {
+  #perfilUsuario fieldset form fieldset div input[readonly], #perfilUsuario fieldset form fieldset div select[disabled] {
     text-align: start;
     flex-basis: 100%;
     padding: 2%;
     margin: 1%;
   }
-  #perfilUsuario form fieldset div #contenedorPerfil {
+  #perfilUsuario fieldset form fieldset div #contenedorPerfil {
     flex-basis: 80%;
     height: 30vh;
   }
-  #perfilUsuario form fieldset div label {
+  #perfilUsuario fieldset form fieldset div label {
     flex-basis: 100%;
   }
-  #perfilUsuario form input[type=submit] {
+  #perfilUsuario fieldset form input[type=submit] {
     -webkit-margin-before: 5%;
             margin-block-start: 5%;
   }
-  #perfilUsuario form button {
+  #perfilUsuario fieldset form button {
     margin: auto;
   }
 }
-@media screen and (max-aspect-ratio: 195/422) and (max-width: 300px), screen and (max-aspect-ratio: 375/667) and (max-width: 300px), screen and (aspect-ratio: 280/653) and (max-width: 300px) {
+@media screen and (max-width: 300px) {
   #perfilUsuario > div {
     padding: 2% 1%;
   }
@@ -2624,42 +2782,13 @@ h2, h3 {
     height: 25vh;
   }
 }
-@media screen and (max-aspect-ratio: 195/422) and (max-aspect-ratio: 41/59) and (min-width: 540px), screen and (max-aspect-ratio: 195/422) and (max-aspect-ratio: 3/4) and (min-width: 540px), screen and (max-aspect-ratio: 195/422) and (aspect-ratio: 4/3) and (min-width: 540px), screen and (max-aspect-ratio: 195/422) and (aspect-ratio: 1/1), screen and (max-aspect-ratio: 375/667) and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 375/667) and (max-aspect-ratio: 3/4) and (min-width: 540px), (max-aspect-ratio: 375/667) and (aspect-ratio: 4/3) and (min-width: 540px), (max-aspect-ratio: 375/667) and (aspect-ratio: 1/1), screen and (aspect-ratio: 280/653) and (max-aspect-ratio: 41/59) and (min-width: 540px), (aspect-ratio: 280/653) and (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 280/653) and (aspect-ratio: 4/3) and (min-width: 540px), (aspect-ratio: 280/653) and (aspect-ratio: 1/1) {
-  #perfilUsuario {
-    font-size: 1.3rem;
+@media (max-width: 500px) {
+  #contenedorHistorial {
+    width: 100%;
   }
-  #perfilUsuario h2 {
-    -webkit-padding-after: 15%;
-            padding-block-end: 15%;
-    -webkit-padding-before: 1%;
-            padding-block-start: 1%;
-  }
-  #perfilUsuario p {
-    inset-block-start: 70%;
-  }
-  #perfilUsuario #botones {
-    inset-block-start: 10%;
-    transform: none;
-    width: 35%;
-  }
-  #perfilUsuario fieldset div {
-    height: 93%;
-    margin: 0%;
-    padding: 0%;
-  }
-  #perfilUsuario fieldset div label, #perfilUsuario fieldset div input, #perfilUsuario fieldset div select {
-    flex-basis: 100%;
-    padding: 2%;
-    margin: 1%;
-  }
-  #perfilUsuario fieldset div input[readonly], #perfilUsuario fieldset div select[disabled] {
-    text-align: start;
-  }
-  #perfilUsuario fieldset div span {
-    flex-basis: 33.3333333333%;
-  }
-  #perfilUsuario fieldset div #contenedorPerfil {
-    flex-basis: 100%;
+  #contenedorHistorial #masDetallesHistorial button:last-of-type {
+    font-size: 1.5em;
+    padding: 0% 2%;
   }
 }
 #panelAdmin {
@@ -2998,6 +3127,12 @@ h2, h3 {
   background-color: #03bdd7;
 }
 @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+  #panelAdmin #formPanelAdmin input, #panelAdmin #formPanelAdmin select {
+    padding: 0%;
+  }
+  #panelAdmin #filtro-email {
+    width: 140px;
+  }
   #panelAdmin > div:first-of-type {
     flex-wrap: wrap;
     width: 100%;
@@ -3007,6 +3142,7 @@ h2, h3 {
     display: inline-block;
   }
   #panelAdmin > div:first-of-type ul {
+    display: none;
     flex-basis: 100%;
     flex-wrap: wrap;
   }
@@ -3048,6 +3184,9 @@ h2, h3 {
   #panelAdmin #contenedorElementos {
     width: 100%;
   }
+  #panelAdmin #contenedorElementos > div button {
+    flex-basis: 50%;
+  }
   #panelAdmin #contenedorElementos > button {
     font-size: 1.3rem;
     position: relative;
@@ -3057,14 +3196,29 @@ h2, h3 {
     -webkit-margin-after: 2%;
             margin-block-end: 2%;
   }
+  #panelAdmin #contenedorElementos #filtroUsuarios {
+    overflow-x: scroll;
+    display: inline-block;
+    font-size: 0.8em;
+  }
   #panelAdmin #contenedorElementos form label, #panelAdmin #contenedorElementos form input, #panelAdmin #contenedorElementos form select {
     flex-basis: 100%;
   }
+  #panelAdmin #contenedorElementos form input, #panelAdmin #contenedorElementos form select {
+    -webkit-margin-start: 5%;
+            margin-inline-start: 5%;
+  }
+  #panelAdmin #contenedorElementos tbody td {
+    white-space: nowrap;
+  }
   #panelAdmin #contenedorElementos #listaElementos {
     flex-wrap: wrap;
+    font-size: 0.8em;
+    overflow-x: scroll;
+    display: inline-block;
   }
-  #panelAdmin th:first-of-type, #panelAdmin td:first-of-type, #panelAdmin td:last-of-type, #panelAdmin td:nth-of-type(3), #panelAdmin th:nth-of-type(3), #panelAdmin td:nth-of-type(5), #panelAdmin th:nth-of-type(5) {
-    display: none;
+  #panelAdmin #contenedorElementos #listaElementos thead th button {
+    font-size: 0.9em;
   }
   #panelAdmin #formPanelAdmin {
     width: 100%;
@@ -3075,6 +3229,20 @@ h2, h3 {
   #panelAdmin #formPanelAdmin button, #panelAdmin #formPanelAdmin input[type=submit] {
     -webkit-margin-before: 2%;
             margin-block-start: 2%;
+    font-size: 1em;
+  }
+  #panelAdmin #formPanelAdmin label {
+    text-align: center;
+  }
+  #panelAdmin #formPanelAdmin .inputDesplegable, #panelAdmin #formPanelAdmin .contenedorInput {
+    flex-basis: 100%;
+  }
+  #panelAdmin #contenedorHistorial {
+    width: 100%;
+  }
+  #panelAdmin #contenedorHistorial #masDetallesHistorial button:last-of-type {
+    font-size: 1.5em;
+    padding: 0% 2%;
   }
 }
 @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px), (aspect-ratio: 1/1) and (min-width: 540px) {
@@ -3159,6 +3327,109 @@ h2, h3 {
   background-color: #8c8c8c;
 }
 
+#cuerpoOffcanvasOpciones {
+  background-color: #FFB775;
+  font-size: 1.2em;
+}
+#cuerpoOffcanvasOpciones h4 {
+  width: 100%;
+  text-align: center;
+  color: #0291A5;
+}
+#cuerpoOffcanvasOpciones ul {
+  list-style: none;
+  padding: 0px;
+  margin-top: 3%;
+}
+#cuerpoOffcanvasOpciones ul .listaActivo {
+  background-color: #ff9c42;
+}
+#cuerpoOffcanvasOpciones ul .listaActivo:hover {
+  background-color: #03bdd7;
+}
+#cuerpoOffcanvasOpciones ul li {
+  border-top: 1px solid #ff820f;
+  text-align: center;
+}
+#cuerpoOffcanvasOpciones ul li a {
+  color: #F3F3F3;
+  width: 100%;
+  padding: 2%;
+  display: inline-block;
+}
+#cuerpoOffcanvasOpciones ul li:last-of-type {
+  border-bottom: 1px solid #ff820f;
+}
+#cuerpoOffcanvasOpciones .navActive {
+  background-color: #ff9c42;
+}
+#cuerpoOffcanvasOpciones .navDesactivado {
+  opacity: 0.8;
+  background-color: #e9b98c;
+}
+#cuerpoOffcanvasOpciones .navDesactivado:hover {
+  background: #e9b98c;
+}
+#cuerpoOffcanvasOpciones .navDesactivado a:hover {
+  color: #F3F3F3;
+}
+
+@media (max-width: 500px) {
+  #contenedorHistorial {
+    width: 100% !important;
+  }
+  #contenedorHistorial #masDetallesHistorial {
+    grid-template-areas: "cuenta cuenta" "datosCuenta datosCuenta" "datosPersonales datosPersonales" "suscripcion suscripcion";
+  }
+  #contenedorHistorial #masDetallesHistorial button:last-of-type {
+    font-size: 1.5em;
+    padding: 0% 2%;
+  }
+}
+@media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px), (aspect-ratio: 1/1) and (min-width: 540px) {
+  #panelAdmin {
+    height: 75vh;
+  }
+  #panelAdmin > div:first-of-type {
+    width: 90%;
+  }
+  #panelAdmin > div:first-of-type > a {
+    display: none;
+  }
+  #panelAdmin #formPanelAdmin {
+    height: 80%;
+  }
+  #panelAdmin #contenedorElementos {
+    width: 100%;
+  }
+  #panelAdmin #contenedorElementos > button {
+    font-size: 1.1rem;
+    position: absolute;
+    padding: 0.5%;
+    inset-inline-end: 2%;
+    transform: translateY(3%);
+    -webkit-margin-after: 2%;
+            margin-block-end: 2%;
+  }
+  #panelAdmin #contenedorElementos form {
+    align-items: center;
+  }
+  #panelAdmin #contenedorElementos input {
+    flex-basis: 30%;
+  }
+  #panelAdmin #contenedorElementos label {
+    flex-basis: 20%;
+    -webkit-margin-before: 2%;
+            margin-block-start: 2%;
+  }
+  #panelAdmin #contenedorElementos thead th {
+    font-size: 1.2em;
+  }
+  #panelAdmin #contenedorElementos tbody th {
+    -webkit-margin-before: 5%;
+            margin-block-start: 5%;
+  }
+}
 #carrito {
   width: 80%;
   height: auto;

@@ -324,9 +324,20 @@
         }
     }
 
+    
     //Adaptación para móvil
     @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
         & {
+
+            #formPanelAdmin {
+                input,select {
+                    padding: 0%;
+                }
+            }
+
+            #filtro-email {
+                width: 140px;
+            }
 
             & > div:first-of-type {
                 flex-wrap: wrap;
@@ -338,6 +349,7 @@
                 }
 
                 ul {
+                    display: none;
                     flex-basis: 100%;
                     flex-wrap: wrap;
 
@@ -393,6 +405,10 @@
             #contenedorElementos {
                 width: 100%;
 
+                & > div button {
+                    flex-basis: 50%;
+                }
+
                 //Botón para crear partidas
                 & > button {
                     font-size: 1.3rem;
@@ -405,19 +421,43 @@
                     margin-block-end: 2%;
                 }
 
+                #filtroUsuarios {
+                    overflow-x: scroll;
+                    display: inline-block;
+                    font-size: 0.8em;
+                }
+
                 form {
                     label, input, select {
                         flex-basis: 100%;
+                    }
+
+                    input,select {
+                        margin-inline-start: 5%;
+                    }
+                }
+
+                tbody {
+                    td {
+                        white-space: nowrap;
                     }
                 }
                 
                 #listaElementos {
                     flex-wrap: wrap;
-                }
-            }
+                    font-size: 0.8em;
+                    overflow-x: scroll;
+                    display: inline-block;
 
-            th:first-of-type ,td:first-of-type, td:last-of-type, td:nth-of-type(3), th:nth-of-type(3), td:nth-of-type(5), th:nth-of-type(5) {
-                display: none;
+                    thead {
+
+                        th {
+                            button {
+                                font-size: 0.9em;
+                            }
+                        }
+                    }
+                }
             }
 
             
@@ -431,7 +471,27 @@
 
                button, input[type="submit"] {
                    margin-block-start: 2%;
+                   font-size: 1em;
                }
+
+               label {
+                text-align: center;
+               }
+
+               .inputDesplegable, .contenedorInput {
+                flex-basis: 100%;
+               }
+            }
+        }
+
+        #contenedorHistorial {
+            width: 100%;
+
+            #masDetallesHistorial {
+                button:last-of-type {
+                    font-size: 1.5em;
+                    padding: 0% 2%;
+                }
             }
         }
     }
@@ -518,5 +578,138 @@
 
     .noActivo {
         @include botonNoActivo();
+    }
+}
+
+#cuerpoOffcanvasOpciones {
+    background-color: $colorSecundario;
+    font-size: 1.2em;
+
+    h4 {
+        width: 100%;
+        text-align: center;
+        color: $colorPrincipal;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0px;
+        margin-top: 3%;
+
+        .listaActivo {
+            background-color: darken($colorSecundario, 10%);
+
+            &:hover {
+                background-color: aclararColor($colorPrincipal);
+            }
+        }
+
+        li {
+            border-top: 1px solid oscurecerColor($colorSecundario);
+            text-align: center;
+
+            a {
+                color: $colorLetra;
+                width: 100%;
+                padding: 2%;
+                display: inline-block;
+            }
+
+            &:last-of-type {
+                border-bottom: 1px solid oscurecerColor($colorSecundario);
+            }
+        }
+    }
+
+    .navActive {
+        background-color: darken($colorSecundario, 10%);
+    }
+
+    .navDesactivado {
+        opacity: 0.8;
+        background-color: $colorSecundarioDesac;
+
+        &:hover {
+            background: $colorSecundarioDesac;
+        }
+
+        a:hover {
+            color: $colorLetra;
+        }
+    }
+}
+
+@media (max-width: 500px) {
+    #contenedorHistorial {
+        width: 100% !important;
+
+        #masDetallesHistorial {
+            grid-template-areas: "cuenta cuenta" 
+                                                "datosCuenta datosCuenta" 
+                                                "datosPersonales datosPersonales" 
+                                                "suscripcion suscripcion";
+
+            button:last-of-type {
+                font-size: 1.5em;
+                padding: 0% 2%;
+            }
+        }
+    }
+}
+
+ //Adaptación para tablet
+@media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px), (aspect-ratio: 1/1) and (min-width: 540px)  {
+    #panelAdmin {
+    height: 75vh;
+
+        & > div:first-of-type {
+            width: 90%;
+
+            & > a {
+                display: none;
+            }
+        }
+
+        #formPanelAdmin {
+            height: 80%;
+        }
+
+        //Contenedor con todas las cajas a mostrar
+        #contenedorElementos {
+            width: 100%;
+
+            //Botón para crear partidas
+            & > button {
+                font-size: 1.1rem;
+                position: absolute;
+                padding: 0.5%;
+                //Right
+                inset-inline-end: 2%;
+                transform: translateY(3%);
+                //Margin-bottom
+                margin-block-end: 2%;
+            }
+
+            form {
+                align-items: center;
+            }
+
+            input {
+                flex-basis: calc(30%);
+            }
+
+            label {
+                flex-basis: calc(20%);
+                margin-block-start: 2%;
+            }
+
+            thead th {
+                font-size: 1.2em;
+            }
+
+            tbody th {
+                margin-block-start: 5%;
+            }
+     }
     }
 }

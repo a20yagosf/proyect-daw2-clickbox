@@ -1,9 +1,9 @@
 <div id="panelAdmin">
   <div>
-    <a href="#">Opciones de creación</a>
+    <a data-bs-toggle="offcanvas" href="#cuerpoOffcanvasOpciones" role="button" aria-controls="cuerpoOffcanvasOpciones">Opciones de creación</a>
     <ul id="opcionesPanelAdmin">
       <!-- Tooltips: Como no se genera con DOM esta parte podemos meterlo manual-->
-      <li id="pestCaja">
+      <li class="pestCaja">
         <a
           href="#"
           data-toggle="tooltip"
@@ -13,17 +13,17 @@
           >Cajas sorpresa</a
         >
       </li>
-      <li id="pestPartidas">
+      <li class="pestPartidas">
           <a route="/panel_administracion_partidas" href="#" {{# paginaPartidas}}class="listaActivo" {{/paginaPartidas}} {{# paginaReservas}}class="listaActivo" {{/paginaReservas}}>Partidas</a>
         </li>
-      <li id="pestProductos">
+      <li class="pestProductos">
         <a route="/panel_administracion_productos"
           href="#"
           {{# paginaProductos}}class="listaActivo" {{/paginaProductos}}
           >Productos</a
         >
       </li>
-      <li id="pestUsuarios">
+      <li class="pestUsuarios">
           <a route="/panel_administracion_usuarios" href="#" {{# paginaUsuarios}}class="listaActivo" {{/paginaUsuarios}} {{# paginaHistorial}}class="listaActivo" {{/paginaHistorial}}>Usuarios</a>
         </li>
     </ul>
@@ -69,56 +69,21 @@
         {{# paginaHistorial}}
         {{> historial}}
     {{/paginaHistorial}}
-    {{! <form id="formPanelAdmin">
-    <div id="contenedorElementos">
-      <div>
-        <button data-nombre="cambiarRol" type="button">Cambiar rol</button
-        ><button data-nombre="historial" class="noActivo" type="button">
-          Historial usuarios
-        </button>
-      </div>
-      <h2>Filtro de usuarios</h2>
-      <table id="filtroUsuarios">
-        <thead>
-          <tr>
-            <th>Email del usuario</th>
-            <th>Rol</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <input
-                id="filtro-email"
-                type="text"
-                name="email"
-                placeholder="Buscar por..."
-              />
-            </td>
-            <td>
-              <select id="filtro-rol" name="rol">
-                <option value="">No seleccionado</option>
-                <option value="2">Estándar</option>
-                <option value="1">Administrador</option>
-              </select>
-            </td>
-            <td>
-              <button id="filtrarUsuariosAdmin" type="button">Filtrar</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <h2>Usuarios y roles</h2>
-      <table id="listaElementos">
-        <thead>
-          <tr>
-            <th>Email</th>
-            <th>Rol</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+</div>
+<div class="offcanvas offcanvas-start" tabindex="-1" id="cuerpoOffcanvasOpciones" aria-labelledby="opcionesPanelAdminMovil">
+  <div class="offcanvas-header">
+    <h4 class="offcanvas-title" id="opcionesPanelAdminMovil">Opciones de creación</h4>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div>
+     Elige el modo del panel de administración donde quieras crear los elementos
     </div>
-  </form>}}
+    <ul>
+      <li class="navDesactivado"><a  href="#" disabled>Cajas sorpresa</a></li>
+      <li><a  href="#" route="/panel_administracion_partidas" {{# paginaPartidas}}class="listaActivo" {{/paginaPartidas}} {{# paginaReservas}}class="listaActivo" {{/paginaReservas}}>Partidas</a></li>
+      <li><a  href="#" route="/panel_administracion_productos"  {{# paginaProductos}}class="listaActivo" {{/paginaProductos}}>Productos</a></li>
+      <li ><a  href="#" route="/panel_administracion_usuarios" {{# paginaUsuarios}}class="listaActivo" {{/paginaUsuarios}} {{# paginaHistorial}}class="listaActivo" {{/paginaHistorial}}>Usuarios</a></li>
+    </ul>
+  </div>
 </div>

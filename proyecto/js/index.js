@@ -36,12 +36,12 @@ async function cargarPaginaPrincipal() {
         let botonPerfil = document.getElementById("botonPerfilUsuario");
         botonPerfil.addEventListener('click', ocultarMenu);
         document.getElementById('menuPerfilUser').lastElementChild.addEventListener('click', desconectarPerfil);
-        document.getElementById('logoHeader').addEventListener("click", irPaginaPrincipal);
+        //document.getElementById('logoHeader').addEventListener("click", irPaginaPrincipal);
         //Activamos el evento para que oculte el menú
         botonPerfil.dispatchEvent(new Event('click'));
     }
     else {
-        document.getElementById("inicioSesion").addEventListener('click', mostrarInicioSesion);
+       // document.getElementById("inicioSesion").addEventListener('click', mostrarInicioSesion);
     }
 
     return usuario;
@@ -52,7 +52,7 @@ window.onload = async function () {
     activarPantallaCarga();
     let usuario = await cargarPaginaPrincipal();
     //Hacemos un tiemOut para que no se mire como se oculta el botón
-   // usuario ? setTimeout(desactivarPantallaCarga, 500) : desactivarPantallaCarga();
+   usuario ? setTimeout(desactivarPantallaCarga, 500) : desactivarPantallaCarga();
 
     //Router
     let rutasActivas = Array.from(document.querySelectorAll("[route]"));

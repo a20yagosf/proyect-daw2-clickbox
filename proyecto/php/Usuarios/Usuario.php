@@ -341,6 +341,7 @@ class Usuario
             throw $error;
         }
     }
+    
 
     public function eliminarCarrito()
     {
@@ -585,6 +586,7 @@ class Usuario
         }
         return $resultado;
     }
+    
 
     /**
      * Guarda la nueva información del perfil de usuario
@@ -970,5 +972,63 @@ class Usuario
         $tituloPdf = "Factura " . date('d-m-Y');
         $pdf   = new PDF($tituloPdf, $tituloPdf, "");
         $pdf->generarPDFactura($contenido, date('d-m-Y_H_i_s'));
+    }
+
+    /**
+     * Envía una sentencia para que le devuelva las partidas filtradas según los filtros aplicados con un límite de 7 tuplas
+     *
+     * @param   array  $filtro  Cada uno de los parámetros a filtrar
+     *
+     * @return  array           La información de cada una de las tuplas
+     */
+    public function filtrarTienda($filtro) {
+        $this->validarCamposForm($filtro);
+        //Sentencia para contar el número de páginas es como la normal pero contando las tuplas sin limitar
+        $sentenciaNumPag = "SELECT COUNT(P.id_producto) as num_pag FROM productos as P ";
+        //Sentencia para pedir los datos
+        $sentencia = "SELECT P.id_producto, P.nombre, P.imagen_producto,  J.genero, P.fecha, P.hora_inicio FROM productos as P INNER JOIN juegos as J ON P.id_producto = J.juego";
+        //Datos que pasaremos a la sentencia como parámetros a sustituir
+        $datosFiltrado = ["usuario" => $this->getEmail()];
+        //Recorremos los filtros y vamos añadiendo
+        if (!empty($filtro["genero"])) {
+            //Como consigo el género como un string le voy concatenando los elementos (por si hay mas de uno)
+            $sentenciaNumPag .= " AND J.genero = :genero";
+            $sentencia .= " AND J.genero = :genero";
+            $datosFiltrado["genero"] = $filtro["genero"];
+        }
+        //Compruebo cuantas fechas tengo
+        if (!empty($filtro["precio"])) {
+            //Como consigo el género como un string le voy concatenando los elementos (por si hay mas de uno)
+            $sentenciaNumPag .= " AND P.precio = :precio";
+            $sentencia .= " AND P.precio = :precio";
+            $datosFiltrado["precio"] = $filtro["precio"];
+        }
+        //Calculamos el número de páginas
+        $numPag = $this->calcularNumPag($sentenciaNumPag, $datosFiltrado,  intval($filtro["limite"]));
+        //Añadimos el límite para la sentencia que recupera los datos
+        $sentencia .= " LIMIT :pagina, :limite ;";
+        //Los converitmos a int porque como vienen del JSON vienen como string
+        $datosFiltrado["pagina"] = (intval($filtro["pagina"]) - 1) * 7;
+        $datosFiltrado["limite"] = intval($filtro["limite"]);
+        //Instancio la BD
+        $bd = new bd();
+        //Envio la petición
+        $pdoStatement = $bd->recuperarDatosBDNum($sentencia, $datosFiltrado);
+        if (!$pdoStatement instanceof \PDOStatement) {
+            throw new \PDOException($pdoStatement);
+        }
+        //Cogemos los valores con fetchAll ya que los tenemos limitados, como mucho devuelve 7 tuplas
+        $tuplas = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
+        //Rellenamos la paginación
+        if($numPag > 0){
+            for($i = 1; $i <= ($numPag + 1); $i++){
+                $respuesta["paginacion"][] = ["numPag" => $i];
+            }
+            $paginaActual = intval($filtro["pagina"]) - 1;
+            $respuesta["paginacion"][$paginaActual]["activa"] = true;
+        }
+
+        $respuesta["partidas"] = $tuplas;
+        return $respuesta;
     }
 }

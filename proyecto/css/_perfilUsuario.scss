@@ -216,12 +216,15 @@ h2,h3 {
     padding: 2%;
     position: absolute;
     //Top
-    inset-block-start: 50%;
-    //Left
-    inset-inline-start: 50%;
-    transform: translate(-50%, -50%);
+    inset-block-start: 10%;
     border-radius: $borderRadius;
     font-size: 1.1em;
+
+    @media (max-width: 500px) {
+        & {
+            width: 100%
+        }
+    }
 
     //Botón para cerrar inicio sesión
     & >  button {
@@ -233,6 +236,7 @@ h2,h3 {
         inset-inline-end: 2%;
         border-radius: 100%;
         padding: 0.3% 1.2%;
+        
     }
 
     form {
@@ -389,19 +393,151 @@ h2,h3 {
     }
 }
 
-@media (max-width: 800px) {
-   #perfilUsuario {
+//Adaptación para tablets mediante aspect ratio
+@media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px) {
+    #perfilUsuario {
 
         h2 {
             padding-block-end: 15%;
+        }
+
+        #botones {
+            width: 30%;
+        }
+
+        button {
+            font-size: 1em;
+        }
+
+        fieldset {
+            flex-basis: 100% !important;
+
+            div label {
+                width: 50%;
+            }
+
+            & > div #contenedorSuscripcion button {
+                position: static;
+                transform: none;
+            }
+
+            &:first-of-type {
+                border: none;
+                border-bottom: 1px solid $colorPrincipal;
+            }
+        }
+   }
+
+   #contenedorHistorial {
+        width: 100%;
+
+        form {
+            width: 90%;
+        }
+        
+        #masDetallesHistorial {
+            margin-left: 3%;
         }
    }
 }
 
 //Adaptación para móviles mediante aspect ratio
 @media screen and (max-aspect-ratio:  195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
+    
+
+
     #perfilUsuario {
         padding: 2% 0%;
+        width: 100%;
+
+        h2 {
+            padding-block-end: 15%;
+        }
+
+        #infoTiempos {
+            font-size: 0.9em;
+            width: 100%;
+
+            p {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        #botones {
+            position: static;
+            width: 100%;
+            justify-content: space-around;
+            font-size: 0.9em;
+
+            button {
+                padding: 0.5%;
+                font-size: 1em;
+            }
+        }
+
+        fieldset {
+            flex-basis: 100% !important;
+
+            &:first-of-type {
+                border: none;
+                border-bottom: 1px solid $colorPrincipal;
+            }
+
+            div label {
+                width: 50%;
+            }
+
+            & > div {
+
+                #contenedorPerfil {
+                    flex-basis: 50%;
+                }
+
+                #contenedorSuscripcion {
+                    flex-basis: 100%;
+                    border: none;
+
+                    button {
+                        position: static;
+                        transform: none;
+                        margin: auto;
+                        display: block;
+                    }    
+
+                }
+                
+                input, select, input[readonly] {
+                    text-align: left !important;
+                }
+            }
+                
+
+        h2 {
+            //Padding bottom
+            padding-block-end: 20%;
+        }
+
+        #infoTiempos {
+            inset-block-start: 50%;
+            font-size: 0.8em;
+            width: 100%;
+
+            p {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        #botones {
+            width: 80%;
+            inset-inline-end: 10%;
+            inset-block-start: 72%;
+
+            button {
+                font-size: 1em;
+            }
+        }
 
         //Formulario
         form {
@@ -483,6 +619,8 @@ h2,h3 {
         }
     }
 }
+    }
+}
 
 //Adaptación para móvil plegable
 @media screen and (max-width: 300px) {
@@ -505,60 +643,16 @@ h2,h3 {
                     }
                 }
             }
-        }
+}
 
-//Adaptación para tablets mediante aspect ratio
-@media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px), (aspect-ratio: 1/1)  {
-    #perfilUsuario {
-            font-size: 1.3rem;
-    
-            //Cabecera Cuenta
-            h2 {
-                //Padding bottom
-                padding-block-end: 15%;
-                //Padding top
-                padding-block-start: 1%;
-            }
+@media (max-width: 500px) {
+    #contenedorHistorial {
+        width: 100%;
 
-            //Última modificación
-            p {
-                //Top
-                inset-block-start: 70%;
-            }
-
-            //Botón editar perfil
-            #botones {
-                //Top
-                inset-block-start: 10%;
-                transform: none;
-                width: 35%;
-            }
-    
-            fieldset {
-                div {
-                    height: 93%;
-                    margin: 0%;
-                    padding: 0%;
-    
-                    label, input, select {
-                        flex-basis: 100%;
-                        padding: 2%;
-                        margin: 1%;
-                    }
-    
-                    input[readonly], select[disabled] {
-                        text-align: start;
-                    }
-    
-                    span {
-                        flex-basis: calc(100%/3);
-                    }
-
-                    //Contenedor para la imagen de perfil
-                    #contenedorPerfil {
-                        flex-basis: 100%;
-                    }
-                }
+        #masDetallesHistorial {
+            button:last-of-type {
+                font-size: 1.5em;
+                padding: 0% 2%;
             }
         }
     }

@@ -15,6 +15,14 @@ try {
         //$devolver = ["productos" =>$devolver];
         $devolver = $devolver;
     }
+    //Devolvemos todos los productos
+    else {
+        $datosPartidas = $usuario->filtrarTienda($filtros);
+        //Compruebo que me devolviera algo
+        if(!is_array($datosPartidas)){
+            throw new \Exception($datosPartidas);
+        }
+    }
 }
 catch(\PDOException $pdoError){
     $devolver = ["error" => $pdoError];

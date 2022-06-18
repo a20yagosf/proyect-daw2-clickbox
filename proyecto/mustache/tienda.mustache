@@ -1,0 +1,39 @@
+<div id="tienda-main" class="cuerpoMosaico">
+    <div id="filtradoTienda">
+        <div class="filtroTiendaOpciones">
+            <select name="generos" id="generos" class="form-select">
+            </select>
+            <span class="form-label align-self-center">Géneros</span>
+        </div>
+        <div class="filtroTiendaOpciones">
+            <input type="number" name="precio" class="form-input"/>
+            <span class="form-label align-self-center">Precio</span>
+        </div>
+        <button type="button">Filtrar</button>
+        <button type="button" class="btn btn-lg btn-block align-self-center">
+            Limpiar filtro
+          </button>
+    </div>
+    <div id="contenido_tienda">
+        {{# productos}}
+        <div class="item">
+          <div class="item-imagen">
+            <img src="{{imagen_producto}}">
+          </div>
+          <!-- La descripción se carga en más información -->
+          <div class="item-propiedades">
+            <div class="item-nombre">{{nombre}}</div>
+            <div class="item-generos">{{genero}}</div>
+            <div class="item-jugadores">{{num_jug}} jug.</div>
+            <div class="item-precio">{{precio}}/unidad</div>
+            <div class="item-carrito">
+              <!-- Botón Comprar para añadir al carrito -->
+              <!-- A través de js añade el producto al carrito -->
+              {{# stock}}<button>Comprar</button>{{/stock}}
+              {{^ stock}}<button disabled>Fuera de stock</button>{{/}}
+            </div>
+          </div>
+         {{/productos}}
+        </div>
+    </div>
+</div>

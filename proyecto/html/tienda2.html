@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div id="tienda-main" class="cuerpoMosaico">
+        <div id="filtradoTienda">
+            <div class="filtroTiendaOpciones">
+                <select name="generos" id="generos" class="form-select">
+                </select>
+                <span class="form-label align-self-center">Géneros</span>
+            </div>
+            <div class="filtroTiendaOpciones">
+                <input type="number" name="precio" class="form-input"/>
+                <span class="form-label align-self-center">Precio</span>
+            </div>
+            <button type="button">Filtrar</button>
+            <button type="button" class="btn btn-lg btn-block align-self-center">
+                Limpiar filtro
+              </button>
+        </div>
+        <div id="contenido_tienda">
+            <div class="item">
+              <div class="item-imagen">
+                <img src="../img/imagenNoDisponible.jpg">
+              </div>
+              <!-- La descripción se carga en más información -->
+              <div class="item-propiedades">
+                <div class="item-nombre">Calendario 2000</div>
+                <div class="item-generos">Aventuras</div>
+                <div class="item-carrito">
+                  <!-- Botón Comprar para añadir al carrito -->
+                  <!-- A través de js añade el producto al carrito -->
+                  <button>Comprar</button>
+                </div>
+              </div>
+            </div>
+            <!-- Más ejemplos que luego borrar de items-->
+            <div class="item">
+              <div class="item-imagen">
+                <img src="../img/imagenNoDisponible.jpg">
+              </div>
+              <div class="item-propiedades">
+                <div class="item-nombre">Calendario 2000</div>
+                <div class="item-generos">Aventuras</div>
+                <div class="item-jugadores">2-4 jug.</div>
+                <div class="item-precio">20$/unidad</div>
+                <div class="item-carrito"><button>Comprar</button></div>
+              </div>
+            </div>
+    
+            <div class="item">
+              <div class="item-imagen">
+                <img src="../img/imagenNoDisponible.jpg">
+              </div>
+              <div class="item-propiedades">
+                <div class="item-nombre">Calendario 2000</div>
+                <div class="item-generos">Terror</div>
+                <div class="item-jugadores">2-4 jug.</div>
+                <div class="item-precio">20$/unidad</div>
+                <div class="item-carrito"><button disabled="">Fuera de stock</button></div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-imagen">
+                <img src="../img/imagenNoDisponible.jpg">
+              </div>
+              <div class="item-propiedades">
+                <div class="item-nombre">Calendario 2000</div>
+                <div class="item-generos">Aventuras</div>
+                <div class="item-jugadores">2-4 jug.</div>
+                <div class="item-precio">20$/unidad</div>
+                <div class="item-carrito"><button disabled="">Fuera de stock</button></div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-imagen">
+                <img src="../img/imagenNoDisponible.jpg">
+              </div>
+              <div class="item-propiedades">
+                <div class="item-nombre">Calendario 2000</div>
+                <div class="item-generos">Aventuras</div>
+                <div class="item-jugadores">2-4 jug.</div>
+                <div class="item-precio">20$/unidad</div>
+                <div class="item-carrito"><button disabled="">Fuera de stock</button></div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-imagen">
+                <img src="../img/imagenNoDisponible.jpg">
+              </div>
+              <div class="item-propiedades">
+                <div class="item-nombre">Calendario 2000</div>
+                <div class="item-generos">Aventuras</div>
+                <div class="item-jugadores">2-4 jug.</div>
+                <div class="item-precio">20$/unidad</div>
+                <div class="item-carrito"><button disabled="">Fuera de stock</button></div>
+              </div>
+            </div>
+          </div>
+    </div>
+</body>
+</html>

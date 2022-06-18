@@ -140,7 +140,8 @@ nav {
         @media screen and (max-aspect-ratio: 195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
             //Menu perfil de usuario
             & {
-                width: 50%;
+                width: 100%;
+                inset-inline-end: 0%;
             }
         }
 
