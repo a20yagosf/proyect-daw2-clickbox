@@ -344,6 +344,7 @@ GRANT SELECT ON a2da_clickbox.cajas_sorpresa TO 'a2da_conexion'@'localhost';
 GRANT SELECT ON a2da_clickbox.cajas_sorpresa_producto TO 'a2da_conexion'@'localhost';
 GRANT SELECT ON a2da_clickbox.productos TO 'a2da_conexion'@'localhost';
 GRANT SELECT ON a2da_clickbox.tematicas TO 'a2da_conexion'@'localhost';
+GRANT SELECT ON a2da_clickbox.juegos TO 'a2da_conexion'@'localhost';
 -- USUARIO ESTÁNDAR PARA LOS USUARIOS REGISTRADOS
 GRANT SELECT, UPDATE ON a2da_clickbox.usuarios TO 'a2da_estandar'@'localhost' IDENTIFIED BY 'renaido';
 GRANT SELECT, INSERT ON a2da_clickbox.pedidos TO 'a2da_estandar'@'localhost';

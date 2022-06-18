@@ -921,10 +921,11 @@ main {
     @media screen and (max-aspect-ratio:  195/422), (max-aspect-ratio: 375/667), (aspect-ratio: 280/653) {
         //Boton accesibilidad
         & {
-            padding: 7%;
+            display: none;
         }
 
         & + div {
+            display: none;
             //Right
             inset-inline-end: 85px;
             transform: translateY(-2%);
@@ -934,9 +935,11 @@ main {
     @media screen and (max-aspect-ratio: 41/59) and (min-width: 540px), (max-aspect-ratio: 3/4) and (min-width: 540px), (aspect-ratio: 4/3) and (min-width: 540px), (aspect-ratio: 1/1)  {
         & {
             padding: 4%;
+            display: none;
         }
 
         & + div {
+            display: none;
             //Right
             inset-inline-end: 85px;
             transform: translateY(-5%);

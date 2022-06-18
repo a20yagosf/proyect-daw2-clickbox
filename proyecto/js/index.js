@@ -32,6 +32,18 @@ async function cargarPaginaPrincipal() {
     crearMapa();
 
     //Añadimos los escuchadores para el menú 
+    let botonAccesibilidad = document.getElementById("botonAccesiblidad");
+    let checkBox = document.getElementById("monocromatico");
+    if(botonAccesibilidad){
+        botonAccesibilidad.addEventListener("click", ocultarMenuAccesibilidad);
+        checkBox.addEventListener("click", cambiarModo);
+        if(localStorage.getItem("modoMonocromatico") == "activado") {
+            if($(checkBox).is(":checked")) {
+                checkBox.dispatchEvent(new Event("click"));
+            }
+        }
+    };
+
     if(usuario) {
         let botonPerfil = document.getElementById("botonPerfilUsuario");
         botonPerfil.addEventListener('click', ocultarMenu);
@@ -53,6 +65,15 @@ window.onload = async function () {
     let usuario = await cargarPaginaPrincipal();
     //Hacemos un tiemOut para que no se mire como se oculta el botón
    usuario ? setTimeout(desactivarPantallaCarga, 500) : desactivarPantallaCarga();
+
+   //Actualizamos el carrito
+   let numArticulos = Object.values(carrito).reduce((total, num) => {
+    total += parseInt(num);
+    return total;
+    },0);
+    let iconoCarrito = document.getElementById("iconoCarrito");
+    let spanArt = iconoCarrito.querySelector("span");
+    spanArt.textContent = numArticulos;
 
     //Router
     let rutasActivas = Array.from(document.querySelectorAll("[route]"));

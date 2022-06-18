@@ -974,61 +974,45 @@ class Usuario
         $pdf->generarPDFactura($contenido, date('d-m-Y_H_i_s'));
     }
 
-    /**
-     * Envía una sentencia para que le devuelva las partidas filtradas según los filtros aplicados con un límite de 7 tuplas
-     *
-     * @param   array  $filtro  Cada uno de los parámetros a filtrar
-     *
-     * @return  array           La información de cada una de las tuplas
-     */
-    public function filtrarTienda($filtro) {
-        $this->validarCamposForm($filtro);
-        //Sentencia para contar el número de páginas es como la normal pero contando las tuplas sin limitar
-        $sentenciaNumPag = "SELECT COUNT(P.id_producto) as num_pag FROM productos as P ";
-        //Sentencia para pedir los datos
-        $sentencia = "SELECT P.id_producto, P.nombre, P.imagen_producto,  J.genero, P.fecha, P.hora_inicio FROM productos as P INNER JOIN juegos as J ON P.id_producto = J.juego";
-        //Datos que pasaremos a la sentencia como parámetros a sustituir
-        $datosFiltrado = ["usuario" => $this->getEmail()];
-        //Recorremos los filtros y vamos añadiendo
-        if (!empty($filtro["genero"])) {
-            //Como consigo el género como un string le voy concatenando los elementos (por si hay mas de uno)
-            $sentenciaNumPag .= " AND J.genero = :genero";
-            $sentencia .= " AND J.genero = :genero";
-            $datosFiltrado["genero"] = $filtro["genero"];
-        }
-        //Compruebo cuantas fechas tengo
-        if (!empty($filtro["precio"])) {
-            //Como consigo el género como un string le voy concatenando los elementos (por si hay mas de uno)
-            $sentenciaNumPag .= " AND P.precio = :precio";
-            $sentencia .= " AND P.precio = :precio";
-            $datosFiltrado["precio"] = $filtro["precio"];
-        }
-        //Calculamos el número de páginas
-        $numPag = $this->calcularNumPag($sentenciaNumPag, $datosFiltrado,  intval($filtro["limite"]));
-        //Añadimos el límite para la sentencia que recupera los datos
-        $sentencia .= " LIMIT :pagina, :limite ;";
-        //Los converitmos a int porque como vienen del JSON vienen como string
-        $datosFiltrado["pagina"] = (intval($filtro["pagina"]) - 1) * 7;
-        $datosFiltrado["limite"] = intval($filtro["limite"]);
-        //Instancio la BD
-        $bd = new bd();
-        //Envio la petición
-        $pdoStatement = $bd->recuperarDatosBDNum($sentencia, $datosFiltrado);
-        if (!$pdoStatement instanceof \PDOStatement) {
-            throw new \PDOException($pdoStatement);
-        }
-        //Cogemos los valores con fetchAll ya que los tenemos limitados, como mucho devuelve 7 tuplas
-        $tuplas = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
-        //Rellenamos la paginación
-        if($numPag > 0){
-            for($i = 1; $i <= ($numPag + 1); $i++){
-                $respuesta["paginacion"][] = ["numPag" => $i];
+    public function comprarArticulo($datos) {
+        try {
+            $bd = new BD();
+            $sentencia = "SELECT id_carrito FROM carritos where usuario_carrito = :usuario_carrito";
+            $pdoStatement = $bd->recuperDatosBD($sentencia, ["usuario_carrito" => $this->email]);
+            //Comprobamos si dio error
+            if(!$pdoStatement instanceof \PDOStatement){
+                throw new \PDOException($pdoStatement);
             }
-            $paginaActual = intval($filtro["pagina"]) - 1;
-            $respuesta["paginacion"][$paginaActual]["activa"] = true;
+            $carritoBD = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
+            unset($pdoStatement);
+            unset($bd);
+            if($carritoBD) {
+                $datos["nuevoProducto"] ? $this->anadirProducto(["id_carrito" => $carritoBD["id_carrito"], "id_producto" => $datos["id_producto"], "unidades" => $datos["unidades"]]) : $this->actualizarCantidad($carritoBD["id_carrito"], $datos["id_producto"], $datos["unidades"]);
+            }
         }
+        catch (\PDOException $pdoError) {
+            $numPag = "Error " . $pdoError->getCode() . " :" . $pdoError->getMessage();
+        } catch (\Exception $error) {
+            $numPag = "Error " . $error->getCode() . " :" . $error->getMessage();
+        }
+    }
 
-        $respuesta["partidas"] = $tuplas;
-        return $respuesta;
+    public function actualizarCantidad($id_carrito, $id_producto, $unidades) {
+        try {
+            $bd = new BD();
+            $sentencia = "UPDATE productos_carritos set unidades = :unidades where producto = :producto and carrito = :carrito";
+            $pdoStatement = $bd->recuperDatosBD($sentencia, ["producto" =>$id_producto, "unidades" => $unidades, "carrito" => $id_carrito]);
+            //Comprobamos si dio error
+            if(!$pdoStatement instanceof \PDOStatement){
+                throw new \PDOException($pdoStatement);
+            }
+            $carritoBD = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
+            return true;
+        }
+        catch (\PDOException $pdoError) {
+            $numPag = "Error " . $pdoError->getCode() . " :" . $pdoError->getMessage();
+        } catch (\Exception $error) {
+            $numPag = "Error " . $error->getCode() . " :" . $error->getMessage();
+        }
     }
 }

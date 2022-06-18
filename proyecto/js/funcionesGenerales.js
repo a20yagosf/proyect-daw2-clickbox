@@ -127,6 +127,10 @@ function cambioEnElHash() {
       cargarPaginaPartidas();
       break;
 
+    case '/tienda'  :
+      cargarPaginaTienda();
+      break;
+
     case "/iniciar_sesion":
       mostrarInicioSesion();
       break;
@@ -4451,7 +4455,10 @@ async function cargarCarrito(pagina = 0, limite = 7) {
       respuestaJSON["productos"].forEach((producto) => {
         carrito[producto["id_producto"]] = producto["unidades"];
       });
-      numArticulos = respuestaJSON["productos"].length;
+      numArticulos = respuestaJSON["productos"].reduce((total, producto) => {
+        total += parseInt(producto["unidades"]);
+        return total;
+      }, 0);
       let iconoCarrito = document.getElementById("iconoCarrito");
       let spanNumArt = iconoCarrito.querySelector("span");
       spanNumArt.textContent = numArticulos;
@@ -4701,6 +4708,10 @@ async function procesarPedido(e) {
         messages: {
           direccion: "Debe introducir una dirección válida",
         },
+        submitHandler: function(e) {
+          e.preventDefault();
+          realizarCompra();           
+       }
       });
     }
     pedido.addEventListener("submit", realizarCompra);
@@ -4717,10 +4728,17 @@ async function procesarPedido(e) {
 async function realizarCompra(e) {
   try {
     e.preventDefault();
-    setTimeout(500, function () {
-      cargarCuerpoPrincipal();
-    });
-    this.submit();
+    if($(this).valid()) {
+      //Vaciamos el carrito
+      carrito = {};
+      numArticulos = 0;
+      let iconoCarrito = document.getElementById("iconoCarrito");
+      let spanArt = iconoCarrito.querySelector("span");
+      spanArt.textContent = 0;
+      this.submit().then(function () {
+        cargarCuerpoPrincipal();
+      });
+    }
   } catch (error) {
     console.log(error);
   }
@@ -6713,7 +6731,7 @@ async function eliminarProductoAdmin(idProducto) {
       plantillaTienda["datos"]["generos"] = generos["datos"]["generos"];
 
       let resultado = Mustache.render(plantilla, plantillaTienda["datos"], {
-        partidas: plantillaTienda["plantilla"],
+        filtrado: plantillaTienda["plantilla"],
         generos: generos["plantilla"],
         paginacion: plantillaTienda["paginacion"],
       });
@@ -6721,30 +6739,24 @@ async function eliminarProductoAdmin(idProducto) {
 
       //Añadimos los escuchadores
       let filtro = document.getElementById("filtro");
-      let botonFiltro = filtro.querySelector("button");
-      botonFiltro.addEventListener("click", filtrarPartidas);
+      let botonFiltro = document.getElementById("botonFiltro");
+      botonFiltro.addEventListener("click", filtrarProductos);
 
       paginacion = document.querySelector(".pagination");
       if (paginacion != undefined) {
         let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
         enlacesPaginacion.forEach((enlace) =>
-          enlace.addEventListener("click", filtrarPartidas)
+          enlace.addEventListener("click", filtrarProductos)
         );
       }
-
-      let botonesMasInfo = Array.from(mainCuerpo.querySelectorAll(".masInfo"));
-      botonesMasInfo.forEach((boton) =>
-        boton.addEventListener("click", masInfoPartida)
-      );
-      let botonesReserva = Array.from(
-        mainCuerpo.querySelectorAll(".reservarPartida")
-      );
-      botonesReserva.forEach((boton) =>
-        boton.addEventListener("click", reservarPartida)
-      );
+      let botonesComprar = document.querySelectorAll(".btnComprarProducto");
+      if(botonesComprar) {
+        botonesComprar = Array.from(botonesComprar);
+        botonesComprar.forEach(boton => boton.addEventListener("click", guardarProductoCarrito))
+      }
 
       let botonLimpiarFiltro = botonFiltro.nextElementSibling;
-      botonLimpiarFiltro.addEventListener("click", limpiarFiltro);
+      botonLimpiarFiltro.addEventListener("click", limpiarFiltroTienda);
       desactivarPantallaCarga();
     } else {
       mostrarInicioSesion();
@@ -6762,13 +6774,13 @@ async function eliminarProductoAdmin(idProducto) {
  * @param {int} limite Número de partidas por página
  * @returns
  */
-async function cargarProductos(devolver, filtro = {}, pagina = 1, limite = 7) {
+async function cargarProductos(devolver, filtro = {}, pagina = 1, limite = 8) {
   //Limpiamos el contenedor de las partidas
-  let lista = document.querySelector("ul[class='list-group']");
+  let contenido_tienda = document.getElementById("contenido_tienda")
   let paginacion = document.querySelector(".pagination");
   //Buscamos si ya hay una paginación y si la hay la borramos
   paginacion != null ? paginacion.remove() : "";
-  lista != null ? (lista.innerHTML = "") : "";
+  contenido_tienda != null ? (contenido_tienda.innerHTML = "") : "";
   //Le añadimos al filtro la página y el limite
   filtro["pagina"] = pagina;
   filtro["limite"] = limite;
@@ -6787,7 +6799,7 @@ async function cargarProductos(devolver, filtro = {}, pagina = 1, limite = 7) {
 
     //Petición Mustache
     let peticion = await fetch(
-      "../mustache/tienda.mustache",
+      "../mustache/partials/filtradoProductos.mustache",
       opcionesFetchMustache
     );
     let plantilla = await peticion.text();
@@ -6803,7 +6815,7 @@ async function cargarProductos(devolver, filtro = {}, pagina = 1, limite = 7) {
       };
     } else {
       let resultado = Mustache.render(plantilla, respuestaJSON);
-      lista.insertAdjacentHTML("beforeend", resultado);
+      contenido_tienda.insertAdjacentHTML("beforeend", resultado);
 
       let main = document.querySelector("main");
       main.insertAdjacentHTML("beforeend", plantillaPag);
@@ -6813,9 +6825,20 @@ async function cargarProductos(devolver, filtro = {}, pagina = 1, limite = 7) {
       if (paginacion) {
         let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
         enlacesPaginacion.forEach((enlace) =>
-          enlace.addEventListener("click", filtrarPartidas)
+          enlace.addEventListener("click", filtrarProductos)
         );
       }
+
+      let botonesComprar = document.querySelectorAll(".btnComprarProducto");
+      if(botonesComprar) {
+        botonesComprar = Array.from(botonesComprar);
+        botonesComprar.forEach(boton => boton.addEventListener("click", guardarProductoCarrito))
+      }
+
+      let botonFiltrado = document.getElementById("botonFiltro");
+      botonFiltrado.addEventListener("click", filtrarProductos);
+      let botonLimpiarCampos = document.getElementById("limpiarCampos");
+      botonLimpiarCampos.addEventListener("click", limpiarFiltroTienda);
     }
   } catch (error) {
     console.log(error);
@@ -6830,17 +6853,81 @@ async function cargarProductos(devolver, filtro = {}, pagina = 1, limite = 7) {
  *
  * @return  {void}     No devuelve nada
  */
-async function filtrarPartidas(e) {
+async function filtrarProductos(e) {
   e.preventDefault();
   let pagina =
     e.currentTarget.nodeName == "BUTTON" ? 1 : e.currentTarget.textContent;
   //Cogemos todos los filtros
-  let filtro = document.getElementById("filtro");
+  let filtro = document.getElementById("filtradoTienda");
   let genero = filtro.querySelector("select[name='generos'").value;
   let precio = filtro.querySelector("input[name='precio'").value;
   await cargarProductos(
     false,
-    { genero: genero, precio: precio},
+    { "genero": genero, "precio": precio},
     pagina
   );
+}
+
+/**
+ * Limpia los filtros
+ *
+ * @param   {Node}  filtro  Contenedor con los filtros
+ *
+ * @return  {void}          No devuelve nada
+ */
+ function limpiarFiltroTienda() {
+  let filtro = document.getElementById("filtradoTienda");
+  let elementosFiltro = Array.from(
+    filtro.querySelectorAll('input:not(input[type="submit"]), select')
+  );
+  elementosFiltro.forEach((elemento) => (elemento.value = ""));
+  let botonFiltrar = document.getElementById("botonFiltro");
+  botonFiltrar.dispatchEvent(new Event("click"));
+}
+
+/**
+ * Guarda el producto en el carrito
+ *
+ * @param   {Event}  e  Evento que se dispara
+ *
+ * @return  {void}     No devuelve nada
+ */
+async function guardarProductoCarrito(e) {
+  try {
+    let id_producto = e.currentTarget.dataset.idproducto;
+    let nuevoProducto = false;
+    let unidades = 1;
+    //Actualizamos el carrito local
+    if(carrito[id_producto]){
+      carrito[id_producto]++;
+      unidades = carrito[id_producto];
+    }
+    else {
+      carrito[id_producto] = 1;
+      nuevoProducto = true;
+    }
+    numArticulos++;
+    //Cambiamos el num del icono
+    let iconoCarrito = document.getElementById("iconoCarrito");
+    let spanArt = iconoCarrito.querySelector("span");
+    spanArt.textContent = numArticulos;
+
+    //Comprobamos si está iniciada sesión
+    if(sessionStorage.getItem("email")) {
+      //Actualziamos BD
+      let peticion = await fetch('../php/tienda.php', {
+        method: "POST",
+        headers: {"Content-type": "application/json;charset=utf-8"},
+        body: JSON.stringify({"id_producto": id_producto, "nuevoProducto": nuevoProducto, "unidades": unidades})
+      });
+      let peticionJSON = await peticion.json();
+      if(Object.hasOwn(peticionJSON, "error")) {
+        throw peticionJSON["error"];
+      }
+    }
+    alert("Compra realizada con éxito");
+  }
+  catch(error){
+    console.log(error);
+  }
 }

@@ -187,12 +187,19 @@ form#formulario_tienda {
 #contenido_tienda {
   width: 100%;
   margin-top: 5%;
-  margin-bottom: 5%;
   display: grid;
   justify-items: center;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-gap: 1%;
   grid-auto-rows: minmax(5%, auto);
+  grid-template-areas: ". noProductos noProductos .";
+
+  p {
+    width: 100%;
+    grid-area: noProductos;
+    text-align: center;
+    font-size: 1.5em;
+  }
 
   .item {
     background-color: white;
@@ -206,6 +213,8 @@ form#formulario_tienda {
     border-radius: 10px;
     border: 2px solid $colorPrincipal;
     padding: 10%;
+
+
     .item-imagen {
       display: flex;
       justify-content: center;
@@ -213,6 +222,7 @@ form#formulario_tienda {
         width: 80%;
       }
     }
+
     .item-propiedades {
       margin-top: 8%;
       display: grid;
@@ -257,6 +267,12 @@ form#formulario_tienda {
           text-decoration: none;
           display: inline-block;
           font-size: 16px;
+          transition: all 0.5s ease-in-out;
+
+          &:hover {
+            background-color: aclararColor($colorPrincipal);
+          }
+
         }
         button:disabled {
           background-color: $botonNoActivo;
@@ -267,14 +283,62 @@ form#formulario_tienda {
 }
 
 //Adaptación para tablets
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 820px) {
+  #filtradoTienda {
+
+    select {
+      width: 100%;
+    }
+
+    #filtro {
+      flex-basis: 40%;
+    }
+
+    div {
+      flex-basis: 20%;
+    }
+
+    input[name="precio"] {
+      width: 100px;
+    }
+  }
+
     div#contenido_tienda{
       grid-template-columns: 1fr 1fr 1fr;
+      grid-template-areas: "noProductos noProductos noProductos";
+      
+      .item {
+        .item-propiedades {
+          display: flex;
+          flex-direction: column;
+        }
+      }
+      
     }
 }
 //Adaptación para móviles
 @media screen and (max-width: 540px) {
+  #filtradoTienda {
+    flex-wrap: wrap;
+    align-items: flex-start;
+
+    select {
+      width: 100%;
+    }
+
+    .filtroTiendaOpciones:first-of-type {
+      flex-basis: 100%!important;
+    }
+
+    .filtroTiendaOpciones:nth-of-type(2) {
+      flex-basis: 33%;
+    }
+  }
+
   div#contenido_tienda{
     grid-template-columns: 1fr 1fr;
+    grid-template-areas: 'noProductos noProductos';
+    //Margin bottom
+    margin-block-end: 10%;
   }
 }

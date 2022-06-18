@@ -1,0 +1,23 @@
+{{# productos}}
+<div class="item">
+  <div class="item-imagen">
+    <img src="{{ imagen_producto }}" />
+  </div>
+  <!-- La descripción se carga en más información -->
+  <div class="item-propiedades">
+    <div class="item-nombre">{{ nombre }}</div>
+    <div class="item-generos">{{ genero }}</div>
+    <div class="item-jugadores">{{ num_jug }} jug.</div>
+    <div class="item-precio">{{ precio }}/unidad</div>
+    <div class="item-carrito">
+      <!-- Botón Comprar para añadir al carrito -->
+      <!-- A través de js añade el producto al carrito -->
+      {{# stock}}<button data-idProducto="{{id_producto}}" class="btnComprarProducto">Comprar</button>{{/stock}} {{^ stock
+      }}<button disabled>Fuera de stock</button>{{/stock}}
+    </div>
+  </div>
+</div>
+{{/productos}}
+{{^ productos}}
+    <p>No se han encontrado productos</p>
+{{/productos}}

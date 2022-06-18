@@ -695,4 +695,90 @@ class Bd
             throw $error;
         }
     }
+
+     /**
+     * Calcula el número de tuplas que tendrá el resultado
+     *
+     * @param   string  $sentencia  Sentencia a ejecutar
+     * @param   array  $datos      Datos a pasar
+     *
+     * @return  int                  Número de páginas que necesita
+     */
+    function calcularNumPag($sentencia, $datos = [], $limite = 7) {
+        try {
+            //Instancio la BD
+            $bd = new bd();
+            //Envio la petición
+            $pdoStatement = $bd->recuperarDatosBDNum($sentencia, $datos);
+            if (!$pdoStatement instanceof \PDOStatement) {
+                throw new \PDOException($pdoStatement);
+            }
+            //Solo hacemos un fetch ya que sólo devolverá un número (el número de página a crear)
+            $numPag = $pdoStatement->fetch(\PDO::FETCH_ASSOC)["num_pag"];
+            //Calculamos el número de página dividiendolo por el límite
+            $numPag = ceil(intval($numPag) / $limite);
+        } catch (\PDOException $pdoError) {
+            $numPag = "Error " . $pdoError->getCode() . " :" . $pdoError->getMessage();
+        } catch (\Exception $error) {
+            $numPag = "Error " . $error->getCode() . " :" . $error->getMessage();
+        }
+        return !is_string($numPag) && $numPag != 0 ? $numPag - 1 : 0;
+    }
+
+    /**
+     * Envía una sentencia para que le devuelva las partidas filtradas según los filtros aplicados con un límite de 7 tuplas
+     *
+     * @param   array  $filtro  Cada uno de los parámetros a filtrar
+     *
+     * @return  array           La información de cada una de las tuplas
+     */
+    public function filtrarTienda($filtro) {
+        $this->validarCamposForm($filtro);
+        //Sentencia para contar el número de páginas es como la normal pero contando las tuplas sin limitar
+        $sentenciaNumPag = "SELECT COUNT(P.id_producto) as num_pag FROM productos as P WHERE 1 = 1";
+        //Sentencia para pedir los datos
+        $sentencia = "SELECT P.id_producto, P.imagen_producto, P.nombre, P.precio, P.tematica, P.tipo_producto, J.num_jug, J.genero, J.descripcion, IF(stock > 0, true, null) as stock FROM productos as P LEFT JOIN juegos as J ON P.id_producto = J.juego WHERE 1=1";
+        $datosFiltrado = [];
+        //Recorremos los filtros y vamos añadiendo
+        if (!empty($filtro["genero"])) {
+            //Como consigo el género como un string le voy concatenando los elementos (por si hay mas de uno)
+            $sentenciaNumPag .= " AND J.genero = :genero";
+            $sentencia .= " AND J.genero = :genero";
+            $datosFiltrado["genero"] = $filtro["genero"];
+        }
+        //Compruebo cuantas fechas tengo
+        if (!empty($filtro["precio"])) {
+            //Como consigo el género como un string le voy concatenando los elementos (por si hay mas de uno)
+            $sentenciaNumPag .= " AND P.precio LIKE :precio";
+            $sentencia .= " AND P.precio LIKE :precio";
+            $datosFiltrado["precio"] = "%" . $filtro["precio"] . "%";
+        }
+        //Calculamos el número de páginas
+        $numPag = $this->calcularNumPag($sentenciaNumPag, $datosFiltrado,  intval($filtro["limite"]));
+        //Añadimos el límite para la sentencia que recupera los datos
+        $sentencia .= " LIMIT :pagina, :limite ;";
+        //Los converitmos a int porque como vienen del JSON vienen como string
+        $datosFiltrado["pagina"] = (intval($filtro["pagina"]) - 1) * 7;
+        $datosFiltrado["limite"] = intval($filtro["limite"]);
+        //Instancio la BD
+        $bd = new bd();
+        //Envio la petición
+        $pdoStatement = $bd->recuperarDatosBDNum($sentencia, $datosFiltrado);
+        if (!$pdoStatement instanceof \PDOStatement) {
+            throw new \PDOException($pdoStatement);
+        }
+        //Cogemos los valores con fetchAll ya que los tenemos limitados, como mucho devuelve 7 tuplas
+        $tuplas = $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
+        //Rellenamos la paginación
+        if($numPag > 0){
+            for($i = 1; $i <= ($numPag + 1); $i++){
+                $respuesta["paginacion"][] = ["numPag" => $i];
+            }
+            $paginaActual = intval($filtro["pagina"]) - 1;
+            $respuesta["paginacion"][$paginaActual]["activa"] = true;
+        }
+
+        $respuesta["productos"] = $tuplas;
+        return $respuesta;
+    }
 }
