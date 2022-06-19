@@ -3,13 +3,13 @@
     <tr>
         <td>{{email}}</td>
         <td>
-        <select name="nuevo_rol" id="{{email}}">
+        <select name="nuevo_rol" id="{{email}}" {{# propio}}disabled{{/propio}}>
             <option value="2" {{^ admin}} selected="selected"{{/admin}}>Estándar</option>
             <option value="1" {{# admin}} selected="selected"{{/admin}}>Administrador</option>
         </select>
         </td>
         <td>
-        <button>Guardar</button>
+        {{^ propio}}<button>Guardar</button>{{/propio}}
         </td>
     </tr>
 {{/ usuarios}}

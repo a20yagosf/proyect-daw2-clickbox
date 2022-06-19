@@ -9,10 +9,10 @@ $datosUsuairo = json_decode(file_get_contents("php://input"));
 
 try {
     if(isset($_GET["desconectar"])){
-    //Borramos la variable de sesión
-    //$user = new user($_SESSION["usuario"]["email"]);
-    //$user->cerrarSesion();
-    $mensaje =["exito" => "Se borró con éxito"];
+        //Borramos la variable de sesión
+        $user = new user($_SESSION["usuario"]["email"]);
+        $user->cerrarSesion();
+        $mensaje =["exito" => "Se borró con éxito"];
     }
     else if(isset($datosUsuairo->iniciarSesion)) {
         //Creamos un objeto usuairo con su email y lo guardamos en una variable de sesión

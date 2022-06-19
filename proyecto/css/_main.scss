@@ -947,6 +947,24 @@ main {
     }
 }
 
+.alert {
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    z-index: 11;
+    padding: 2%;
+
+    button {
+        margin-inline-start: 1%;
+    }
+
+    svg {
+        width: 1.5em;
+        //Padding right
+        padding-inline-end: 2%;
+    }
+}
+
 //Ventana de carga
 #ventanaCarga {
     @include contenedor(100%, 100%, $colorLetra);

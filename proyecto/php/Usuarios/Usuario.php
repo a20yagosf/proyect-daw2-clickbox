@@ -170,7 +170,7 @@ class Usuario
         while($producto = $resultado->fetch(\PDO::FETCH_ASSOC)) {
             $productos[$indice] = $producto;
             $productos[$indice]["unidades"] = $datos["productos"][$producto["id_producto"]];
-            $total += $producto["precio"];
+            $total += $producto["precio"] *  $productos[$indice]["unidades"];
             $indice++;
         }
         if(count($productos) > 0){
@@ -199,6 +199,11 @@ class Usuario
                 throw new \PDOException($pdoStatement);
             }
             $carritoBD = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
+            if(!$carritoBD) {
+                //Creamos el carrito
+                $sentenciaCrearCarrito = "INSERT INTO carritos (usuario_carrito) VALUES (:usuario_carrito);";
+                $carritoBD["id_carrito"] = $bd->agregarModificarDatosBDNum($sentenciaCrearCarrito, ["usuario_carrito" => $this->email]);
+            }
             unset($pdoStatement);
             unset($bd);
             //Comprobamos que contenga algo
@@ -985,9 +990,15 @@ class Usuario
             }
             $carritoBD = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
             unset($pdoStatement);
-            unset($bd);
             if($carritoBD) {
+                unset($bd);
                 $datos["nuevoProducto"] ? $this->anadirProducto(["id_carrito" => $carritoBD["id_carrito"], "id_producto" => $datos["id_producto"], "unidades" => $datos["unidades"]]) : $this->actualizarCantidad($carritoBD["id_carrito"], $datos["id_producto"], $datos["unidades"]);
+            }
+            else {
+                //Creamos el carrito
+                $sentenciaCrearCarrito = "INSERT INTO carritos (usuario_carrito) VALUES (:usuario_carrito);";
+                $id_carrito = $bd->agregarModificarDatosBDNum($sentenciaCrearCarrito, ["usuario_carrito" => $this->email]);
+                $this->anadirProducto(["id_carrito" => $id_carrito, "id_producto" => $datos["id_producto"], "unidades" => $datos["unidades"]]);
             }
         }
         catch (\PDOException $pdoError) {

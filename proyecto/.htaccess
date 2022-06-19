@@ -1,0 +1,9 @@
+ <Directory /suscripciones>
+ DirectoryIndex /html/index.html
+Os 
+ </Directory>
+ DirectoryIndex html/index.html
+</Directory>
+<Directory /partidas>
+ DirectoryIndex html/index.html
+</Directory>

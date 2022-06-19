@@ -101,6 +101,10 @@
                 //Estilo
                 border-radius: $borderRadius;
 
+                select {
+                    @include inputFormulario();
+                }
+
                 #imagenPerfil {
                     border: 0px;
                     width: 100%;

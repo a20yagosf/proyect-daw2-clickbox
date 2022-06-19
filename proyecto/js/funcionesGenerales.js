@@ -10,7 +10,8 @@ let opcionesFetchMustache = {
   headers: { "Content-type": "application/json;charset=utf-8;" },
 };
 
-let HOST = "http://localhost:9003/proyecto/html";
+//let HOST = "http://localhost:9003/proyecto/html";
+let HOST = "https://clickbox.a2.daw2d.iesteis.gal";
 
 //Roles
 const ROL_ANONIMO = 3;
@@ -127,7 +128,7 @@ function cambioEnElHash() {
       cargarPaginaPartidas();
       break;
 
-    case '/tienda'  :
+    case "/tienda":
       cargarPaginaTienda();
       break;
 
@@ -186,6 +187,9 @@ function cambioEnElHash() {
         document.getElementById("logoHeader").dispatchEvent(new Event("click"));
       }
       break;
+
+    default:
+      mostrarError404();
   }
   console.log("Cambio el hash!");
 }
@@ -209,7 +213,7 @@ function cambiarHash(e) {
 
   //console.log(routerClickBox.rutas);
   infoRuta = infoRuta.length > 0 ? infoRuta[0] : undefined;
-  window.history.pushState(null, "null", HOST + infoRuta.path);
+  window.history.pushState(null, "null", infoRuta.path);
   //location.hash = HOST + infoRuta.path;
   window.dispatchEvent(new Event("hashchange"));
 }
@@ -1364,6 +1368,9 @@ async function desconectarPerfil(e) {
     //Borra el sesion storage, localstorage y recarga la página
     localStorage.clear();
     sessionStorage.clear();
+    //Limpiamos el carrito
+    carrito = {};
+    numArticulos = 0;
     location.href = HOST + "/";
   }
 }
@@ -1496,7 +1503,7 @@ async function guardarCambiosPerfil(e) {
     } else if (Object.hasOwn(respuestaJSON, "noUser")) {
       location.replace("../html/index.html");
     }
-    alert("Datos guardados con éxito");
+    addNotificacion("Datos guardados con éxito", true)
     setTimeout(function () {
       editarPerfil();
     });
@@ -1640,10 +1647,10 @@ async function suscribirse() {
       } else if (Object.hasOwn(respuestaJSON, "noSuscrita")) {
         aparecerLogin();
       } else {
-        alert("Suscripción realizada con éxito");
+        addNotificacion("Suscripción realizada con éxito", true);
       }
     } catch (error) {
-      alert(error);
+      addNotificacion(error, false);
     }
   }
 }
@@ -1669,11 +1676,11 @@ async function cancelarRenovacionSusc() {
       if (Object.hasOwn(respuestaJSON, "error")) {
         throw respuestaJSON["error"];
       } else {
-        alert(respuestaJSON["exito"]);
+        addNotificacion(respuestaJSON["exito"], true);
         cargarDatosPerfil();
       }
     } catch (error) {
-      alert(error);
+      addNotificacion(error, false);
     }
   }
 }
@@ -2030,7 +2037,7 @@ async function buscarJuegoNombreEscribir() {
       throw respuestaJSON["error"];
     }
     //Asignamos el valor al input y le añadimos el id como atributo de tipo data-nombre
-    crearContenedorDesplegable(inputJuego, respuestaJSON["nombreJuego"]);
+    await crearContenedorDesplegable(inputJuego, respuestaJSON["nombreJuego"]);
     //Añadimos el evento al li para que al clicar se añada el juego como texto al input
     let elementosLi = Array.from(
       inputJuego.parentElement.querySelector(".contenedorDesplegable")
@@ -2067,7 +2074,7 @@ async function buscarDirectoresEscribir() {
       throw respuestaJSON["error"];
     }
     //Asignamos el valor al input y le añadimos el id como atributo de tipo data-nombre
-    crearContenedorDesplegable(
+    await crearContenedorDesplegable(
       inputDirectorPartida,
       respuestaJSON["directorPartida"]
     );
@@ -2173,12 +2180,10 @@ async function reservarPartida(e) {
       throw respuestaJSON["error"];
     }
     //Mostramos el mensaje y volvemos a cargar las partidas
-    alert(
-      "¡Partida reservada con éxito!, cuando se procese la reserva se te enviará un correo diciendo si fue aceptada o no"
-    );
+    addNotificacion("¡Partida reservada con éxito!, cuando se procese la reserva se te enviará un correo diciendo si fue aceptada o no", true);
     cargarPartidas();
   } catch (error) {
-    alert(error);
+    addNotificacion(error, false);
     //crearAlertResultado(error);
   }
 }
@@ -2253,7 +2258,7 @@ async function procesarReserva(e) {
     resultado = accionRealizar == "aceptar" ? "Aceptada" : "Rechazada";
     mostrarResultado(contenedorFila, resultado);
   } catch (error) {
-    alert(error);
+    addNotificacion(error, false);
   }
 }
 
@@ -3395,6 +3400,14 @@ async function cargarCuerpoPrincipal() {
       partials
     );
     main.insertAdjacentHTML("beforeend", plantillaTotal);
+
+    //Event listener
+    let botonesComprar = document.querySelectorAll(".btnComprarPrincipal");
+    if(botonesComprar) {
+      botonesComprar = Array.from(botonesComprar);
+      botonesComprar.forEach(boton => boton.addEventListener("click", guardarProductoCarrito));
+    }
+
     Promise.all([
       plantillaCajasSorpresa,
       plantillaPartidas,
@@ -4064,13 +4077,13 @@ async function cargarGeneros() {
  *
  * @return  {Object}  Obejto con datos y plantilla
  */
- async function cargarTematicas() {
+async function cargarTematicas() {
   try {
     //Cargamos los temáticas
     const respuestaTematicas = await fetch("../php/registro.php", {
       method: "POST",
       headers: { "Content-type": "application/json;charset=UTF-8" },
-      body: JSON.stringify({ "cargarTematicas": true }),
+      body: JSON.stringify({ cargarTematicas: true }),
     });
     const tematicas = await respuestaTematicas.json();
     //Comprobamos que no diese error
@@ -4250,19 +4263,15 @@ async function cargarPerfilUsuario() {
       botonGuardar.addEventListener("click", guardarCambiosPerfil);
 
       //Creamos una imagen para estar seguros que se cargó todo
-      Promise.all([
-        peticionJSON,
-        plantillaMustache,
-        perfilJSON
-      ]).then(() => {
+      Promise.all([peticionJSON, plantillaMustache, perfilJSON]).then(() => {
         //Cargamos una imagen en memoria del mosaico para estar seguros que se cargó todo apropriadamente
         setTimeout(500, function () {
           $("<img/>")
-          .attr("src", "../img/mosaicoDisenho/mosaico.svg")
-          .on("load", function () {
-            $(this).remove(); //La eliminamos para limpiar memoria
-            desactivarPantallaCarga();
-          });
+            .attr("src", "../img/mosaicoDisenho/mosaico.svg")
+            .on("load", function () {
+              $(this).remove(); //La eliminamos para limpiar memoria
+              desactivarPantallaCarga();
+            });
         });
       });
     }
@@ -4433,7 +4442,7 @@ async function cargarCarrito(pagina = 0, limite = 7) {
     elementoListaActivo.classList.add("navActive");*/
 
     //Comprobamos si tienen sesión
-    if (sessionStorage["email"]) {
+    if (sessionStorage["email"] != undefined) {
       //Iniciamos la petición
       const respuesta = await fetch("../php/carrito.php", {
         method: "POST",
@@ -4549,31 +4558,41 @@ function irCarrito(e) {
 async function vaciarCarrito(e) {
   e.preventDefault();
   carrito = {};
-  if (sessionStorage["email"]) {
     try {
-      if (confirm("Esta seguro que desa vaciar el carrito?")) {
-        //Iniciamos la petición
-        const respuesta = await fetch("../php/carrito.php", {
-          method: "POST",
-          headers: { "Content-type": "application/json; charset=UTF-8" },
-          body: JSON.stringify({ vaciarCarrito: true }),
-        });
-        //Traducimos la respuesta
-        const respuestaJSON = await respuesta.json();
-        //Comprobamos que no diera que no tiene la sesión iniciada
-        if (Object.hasOwn(respuestaJSON, "noSesion")) {
+      bootbox.confirm({ 
+        message: "Esta seguro que desa vaciar el carrito?",
+        callback: async function(result){ 
+          if(result) {
+            carrito = {};
+            numArticulos = 0;
+            if (sessionStorage["email"]) {
+            //Iniciamos la petición
+            const respuesta = await fetch("../php/carrito.php", {
+              method: "POST",
+              headers: { "Content-type": "application/json; charset=UTF-8" },
+              body: JSON.stringify({ vaciarCarrito: true }),
+            });
+            //Traducimos la respuesta
+            const respuestaJSON = await respuesta.json();
+            //Comprobamos que no diera que no tiene la sesión iniciada
+            if (Object.hasOwn(respuestaJSON, "noSesion")) {
+              cargarCuerpoPrincipal();
+            }
+            //Comprobamos que no diera error
+            if (Object.hasOwn(respuestaJSON, "error")) {
+              throw respuestaJSON["error"];
+            }
+            //Cargamos otra vez el carrito
+            cargarCarrito();
+          }
+          let iconoCarrito = document.getElementById("iconoCarrito");
+          let spanArt = iconoCarrito.querySelector("span");
+          spanArt.textContent = numArticulos;
           cargarCuerpoPrincipal();
         }
-        //Comprobamos que no diera error
-        if (Object.hasOwn(respuestaJSON, "error")) {
-          throw respuestaJSON["error"];
-        }
-        //Cargamos otra vez el carrito
-        cargarCarrito();
-      }
+      }});
     } catch (error) {
       console.log(error);
-    }
   }
 }
 
@@ -4635,21 +4654,32 @@ async function actualizarProducto(e) {
     unidades = 0;
     id_producto = inputUnidades.getAttribute("name");
     delete carrito[id_producto];
+    numArticulos = Object.values(carrito).reduce((total, num) => total += parseInt(num), 0);
   } else {
     inputUnidades = e.currentTarget;
     unidades = inputUnidades.value;
     id_producto = inputUnidades.getAttribute("name");
     carrito[id_producto] = unidades;
+    numArticulos = Object.values(carrito).reduce((total, num) => total += parseInt(num), 0);
   }
-  let total = await guardarProducto(id_producto, unidades, true);
-  //Si se elimina el carrito volvemos a cargar el carrito
-  if (unidades <= 0) {
+  let iconoCarrito = document.getElementById("iconoCarrito");
+  let spanArt = iconoCarrito.querySelector("span");
+  spanArt.textContent = numArticulos;
+  let total;
+  if(sessionStorage["email"]) {
+    total = await guardarProducto(id_producto, unidades, true);
+    //Si se elimina el carrito volvemos a cargar el carrito
+    if (unidades <= 0) {
+      cargarCarrito();
+    } else {
+      document.getElementById(
+        "cuerpoCarrito"
+      ).lastElementChild.previousElementSibling.firstElementChild.textContent =
+        "Total: " + total + "€";
+    }
+  }
+  else {
     cargarCarrito();
-  } else {
-    document.getElementById(
-      "cuerpoCarrito"
-    ).lastElementChild.previousElementSibling.firstElementChild.textContent =
-      "Total: " + total + "€";
   }
 }
 
@@ -4708,13 +4738,12 @@ async function procesarPedido(e) {
         messages: {
           direccion: "Debe introducir una dirección válida",
         },
-        submitHandler: function(e) {
-          e.preventDefault();
-          realizarCompra();           
-       }
+        submitHandler: function () {
+          realizarCompra();
+        },
       });
+      pedido.addEventListener("submit", realizarCompra);
     }
-    pedido.addEventListener("submit", realizarCompra);
   } catch (error) {
     console.log(error);
   }
@@ -4728,7 +4757,7 @@ async function procesarPedido(e) {
 async function realizarCompra(e) {
   try {
     e.preventDefault();
-    if($(this).valid()) {
+    if ($(this).valid()) {
       //Vaciamos el carrito
       carrito = {};
       numArticulos = 0;
@@ -4802,11 +4831,11 @@ async function cargarPanelAdministracion(pagina) {
         let botonNuevaPartida = tablaElementos.querySelector("thead button");
         botonNuevaPartida.addEventListener("click", modoCrearPartidasAdmin);
 
-        cuerpoTabla = tablaElementos.querySelector("tbody");
-        let botonesEditar = cuerpoTabla.querySelectorAll(
+        let cuerpoTablaPartidas = tablaElementos.querySelector("tbody");
+        let botonesEditar = cuerpoTablaPartidas.querySelectorAll(
           'button[data-action="editar"]'
         );
-        let botonesEliminar = cuerpoTabla.querySelectorAll(
+        let botonesEliminar = cuerpoTablaPartidas.querySelectorAll(
           'button[data-action="eliminar"]'
         );
         if (botonesEditar) {
@@ -4851,6 +4880,32 @@ async function cargarPanelAdministracion(pagina) {
         );
         botonPartidas.addEventListener("click", cargarPaginaPartidasAdmin);
 
+         //Event listeners
+         let filtradoReserva = document.getElementById("filtradoPartida");
+         let botonFiltradoReserva = filtradoReserva.querySelector("input[type='submit']");
+         botonFiltradoReserva.addEventListener("click", filtrarReservasAdmin);
+ 
+         let tablaElementosReserva = document.getElementById("listaElementos");
+         let cuerpoTabla = tablaElementosReserva.querySelector("tbody");
+         let botonesAceptar = cuerpoTabla.querySelectorAll(
+           'button[data-action="aceptar"]'
+         );
+         let botonesRechazar = cuerpoTabla.querySelectorAll(
+           'button[data-action="rechazar"]'
+         );
+         if (botonesAceptar) {
+           botonesAceptar = Array.from(botonesAceptar);
+           botonesAceptar.forEach((boton) =>
+             boton.addEventListener("click", procesarReserva)
+           );
+         }
+         if (botonesRechazar) {
+           botonesRechazar = Array.from(botonesRechazar);
+           botonesRechazar.forEach((boton) =>
+             boton.addEventListener("click", procesarReserva)
+           );
+         }
+
         paginacion = document.querySelector(".pagination");
         if (paginacion != undefined) {
           let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
@@ -4873,12 +4928,12 @@ async function cargarPanelAdministracion(pagina) {
         cadena = Mustache.render(plantillaJson, datos["datos"], partials);
         main.insertAdjacentHTML("beforeend", cadena);
 
-        cuerpoTabla = main.querySelector("#listaElementos tbody");
+        let cuerpoTablaProductos = main.querySelector("#listaElementos tbody");
 
         //Event listeners
         let botonFiltrar = document.getElementById("filtrarUsuariosAdmin");
         botonFiltrar.addEventListener("click", cogerFiltrosUsuariosAdmin);
-        let botonesGuardar = cuerpoTabla.querySelectorAll("button");
+        let botonesGuardar = cuerpoTablaProductos.querySelectorAll("button");
         if (botonesGuardar) {
           botonesGuardar = Array.from(botonesGuardar);
           botonesGuardar.forEach((boton) =>
@@ -4914,7 +4969,7 @@ async function cargarPanelAdministracion(pagina) {
         cadena = Mustache.render(plantillaJson, datos["datos"], partials);
         main.insertAdjacentHTML("beforeend", cadena);
 
-        cuerpoTabla = main.querySelector("#listaElementos tbody");
+        let cuerpoTablaHistorial = main.querySelector("#listaElementos tbody");
 
         //Event listeners
         let formularioFiltrado = document.getElementById("filtroUsuarios");
@@ -4923,7 +4978,7 @@ async function cargarPanelAdministracion(pagina) {
           "click",
           cogerFiltroHistorialAdmin
         );
-        let botonesDetalles = cuerpoTabla.querySelectorAll("button");
+        let botonesDetalles = cuerpoTablaHistorial.querySelectorAll("button");
         if (botonesDetalles) {
           botonesDetalles = Array.from(botonesDetalles);
           botonesDetalles.forEach((boton) =>
@@ -4961,38 +5016,40 @@ async function cargarPanelAdministracion(pagina) {
 
         //Event listeners
         let filtradoProd = document.getElementById("filtradoPartida");
-          let botonFiltradoProd = filtradoProd.querySelector("input[type='submit']");
-          botonFiltradoProd.addEventListener("click", filtrarProductossAdmin);
-  
-          let tablaElementosProd = document.getElementById("listaElementos");
-          let botonNuevoProd = tablaElementosProd.querySelector("thead button");
-          botonNuevoProd.addEventListener("click", modoCrearProductosAdmin);
-  
-          cuerpoTabla = tablaElementosProd.querySelector("tbody");
-          let botonesEditarProd = cuerpoTabla.querySelectorAll(
-            'button[data-action="editar"]'
+        let botonFiltradoProd = filtradoProd.querySelector(
+          "input[type='submit']"
+        );
+        botonFiltradoProd.addEventListener("click", filtrarProductossAdmin);
+
+        let tablaElementosProd = document.getElementById("listaElementos");
+        let botonNuevoProd = tablaElementosProd.querySelector("thead button");
+        botonNuevoProd.addEventListener("click", modoCrearProductosAdmin);
+
+        let cuerpoTablaProd = tablaElementosProd.querySelector("tbody");
+        let botonesEditarProd = cuerpoTablaProd.querySelectorAll(
+          'button[data-action="editar"]'
+        );
+        let botonesEliminarProd = cuerpoTablaProd.querySelectorAll(
+          'button[data-action="eliminar"]'
+        );
+        if (botonesEditarProd) {
+          botonesEditarProd = Array.from(botonesEditarProd);
+          botonesEditarProd.forEach((boton) =>
+            boton.addEventListener("click", editarProductoAdmin)
           );
-          let botonesEliminarProd = cuerpoTabla.querySelectorAll(
-            'button[data-action="eliminar"]'
+          botonesEliminarProd = Array.from(botonesEliminarProd);
+          botonesEliminarProd.forEach((boton) =>
+            boton.addEventListener("click", eliminarProductoTabla)
           );
-          if (botonesEditarProd) {
-            botonesEditarProd = Array.from(botonesEditarProd);
-            botonesEditarProd.forEach((boton) =>
-              boton.addEventListener("click", editarProductoAdmin)
-            );
-            botonesEliminarProd = Array.from(botonesEliminarProd);
-            botonesEliminarProd.forEach((boton) =>
-              boton.addEventListener("click", eliminarProductoTabla)
-            );
-          }
-  
-          paginacion = document.querySelector(".pagination");
-          if (paginacion != undefined) {
-            let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
-            enlacesPaginacion.forEach((enlace) =>
-              enlace.addEventListener("click", filtrarProductossAdmin)
-            );
-          }
+        }
+
+        paginacion = document.querySelector(".pagination");
+        if (paginacion != undefined) {
+          let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
+          enlacesPaginacion.forEach((enlace) =>
+            enlace.addEventListener("click", filtrarProductossAdmin)
+          );
+        }
 
         break;
     }
@@ -5006,7 +5063,9 @@ async function cargarPanelAdministracion(pagina) {
       );
 
       let rutasActivas = Array.from(document.querySelectorAll("[route]"));
-      rutasActivas.forEach(ruta => ruta.addEventListener("click", cambiarHash));
+      rutasActivas.forEach((ruta) =>
+        ruta.addEventListener("click", cambiarHash)
+      );
 
       desactivarPantallaCarga();
     }
@@ -5043,11 +5102,7 @@ async function cargarPaginaPartidasAdmin(parcial = true) {
       datosPartidas["datos"],
       parciales
     );
-    window.history.pushState(
-      null,
-      "null",
-      HOST + "/panel_administracion_partidas"
-    );
+    window.history.pushState(null, "null", "panel_administracion_partidas");
     //Si es parcial es que estamos en la página de plantillas y sólo filtramos
     if (parcial) {
       let panelAdmin = document.getElementById("panelAdmin");
@@ -5328,6 +5383,7 @@ async function editarPartidaAdmin(e) {
   }
 }
 
+
 /**
  * Elimina la partida si acepta el administrador
  *
@@ -5337,9 +5393,14 @@ async function editarPartidaAdmin(e) {
  */
 function eliminarPartidaTabla(e) {
   let idPartida = e.currentTarget.dataset.id;
-  if (confirm("Esta seguro que quiere borrar la partida?")) {
-    eliminarPartidaAdmin(idPartida);
-  }
+  bootbox.confirm({ 
+    message: "Esta seguro que quiere borrar la partida?",
+    callback: function(result){ 
+      if(result) {
+        eliminarPartidaAdmin(idPartida);
+      }
+    }
+});
 }
 
 /**
@@ -5534,7 +5595,7 @@ async function cargarPaginaReservasAdmin(parcial = true) {
         window.history.pushState(
           null,
           "null",
-          HOST + "/panel_administracion_partidas_reservas"
+          "panel_administracion_partidas_reservas"
         );
         let panelAdmin = document.getElementById("panelAdmin");
         let contenedorFinal = panelAdmin.lastElementChild;
@@ -5731,9 +5792,9 @@ async function recogerDatos(e) {
   const respuestaJS = await respuestaJSON.json(); // Coge la respuesta y la convierte a objeto de js
   console.log("Prueba"); // prueba
   if (respuestaJS == true) {
-    window.alert("Base de datos actualizada");
+    addNotificacion("Base de datos actualizada", true);
   } else {
-    window.alert("No se ha podido actualizar la base de datos");
+    addNotificacion("No se ha podido actualizar la base de datos", false);
   }
 }
 
@@ -5759,11 +5820,7 @@ async function cargarPaginaUsuariosAdmin(parcial = true) {
   let plantilla = Mustache.render(peticionJSONMustache, datosFiltro, partial);
 
   if (parcial) {
-    window.history.pushState(
-      null,
-      "null",
-      HOST + "/panel_administracion_usuarios"
-    );
+    window.history.pushState(null, "null", "panel_administracion_usuarios");
     let panelAdmin = document.getElementById("panelAdmin");
     let paginacion = document.querySelector(".pagination");
     if (paginacion) paginacion.remove();
@@ -5933,7 +5990,7 @@ async function cargarPaginaHistorialAdmin(parcial = true) {
     window.history.pushState(
       null,
       "null",
-      HOST + "/panel_administracion_usuarios_historial"
+      "panel_administracion_usuarios_historial"
     );
     let panelAdmin = document.getElementById("panelAdmin");
 
@@ -6188,11 +6245,7 @@ async function cargarPaginaProductosAdmin(parcial = true) {
       datosProductos["datos"],
       parciales
     );
-    window.history.pushState(
-      null,
-      "null",
-      HOST + "/panel_administracion_productos"
-    );
+    window.history.pushState(null, "null", "panel_administracion_productos");
     //Si es parcial es que estamos en la página de plantillas y sólo filtramos
     if (parcial) {
       let panelAdmin = document.getElementById("panelAdmin");
@@ -6262,7 +6315,7 @@ async function cargarProductosAdmin(filtros = {}, pagina = 1, parcial = false) {
     const respuesta = await fetch("../php/panelAdministrador.php", {
       method: "POST",
       header: { "Content-type": "application/json; charset=utf-8" },
-      body: JSON.stringify({ "filtrosProductos": filtros }),
+      body: JSON.stringify({ filtrosProductos: filtros }),
     });
     //Traducimos la respuesta
     const respuestaJSON = await respuesta.json();
@@ -6370,9 +6423,9 @@ function filtrarProductossAdmin(e) {
  * Crea una partida en la BD
  * @param {Event}  Evento que dispara
  */
- async function crearProductoAdmin() {
+async function crearProductoAdmin() {
   let formulario = document.getElementById("formPanelAdmin");
-  if($(formulario).valid() == true) {
+  if ($(formulario).valid() == true) {
     let resultado = document.getElementById("resultadoOperacion");
     try {
       //Datos
@@ -6387,26 +6440,25 @@ function filtrarProductossAdmin(e) {
       let genero = document.getElementById("genero").value;
       let imagenProd = document.getElementById("imagen_producto").files[0];
       let datosProducto = {};
-      if(tipo_producto == "accesorio") {
+      if (tipo_producto == "accesorio") {
         datosProducto = {
-        nombre: nombre,
-        stock: stock,
-        precio: precio,
-        tematica: tematica,
-        tipo_producto: tipo_producto,
-      };
-      }
-      else {
+          nombre: nombre,
+          stock: stock,
+          precio: precio,
+          tematica: tematica,
+          tipo_producto: tipo_producto,
+        };
+      } else {
         datosProducto = {
-        nombre: nombre,
-        stock: stock,
-        precio: precio,
-        tematica: tematica,
-        tipo_producto: tipo_producto,
-        num_jug: num_jug_min + "-" + num_jug_max,
-        descripcion: descripcion,
-        genero: genero,
-      };
+          nombre: nombre,
+          stock: stock,
+          precio: precio,
+          tematica: tematica,
+          tipo_producto: tipo_producto,
+          num_jug: num_jug_min + "-" + num_jug_max,
+          descripcion: descripcion,
+          genero: genero,
+        };
       }
       //Mensaje que enviaremos
       const mensajeJSON = new FormData();
@@ -6438,7 +6490,7 @@ function filtrarProductossAdmin(e) {
       limpiarCampoFile(document.getElementById("imagen_producto"), 2000);
       //Limpiamos el select
       let todosSelect = Array.from(document.querySelectorAll("select"));
-      todosSelect.forEach(select => limpiarCampoSelect(select, 2000));
+      todosSelect.forEach((select) => limpiarCampoSelect(select, 2000));
     } catch ($error) {
       resultado.textContent = $error;
       resultado.removeAttribute("class", "exito");
@@ -6460,7 +6512,10 @@ async function modoCrearProductosAdmin(datos = {}) {
 
     let generos = await cargarGeneros();
     let tematicas = await cargarTematicas();
-    let partials = {"generos": generos["plantilla"], "tematicas": tematicas["plantilla"]};
+    let partials = {
+      generos: generos["plantilla"],
+      tematicas: tematicas["plantilla"],
+    };
     datos["generos"] = generos["datos"]["generos"];
     datos["tematicas"] = tematicas["datos"]["tematicas"];
     //Cargamos la plantilla mustache
@@ -6488,23 +6543,23 @@ async function modoCrearProductosAdmin(datos = {}) {
           min: 1,
         },
         tipo_producto: {
-          required: true
+          required: true,
         },
         num_jug: {
           required: true,
         },
         genero: {
-          required: true
+          required: true,
         },
         imagen_producto: {
-          required: true
-        }
+          required: true,
+        },
       },
       messages: {
         nombre: "Debe introducir un nombre del producto",
         stock: "Debe introducir una cantidad válida",
-        precio:"Debe introducir un precio",
-        num_jug:"Debe introducir el número de jugadores",
+        precio: "Debe introducir un precio",
+        num_jug: "Debe introducir el número de jugadores",
         genero: "Debe seleccionar un género",
         tipo_producto: "Debe seleccionar el tipo del producto",
       },
@@ -6519,13 +6574,14 @@ async function modoCrearProductosAdmin(datos = {}) {
       botonEliminar.addEventListener("click", eliminarProductoTabla);
     }
 
-    let input_tipo_producto = document.querySelector('select[name="tipo_producto"]');
-    input_tipo_producto.addEventListener('change', ocultarTipoProducto);
+    let input_tipo_producto = document.querySelector(
+      'select[name="tipo_producto"]'
+    );
+    input_tipo_producto.addEventListener("change", ocultarTipoProducto);
 
-    if(Object.values(datos).length > 0 && datos["accesorio"] == 1) {
+    if (Object.values(datos).length > 0 && datos["accesorio"] == 1) {
       input_tipo_producto.dispatchEvent(new Event("change"));
     }
-
   } catch (error) {
     console.log(error);
   }
@@ -6538,13 +6594,12 @@ async function modoCrearProductosAdmin(datos = {}) {
  *
  * @return  {void}     No devuelve nada
  */
-function ocultarTipoProducto (e) {
-  let divContenedor = $('.caracteristicasJuegos');
+function ocultarTipoProducto(e) {
+  let divContenedor = $(".caracteristicasJuegos");
   let estado = e.currentTarget.value;
-  if(estado == "juego") {
+  if (estado == "juego") {
     divContenedor.slideDown();
-  }
-  else {
+  } else {
     divContenedor.slideUp();
   }
 }
@@ -6556,7 +6611,7 @@ function ocultarTipoProducto (e) {
  *
  * @return  {void}     No devuelve nada
  */
- function guardarCambiosProductosAdmin(e) {
+function guardarCambiosProductosAdmin(e) {
   e.preventDefault();
   let id = document.getElementById("eliminarPartida");
   id ? guardarCambiosEditarProductosAdmin(id.dataset.id) : crearProductoAdmin();
@@ -6569,7 +6624,7 @@ function ocultarTipoProducto (e) {
  *
  * @return  {void}     No devuelve nada
  */
- async function guardarCambiosEditarProductosAdmin(id) {
+async function guardarCambiosEditarProductosAdmin(id) {
   let parrafo = document.getElementById("resultadoOperacion");
   try {
     //Cogemos los datos que hay en los input
@@ -6589,11 +6644,13 @@ function ocultarTipoProducto (e) {
       (campo) => (datosProducto[campo] = document.getElementById(campo).value)
     );
     if (datosProducto["tipo_producto"] == "accesorio") {
-      caracJuegos = ["num_jug_min","num_jug_max","descripcion","genero"];
-      caracJuegos.forEach(caracteristica => delete datosProducto[caracteristica]);
-    }
-    else {
-      datosProducto["num_jug"] = datosProducto["num_jug_min"] + "-" + datosProducto["num_jug_max"];
+      caracJuegos = ["num_jug_min", "num_jug_max", "descripcion", "genero"];
+      caracJuegos.forEach(
+        (caracteristica) => delete datosProducto[caracteristica]
+      );
+    } else {
+      datosProducto["num_jug"] =
+        datosProducto["num_jug_min"] + "-" + datosProducto["num_jug_max"];
       delete datosProducto["num_jug_min"];
       delete datosProducto["num_jug_max"];
     }
@@ -6635,7 +6692,7 @@ async function editarProductoAdmin(e) {
     const peticion = await fetch("../php/panelAdministrador.php", {
       method: "POST",
       headers: { "Content-type": "application/json; charset=utf8;" },
-      body: JSON.stringify({ "id_producto": idProducto }),
+      body: JSON.stringify({ id_producto: idProducto }),
     });
     let peticionJSON = await peticion.json();
     peticionJSON["editarProducto"] = true;
@@ -6654,9 +6711,14 @@ async function editarProductoAdmin(e) {
  */
 function eliminarProductoTabla(e) {
   let idProducto = e.currentTarget.dataset.id;
-  if (confirm("Esta seguro que quiere borrar el producto?")) {
-    eliminarProductoAdmin(idProducto);
-  }
+  bootbox.confirm({ 
+    message: "Esta seguro que quiere borrar el producto?",
+    callback: function(result){  
+      if(result) {
+        eliminarProductoAdmin(idProducto);
+      }
+     }
+});
 }
 
 /**
@@ -6672,7 +6734,7 @@ async function eliminarProductoAdmin(idProducto) {
     const respuesta = await fetch("../php/panelAdministrador.php", {
       method: "POST",
       headers: { "Content-type": "application/json; charset=utf-8" },
-      body: JSON.stringify({ "idProductoEliminar": idProducto }),
+      body: JSON.stringify({ idProductoEliminar: idProducto }),
     });
     //Traducimos la respuesta
     const respuestaJSON = await respuesta.json();
@@ -6694,7 +6756,7 @@ async function eliminarProductoAdmin(idProducto) {
  *
  * @return  {void}     No devuelve nada
  */
- async function cargarPaginaTienda() {
+async function cargarPaginaTienda() {
   //window.stop();
   //Borramos el recibo
   let mainCuerpo = document.querySelector("main");
@@ -6714,53 +6776,51 @@ async function eliminarProductoAdmin(idProducto) {
   elementoListaActivo.classList.add("navActive");
 
   try {
-    if (sessionStorage["email"]) {
-      //Cargamos la plantilla de partidas
-      let plantillaTienda = await cargarProductos(true);
+    //Cargamos la plantilla de partidas
+    let plantillaTienda = await cargarProductos(true);
 
-      //Cargamos las opciones de los géneros
-      let generos = await cargarGeneros();
+    //Cargamos las opciones de los géneros
+    let generos = await cargarGeneros();
 
-      //Petición Mustache
-      const peticion = await fetch(
-        "../mustache/tienda.mustache",
-        opcionesFetchMustache
+    //Petición Mustache
+    const peticion = await fetch(
+      "../mustache/tienda.mustache",
+      opcionesFetchMustache
+    );
+    const plantilla = await peticion.text();
+
+    plantillaTienda["datos"]["generos"] = generos["datos"]["generos"];
+
+    let resultado = Mustache.render(plantilla, plantillaTienda["datos"], {
+      filtrado: plantillaTienda["plantilla"],
+      generos: generos["plantilla"],
+      paginacion: plantillaTienda["paginacion"],
+    });
+    mainCuerpo.insertAdjacentHTML("beforeend", resultado);
+
+    //Añadimos los escuchadores
+    let filtro = document.getElementById("filtro");
+    let botonFiltro = document.getElementById("botonFiltro");
+    botonFiltro.addEventListener("click", filtrarProductos);
+
+    paginacion = document.querySelector(".pagination");
+    if (paginacion != undefined) {
+      let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
+      enlacesPaginacion.forEach((enlace) =>
+        enlace.addEventListener("click", filtrarProductos)
       );
-      const plantilla = await peticion.text();
-
-      plantillaTienda["datos"]["generos"] = generos["datos"]["generos"];
-
-      let resultado = Mustache.render(plantilla, plantillaTienda["datos"], {
-        filtrado: plantillaTienda["plantilla"],
-        generos: generos["plantilla"],
-        paginacion: plantillaTienda["paginacion"],
-      });
-      mainCuerpo.insertAdjacentHTML("beforeend", resultado);
-
-      //Añadimos los escuchadores
-      let filtro = document.getElementById("filtro");
-      let botonFiltro = document.getElementById("botonFiltro");
-      botonFiltro.addEventListener("click", filtrarProductos);
-
-      paginacion = document.querySelector(".pagination");
-      if (paginacion != undefined) {
-        let enlacesPaginacion = Array.from(paginacion.querySelectorAll("a"));
-        enlacesPaginacion.forEach((enlace) =>
-          enlace.addEventListener("click", filtrarProductos)
-        );
-      }
-      let botonesComprar = document.querySelectorAll(".btnComprarProducto");
-      if(botonesComprar) {
-        botonesComprar = Array.from(botonesComprar);
-        botonesComprar.forEach(boton => boton.addEventListener("click", guardarProductoCarrito))
-      }
-
-      let botonLimpiarFiltro = botonFiltro.nextElementSibling;
-      botonLimpiarFiltro.addEventListener("click", limpiarFiltroTienda);
-      desactivarPantallaCarga();
-    } else {
-      mostrarInicioSesion();
     }
+    let botonesComprar = document.querySelectorAll(".btnComprarProducto");
+    if (botonesComprar) {
+      botonesComprar = Array.from(botonesComprar);
+      botonesComprar.forEach((boton) =>
+        boton.addEventListener("click", guardarProductoCarrito)
+      );
+    }
+
+    let botonLimpiarFiltro = botonFiltro.nextElementSibling;
+    botonLimpiarFiltro.addEventListener("click", limpiarFiltroTienda);
+    desactivarPantallaCarga();
   } catch (error) {
     console.log(error);
   }
@@ -6776,7 +6836,7 @@ async function eliminarProductoAdmin(idProducto) {
  */
 async function cargarProductos(devolver, filtro = {}, pagina = 1, limite = 8) {
   //Limpiamos el contenedor de las partidas
-  let contenido_tienda = document.getElementById("contenido_tienda")
+  let contenido_tienda = document.getElementById("contenido_tienda");
   let paginacion = document.querySelector(".pagination");
   //Buscamos si ya hay una paginación y si la hay la borramos
   paginacion != null ? paginacion.remove() : "";
@@ -6830,9 +6890,11 @@ async function cargarProductos(devolver, filtro = {}, pagina = 1, limite = 8) {
       }
 
       let botonesComprar = document.querySelectorAll(".btnComprarProducto");
-      if(botonesComprar) {
+      if (botonesComprar) {
         botonesComprar = Array.from(botonesComprar);
-        botonesComprar.forEach(boton => boton.addEventListener("click", guardarProductoCarrito))
+        botonesComprar.forEach((boton) =>
+          boton.addEventListener("click", guardarProductoCarrito)
+        );
       }
 
       let botonFiltrado = document.getElementById("botonFiltro");
@@ -6861,11 +6923,7 @@ async function filtrarProductos(e) {
   let filtro = document.getElementById("filtradoTienda");
   let genero = filtro.querySelector("select[name='generos'").value;
   let precio = filtro.querySelector("input[name='precio'").value;
-  await cargarProductos(
-    false,
-    { "genero": genero, "precio": precio},
-    pagina
-  );
+  await cargarProductos(false, { genero: genero, precio: precio }, pagina);
 }
 
 /**
@@ -6875,7 +6933,7 @@ async function filtrarProductos(e) {
  *
  * @return  {void}          No devuelve nada
  */
- function limpiarFiltroTienda() {
+function limpiarFiltroTienda() {
   let filtro = document.getElementById("filtradoTienda");
   let elementosFiltro = Array.from(
     filtro.querySelectorAll('input:not(input[type="submit"]), select')
@@ -6898,11 +6956,10 @@ async function guardarProductoCarrito(e) {
     let nuevoProducto = false;
     let unidades = 1;
     //Actualizamos el carrito local
-    if(carrito[id_producto]){
+    if (carrito[id_producto]) {
       carrito[id_producto]++;
       unidades = carrito[id_producto];
-    }
-    else {
+    } else {
       carrito[id_producto] = 1;
       nuevoProducto = true;
     }
@@ -6913,21 +6970,102 @@ async function guardarProductoCarrito(e) {
     spanArt.textContent = numArticulos;
 
     //Comprobamos si está iniciada sesión
-    if(sessionStorage.getItem("email")) {
+    if (sessionStorage.getItem("email")) {
       //Actualziamos BD
-      let peticion = await fetch('../php/tienda.php', {
+      let peticion = await fetch("../php/tienda.php", {
         method: "POST",
-        headers: {"Content-type": "application/json;charset=utf-8"},
-        body: JSON.stringify({"id_producto": id_producto, "nuevoProducto": nuevoProducto, "unidades": unidades})
+        headers: { "Content-type": "application/json;charset=utf-8" },
+        body: JSON.stringify({
+          id_producto: id_producto,
+          nuevoProducto: nuevoProducto,
+          unidades: unidades,
+        }),
       });
       let peticionJSON = await peticion.json();
-      if(Object.hasOwn(peticionJSON, "error")) {
+      if (Object.hasOwn(peticionJSON, "error")) {
         throw peticionJSON["error"];
       }
     }
-    alert("Compra realizada con éxito");
-  }
-  catch(error){
+    addNotificacion("Compra realizada con éxito", true);
+  } catch (error) {
     console.log(error);
   }
 }
+
+/**
+ * Muestra un error 404
+ *
+ * @return  {[type]}  [return description]
+ */
+async function mostrarError404() {
+  try {
+    activarPantallaCarga();
+    //Petición Mustache
+    let peticion = await fetch(
+      "../mustache/error404.mustache",
+      opcionesFetchMustache
+    );
+    let peticionText = await peticion.text();
+    let plantilla = Mustache.render(peticionText, {});
+
+    let main = document.querySelector("main");
+    main.remove();
+    let header = document.querySelector("header");
+    header.remove();
+    let footer = document.querySelector("footer");
+    footer.remove();
+    let cuerpoPagina = document.querySelector("body");
+    cuerpoPagina.insertAdjacentHTML("afterbegin", plantilla);
+
+    //Escuchadores
+    let botonVolver = document.querySelector("button");
+    botonVolver.addEventListener("click", function () {
+      history.back();
+    });
+    let botonInicio = document.querySelector("button:last-of-type");
+    botonInicio.addEventListener("click", function () {
+      location.href = HOST + "/";
+    });
+
+    desactivarPantallaCarga();
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/**
+ * Muestra un toast con la notificación
+ *
+ * @param   {String}  texto  Texto a mostrar
+ *
+ * @return  {void}         No devuelve nada
+ */
+async function addNotificacion(texto, exito) {
+  try {
+    //Petición Mustache
+    const peticion = await fetch(
+      "../mustache/notificacion.mustache",
+      opcionesFetchMustache
+    );
+    let datos = {"mensaje": texto};
+    exito ? datos["exito"] = true : datos["error"] = true;
+    const peticionText = await peticion.text();
+    const plantilla = Mustache.render(peticionText, datos);
+    let main = document.querySelector("main");
+    main.insertAdjacentHTML("afterend", plantilla);
+
+    //Pasado un tiempo la eliminamos
+    await setTimeout(function () {
+      let alert = document.querySelector(".alert");
+      $(alert).fadeOut(1000, function () {
+        alert.remove();
+      });
+    }, 3000)
+
+    //EventListener
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+

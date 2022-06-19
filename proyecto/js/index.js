@@ -67,7 +67,7 @@ window.onload = async function () {
    usuario ? setTimeout(desactivarPantallaCarga, 500) : desactivarPantallaCarga();
 
    //Actualizamos el carrito
-   let numArticulos = Object.values(carrito).reduce((total, num) => {
+   numArticulos = Object.values(carrito).reduce((total, num) => {
     total += parseInt(num);
     return total;
     },0);

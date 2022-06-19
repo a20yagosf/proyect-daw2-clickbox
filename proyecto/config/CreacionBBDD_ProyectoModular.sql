@@ -336,7 +336,7 @@ CREATE TABLE IF NOT EXISTS historico_usuarios (
 
 -- CREACIÓN DE LOS USUARIOS DE LA BD
 -- USUARIO PARA LA CONEXIÓN Y REGISTRO DE USUARIOS
-GRANT SELECT, INSERT ON a2da_clickbox.usuarios TO 'a2da_conexion'@'localhost' IDENTIFIED BY '123456';
+/*GRANT SELECT, INSERT ON a2da_clickbox.usuarios TO 'a2da_conexion'@'localhost' IDENTIFIED BY '123456';
 GRANT SELECT ON a2da_clickbox.generos TO 'a2da_conexion'@'localhost';
 GRANT SELECT ON a2da_clickbox.roles TO 'a2da_conexion'@'localhost';
 GRANT SELECT ON a2da_clickbox.suscripciones TO 'a2da_conexion'@'localhost';
@@ -390,7 +390,7 @@ GRANT ALL ON a2da_clickbox.carritos TO 'a2da_admin'@'localhost';
 GRANT ALL ON a2da_clickbox.productos_carritos TO 'a2da_admin'@'localhost';
 GRANT EXECUTE ON PROCEDURE a2da_clickbox.cargar_carrito TO 'a2da_admin'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.productos TO 'a2da_admin'@'localhost';
-GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.juegos TO 'a2da_admin'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON a2da_clickbox.juegos TO 'a2da_admin'@'localhost';*/
 
 -- DISPARADORES
 DELIMITER $$
@@ -556,7 +556,7 @@ INSERT INTO suscripciones
 	(6, 14);
 
 INSERT INTO productos
-	(nombre, precio, stock, imagen_producto) 
+	(nombre, precio, stock, imagen_producto, tipo_producto) 
 		VALUES 
 	("Catán", 40, 50, "../img/juegos/catan.jpg", "juego"),
 	("Bienvenido a la mazmorra", 15, 25, "../img/juegos/bienvenidoAlaMazmorra.jpg", "juego"),
@@ -624,17 +624,6 @@ INSERT INTO juegos
     (25,  "1-4", "Competitivo"),
     (26,"2-4", "Competitivo"),
     (27, "1-4", "Familiar");
-
-INSERT INTO accesorios
-    (accesorio) 
-		VALUES
-    (28),
-    (29),
-	(30),
-  	(31),
-  	(32),
-  	(33),
-	(34);
 
 	INSERT INTO cajas_sorpresa
 	(fecha, img_caja, unidades)

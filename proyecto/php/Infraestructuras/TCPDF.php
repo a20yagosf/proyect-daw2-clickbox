@@ -51,5 +51,6 @@ class TCPDF {
         //var_dump($fechaFacturaFormat);
         //Abre el documento en la pestaña
         $this->pdf->Output('ClickBox_Factura_' . $fechaFacturaFormat . '.pdf', 'I');
+        die();
     }
 }

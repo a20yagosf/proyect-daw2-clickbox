@@ -129,8 +129,8 @@ class Administrador extends user{
         $bd = new bd();
         //Creamos la sentencia
         $sentenciaNumPag = "SELECT COUNT(email) as num_pag FROM usuarios";
-        $sentencia = "SELECT email, case when rol = 1 THEN true Else null END as admin from usuarios";
-        $datosFiltrado = [];
+        $sentencia = "SELECT email, case when rol = 1 THEN true Else null END as admin, IF(email = :email, true, null) AS propio from usuarios";
+        $datosFiltrado = ["email" => $this->email];
         //Comprobamos los filtros que puede tener
         if(isset($filtroUsuario["email"])){
             $sentenciaNumPag .= " WHERE LOWER(email) LIKE :email";
